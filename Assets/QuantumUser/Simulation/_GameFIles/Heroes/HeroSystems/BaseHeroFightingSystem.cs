@@ -10,12 +10,6 @@ namespace Quantum.Game
     [Preserve]
     public unsafe class BaseHeroFightingSystem : SystemMainThreadGroup
     {
-        public struct FighingHero
-        {
-            public Hero Hero;
-            public int BoardIndex;
-        }
-
         public BaseHeroFightingSystem() : base(nameof(BaseHeroFightingSystem))
         {
         }
@@ -24,37 +18,23 @@ namespace Quantum.Game
         {
         }
 
-        public static FighingHero ProcessReload(Frame f, FighingHero fighingHero)
+        public static void ProcessReload(Frame f, FightingHero fighingHero)
         {
-            if (fighingHero.Hero.AttackTarget == default)
-            {
-                return fighingHero;
-            }
+            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fighingHero).FightingHeroesMap);
 
-            QList<Hero> heroes = f.ResolveList(GetBoard(f, fighingHero).FightingHeroesMap);
-            int index = heroes.IndexOf(fighingHero.Hero);
-
-            if (index < 0)
-            {
-                return fighingHero;
-            }
-
-            Hero hero = heroes[index];
-            hero.AttackTimer -= f.DeltaTime;
-            heroes[index] = hero;
-            fighingHero.Hero = hero;
-
-            return fighingHero;
+            FightingHero fightingHero = heroes[fighingHero.Index];
+            fightingHero.Hero.AttackTimer -= f.DeltaTime;
+            heroes[fighingHero.Index] = fightingHero;
         }
 
-        public static void ProcessInstantAttack(Frame f, FighingHero fighingHero)
+        public static void ProcessInstantAttack(Frame f, FightingHero fighingHero)
         {
-            if (IsAbleToAttack(f, fighingHero, out Hero targetHero) == false)
+            if (BoardPosition.IsAbleToAttack(f, fighingHero, out FightingHero targetHero) == false)
             {
                 return;
             }
 
-            DamageHero(f, GetBoard(f, fighingHero), fighingHero.Hero.Damage, targetHero);
+            DamageHero(f, GetBoard(f, fighingHero), fighingHero.Hero.Damage, targetHero.Hero);
             ResetAttackTimer(f, fighingHero);
         }
 
@@ -68,70 +48,65 @@ namespace Quantum.Game
             }
         }
 
-        public static void ProcessProjectileAttack(Frame f, FighingHero fighingHero)
+        public static void ProcessProjectileAttack(Frame f, FightingHero fighingHero)
         {
-            if (IsAbleToAttack(f, fighingHero, out Hero targetHero) == false)
+            if (BoardPosition.IsAbleToAttack(f, fighingHero, out FightingHero targetHero) == false)
             {
                 return;
             }
 
-            SpawnProjectile(f, fighingHero, targetHero);
+            SpawnProjectile(f, fighingHero, targetHero.Hero);
             ResetAttackTimer(f, fighingHero);
         }
 
-        public static void SetHeroTarget(Frame f, FighingHero fighingHero, EntityRef attackTarget, Vector2Int targetPosition)
+        public static void SetHeroTarget(Frame f, FightingHero fighingHero, EntityRef attackTarget, Vector2Int targetPosition)
         {
-            QList<Hero> heroes = f.ResolveList(GetBoard(f, fighingHero).FightingHeroesMap);
+            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fighingHero).FightingHeroesMap);
 
-            if (BoardPosition.TryConvertCordsToIndex(f, targetPosition, out int heroNewIndex))
+            if (BoardPosition.TryConvertCordsToIndex(targetPosition, out int heroNewIndex))
             {
-                int heroLastIndex = heroes.IndexOf(fighingHero.Hero);
+                if (fighingHero.Index < 0 || heroes[heroNewIndex].Hero.Ref != default) return;
 
-                if (heroLastIndex < 0 || heroes[heroNewIndex].Ref != default) return;
-
-                Hero hero = heroes[heroLastIndex];
-                hero.AttackTarget = attackTarget;
-                hero.TargetPositionX = targetPosition.x;
-                hero.TargetPositionY = targetPosition.y;
-                Hero empty = default;
-                empty.ID = -1;
-                heroes[heroLastIndex] = empty;
-                heroes[heroNewIndex] = hero;
+                FightingHero fightingHero = heroes[fighingHero.Index];
+                fightingHero.Hero.AttackTarget = attackTarget;
+                fightingHero.Hero.TargetPositionX = targetPosition.x;
+                fightingHero.Hero.TargetPositionY = targetPosition.y;
+                FightingHero empty = heroes[heroNewIndex];
+                empty.Hero.ID = -1;
+                empty.Index = fighingHero.Index;
+                heroes[fighingHero.Index] = empty;
+                fightingHero.Index = heroNewIndex;
+                heroes[heroNewIndex] = fightingHero;
             }
         }
 
-        public static void SetHeroTarget(Frame f, FighingHero fighingHero, EntityRef attackTarget)
+        public static void SetHeroTarget(Frame f, FightingHero fighingHero, EntityRef attackTarget)
         {
-            QList<Hero> heroes = f.ResolveList(GetBoard(f, fighingHero).FightingHeroesMap);
+            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fighingHero).FightingHeroesMap);
 
-            int index = heroes.IndexOf(fighingHero.Hero);
-            Hero hero = heroes[index];
-            hero.AttackTarget = attackTarget;
-            heroes[index] = hero;
+            FightingHero fightingHero = heroes[fighingHero.Index];
+            fightingHero.Hero.AttackTarget = attackTarget;
+            heroes[fighingHero.Index] = fightingHero;
         }
 
-        public static void GetHeroes<T>(Frame f, ref List<FighingHero> heroes) where T : unmanaged, IComponent
+        public static void GetHeroes<T>(Frame f, ref List<FightingHero> heroes) where T : unmanaged, IComponent
         {
             QList<Board> boards = f.ResolveList(f.Global->Boards);
 
             foreach (Board board in boards)
             {
-                QList<Hero> fightingHeroes = f.ResolveList(board.FightingHeroesMap);
+                QList<FightingHero> fightingHeroes = f.ResolveList(board.FightingHeroesMap);
 
-                foreach (Hero hero in fightingHeroes)
+                foreach (FightingHero fightingHero in fightingHeroes)
                 {
-                    if (hero.Ref == default || hero.IsAlive == false)
+                    if (fightingHero.Hero.Ref == default || fightingHero.Hero.IsAlive == false)
                     {
                         continue;
                     }
 
-                    if (f.Unsafe.TryGetPointer(hero.Ref, out T* _))
+                    if (f.Unsafe.TryGetPointer(fightingHero.Hero.Ref, out T* _))
                     {
-                        heroes.Add(new FighingHero
-                        {
-                            Hero = hero,
-                            BoardIndex = boards.IndexOf(board)
-                        });
+                        heroes.Add(fightingHero);
                     }
                 }
             }
@@ -145,17 +120,17 @@ namespace Quantum.Game
             return transform.Position != position;
         }
 
-        public static Hero GetHeroTarget(Frame f, FighingHero fighingHero, out Vector2Int moveTargetPosition)
+        public static FightingHero GetHeroTarget(Frame f, FightingHero fighingHero, out Vector2Int moveTargetPosition)
         {
-            QList<Hero> heroes = f.ResolveList(GetBoard(f, fighingHero).FightingHeroesMap);
+            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fighingHero).FightingHeroesMap);
 
-            if (TryFindClosestTargetInAttackRange(f, heroes, fighingHero.Hero, out Hero targetHero))
+            if (BoardPosition.TryFindClosestTargetInAttackRange(f, heroes, fighingHero, out FightingHero targetHero))
             {
                 moveTargetPosition = BoardPosition.GetHeroCords(fighingHero.Hero);
                 return targetHero;
             }
 
-            Hero hero = FindClosestTargetOutOfAttackRange(f, heroes, fighingHero.Hero, out moveTargetPosition, out bool inRange);
+            FightingHero hero = BoardPosition.FindClosestTargetOutOfAttackRange(f, heroes, fighingHero, out moveTargetPosition, out bool inRange);
 
             return hero;
         }
@@ -175,13 +150,13 @@ namespace Quantum.Game
             return position;
         }
 
-        public static Board GetBoard(Frame f, FighingHero fighingHero)
+        public static Board GetBoard(Frame f, FightingHero fighingHero)
         {
             QList<Board> boards = f.ResolveList(f.Global->Boards);
             return boards[fighingHero.BoardIndex];
         }
 
-        private static void SpawnProjectile(Frame f, FighingHero fighingHero, Hero targetHero)
+        private static void SpawnProjectile(Frame f, FightingHero fighingHero, Hero targetHero)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             Hero hero = fighingHero.Hero;
@@ -210,7 +185,7 @@ namespace Quantum.Game
         private static void ProcessProjectile(Frame f, Board board, HeroProjectile projectile)
         {
             if (f.Exists(projectile.Ref) == false) return;
-            
+
             Transform3D* projectileTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Ref);
             Transform3D* targetTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Target.Ref);
             FP moveOffset = projectile.Speed * f.DeltaTime;
@@ -228,9 +203,18 @@ namespace Quantum.Game
             f.Events.GetProjectiles(f, board.Player1.Ref, board.Player2.Ref, projectilesData);
         }
 
+        private static void ResetAttackTimer(Frame f, FightingHero fighingHero)
+        {
+            Board board = GetBoard(f, fighingHero);
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+            FightingHero hero = heroes[fighingHero.Index];
+            hero.Hero.AttackTimer = 1 / hero.Hero.AttackSpeed;
+            heroes[fighingHero.Index] = hero;
+        }
+
         private static void DamageHero(Frame f, Board board, int damage, Hero targetHero)
         {
-            int targetHeroIndex = f.ResolveList(board.FightingHeroesMap).ToList().FindIndex(hero => hero.Ref == targetHero.Ref);
+            int targetHeroIndex = f.ResolveList(board.FightingHeroesMap).ToList().FindIndex(hero => hero.Hero.Ref == targetHero.Ref);
 
             if (targetHeroIndex < 0)
             {
@@ -240,241 +224,26 @@ namespace Quantum.Game
             DamageHero(f, board, damage, targetHeroIndex);
         }
 
-        private static void ResetAttackTimer(Frame f, FighingHero fighingHero)
-        {
-            Board board = GetBoard(f, fighingHero);
-            QList<Hero> heroes = f.ResolveList(board.FightingHeroesMap);
-            int heroIndex = heroes.ToList().FindIndex(hero => hero.Ref == fighingHero.Hero.Ref);
-            Hero hero = heroes[heroIndex];
-            hero.AttackTimer = 1 / hero.AttackSpeed;
-            heroes[heroIndex] = hero;
-        }
-
         private static void DamageHero(Frame f, Board board, int damage, int targetHeroIndex)
         {
-            QList<Hero> heroes = f.ResolveList(board.FightingHeroesMap);
-            Hero target = heroes[targetHeroIndex];
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+            FightingHero target = heroes[targetHeroIndex];
 
-            target.CurrentHealth -= damage;
+            target.Hero.CurrentHealth -= damage;
 
-            if (target.CurrentHealth <= 0)
+            if (target.Hero.CurrentHealth <= 0)
             {
-                f.Events.DestroyHero(board.Player1.Ref, board.Player2.Ref, target.Ref);
-                target.IsAlive = false;
-                target.ID = -1;
-                target.Ref = default;
+                f.Events.DestroyHero(board.Player1.Ref, board.Player2.Ref, target.Hero.Ref);
+                target.Hero.IsAlive = false;
+                target.Hero.ID = -1;
+                target.Hero.Ref = default;
             }
             else
             {
-                f.Events.HeroHealthChanged(board.Player1.Ref, board.Player2.Ref, target.Ref, target.CurrentHealth, target.Health);
+                f.Events.HeroHealthChanged(board.Player1.Ref, board.Player2.Ref, target.Hero.Ref, target.Hero.CurrentHealth, target.Hero.Health);
             }
 
             heroes[targetHeroIndex] = target;
-        }
-
-        private static bool IsAbleToAttack(Frame f, FighingHero fighingHero, out Hero targetHero)
-        {
-            targetHero = default;
-
-            if (fighingHero.Hero.AttackTarget == default || fighingHero.Hero.AttackTimer > 0)
-            {
-                return false;
-            }
-
-            QList<Hero> heroes = f.ResolveList(GetBoard(f, fighingHero).FightingHeroesMap);
-
-            int heroIndex = heroes.ToList().FindIndex(hero => hero.Ref == fighingHero.Hero.Ref);
-
-            if (heroIndex < 0)
-            {
-                return false;
-            }
-
-            targetHero = heroes.ToList().Find(hero => hero.Ref == fighingHero.Hero.AttackTarget);
-
-            if (targetHero.Ref == default)
-            {
-                return false;
-            }
-
-            Hero target = targetHero;
-            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            FP tileSize = FP.FromFloat_UNSAFE(gameConfig.TileSize);
-            Transform3D targetTransform = f.Get<Transform3D>(target.Ref);
-            FP targetDistanceToCell = FPVector3.Distance(targetTransform.Position, BoardPosition.GetHeroPosition(f, target));
-
-            if (fighingHero.Hero.RangePercentage * tileSize < targetDistanceToCell)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        private static bool TryFindClosestTargetInAttackRange(Frame f, QList<Hero> heroes, Hero hero, out Hero targetHero)
-        {
-            List<Vector2Int> closeTiles = new();
-            List<Hero> heroesList = new();
-
-            GetCloseCords(f, heroes, hero, ref closeTiles, hero.Range);
-
-            foreach (var tile in closeTiles)
-            {
-                if (BoardPosition.TryConvertCordsToIndex(f, tile, out int index) == false)
-                {
-                    continue;
-                }
-
-                if (heroes[index].ID < 0)
-                {
-                    continue;
-                }
-
-                if (hero.TeamNumber == heroes[index].TeamNumber || heroes[index].IsAlive == false)
-                {
-                    continue;
-                }
-
-                heroesList.Add(heroes[index]);
-            }
-
-            targetHero = GetClosestTarget(f, heroesList, hero);
-
-            if (targetHero.Ref != default)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        private static Hero FindClosestTargetOutOfAttackRange(Frame f, QList<Hero> heroes, Hero hero, out Vector2Int moveTargetPosition, out bool inRange)
-        {
-            List<Hero> heroesList = new();
-
-            foreach (Hero target in heroes)
-            {
-                if (target.Ref == default)
-                {
-                    continue;
-                }
-
-                if (hero.TeamNumber == target.TeamNumber || target.IsAlive == false)
-                {
-                    continue;
-                }
-
-                heroesList.Add(target);
-            }
-
-            if (heroesList.Count == 0)
-            {
-                moveTargetPosition = default;
-                inRange = false;
-                return default;
-            }
-
-            for (int i = 0; i < heroesList.Count; i++)
-            {
-                Hero targetHero = GetClosestTarget(f, heroesList, hero);
-
-                if (targetHero.Ref == default)
-                {
-                    continue;
-                }
-
-                int[,] board = new int[GameConfig.BoardSize, GameConfig.BoardSize];
-
-                for (int x = 0; x < GameConfig.BoardSize; x++)
-                {
-                    for (int y = 0; y < GameConfig.BoardSize; y++)
-                    {
-                        if (BoardPosition.TryConvertCordsToIndex(f, new Vector2Int(x, y), out int index))
-                        {
-                            int heroID = -1;
-
-                            if (heroes[index].IsAlive && heroes[index].Ref != default)
-                            {
-                                heroID = heroes[index].ID;
-                            }
-
-                            board[x, y] = heroID;
-                        }
-                    }
-                }
-
-                if (PathFinder.TryFindPath(board, BoardPosition.GetHeroCords(hero),
-                    BoardPosition.GetHeroCords(targetHero), hero.Range, out moveTargetPosition, out inRange))
-                {
-                    return targetHero;
-                }
-
-                heroesList.Remove(targetHero);
-            }
-
-            moveTargetPosition = default;
-            inRange = false;
-            return default;
-        }
-
-        private static Hero GetClosestTarget(Frame f, List<Hero> heroes, Hero hero)
-        {
-            FP minDistance = FP.MaxValue;
-            Hero closestHero = default;
-
-            foreach (var target in heroes)
-            {
-                if (target.ID < 0 || target.Ref == hero.Ref)
-                {
-                    continue;
-                }
-
-                Transform3D* targetTransform = f.Unsafe.GetPointer<Transform3D>(target.Ref);
-                Transform3D* heroTransform = f.Unsafe.GetPointer<Transform3D>(hero.Ref);
-
-                FP distance = FPVector3.Distance(targetTransform->Position, heroTransform->Position);
-
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    closestHero = target;
-                }
-            }
-
-            return closestHero;
-        }
-
-        private static void GetCloseCords(Frame f, QList<Hero> heroes, Hero hero, ref List<Vector2Int> closeTiles, int range = 1)
-        {
-            if (BoardPosition.TryGetHeroCords(f, heroes, hero, out Vector2Int cords) == false)
-            {
-                return;
-            }
-
-            for (int x = -range; x <= range; x++)
-            {
-                for (int y = -range; y <= range; y++)
-                {
-                    Vector2Int newCords = cords + new Vector2Int(x, y);
-
-                    if (newCords == cords)
-                    {
-                        continue;
-                    }
-
-                    if (newCords.x < 0 || newCords.x >= GameConfig.BoardSize)
-                    {
-                        continue;
-                    }
-
-                    if (newCords.y < 0 || newCords.y >= GameConfig.BoardSize)
-                    {
-                        continue;
-                    }
-
-                    closeTiles.Add(newCords);
-                }
-            }
         }
     }
 }

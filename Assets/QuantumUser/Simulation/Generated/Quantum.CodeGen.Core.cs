@@ -400,6 +400,32 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct FightingHero {
+    public const Int32 SIZE = 128;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(8)]
+    public Hero Hero;
+    [FieldOffset(4)]
+    public Int32 Index;
+    [FieldOffset(0)]
+    public Int32 BoardIndex;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 467;
+        hash = hash * 31 + Hero.GetHashCode();
+        hash = hash * 31 + Index.GetHashCode();
+        hash = hash * 31 + BoardIndex.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (FightingHero*)ptr;
+        serializer.Stream.Serialize(&p->BoardIndex);
+        serializer.Stream.Serialize(&p->Index);
+        Quantum.Hero.Serialize(&p->Hero, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Hero {
     public const Int32 SIZE = 120;
     public const Int32 ALIGNMENT = 8;
@@ -744,7 +770,7 @@ namespace Quantum {
     [FieldOffset(8)]
     public QListPtr<Hero> Heroes2;
     [FieldOffset(0)]
-    public QListPtr<Hero> FightingHeroesMap;
+    public QListPtr<FightingHero> FightingHeroesMap;
     [FieldOffset(12)]
     public QListPtr<HeroProjectile> HeroProjectiles;
     public override Int32 GetHashCode() {
@@ -774,7 +800,7 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Board*)ptr;
-        QList.Serialize(&p->FightingHeroesMap, serializer, Statics.SerializeHero);
+        QList.Serialize(&p->FightingHeroesMap, serializer, Statics.SerializeFightingHero);
         QList.Serialize(&p->Heroes1, serializer, Statics.SerializeHero);
         QList.Serialize(&p->Heroes2, serializer, Statics.SerializeHero);
         QList.Serialize(&p->HeroProjectiles, serializer, Statics.SerializeHeroProjectile);
@@ -1104,14 +1130,16 @@ namespace Quantum {
     }
   }
   public unsafe partial class Statics {
-    public static FrameSerializer.Delegate SerializeHero;
+    public static FrameSerializer.Delegate SerializeFightingHero;
     public static FrameSerializer.Delegate SerializeHeroProjectile;
+    public static FrameSerializer.Delegate SerializeHero;
     public static FrameSerializer.Delegate SerializeInt32;
     public static FrameSerializer.Delegate SerializeBoard;
     public static FrameSerializer.Delegate SerializeInput;
     static partial void InitStaticDelegatesGen() {
-      SerializeHero = Quantum.Hero.Serialize;
+      SerializeFightingHero = Quantum.FightingHero.Serialize;
       SerializeHeroProjectile = Quantum.HeroProjectile.Serialize;
+      SerializeHero = Quantum.Hero.Serialize;
       SerializeInt32 = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
       SerializeBoard = Quantum.Board.Serialize;
       SerializeInput = Quantum.Input.Serialize;
@@ -1147,6 +1175,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(FPQuaternion), FPQuaternion.SIZE);
       typeRegistry.Register(typeof(FPVector2), FPVector2.SIZE);
       typeRegistry.Register(typeof(FPVector3), FPVector3.SIZE);
+      typeRegistry.Register(typeof(Quantum.FightingHero), Quantum.FightingHero.SIZE);
       typeRegistry.Register(typeof(FrameMetaData), FrameMetaData.SIZE);
       typeRegistry.Register(typeof(FrameTimer), FrameTimer.SIZE);
       typeRegistry.Register(typeof(Quantum.Hero), Quantum.Hero.SIZE);

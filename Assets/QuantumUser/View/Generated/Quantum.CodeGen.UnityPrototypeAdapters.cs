@@ -59,7 +59,7 @@ namespace Quantum.Prototypes.Unity {
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.Unity.HeroPrototype[] Heroes2 = {};
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.Unity.HeroPrototype[] FightingHeroesMap = {};
+    public Quantum.Prototypes.Unity.FightingHeroPrototype[] FightingHeroesMap = {};
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.Unity.HeroProjectilePrototype[] HeroProjectiles = {};
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BoardPrototype prototype);
@@ -72,6 +72,21 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.Heroes2, out result.Heroes2);
       converter.Convert(this.FightingHeroesMap, out result.FightingHeroesMap);
       converter.Convert(this.HeroProjectiles, out result.HeroProjectiles);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
+  public unsafe partial class FightingHeroPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.FightingHeroPrototype> {
+    public Quantum.Prototypes.Unity.HeroPrototype Hero;
+    public Int32 Index;
+    public Int32 BoardIndex;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.FightingHeroPrototype prototype);
+    public override Quantum.Prototypes.FightingHeroPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.FightingHeroPrototype();
+      converter.Convert(this.Hero, out result.Hero);
+      converter.Convert(this.Index, out result.Index);
+      converter.Convert(this.BoardIndex, out result.BoardIndex);
       ConvertUser(converter, ref result);
       return result;
     }

@@ -12,66 +12,66 @@ namespace Quantum.Game.Heroes
         {
             if (f.Global->IsBuyPhase || f.Global->IsDelayPassed == false || f.Global->IsFighting == false) return;
 
-            List<BaseHeroFightingSystem.FighingHero> heroesPtr = new();
+            List<FightingHero> heroesPtr = new();
             BaseHeroFightingSystem.GetHeroes<TestProjectileHero>(f, ref heroesPtr);
 
             if (heroesPtr.Count > 0)
             {
-                foreach (var fighingHero in heroesPtr)
+                foreach (var fightingHero in heroesPtr)
                 {
-                    UpdateHero(f, fighingHero);
+                    UpdateHero(f, fightingHero);
                 }
             }
         }
 
-        private void UpdateHero(Frame f, BaseHeroFightingSystem.FighingHero fighingHero)
+        private void UpdateHero(Frame f, FightingHero fightingHero)
         {
-            fighingHero = BaseHeroFightingSystem.ProcessReload(f, fighingHero);
+            BaseHeroFightingSystem.ProcessReload(f, fightingHero);
 
-            if (BaseHeroFightingSystem.IsHeroMoving(f, fighingHero.Hero))
+            if (BaseHeroFightingSystem.IsHeroMoving(f, fightingHero.Hero))
             {
-                MoveHero(f, fighingHero, BoardPosition.GetHeroPosition(f, fighingHero.Hero));
+                MoveHero(f, fightingHero, BoardPosition.GetHeroPosition(f, fightingHero.Hero));
                 return;
             }
 
-            if (TrySetTarget(f, fighingHero))
+            if (TrySetTarget(f, fightingHero))
             {
-                Attack(f, fighingHero);
+                Attack(f, fightingHero);
                 return;
             }
         }
 
-        private bool TrySetTarget(Frame f, BaseHeroFightingSystem.FighingHero fighingHero)
+        private bool TrySetTarget(Frame f, FightingHero fightingHero)
         {
-            Hero target = BaseHeroFightingSystem.GetHeroTarget(f, fighingHero, out Vector2Int moveTargetPosition);
+            FightingHero target = BaseHeroFightingSystem.GetHeroTarget(f, fightingHero, out Vector2Int moveTargetPosition);
 
-            if (target.Ref == default)
+            if (target.Hero.Ref == default)
             {
                 return false;
             }
 
-            if (moveTargetPosition == BoardPosition.GetHeroCords(fighingHero.Hero))
+            if (moveTargetPosition == BoardPosition.GetHeroCords(fightingHero.Hero))
             {
-                BaseHeroFightingSystem.SetHeroTarget(f, fighingHero, target.Ref);
+                BaseHeroFightingSystem.SetHeroTarget(f, fightingHero, target.Hero.Ref);
                 return true;
             }
 
-            BaseHeroFightingSystem.SetHeroTarget(f, fighingHero, target.Ref, moveTargetPosition);
+            BaseHeroFightingSystem.SetHeroTarget(f, fightingHero, target.Hero.Ref, moveTargetPosition);
             return false;
         }
 
-        private void MoveHero(Frame f, BaseHeroFightingSystem.FighingHero fighingHero, FPVector3 movePosition)
+        private void MoveHero(Frame f, FightingHero fightingHero, FPVector3 movePosition)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            Transform3D* transform = f.Unsafe.GetPointer<Transform3D>(fighingHero.Hero.Ref);
+            Transform3D* transform = f.Unsafe.GetPointer<Transform3D>(fightingHero.Hero.Ref);
             FP moveOffset = gameConfig.HeroMoveSpeed * f.DeltaTime;
 
             transform->Position = FPVector3.MoveTowards(transform->Position, movePosition, moveOffset);
         }
 
-        private void Attack(Frame f, BaseHeroFightingSystem.FighingHero fighingHero)
+        private void Attack(Frame f, FightingHero fightingHero)
         {
-            BaseHeroFightingSystem.ProcessProjectileAttack(f, fighingHero);
+            BaseHeroFightingSystem.ProcessProjectileAttack(f, fightingHero);
         }
     }
 }

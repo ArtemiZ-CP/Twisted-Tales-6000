@@ -179,7 +179,7 @@ namespace Quantum.Game
             Board* board = f.Unsafe.GetPointer<Board>(boardEntity);
 
             board->Ref = boardEntity;
-            board->FightingHeroesMap = f.AllocateList<Hero>(GameConfig.BoardSize * GameConfig.BoardSize);
+            board->FightingHeroesMap = f.AllocateList<FightingHero>(GameConfig.BoardSize * GameConfig.BoardSize);
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
 
             board->Heroes1 = SetupHeroes(f, player1, board->Heroes1);
@@ -197,7 +197,7 @@ namespace Quantum.Game
             Board* board = f.Unsafe.GetPointer<Board>(boardEntity);
 
             board->Ref = boardEntity;
-            board->FightingHeroesMap = f.AllocateList<Hero>(GameConfig.BoardSize * GameConfig.BoardSize);
+            board->FightingHeroesMap = f.AllocateList<FightingHero>(GameConfig.BoardSize * GameConfig.BoardSize);
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
 
             board->Heroes1 = SetupHeroes(f, player1, board->Heroes1);

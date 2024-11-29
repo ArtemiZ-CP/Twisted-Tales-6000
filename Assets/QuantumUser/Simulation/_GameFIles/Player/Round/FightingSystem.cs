@@ -25,9 +25,9 @@ namespace Quantum.Game
                 boards = MakePVPBoards(f, GetCurrentPlayers(f));
             }
 
-            foreach (var board in boards)
+            for (int i = 0; i < boards.Count; i++)
             {
-                SetupBoard(f, board);
+                SetupBoard(f, boards[i], i);
             }
         }
 
@@ -74,62 +74,75 @@ namespace Quantum.Game
             return GetCurrentBoards(f);
         }
 
-        private void SetupBoard(Frame f, Board board)
+        private void SetupBoard(Frame f, Board board, int boardIndex)
         {
-            QList<Hero> fightingHeroesMap = f.ResolveList(board.FightingHeroesMap);
+            QList<FightingHero> fightingHeroesMap = f.ResolveList(board.FightingHeroesMap);
             QList<Hero> heroes1 = f.ResolveList(board.Heroes1);
             QList<Hero> heroes2 = f.ResolveList(board.Heroes2);
 
             for (int i = 0; i < GameConfig.BoardSize * GameConfig.BoardSize / 2; i++)
             {
-                fightingHeroesMap.Add(heroes1[i]);
+                FightingHero hero = new()
+                {
+                    Hero = heroes1[i],
+                    Index = i,
+                    BoardIndex = boardIndex
+                };
+
+                fightingHeroesMap.Add(hero);
             }
 
             for (int i = 0; i < GameConfig.BoardSize * GameConfig.BoardSize / 2; i++)
             {
-                fightingHeroesMap.Add(heroes2[^(i + 1)]);
+                FightingHero hero = new()
+                {
+                    Hero = heroes2[^(i + 1)],
+                    Index = GameConfig.BoardSize * GameConfig.BoardSize / 2 + i,
+                    BoardIndex = boardIndex
+                };
+
+                fightingHeroesMap.Add(hero);
             }
 
             for (int i = 0; i < fightingHeroesMap.Count; i++)
             {
-                if (fightingHeroesMap[i].Ref == default)
+                if (fightingHeroesMap[i].Hero.Ref == default)
                 {
                     continue;
                 }
 
-                fightingHeroesMap[i] = SetupHero(f, fightingHeroesMap, fightingHeroesMap[i]);
+                fightingHeroesMap[i] = SetupHero(f, fightingHeroesMap[i], i);
             }
 
-            QList<Hero> heroes = f.ResolveList(board.FightingHeroesMap);
-            List<EntityLevelData> heroDataList = heroes.Select(hero => new EntityLevelData { Ref = hero.Ref, Level = hero.Level }).ToList();
+            List<EntityLevelData> heroDataList = fightingHeroesMap.Select(hero => new EntityLevelData { Ref = hero.Hero.Ref, Level = hero.Hero.Level }).ToList();
             f.Events.StartRound(f, board.Player1.Ref, board.Player2.Ref, board.Ref, heroDataList);
         }
 
-        private Hero SetupHero(Frame f, QList<Hero> fightingHeroesMap, Hero hero)
+        private FightingHero SetupHero(Frame f, FightingHero hero, int heroIndex)
         {
             GameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
 
-            if (BoardPosition.TryGetHeroCords(f, fightingHeroesMap, hero, out Vector2Int position))
+            if (BoardPosition.TryGetHeroCords(heroIndex, out Vector2Int position))
             {
-                hero.TargetPositionX = position.x;
-                hero.TargetPositionY = position.y;
+                hero.Hero.TargetPositionX = position.x;
+                hero.Hero.TargetPositionY = position.y;
             }
             else
             {
                 throw new System.NotSupportedException();
             }
 
-            HeroInfo heroInfo = config.GetHeroInfo(f, hero.ID);
-            hero.Health = heroInfo.Health;
-            hero.CurrentHealth = hero.Health;
-            hero.Defense = heroInfo.Defense;
-            hero.Damage = heroInfo.Damage;
-            hero.AttackSpeed = FP.FromFloat_UNSAFE(heroInfo.AttackSpeed);
-            hero.ProjectileSpeed = FP.FromFloat_UNSAFE(heroInfo.ProjectileSpeed);
-            hero.Range = heroInfo.Range;
-            hero.RangePercentage = FP.FromFloat_UNSAFE(heroInfo.RangePercentage);
-            hero.IsAlive = true;
-            hero.AttackTimer = 0;
+            HeroInfo heroInfo = config.GetHeroInfo(f, hero.Hero.ID);
+            hero.Hero.Health = heroInfo.Health;
+            hero.Hero.CurrentHealth = heroInfo.Health;
+            hero.Hero.Defense = heroInfo.Defense;
+            hero.Hero.Damage = heroInfo.Damage;
+            hero.Hero.AttackSpeed = FP.FromFloat_UNSAFE(heroInfo.AttackSpeed);
+            hero.Hero.ProjectileSpeed = FP.FromFloat_UNSAFE(heroInfo.ProjectileSpeed);
+            hero.Hero.Range = heroInfo.Range;
+            hero.Hero.RangePercentage = FP.FromFloat_UNSAFE(heroInfo.RangePercentage);
+            hero.Hero.IsAlive = true;
+            hero.Hero.AttackTimer = 0;
 
             return hero;
         }

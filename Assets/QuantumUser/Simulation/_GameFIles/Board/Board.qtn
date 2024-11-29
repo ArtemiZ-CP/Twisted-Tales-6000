@@ -7,6 +7,13 @@ component Board
     list<Hero> Heroes2;
 
     // Fighing phase only
-    list<Hero> FightingHeroesMap;
+    list<FightingHero> FightingHeroesMap;
     list<HeroProjectile> HeroProjectiles;
+}
+
+struct FightingHero
+{
+    Hero Hero;
+    int Index;
+    int BoardIndex;
 }

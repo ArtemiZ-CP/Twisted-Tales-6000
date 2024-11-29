@@ -170,10 +170,10 @@ namespace Quantum.Game
 
         private bool IsBoardFinishRound(Frame f, Board board, out bool isPlayer1Win, out bool isPlayer2Win, out bool isDraw, out int damage)
         {
-            QList<Hero> heroes = f.ResolveList(board.FightingHeroesMap);
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
-            int player1Count = heroes.Count(hero => hero.TeamNumber == 1 && hero.IsAlive);
-            int player2Count = heroes.Count(hero => hero.TeamNumber == 2 && hero.IsAlive);
+            int player1Count = heroes.Count(hero => hero.Hero.TeamNumber == 1 && hero.Hero.IsAlive);
+            int player2Count = heroes.Count(hero => hero.Hero.TeamNumber == 2 && hero.Hero.IsAlive);
 
             isPlayer1Win = player1Count > 0 && player2Count == 0;
             isPlayer2Win = player2Count > 0 && player1Count == 0;
@@ -196,10 +196,10 @@ namespace Quantum.Game
 
             foreach (Board board in boards)
             {
-                QList<Hero> heroes = f.ResolveList(board.FightingHeroesMap);
+                QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
-                int player1Count = heroes.Count(hero => hero.TeamNumber == 1 && hero.IsAlive);
-                int player2Count = heroes.Count(hero => hero.TeamNumber == 2 && hero.IsAlive);
+                int player1Count = heroes.Count(hero => hero.Hero.TeamNumber == 1 && hero.Hero.IsAlive);
+                int player2Count = heroes.Count(hero => hero.Hero.TeamNumber == 2 && hero.Hero.IsAlive);
 
                 bool isPlayer1Win = player1Count > 0 && player2Count == 0;
                 bool isPlayer2Win = player2Count > 0 && player1Count == 0;

@@ -20,8 +20,8 @@ namespace Quantum.Game
 
                     foreach (Board board in boards)
                     {
-                        QList<Hero> heroes = f.ResolveList(board.FightingHeroesMap);
-                        List<EntityLevelData> heroDataList = heroes.Select(hero => new EntityLevelData { Ref = hero.Ref, Level = hero.Level }).ToList();
+                        QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+                        List<EntityLevelData> heroDataList = heroes.Select(hero => new EntityLevelData { Ref = hero.Hero.Ref, Level = hero.Hero.Level }).ToList();
 
                         if (board.Player1.Ref == player)
                         {
