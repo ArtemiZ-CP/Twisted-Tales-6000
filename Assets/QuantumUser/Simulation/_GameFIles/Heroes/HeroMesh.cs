@@ -1,0 +1,24 @@
+using UnityEngine;
+
+namespace Quantum.Game
+{
+    public class HeroMesh : MonoBehaviour
+    {
+        [SerializeField] private GameObject[] _meshes;
+
+        public void SetMesh(int level)
+        {
+            foreach (var mesh in _meshes)
+            {
+                mesh.SetActive(false);
+            }
+
+            if (level < 0 || level >= _meshes.Length)
+            {
+                return;
+            }
+
+            _meshes[level].SetActive(true);
+        }
+    }
+}

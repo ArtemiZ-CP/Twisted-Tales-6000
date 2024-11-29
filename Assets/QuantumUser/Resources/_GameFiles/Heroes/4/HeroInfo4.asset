@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
+  m_Name: HeroInfo4
+  m_EditorClassIdentifier: 
+  Identifier:
+    Path: QuantumUser/Resources/_GameFiles/Heroes/4/HeroInfo4
+    Guid:
+      Value: 371199533054399521
+  Name: 
+  Rare: 4
+  HeroPrefab: {fileID: 5216602490358044327, guid: af9606400078d4dc89744db925898138, type: 3}
+  HeroPrototype:
+    Id:
+      Value: 1452242489427350242
+  ProjectilePrototype:
+    Id:
+      Value: 1476018119604516482
+  Health: 10
+  Defense: 0
+  Damage: 1
+  AttackSpeed: 1
+  ProjectileSpeed: 5
+  Range: 5
+  RangePercentage: 0.5

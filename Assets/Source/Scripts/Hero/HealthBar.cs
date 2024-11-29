@@ -1,0 +1,55 @@
+using Quantum;
+using Quantum.Game;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class HealthBar : MonoBehaviour
+{
+    [SerializeField] private QuantumEntityView _quantumEntityView;
+    [SerializeField] private Slider _healthBar;
+
+    private QuantumEntityViewUpdater _quantumEntityViewUpdater;
+
+    private QuantumEntityViewUpdater QuantumEntityViewUpdater
+    {
+        get
+        {
+            if (_quantumEntityViewUpdater == null)
+            {
+                _quantumEntityViewUpdater = FindFirstObjectByType<QuantumEntityViewUpdater>();
+            }
+
+            return _quantumEntityViewUpdater;
+        }
+    }
+
+    private void Awake()
+    {
+        QuantumEvent.Subscribe<EventHeroHealthChanged>(listener: this, handler: OnHeroHealthChanged);
+    }
+
+    private void OnHeroHealthChanged(EventHeroHealthChanged eventHeroHealthChanged)
+    {
+        if (QuantumConnection.IsPlayerMe(eventHeroHealthChanged.PlayerRef1) ||
+            QuantumConnection.IsPlayerMe(eventHeroHealthChanged.PlayerRef2))
+        {
+            UpdateHealthBar(eventHeroHealthChanged);
+        }
+    }
+
+    private void UpdateHealthBar(EventHeroHealthChanged eventHeroHealthChanged)
+    {
+        if (QuantumEntityViewUpdater == null)
+        {
+            return;
+        }
+
+        QuantumEntityView quantumEntityView = QuantumEntityViewUpdater.GetView(eventHeroHealthChanged.HeroEntity);
+
+        if (_quantumEntityView == quantumEntityView)
+        {
+            float health = (float)eventHeroHealthChanged.CurrentHealth / eventHeroHealthChanged.MaxHealth;
+            _healthBar.value = health;
+        }
+    }
+}

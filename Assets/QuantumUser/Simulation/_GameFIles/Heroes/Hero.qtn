@@ -1,0 +1,25 @@
+struct Hero
+{
+    entity_ref Ref;
+    Int32 ID;
+    Int32 Level;
+    FPVector3 DefaultPosition;
+
+    // Stats
+    int Health;
+    int Defense;
+    int Damage;
+    FP AttackSpeed;
+    FP ProjectileSpeed;
+    int Range;
+    FP RangePercentage;
+
+    // Fighing stats only
+    int CurrentHealth;
+    entity_ref AttackTarget;
+    int TargetPositionX;
+    int TargetPositionY;
+    int TeamNumber;
+    bool IsAlive;
+    FP AttackTimer;
+}

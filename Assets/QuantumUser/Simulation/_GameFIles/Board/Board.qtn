@@ -1,0 +1,12 @@
+component Board
+{
+    entity_ref Ref;
+    PlayerLink Player1;
+    PlayerLink Player2;
+    list<Hero> Heroes1;
+    list<Hero> Heroes2;
+
+    // Fighing phase only
+    list<Hero> FightingHeroesMap;
+    list<HeroProjectile> HeroProjectiles;
+}

@@ -1,0 +1,12 @@
+global
+{
+    list<Board> Boards;
+
+    int PhaseNumber;
+    int PVPStreak;
+    bool IsBuyPhase;
+    bool IsFighting;
+    bool IsDelayPassed;
+    FP PhaseDelay;
+    FP PhaseTime;
+}

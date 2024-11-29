@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e12a77e3fd0d4713ac70ff207801c10, type: 3}
+  m_Name: GameConfig
+  m_EditorClassIdentifier: 
+  Identifier:
+    Path: QuantumUser/Resources/_GameFiles/GameConfig
+    Guid:
+      Value: 481284669698677807
+  HeroInfos:
+  - Id:
+      Value: 503084228704062064
+  - Id:
+      Value: 306578907051825668
+  - Id:
+      Value: 382699101315151786
+  - Id:
+      Value: 441504537230468131
+  - Id:
+      Value: 371199533054399521
+  HeroShopSettings:
+  - Rare: 0
+    BackgroundColor: {r: 0.6509434, g: 0.6509434, b: 0.6509434, a: 1}
+    BuyCost: 1
+    SellCost1: 1
+    SellCost2: 1
+    SellCost3: 1
+  - Rare: 1
+    BackgroundColor: {r: 0, g: 0.764151, b: 0.0480094, a: 1}
+    BuyCost: 2
+    SellCost1: 2
+    SellCost2: 2
+    SellCost3: 2
+  - Rare: 2
+    BackgroundColor: {r: 0, g: 0.2635255, b: 1, a: 1}
+    BuyCost: 3
+    SellCost1: 3
+    SellCost2: 3
+    SellCost3: 3
+  - Rare: 3
+    BackgroundColor: {r: 0.7194538, g: 0, b: 1, a: 1}
+    BuyCost: 4
+    SellCost1: 4
+    SellCost2: 4
+    SellCost3: 4
+  - Rare: 4
+    BackgroundColor: {r: 1, g: 0.8772963, b: 0, a: 1}
+    BuyCost: 5
+    SellCost1: 5
+    SellCost2: 5
+    SellCost3: 5
+  RoundInfos:
+  - IsPVE: 1
+    PVEBoard:
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffff0400000004000000ffffffffffffffffffffffff
+    - Cells: ffffffffffffffff04000000ffffffffffffffff04000000ffffffffffffffff
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  - IsPVE: 0
+    PVEBoard:
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffff0400000004000000ffffffffffffffffffffffff
+    - Cells: ffffffffffffffff04000000ffffffffffffffff04000000ffffffffffffffff
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  - IsPVE: 1
+    PVEBoard:
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffff0400000004000000ffffffffffffffffffffffff
+    - Cells: ffffffffffffffff04000000ffffffffffffffff04000000ffffffffffffffff
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+  HeroMoveSpeed:
+    RawValue: 131072
+  ShopSize: 8
+  InventorySize: 8
+  TileSize: 1.2
+  BuyPhaseTime: 60
+  FightPhaseTime: 60
+  StartFightingPhaseDelay: 1
+  EndFightingPhaseDelay: 3
+  HeroesCountToUpgrade: 3
+  MaxLevel: 3
+  PVPStreak: 3
