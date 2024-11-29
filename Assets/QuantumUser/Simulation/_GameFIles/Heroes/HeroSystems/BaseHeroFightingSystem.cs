@@ -209,6 +209,8 @@ namespace Quantum.Game
 
         private static void ProcessProjectile(Frame f, Board board, HeroProjectile projectile)
         {
+            if (f.Exists(projectile.Ref) == false) return;
+            
             Transform3D* projectileTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Ref);
             Transform3D* targetTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Target.Ref);
             FP moveOffset = projectile.Speed * f.DeltaTime;

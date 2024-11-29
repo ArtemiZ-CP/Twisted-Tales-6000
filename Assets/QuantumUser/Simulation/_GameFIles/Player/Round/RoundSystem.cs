@@ -59,6 +59,7 @@ namespace Quantum.Game
 
         private void EndRound(Frame f)
         {
+            ProcessResults(f);
             f.Global->IsBuyPhase = true;
             f.Global->PhaseNumber++;
             f.Global->PVPStreak = 0;
@@ -110,9 +111,8 @@ namespace Quantum.Game
                 f.Global->IsDelayPassed = true;
             }
 
-            if (IsAllBoardsFinishRound(f, out var results) || f.Global->PhaseTime > config.FightPhaseTime)
+            if (IsAllBoardsFinishRound(f) || f.Global->PhaseTime > config.FightPhaseTime)
             {
-                ProcessResults(f, results);
                 f.Global->IsFighting = false;
                 f.Global->PhaseTime = 0;
             }
@@ -151,11 +151,10 @@ namespace Quantum.Game
             f.Events.GetRoundTime(f.Global->IsBuyPhase, config.EndFightingPhaseDelay - f.Global->PhaseTime);
         }
 
-        private bool IsAllBoardsFinishRound(Frame f, out List<(Board board, bool isPlayer1Win, bool isPlayer2Win, bool isDraw, int damage)> results)
+        private bool IsAllBoardsFinishRound(Frame f)
         {
             GameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
             QList<Board> boards = f.ResolveList(f.Global->Boards);
-            results = new();
             bool isAllBoardsFinish = true;
 
             foreach (Board board in boards)
@@ -164,8 +163,6 @@ namespace Quantum.Game
                 {
                     isAllBoardsFinish = false;
                 }
-
-                results.Add((board, isPlayer1Win, isPlayer2Win, isDraw, damage));
             }
 
             return isAllBoardsFinish;
@@ -186,8 +183,10 @@ namespace Quantum.Game
             return isPlayer1Win || isPlayer2Win || isDraw;
         }
 
-        private void ProcessResults(Frame f, List<(Board board, bool isPlayer1Win, bool isPlayer2Win, bool isDraw, int damage)> results)
+        private void ProcessResults(Frame f)
         {
+            QList<Board> boards = f.ResolveList(f.Global->Boards);
+
             List<(EntityRef entity, PlayerLink playerLink)> playersEntity = new();
 
             foreach ((EntityRef entity, PlayerLink playerLink) in f.GetComponentIterator<PlayerLink>())
@@ -195,24 +194,29 @@ namespace Quantum.Game
                 playersEntity.Add((entity, playerLink));
             }
 
-            for (int i = 0; i < results.Count; i++)
+            foreach (Board board in boards)
             {
-                (Board board, bool isPlayer1Win, bool isPlayer2Win, bool isDraw, int damage) = results[i];
+                QList<Hero> heroes = f.ResolveList(board.FightingHeroesMap);
 
-                if (isPlayer1Win)
+                int player1Count = heroes.Count(hero => hero.TeamNumber == 1 && hero.IsAlive);
+                int player2Count = heroes.Count(hero => hero.TeamNumber == 2 && hero.IsAlive);
+
+                bool isPlayer1Win = player1Count > 0 && player2Count == 0;
+                bool isPlayer2Win = player2Count > 0 && player1Count == 0;
+                int damage = player1Count + player2Count;
+
+                if (isPlayer1Win && board.Player2.Ref != default)
                 {
                     var playerInfo = playersEntity.First(player => player.playerLink.Ref == board.Player2.Ref);
                     PlayerLink* playerLink = f.Unsafe.GetPointer<PlayerLink>(playerInfo.entity);
                     playerLink->Info.Health -= damage;
                 }
-                else if (isPlayer2Win)
+                else if (isPlayer2Win && board.Player1.Ref != default)
                 {
                     var playerInfo = playersEntity.First(player => player.playerLink.Ref == board.Player1.Ref);
                     PlayerLink* playerLink = f.Unsafe.GetPointer<PlayerLink>(playerInfo.entity);
                     playerLink->Info.Health -= damage;
                 }
-
-                Log.Debug($"Results processed {damage}");
             }
 
             GetPlayersList(f);
