@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Scripting;
 using System.Linq;
 using System.Collections.Generic;
+using System;
 
 namespace Quantum.Game
 {
@@ -89,25 +90,17 @@ namespace Quantum.Game
             heroes[fighingHero.Index] = fightingHero;
         }
 
-        public static void GetHeroes<T>(Frame f, ref List<FightingHero> heroes) where T : unmanaged, IComponent
+        public static void UpdateHeroes<T>(Frame f, Action<Frame, FightingHero> UpdateHero) where T : unmanaged, IComponent
         {
-            QList<Board> boards = f.ResolveList(f.Global->Boards);
+            if (f.Global->IsBuyPhase || f.Global->IsDelayPassed == false || f.Global->IsFighting == false) return;
 
-            foreach (Board board in boards)
+            List<FightingHero> heroesPtr = new();
+            
+            if (TryGetHeroes<T>(f, ref heroesPtr))
             {
-                QList<FightingHero> fightingHeroes = f.ResolveList(board.FightingHeroesMap);
-
-                foreach (FightingHero fightingHero in fightingHeroes)
+                foreach (var fightingHero in heroesPtr)
                 {
-                    if (fightingHero.Hero.Ref == default || fightingHero.Hero.IsAlive == false)
-                    {
-                        continue;
-                    }
-
-                    if (f.Unsafe.TryGetPointer(fightingHero.Hero.Ref, out T* _))
-                    {
-                        heroes.Add(fightingHero);
-                    }
+                    UpdateHero(f, fightingHero);
                 }
             }
         }
@@ -180,6 +173,36 @@ namespace Quantum.Game
 
             List<EntityLevelData> projectilesData = heroProjectiles.Select(p => new EntityLevelData { Ref = p.Ref, Level = p.Level }).ToList();
             f.Events.GetProjectiles(f, board.Player1.Ref, board.Player2.Ref, projectilesData);
+        }
+
+        private static bool TryGetHeroes<T>(Frame f, ref List<FightingHero> heroes) where T : unmanaged, IComponent
+        {
+            QList<Board> boards = f.ResolveList(f.Global->Boards);
+
+            foreach (Board board in boards)
+            {
+                QList<FightingHero> fightingHeroes = f.ResolveList(board.FightingHeroesMap);
+
+                foreach (FightingHero fightingHero in fightingHeroes)
+                {
+                    if (fightingHero.Hero.Ref == default || fightingHero.Hero.IsAlive == false)
+                    {
+                        continue;
+                    }
+
+                    if (f.Unsafe.TryGetPointer(fightingHero.Hero.Ref, out T* _))
+                    {
+                        heroes.Add(fightingHero);
+                    }
+                }
+            }
+
+            if (heroes.Count > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private static void ProcessProjectile(Frame f, Board board, HeroProjectile projectile)

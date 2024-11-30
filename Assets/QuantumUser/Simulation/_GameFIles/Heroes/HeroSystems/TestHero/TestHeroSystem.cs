@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Photon.Deterministic;
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -10,19 +9,8 @@ namespace Quantum.Game.Heroes
     {
         public override void Update(Frame f)
         {
-            if (f.Global->IsBuyPhase || f.Global->IsDelayPassed == false || f.Global->IsFighting == false) return;
-
-            List<FightingHero> heroesPtr = new();
-            BaseHeroFightingSystem.GetHeroes<TestHero>(f, ref heroesPtr);
-
-            if (heroesPtr.Count > 0)
-            {
-                foreach (var fightingHero in heroesPtr)
-                {
-                    UpdateHero(f, fightingHero);
-                }
-            }
-        }   
+            BaseHeroFightingSystem.UpdateHeroes<TestHero>(f, UpdateHero);
+        }
 
         private void UpdateHero(Frame f, FightingHero fightingHero)
         {

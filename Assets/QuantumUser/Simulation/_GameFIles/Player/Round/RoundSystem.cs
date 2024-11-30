@@ -59,7 +59,6 @@ namespace Quantum.Game
 
         private void EndRound(Frame f)
         {
-            ProcessResults(f);
             f.Global->IsBuyPhase = true;
             f.Global->PhaseNumber++;
             f.Global->PVPStreak = 0;
@@ -126,6 +125,8 @@ namespace Quantum.Game
 
             if (f.Global->PhaseTime > config.EndFightingPhaseDelay)
             {
+                ProcessResults(f);
+
                 RoundInfo roundInfo = config.GetRoundInfo(f, f.Global->PhaseNumber);
 
                 if (roundInfo.IsPVE == false)
@@ -146,6 +147,7 @@ namespace Quantum.Game
                 {
                     f.Signals.OnEndRound();
                 }
+
             }
 
             f.Events.GetRoundTime(f.Global->IsBuyPhase, config.EndFightingPhaseDelay - f.Global->PhaseTime);
@@ -218,8 +220,6 @@ namespace Quantum.Game
                     playerLink->Info.Health -= damage;
                 }
             }
-
-            GetPlayersList(f);
         }
 
         private bool IsRoundStarted(Frame f)
