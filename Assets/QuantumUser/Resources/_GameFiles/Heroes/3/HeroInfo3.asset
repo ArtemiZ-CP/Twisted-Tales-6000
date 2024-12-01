@@ -16,7 +16,7 @@ MonoBehaviour:
     Path: QuantumUser/Resources/_GameFiles/Heroes/3/HeroInfo3
     Guid:
       Value: 441504537230468131
-  Name: 
+  Name: "\u0427\u0435\u0448\u0438\u0440\u0441\u043A\u0438\u0439 \u041A\u043E\u0442"
   Rare: 3
   HeroPrefab: {fileID: 611860465380146796, guid: 23617f6e67a7e4f758eeddcbf776f05a, type: 3}
   HeroPrototype:
@@ -25,10 +25,22 @@ MonoBehaviour:
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
-  Health: 10
-  Defense: 0
-  Damage: 2
-  AttackSpeed: 1
-  ProjectileSpeed: 5
-  Range: 4
-  RangePercentage: 0.5
+  HeroStats:
+  - Health: 550
+    Defense: 15
+    Damage: 35
+    AttackSpeed: 1.3
+    ProjectileSpeed: 0
+    Range: 1
+  - Health: 825
+    Defense: 22.5
+    Damage: 52.5
+    AttackSpeed: 1.43
+    ProjectileSpeed: 0
+    Range: 1
+  - Health: 1100
+    Defense: 30
+    Damage: 70
+    AttackSpeed: 1.56
+    ProjectileSpeed: 0
+    Range: 1

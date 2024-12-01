@@ -61,7 +61,7 @@ namespace Quantum.Game
                 }
             }
 
-            return GetCurrentBoards(f);
+            return f.ResolveList(f.Global->Boards);
         }
 
         private QList<Board> MakePVEBoards(Frame f, List<PlayerLink> players, RoundInfo roundInfo)
@@ -71,20 +71,20 @@ namespace Quantum.Game
                 f.Signals.MakeNewBoardPVE(players[i], roundInfo);
             }
 
-            return GetCurrentBoards(f);
+            return f.ResolveList(f.Global->Boards);
         }
 
         private void SetupBoard(Frame f, Board board, int boardIndex)
         {
             QList<FightingHero> fightingHeroesMap = f.ResolveList(board.FightingHeroesMap);
-            QList<Hero> heroes1 = f.ResolveList(board.Heroes1);
-            QList<Hero> heroes2 = f.ResolveList(board.Heroes2);
+            QList<Hero> heroesID1 = f.ResolveList(board.HeroesID1);
+            QList<Hero> heroesID2 = f.ResolveList(board.HeroesID2);
 
             for (int i = 0; i < GameConfig.BoardSize * GameConfig.BoardSize / 2; i++)
             {
                 FightingHero hero = new()
                 {
-                    Hero = heroes1[i],
+                    Hero = heroesID1[i],
                     Index = i,
                     BoardIndex = boardIndex
                 };
@@ -96,7 +96,7 @@ namespace Quantum.Game
             {
                 FightingHero hero = new()
                 {
-                    Hero = heroes2[^(i + 1)],
+                    Hero = heroesID2[^(i + 1)],
                     Index = GameConfig.BoardSize * GameConfig.BoardSize / 2 + i,
                     BoardIndex = boardIndex
                 };
@@ -122,7 +122,7 @@ namespace Quantum.Game
         {
             GameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
 
-            if (BoardPosition.TryGetHeroCords(heroIndex, out Vector2Int position))
+            if (HeroBoard.TryGetHeroCords(heroIndex, out Vector2Int position))
             {
                 hero.Hero.TargetPositionX = position.x;
                 hero.Hero.TargetPositionY = position.y;
@@ -133,25 +133,19 @@ namespace Quantum.Game
             }
 
             HeroInfo heroInfo = config.GetHeroInfo(f, hero.Hero.ID);
-            hero.Hero.Health = heroInfo.Health;
-            hero.Hero.CurrentHealth = heroInfo.Health;
-            hero.Hero.Defense = heroInfo.Defense;
-            hero.Hero.Damage = heroInfo.Damage;
-            hero.Hero.AttackSpeed = FP.FromFloat_UNSAFE(heroInfo.AttackSpeed);
-            hero.Hero.ProjectileSpeed = FP.FromFloat_UNSAFE(heroInfo.ProjectileSpeed);
-            hero.Hero.Range = heroInfo.Range;
-            hero.Hero.RangePercentage = FP.FromFloat_UNSAFE(heroInfo.RangePercentage);
+            HeroLevelStats heroLevelStats = heroInfo.HeroStats[hero.Hero.Level];
+            hero.Hero.Health = FP.FromFloat_UNSAFE(heroLevelStats.Health);
+            hero.Hero.CurrentHealth = FP.FromFloat_UNSAFE(heroLevelStats.Health);
+            hero.Hero.Defense = FP.FromFloat_UNSAFE(heroLevelStats.Defense);
+            hero.Hero.Damage = FP.FromFloat_UNSAFE(heroLevelStats.Damage);
+            hero.Hero.AttackSpeed = FP.FromFloat_UNSAFE(heroLevelStats.AttackSpeed);
+            hero.Hero.ProjectileSpeed = FP.FromFloat_UNSAFE(heroLevelStats.ProjectileSpeed);
+            hero.Hero.Range = heroLevelStats.Range;
+            hero.Hero.RangePercentage = FP.FromFloat_UNSAFE(config.RangePercentage);
             hero.Hero.IsAlive = true;
             hero.Hero.AttackTimer = 0;
 
             return hero;
-        }
-
-        private QList<Board> GetCurrentBoards(Frame f)
-        {
-            QList<Board> boards = f.ResolveList(f.Global->Boards);
-
-            return boards;
         }
 
         private List<PlayerLink> GetCurrentPlayers(Frame f)

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Quantum.Game
@@ -11,6 +12,17 @@ namespace Quantum.Game
         Legendary
     }
 
+    [Serializable]
+    public struct HeroLevelStats
+    {
+        [Min(0)] public float Health;
+        [Min(0)] public float Defense;
+        [Min(0)] public float Damage;
+        [Min(0)] public float AttackSpeed;
+        [Min(0)] public float ProjectileSpeed;
+        [Min(1)] public int Range;
+    }
+
     public class HeroInfo : AssetObject
     {
         public string Name;
@@ -19,13 +31,7 @@ namespace Quantum.Game
         public AssetRef<EntityPrototype> HeroPrototype;
         public AssetRef<EntityPrototype> ProjectilePrototype;
         [Header("Stats")]
-        [Min(0)] public int Health;
-        [Min(0)] public int Defense;
-        [Min(0)] public int Damage;
-        [Min(0)] public float AttackSpeed;
-        [Min(0)] public float ProjectileSpeed;
-        [Min(1)] public int Range;
-        [Range(0, 1)] public float RangePercentage;
+        public HeroLevelStats[] HeroStats;
 
         public int GetCost(Frame frame)
         {

@@ -48,7 +48,7 @@ public class HealthBar : MonoBehaviour
 
         if (_quantumEntityView == quantumEntityView)
         {
-            float health = (float)eventHeroHealthChanged.CurrentHealth / eventHeroHealthChanged.MaxHealth;
+            float health = (eventHeroHealthChanged.CurrentHealth / eventHeroHealthChanged.MaxHealth).AsFloat;
             _healthBar.value = health;
         }
     }

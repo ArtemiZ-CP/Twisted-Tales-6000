@@ -56,9 +56,9 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.PlayerLinkPrototype Player1;
     public Quantum.Prototypes.PlayerLinkPrototype Player2;
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.HeroPrototype[] Heroes1 = {};
+    public Quantum.Prototypes.HeroPrototype[] HeroesID1 = {};
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.HeroPrototype[] Heroes2 = {};
+    public Quantum.Prototypes.HeroPrototype[] HeroesID2 = {};
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.FightingHeroPrototype[] FightingHeroesMap = {};
     [DynamicCollectionAttribute()]
@@ -72,23 +72,23 @@ namespace Quantum.Prototypes {
         PrototypeValidator.FindMapEntity(this.Ref, in context, out result.Ref);
         this.Player1.Materialize(frame, ref result.Player1, in context);
         this.Player2.Materialize(frame, ref result.Player2, in context);
-        if (this.Heroes1.Length == 0) {
-          result.Heroes1 = default;
+        if (this.HeroesID1.Length == 0) {
+          result.HeroesID1 = default;
         } else {
-          var list = frame.AllocateList(out result.Heroes1, this.Heroes1.Length);
-          for (int i = 0; i < this.Heroes1.Length; ++i) {
+          var list = frame.AllocateList(out result.HeroesID1, this.HeroesID1.Length);
+          for (int i = 0; i < this.HeroesID1.Length; ++i) {
             Quantum.Hero tmp = default;
-            this.Heroes1[i].Materialize(frame, ref tmp, in context);
+            this.HeroesID1[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
         }
-        if (this.Heroes2.Length == 0) {
-          result.Heroes2 = default;
+        if (this.HeroesID2.Length == 0) {
+          result.HeroesID2 = default;
         } else {
-          var list = frame.AllocateList(out result.Heroes2, this.Heroes2.Length);
-          for (int i = 0; i < this.Heroes2.Length; ++i) {
+          var list = frame.AllocateList(out result.HeroesID2, this.HeroesID2.Length);
+          for (int i = 0; i < this.HeroesID2.Length; ++i) {
             Quantum.Hero tmp = default;
-            this.Heroes2[i].Materialize(frame, ref tmp, in context);
+            this.HeroesID2[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
         }
@@ -133,14 +133,14 @@ namespace Quantum.Prototypes {
     public Int32 ID;
     public Int32 Level;
     public FPVector3 DefaultPosition;
-    public Int32 Health;
-    public Int32 Defense;
-    public Int32 Damage;
+    public FP Health;
+    public FP Defense;
+    public FP Damage;
     public FP AttackSpeed;
     public FP ProjectileSpeed;
     public Int32 Range;
     public FP RangePercentage;
-    public Int32 CurrentHealth;
+    public FP CurrentHealth;
     public MapEntityId AttackTarget;
     public Int32 TargetPositionX;
     public Int32 TargetPositionY;
@@ -174,7 +174,7 @@ namespace Quantum.Prototypes {
     public MapEntityId Ref;
     public Quantum.Prototypes.HeroPrototype Target;
     public FP Speed;
-    public Int32 Damage;
+    public FP Damage;
     public Int32 Level;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.HeroProjectile component = default;
@@ -196,6 +196,21 @@ namespace Quantum.Prototypes {
     public Int32 _empty_prototype_dummy_field_;
     partial void MaterializeUser(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.Input result, in PrototypeMaterializationContext context = default) {
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.MeleeHero))]
+  public unsafe partial class MeleeHeroPrototype : ComponentPrototype<Quantum.MeleeHero> {
+    [HideInInspector()]
+    public Int32 _empty_prototype_dummy_field_;
+    partial void MaterializeUser(Frame frame, ref Quantum.MeleeHero result, in PrototypeMaterializationContext context);
+    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
+        Quantum.MeleeHero component = default;
+        Materialize((Frame)f, ref component, in context);
+        return f.Set(entity, component) == SetResult.ComponentAdded;
+    }
+    public void Materialize(Frame frame, ref Quantum.MeleeHero result, in PrototypeMaterializationContext context = default) {
         MaterializeUser(frame, ref result, in context);
     }
   }
@@ -319,32 +334,17 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.TestHero))]
-  public unsafe partial class TestHeroPrototype : ComponentPrototype<Quantum.TestHero> {
+  [Quantum.Prototypes.Prototype(typeof(Quantum.RangedHero))]
+  public unsafe partial class RangedHeroPrototype : ComponentPrototype<Quantum.RangedHero> {
     [HideInInspector()]
     public Int32 _empty_prototype_dummy_field_;
-    partial void MaterializeUser(Frame frame, ref Quantum.TestHero result, in PrototypeMaterializationContext context);
+    partial void MaterializeUser(Frame frame, ref Quantum.RangedHero result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.TestHero component = default;
+        Quantum.RangedHero component = default;
         Materialize((Frame)f, ref component, in context);
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
-    public void Materialize(Frame frame, ref Quantum.TestHero result, in PrototypeMaterializationContext context = default) {
-        MaterializeUser(frame, ref result, in context);
-    }
-  }
-  [System.SerializableAttribute()]
-  [Quantum.Prototypes.Prototype(typeof(Quantum.TestProjectileHero))]
-  public unsafe partial class TestProjectileHeroPrototype : ComponentPrototype<Quantum.TestProjectileHero> {
-    [HideInInspector()]
-    public Int32 _empty_prototype_dummy_field_;
-    partial void MaterializeUser(Frame frame, ref Quantum.TestProjectileHero result, in PrototypeMaterializationContext context);
-    public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
-        Quantum.TestProjectileHero component = default;
-        Materialize((Frame)f, ref component, in context);
-        return f.Set(entity, component) == SetResult.ComponentAdded;
-    }
-    public void Materialize(Frame frame, ref Quantum.TestProjectileHero result, in PrototypeMaterializationContext context = default) {
+    public void Materialize(Frame frame, ref Quantum.RangedHero result, in PrototypeMaterializationContext context = default) {
         MaterializeUser(frame, ref result, in context);
     }
   }

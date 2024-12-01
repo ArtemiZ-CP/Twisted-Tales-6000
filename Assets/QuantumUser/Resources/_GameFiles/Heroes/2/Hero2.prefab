@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1594061471410518392}
   - component: {fileID: 165141032234269855}
   - component: {fileID: 8561210058791001672}
-  - component: {fileID: 8212976266341689454}
+  - component: {fileID: 5340809395609881871}
   m_Layer: 0
   m_Name: Hero2
   m_TagString: Untagged
@@ -221,7 +221,7 @@ MonoBehaviour:
   OnEntityDestroyed:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &8212976266341689454
+--- !u!114 &5340809395609881871
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8733240909942750674}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6350909adb4c24279a5a289a897ce9b0, type: 3}
+  m_Script: {fileID: 11500000, guid: f9b1407ae16b3465cb5db6e26ca1f637, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:

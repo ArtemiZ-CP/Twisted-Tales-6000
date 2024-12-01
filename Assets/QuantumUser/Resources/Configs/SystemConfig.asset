@@ -75,12 +75,12 @@ MonoBehaviour:
     StartDisabled: 0
     Children:
     - SystemType:
-        AssemblyQualifiedName: Quantum.Game.Heroes.TestHeroSystem, Quantum.Simulation
+        AssemblyQualifiedName: Quantum.Game.Heroes.MeleeHeroSystem, Quantum.Simulation
       SystemName: 
       StartDisabled: 0
       Children: []
     - SystemType:
-        AssemblyQualifiedName: Quantum.Game.Heroes.TestProjectileHeroSystem, Quantum.Simulation
+        AssemblyQualifiedName: Quantum.Game.Heroes.RangedHeroSystem, Quantum.Simulation
       SystemName: 
       StartDisabled: 0
       Children: []

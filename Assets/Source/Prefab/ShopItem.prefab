@@ -259,6 +259,7 @@ MonoBehaviour:
   _button: {fileID: 6701426880431562332}
   _background: {fileID: 8727567404239428403}
   _heroParent: {fileID: 3165499411243465485}
+  _baseColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!1001 &4204363188450404412
 PrefabInstance:
   m_ObjectHideFlags: 0

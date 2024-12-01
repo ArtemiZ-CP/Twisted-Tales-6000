@@ -27,6 +27,13 @@ MonoBehaviour:
       Value: 441504537230468131
   - Id:
       Value: 371199533054399521
+  HeroMoveSpeed:
+    RawValue: 131072
+  HeroDefenseRatio:
+    RawValue: 6553600
+  HeroesCountToUpgrade: 3
+  MaxLevel: 3
+  RangePercentage: 0.5
   HeroShopSettings:
   - Rare: 0
     BackgroundColor: {r: 0.6509434, g: 0.6509434, b: 0.6509434, a: 1}
@@ -58,13 +65,15 @@ MonoBehaviour:
     SellCost1: 5
     SellCost2: 5
     SellCost3: 5
+  ShopSize: 8
+  InventorySize: 8
   RoundInfos:
   - IsPVE: 1
     PVEBoard:
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffffffffffff0400000004000000ffffffffffffffffffffffff
-    - Cells: ffffffffffffffff04000000ffffffffffffffff04000000ffffffffffffffff
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffff0000000000000000ffffffffffffffffffffffff
   - IsPVE: 0
     PVEBoard:
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
@@ -74,18 +83,48 @@ MonoBehaviour:
   - IsPVE: 1
     PVEBoard:
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffffffffffff0400000004000000ffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffff01000000ffffffffffffffff01000000ffffffffffffffff
+    - Cells: ffffffffffffffffffffffff0000000000000000ffffffffffffffffffffffff
+  - IsPVE: 0
+    PVEBoard:
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffff01000000ffffffffffffffff01000000ffffffffffffffff
+    - Cells: ffffffffffffffffffffffff0000000000000000ffffffffffffffffffffffff
+  - IsPVE: 1
+    PVEBoard:
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffff02000000ffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffff01000000010000000100000001000000ffffffffffffffff
+  - IsPVE: 0
+    PVEBoard:
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffff02000000ffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffff01000000010000000100000001000000ffffffffffffffff
+  - IsPVE: 1
+    PVEBoard:
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffff03000000030000000300000003000000ffffffffffffffff
+  - IsPVE: 0
+    PVEBoard:
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffff03000000030000000300000003000000ffffffffffffffff
+  - IsPVE: 1
+    PVEBoard:
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     - Cells: ffffffffffffffff04000000ffffffffffffffff04000000ffffffffffffffff
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-  HeroMoveSpeed:
-    RawValue: 131072
-  ShopSize: 8
-  InventorySize: 8
   TileSize: 1.2
   BuyPhaseTime: 60
   FightPhaseTime: 60
   StartFightingPhaseDelay: 1
   EndFightingPhaseDelay: 3
-  HeroesCountToUpgrade: 3
-  MaxLevel: 3
   PVPStreak: 3

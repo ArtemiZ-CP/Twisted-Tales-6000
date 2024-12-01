@@ -128,7 +128,7 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventHeroHealthChanged HeroHealthChanged(PlayerRef PlayerRef1, PlayerRef PlayerRef2, EntityRef HeroEntity, Int32 CurrentHealth, Int32 MaxHealth) {
+      public EventHeroHealthChanged HeroHealthChanged(PlayerRef PlayerRef1, PlayerRef PlayerRef2, EntityRef HeroEntity, FP CurrentHealth, FP MaxHealth) {
         var ev = _f.Context.AcquireEvent<EventHeroHealthChanged>(EventHeroHealthChanged.ID);
         ev.PlayerRef1 = PlayerRef1;
         ev.PlayerRef2 = PlayerRef2;
@@ -367,8 +367,8 @@ namespace Quantum {
     public PlayerRef PlayerRef1;
     public PlayerRef PlayerRef2;
     public EntityRef HeroEntity;
-    public Int32 CurrentHealth;
-    public Int32 MaxHealth;
+    public FP CurrentHealth;
+    public FP MaxHealth;
     protected EventHeroHealthChanged(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }

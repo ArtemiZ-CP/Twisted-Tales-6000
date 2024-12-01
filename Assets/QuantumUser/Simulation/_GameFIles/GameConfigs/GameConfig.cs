@@ -33,19 +33,28 @@ namespace Quantum.Game
     {
         public const int BoardSize = 8;
 
+        [Header("Hero settings")]
         public AssetRef<HeroInfo>[] HeroInfos;
-        public HeroShopSettings[] HeroShopSettings;
-        public List<RoundInfo> RoundInfos = new();
         public FP HeroMoveSpeed = 1;
+        [Tooltip("Half damage on current ratio")]
+        public FP HeroDefenseRatio = 100;
+        public int HeroesCountToUpgrade = 3;
+        public int MaxLevel = 3;
+        [Range(0, 1)] public float RangePercentage = 0.5f;
+        [Header("Shop settings")]
+        public HeroShopSettings[] HeroShopSettings;
         public int ShopSize = 8;
+        [Header("Inventory settings")]
         public int InventorySize = 8;
+        [Header("Round settings")]
+        public List<RoundInfo> RoundInfos = new();
+        [Header("Board settings")]
         public float TileSize = 1.2f;
+        [Header("Phase settings")]
         public int BuyPhaseTime = 30;
         public int FightPhaseTime = 60;
         public int StartFightingPhaseDelay = 1;
         public int EndFightingPhaseDelay = 1;
-        public int HeroesCountToUpgrade = 3;
-        public int MaxLevel = 3;
         public int PVPStreak = 3;
 
         public GameConfig()

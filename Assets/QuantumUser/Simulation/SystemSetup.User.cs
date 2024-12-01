@@ -6,8 +6,8 @@
     {
         static partial void AddSystemsUser(ICollection<SystemBase> systems, RuntimeConfig gameConfig, SimulationConfig simulationConfig, SystemsConfig systemsConfig)
         {
-            systems.Add(new Game.BaseHeroFightingSystem(string.Empty, new Game.Heroes.TestHeroSystem()));
-            systems.Add(new Game.BaseHeroFightingSystem(string.Empty, new Game.Heroes.TestProjectileHeroSystem()));
+            systems.Add(new Game.BaseHeroFightingSystem(string.Empty, new Game.Heroes.MeleeHeroSystem()));
+            systems.Add(new Game.BaseHeroFightingSystem(string.Empty, new Game.Heroes.RangedHeroSystem()));
         }
     }
 }

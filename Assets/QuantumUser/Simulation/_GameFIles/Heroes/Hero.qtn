@@ -6,16 +6,16 @@ struct Hero
     FPVector3 DefaultPosition;
 
     // Stats
-    int Health;
-    int Defense;
-    int Damage;
+    FP Health;
+    FP Defense;
+    FP Damage;
     FP AttackSpeed;
     FP ProjectileSpeed;
     int Range;
     FP RangePercentage;
 
     // Fighing stats only
-    int CurrentHealth;
+    FP CurrentHealth;
     entity_ref AttackTarget;
     int TargetPositionX;
     int TargetPositionY;

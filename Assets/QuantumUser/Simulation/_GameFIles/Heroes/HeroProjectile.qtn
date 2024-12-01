@@ -3,6 +3,6 @@ component HeroProjectile
     entity_ref Ref;
     Hero Target;
     FP Speed;
-    int Damage;
+    FP Damage;
     int Level;
 }

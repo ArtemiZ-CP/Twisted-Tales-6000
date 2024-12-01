@@ -31,6 +31,6 @@ event HeroHealthChanged
     player_ref PlayerRef1;
     player_ref PlayerRef2;
     entity_ref HeroEntity;
-    Int32 CurrentHealth;
-    Int32 MaxHealth;
+    FP CurrentHealth;
+    FP MaxHealth;
 }

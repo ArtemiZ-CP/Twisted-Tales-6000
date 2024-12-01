@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 827991023801344836}
   - component: {fileID: 4213109983802968336}
   - component: {fileID: 5854147749715284421}
-  - component: {fileID: 4770882177886434033}
+  - component: {fileID: 4634308990702857758}
   m_Layer: 0
   m_Name: Hero0
   m_TagString: Untagged
@@ -221,7 +221,7 @@ MonoBehaviour:
   OnEntityDestroyed:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &4770882177886434033
+--- !u!114 &4634308990702857758
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -230,7 +230,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1599773211778294035}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 425a6ee1fa40344fb86265f43f41592a, type: 3}
+  m_Script: {fileID: 11500000, guid: e6e7e16617f2645a0a60a5c447e8901a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Prototype:

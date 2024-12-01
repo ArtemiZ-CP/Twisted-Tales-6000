@@ -11,10 +11,16 @@ namespace Quantum.Game
         [SerializeField] private Button _button;
         [SerializeField] private Image _background;
         [SerializeField] private GameObject _heroParent;
+        [SerializeField] private Color _baseColor;
 
         public event Action<ShopItemSlot> ItemClicked;
 
         public Vector3 HeroParentPosition => _heroParent.transform.position;
+
+        private void Awake()
+        {
+            SetShopItem(heroId: -1);
+        }
 
         private void OnEnable()
         {
@@ -32,6 +38,7 @@ namespace Quantum.Game
             {
                 _heroParent.SetActive(false);
                 _hero.SetHeroState(this, heroId: -1);
+                _background.color = _baseColor;
             }
             else
             {

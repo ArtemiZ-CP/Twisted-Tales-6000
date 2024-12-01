@@ -55,9 +55,9 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.Prototypes.PlayerLinkPrototype Player1;
     public Quantum.Prototypes.PlayerLinkPrototype Player2;
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.Unity.HeroPrototype[] Heroes1 = {};
+    public Quantum.Prototypes.Unity.HeroPrototype[] HeroesID1 = {};
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.Unity.HeroPrototype[] Heroes2 = {};
+    public Quantum.Prototypes.Unity.HeroPrototype[] HeroesID2 = {};
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.Unity.FightingHeroPrototype[] FightingHeroesMap = {};
     [DynamicCollectionAttribute()]
@@ -68,8 +68,8 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.Ref, out result.Ref);
       converter.Convert(this.Player1, out result.Player1);
       converter.Convert(this.Player2, out result.Player2);
-      converter.Convert(this.Heroes1, out result.Heroes1);
-      converter.Convert(this.Heroes2, out result.Heroes2);
+      converter.Convert(this.HeroesID1, out result.HeroesID1);
+      converter.Convert(this.HeroesID2, out result.HeroesID2);
       converter.Convert(this.FightingHeroesMap, out result.FightingHeroesMap);
       converter.Convert(this.HeroProjectiles, out result.HeroProjectiles);
       ConvertUser(converter, ref result);
@@ -97,14 +97,14 @@ namespace Quantum.Prototypes.Unity {
     public Int32 ID;
     public Int32 Level;
     public FPVector3 DefaultPosition;
-    public Int32 Health;
-    public Int32 Defense;
-    public Int32 Damage;
+    public FP Health;
+    public FP Defense;
+    public FP Damage;
     public FP AttackSpeed;
     public FP ProjectileSpeed;
     public Int32 Range;
     public FP RangePercentage;
-    public Int32 CurrentHealth;
+    public FP CurrentHealth;
     public Quantum.QuantumEntityPrototype AttackTarget;
     public Int32 TargetPositionX;
     public Int32 TargetPositionY;
@@ -141,7 +141,7 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.QuantumEntityPrototype Ref;
     public Quantum.Prototypes.Unity.HeroPrototype Target;
     public FP Speed;
-    public Int32 Damage;
+    public FP Damage;
     public Int32 Level;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.HeroProjectilePrototype prototype);
     public override Quantum.Prototypes.HeroProjectilePrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {

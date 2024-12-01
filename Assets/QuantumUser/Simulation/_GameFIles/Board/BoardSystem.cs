@@ -57,8 +57,8 @@ namespace Quantum.Game
         private void ClearBoard(Frame f, Board board)
         {
             EntityRef boardEntity = board.Ref;
-            ClearHeroes(f, board.Heroes1);
-            ClearHeroes(f, board.Heroes2);
+            ClearHeroes(f, board.HeroesID1);
+            ClearHeroes(f, board.HeroesID2);
             ClearProjectiles(f, board.HeroProjectiles);
             f.FreeList(board.FightingHeroesMap);
             f.Destroy(boardEntity);
@@ -124,29 +124,29 @@ namespace Quantum.Game
 
         private void SpawnHeroes(Frame f, Board* board)
         {
-            QList<Hero> heroes1 = f.ResolveList(board->Heroes1);
-            QList<Hero> heroes2 = f.ResolveList(board->Heroes2);
+            QList<Hero> heroesID1 = f.ResolveList(board->HeroesID1);
+            QList<Hero> heroesID2 = f.ResolveList(board->HeroesID2);
 
-            for (int i = 0; i < heroes1.Count; i++)
+            for (int i = 0; i < heroesID1.Count; i++)
             {
-                Hero hero = heroes1[i];
+                Hero hero = heroesID1[i];
                 if (hero.ID < 0) continue;
 
                 hero = SpawnHero(f, hero);
                 hero.TeamNumber = 1;
-                heroes1[i] = hero;
+                heroesID1[i] = hero;
                 SetHeroPosition(f, hero);
                 DisactiveEntity(f, hero.Ref);
             }
 
-            for (int i = 0; i < heroes2.Count; i++)
+            for (int i = 0; i < heroesID2.Count; i++)
             {
-                Hero hero = heroes2[i];
+                Hero hero = heroesID2[i];
                 if (hero.ID < 0) continue;
 
                 hero = SpawnHero(f, hero);
                 hero.TeamNumber = 2;
-                heroes2[i] = hero;
+                heroesID2[i] = hero;
                 SetHeroPosition(f, hero, first: false);
                 DisactiveEntity(f, hero.Ref);
             }
@@ -182,8 +182,8 @@ namespace Quantum.Game
             board->FightingHeroesMap = f.AllocateList<FightingHero>(GameConfig.BoardSize * GameConfig.BoardSize);
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
 
-            board->Heroes1 = SetupHeroes(f, player1, board->Heroes1);
-            board->Heroes2 = SetupHeroes(f, player2, board->Heroes2);
+            board->HeroesID1 = SetupHeroes(f, player1, board->HeroesID1);
+            board->HeroesID2 = SetupHeroes(f, player2, board->HeroesID2);
 
             board->Player1 = *player1;
             board->Player2 = main ? *player2 : default;
@@ -200,8 +200,8 @@ namespace Quantum.Game
             board->FightingHeroesMap = f.AllocateList<FightingHero>(GameConfig.BoardSize * GameConfig.BoardSize);
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
 
-            board->Heroes1 = SetupHeroes(f, player1, board->Heroes1);
-            board->Heroes2 = SetupHeroes(f, roundInfo, board->Heroes2);
+            board->HeroesID1 = SetupHeroes(f, player1, board->HeroesID1);
+            board->HeroesID2 = SetupHeroes(f, roundInfo, board->HeroesID2);
 
             board->Player1 = *player1;
             board->Player2 = default;
@@ -228,7 +228,7 @@ namespace Quantum.Game
                 {
                     ID = playerHeroesID[i],
                     Level = playerHeroesLevel[i],
-                    DefaultPosition = BoardPosition.GetTilePosition(f, i % GameConfig.BoardSize, i / GameConfig.BoardSize)
+                    DefaultPosition = HeroBoard.GetTilePosition(f, i % GameConfig.BoardSize, i / GameConfig.BoardSize)
                 };
 
                 playerHeroes.Add(hero);
@@ -255,7 +255,7 @@ namespace Quantum.Game
                     {
                         ID = roundInfo.PVEBoard[i].Cells[^(j + 1)],
                         Level = 0,
-                        DefaultPosition = BoardPosition.GetTilePosition(f, j, i),
+                        DefaultPosition = HeroBoard.GetTilePosition(f, j, i),
                     };
 
                     playerHeroes.Add(hero);
