@@ -1,25 +1,10 @@
 signal OnReloadShop(PlayerLink* playerLink);
 signal OnBuyHero(PlayerLink* playerLink, Int32 shopIndex);
 signal OnMoveHero(PlayerLink* playerLink, Quantum.Game.HeroState HeroFromState, Quantum.Game.HeroState HeroToState, int positionFromX, int positionFromY, int positionToX, int positionToY);
-
-event ReloadShop
-{
-    player_ref PlayerRef;
-    Int32 Coins;
-}
-
-event BuyHero
-{
-    player_ref PlayerRef;
-    Int32 ShopIndex;
-    Int32 InventoryIndex;
-    Int32 HeroID;
-    Int32 Coins;
-}
-
-event MoveHero
-{
-    player_ref PlayerRef;
-    Int32 Coins;
-    bool IsMoved;
-}
+signal MakeNewBoardPVP(PlayerLink player1, PlayerLink player2, bool main);
+signal MakeNewBoardPVE(PlayerLink player1, Quantum.Game.RoundInfo roundInfo);
+signal ClearBoards();
+signal GetPlayersList();
+signal OnStartRound();
+signal OnEndRound();
+signal StartFight(int roundIndex);

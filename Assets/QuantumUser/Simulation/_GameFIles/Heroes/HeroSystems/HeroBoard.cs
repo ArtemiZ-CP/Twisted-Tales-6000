@@ -13,12 +13,12 @@ namespace Quantum.Game
             return boards[fighingHero.BoardIndex];
         }
 
-        public static Vector2Int GetHeroCords(Hero hero)
+        public static Vector2Int GetHeroCords(HeroEntity hero)
         {
             return new Vector2Int(hero.TargetPositionX, hero.TargetPositionY);
         }
 
-        public static FPVector3 GetHeroPosition(Frame f, Hero hero)
+        public static FPVector3 GetHeroPosition(Frame f, HeroEntity hero)
         {
             Vector2Int cords = GetHeroCords(hero);
 
@@ -35,7 +35,7 @@ namespace Quantum.Game
             return GetTilePosition(f, cords.x, cords.y);
         }
 
-        public static bool IsHeroMoving(Frame f, Hero hero)
+        public static bool IsHeroMoving(Frame f, HeroEntity hero)
         {
             Transform3D transform = f.Get<Transform3D>(hero.Ref);
             FPVector3 position = GetHeroPosition(f, hero);
@@ -136,24 +136,18 @@ namespace Quantum.Game
             return hero;
         }
 
-        public static void SetHeroTarget(Frame f, FightingHero fighingHero, EntityRef attackTarget, Vector2Int targetPosition)
+        public static void SetHeroTarget(Frame f, FightingHero fightingHero, EntityRef attackTarget, Vector2Int targetPosition)
         {
-            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fighingHero).FightingHeroesMap);
+            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fightingHero).FightingHeroesMap);
 
             if (TryConvertCordsToIndex(targetPosition, out int heroNewIndex))
             {
-                if (fighingHero.Index < 0 || heroes[heroNewIndex].Hero.Ref != default) return;
+                if (fightingHero.Index < 0 || heroes[heroNewIndex].Hero.Ref != default) return;
 
-                FightingHero fightingHero = heroes[fighingHero.Index];
                 fightingHero.Hero.AttackTarget = attackTarget;
                 fightingHero.Hero.TargetPositionX = targetPosition.x;
                 fightingHero.Hero.TargetPositionY = targetPosition.y;
-                FightingHero empty = heroes[heroNewIndex];
-                empty.Hero.ID = -1;
-                empty.Index = fighingHero.Index;
-                heroes[fighingHero.Index] = empty;
-                fightingHero.Index = heroNewIndex;
-                heroes[heroNewIndex] = fightingHero;
+                Hero.SetNewBoardPosision(heroes, fightingHero, heroNewIndex);
             }
         }
 

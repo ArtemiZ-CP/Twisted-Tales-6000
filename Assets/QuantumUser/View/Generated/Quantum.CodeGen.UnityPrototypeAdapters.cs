@@ -55,9 +55,9 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.Prototypes.PlayerLinkPrototype Player1;
     public Quantum.Prototypes.PlayerLinkPrototype Player2;
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.Unity.HeroPrototype[] HeroesID1 = {};
+    public Quantum.Prototypes.Unity.HeroEntityPrototype[] HeroesID1 = {};
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.Unity.HeroPrototype[] HeroesID2 = {};
+    public Quantum.Prototypes.Unity.HeroEntityPrototype[] HeroesID2 = {};
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.Unity.FightingHeroPrototype[] FightingHeroesMap = {};
     [DynamicCollectionAttribute()]
@@ -78,7 +78,7 @@ namespace Quantum.Prototypes.Unity {
   }
   [System.SerializableAttribute()]
   public unsafe partial class FightingHeroPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.FightingHeroPrototype> {
-    public Quantum.Prototypes.Unity.HeroPrototype Hero;
+    public Quantum.Prototypes.Unity.HeroEntityPrototype Hero;
     public Int32 Index;
     public Int32 BoardIndex;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.FightingHeroPrototype prototype);
@@ -92,7 +92,7 @@ namespace Quantum.Prototypes.Unity {
     }
   }
   [System.SerializableAttribute()]
-  public unsafe partial class HeroPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.HeroPrototype> {
+  public unsafe partial class HeroEntityPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.HeroEntityPrototype> {
     public Quantum.QuantumEntityPrototype Ref;
     public Int32 ID;
     public Int32 Level;
@@ -111,9 +111,9 @@ namespace Quantum.Prototypes.Unity {
     public Int32 TeamNumber;
     public QBoolean IsAlive;
     public FP AttackTimer;
-    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.HeroPrototype prototype);
-    public override Quantum.Prototypes.HeroPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
-      var result = new Quantum.Prototypes.HeroPrototype();
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.HeroEntityPrototype prototype);
+    public override Quantum.Prototypes.HeroEntityPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.HeroEntityPrototype();
       converter.Convert(this.Ref, out result.Ref);
       converter.Convert(this.ID, out result.ID);
       converter.Convert(this.Level, out result.Level);
@@ -139,7 +139,7 @@ namespace Quantum.Prototypes.Unity {
   [System.SerializableAttribute()]
   public unsafe partial class HeroProjectilePrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.HeroProjectilePrototype> {
     public Quantum.QuantumEntityPrototype Ref;
-    public Quantum.Prototypes.Unity.HeroPrototype Target;
+    public Quantum.Prototypes.Unity.HeroEntityPrototype Target;
     public FP Speed;
     public FP Damage;
     public Int32 Level;

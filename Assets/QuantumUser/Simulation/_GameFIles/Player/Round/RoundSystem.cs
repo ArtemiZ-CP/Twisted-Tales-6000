@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Photon.Deterministic;
 using Quantum.Collections;
 using UnityEngine.Scripting;
 
@@ -23,14 +25,7 @@ namespace Quantum.Game
 
         public void GetPlayersList(Frame f)
         {
-            List<PlayerLink> players = new();
-
-            foreach ((EntityRef _, PlayerLink playerLink) in f.GetComponentIterator<PlayerLink>())
-            {
-                players.Add(playerLink);
-            }
-
-            f.Events.GetCurrentPlayers(f, players, f.ResolveList(f.Global->Boards).ToList());
+            f.Events.GetCurrentPlayers(f, Player.GetAllPlayers(f), f.ResolveList(f.Global->Boards).ToList());
         }
 
         public void OnStartRound(Frame f)
@@ -44,7 +39,7 @@ namespace Quantum.Game
         {
             if (IsRoundStarted(f) == false) return;
 
-            EndRound(f);
+            ProcessEndRound(f, finishAnyway: true);
         }
 
         private void StartRound(Frame f)
@@ -91,14 +86,14 @@ namespace Quantum.Game
 
         private void ProcessBuyPhase(Frame f)
         {
-            GameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
-            if (f.Global->PhaseTime > config.BuyPhaseTime)
+            if (f.Global->PhaseTime > gameConfig.BuyPhaseTime)
             {
                 StartRound(f);
             }
 
-            f.Events.GetRoundTime(f.Global->IsBuyPhase, config.BuyPhaseTime - f.Global->PhaseTime);
+            f.Events.GetRoundTime(f.Global->IsBuyPhase, gameConfig.BuyPhaseTime - f.Global->PhaseTime);
         }
 
         private void ProcessFightingPhase(Frame f)
@@ -119,11 +114,11 @@ namespace Quantum.Game
             f.Events.GetRoundTime(f.Global->IsBuyPhase, config.FightPhaseTime - f.Global->PhaseTime);
         }
 
-        private void ProcessEndRound(Frame f)
+        private void ProcessEndRound(Frame f, bool finishAnyway = false)
         {
             GameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
 
-            if (f.Global->PhaseTime > config.EndFightingPhaseDelay)
+            if (finishAnyway || f.Global->PhaseTime > config.EndFightingPhaseDelay)
             {
                 ProcessResults(f);
 
@@ -135,7 +130,8 @@ namespace Quantum.Game
 
                     if (f.Global->PVPStreak >= config.PVPStreak)
                     {
-                        f.Signals.OnEndRound();
+                        ProcessPlayersCoins(f);
+                        EndRound(f);
                     }
                     else
                     {
@@ -145,7 +141,8 @@ namespace Quantum.Game
                 }
                 else
                 {
-                    f.Signals.OnEndRound();
+                    ProcessPlayersCoins(f);
+                    EndRound(f);
                 }
 
             }
@@ -189,12 +186,7 @@ namespace Quantum.Game
         {
             QList<Board> boards = f.ResolveList(f.Global->Boards);
 
-            List<(EntityRef entity, PlayerLink playerLink)> playersEntity = new();
-
-            foreach ((EntityRef entity, PlayerLink playerLink) in f.GetComponentIterator<PlayerLink>())
-            {
-                playersEntity.Add((entity, playerLink));
-            }
+            List<(EntityRef entity, PlayerLink link)> playersEntity = Player.GetAllPlayersEntity(f);
 
             foreach (Board board in boards)
             {
@@ -209,14 +201,14 @@ namespace Quantum.Game
 
                 if (isPlayer1Win && board.Player2.Ref != default)
                 {
-                    var playerInfo = playersEntity.First(player => player.playerLink.Ref == board.Player2.Ref);
-                    PlayerLink* playerLink = f.Unsafe.GetPointer<PlayerLink>(playerInfo.entity);
+                    var player = playersEntity.First(player => player.link.Ref == board.Player2.Ref);
+                    PlayerLink* playerLink = Player.GetPlayerPointer(f, player.entity, player.link);
                     playerLink->Info.Health -= damage;
                 }
                 else if (isPlayer2Win && board.Player1.Ref != default)
                 {
-                    var playerInfo = playersEntity.First(player => player.playerLink.Ref == board.Player1.Ref);
-                    PlayerLink* playerLink = f.Unsafe.GetPointer<PlayerLink>(playerInfo.entity);
+                    var player = playersEntity.First(player => player.link.Ref == board.Player1.Ref);
+                    PlayerLink* playerLink = Player.GetPlayerPointer(f, player.entity, player.link);
                     playerLink->Info.Health -= damage;
                 }
             }
@@ -225,6 +217,15 @@ namespace Quantum.Game
         private bool IsRoundStarted(Frame f)
         {
             return f.Global->IsBuyPhase == false;
+        }
+
+        private void ProcessPlayersCoins(Frame f)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+
+            if (gameConfig.ResetCoinsOnEndRound) Player.ResetCoins(f);
+
+            Player.AddCoins(f, gameConfig.CoinsPerRound);
         }
     }
 }

@@ -185,7 +185,7 @@ namespace Quantum.Game
             heroes[fighingHero.Index] = hero;
         }
 
-        public static void DamageHero(Frame f, Board board, FP damage, Hero targetHero)
+        public static void DamageHero(Frame f, Board board, FP damage, HeroEntity targetHero)
         {
             int targetHeroIndex = f.ResolveList(board.FightingHeroesMap).ToList().FindIndex(hero => hero.Hero.Ref == targetHero.Ref);
 

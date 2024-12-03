@@ -3,8 +3,8 @@ component Board
     entity_ref Ref;
     PlayerLink Player1;
     PlayerLink Player2;
-    list<Hero> HeroesID1;
-    list<Hero> HeroesID2;
+    list<HeroEntity> HeroesID1;
+    list<HeroEntity> HeroesID2;
 
     // Fighing phase only
     list<FightingHero> FightingHeroesMap;
@@ -13,7 +13,7 @@ component Board
 
 struct FightingHero
 {
-    Hero Hero;
+    HeroEntity Hero;
     int Index;
     int BoardIndex;
 }

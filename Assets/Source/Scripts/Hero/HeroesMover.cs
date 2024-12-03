@@ -13,8 +13,8 @@ namespace Quantum.Game
         [SerializeField] private Board _playerBoard;
 
         private Camera _camera;
-        private Hero _selectedHero;
-        private Hero _newHeroPlace;
+        private HeroObject _selectedHero;
+        private HeroObject _newHeroPlace;
         private bool _isMovingHero = false;
         private bool _isCommandSended = false;
 
@@ -265,7 +265,7 @@ namespace Quantum.Game
             }
         }
 
-        private void SetNewHeroPlace(Hero hero, bool isUIPosition)
+        private void SetNewHeroPlace(HeroObject hero, bool isUIPosition)
         {
             if (_newHeroPlace != null)
             {
@@ -288,12 +288,12 @@ namespace Quantum.Game
             SetupHero(_selectedHero, isUIPosition);
         }
 
-        private void SetBaseHeroSize(Hero hero)
+        private void SetBaseHeroSize(HeroObject hero)
         {
             SetupHero(hero, isUIPosition: hero.State == HeroState.Inventory || hero.State == HeroState.Shop);
         }
 
-        private void SetupHero(Hero hero, bool isUIPosition)
+        private void SetupHero(HeroObject hero, bool isUIPosition)
         {
             hero.SetActiveShadows(isUIPosition == false);
 

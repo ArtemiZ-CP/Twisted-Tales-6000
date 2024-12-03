@@ -61,8 +61,8 @@ namespace Quantum.Game
                         HeroesID = f.AllocateList<int>(GameConfig.BoardSize * GameConfig.BoardSize / 2),
                         HeroesLevel = f.AllocateList<int>(GameConfig.BoardSize * GameConfig.BoardSize / 2)
                     },
-                    Coins = 100,
-                    Health = 100
+                    Coins = 1 + gameConfig.CoinsPerRound,
+                    Health = gameConfig.PlayerHealth
                 }
             };
 
@@ -72,6 +72,7 @@ namespace Quantum.Game
             FillList(f, playerLink.Info.Inventory.HeroesLevel, gameConfig.InventorySize, 0);
             FillList(f, playerLink.Info.Board.HeroesLevel, GameConfig.BoardSize * GameConfig.BoardSize / 2, 0);
 
+            f.Signals.OnReloadShop(&playerLink);
             f.Add(playerEntity, playerLink);
             f.Events.InitPlayer(player);
         }

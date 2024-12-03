@@ -21,10 +21,10 @@ namespace Quantum.Game
             }
         }
 
-        public static void SpawnProjectile(Frame f, FightingHero fighingHero, Hero targetHero)
+        public static void SpawnProjectile(Frame f, FightingHero fighingHero, HeroEntity targetHero)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            Hero hero = fighingHero.Hero;
+            HeroEntity hero = fighingHero.Hero;
             Board board = HeroBoard.GetBoard(f, fighingHero);
 
             HeroProjectile projectile = new()

@@ -8,12 +8,12 @@ namespace Quantum.Game
         public class Tile
         {
             private Vector3 _position;
-            private Hero _hero;
+            private HeroObject _hero;
 
             public Vector3 Position => _position;
-            public Hero Hero => _hero;
+            public HeroObject Hero => _hero;
 
-            public Tile(Vector3 position, Hero heroPrefab, Transform parent)
+            public Tile(Vector3 position, HeroObject heroPrefab, Transform parent)
             {
                 _position = position;
                 _hero = Instantiate(heroPrefab, _position, Quaternion.identity, parent);
@@ -30,7 +30,7 @@ namespace Quantum.Game
         }
 
         [SerializeField] private LayerMask _boardLayerMask;
-        [SerializeField] private Hero _boardHeroPrefab;
+        [SerializeField] private HeroObject _boardHeroPrefab;
         [Header("Board Settings")]
         [SerializeField] private bool _drawGizmos;
 

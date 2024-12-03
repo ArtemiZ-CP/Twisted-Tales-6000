@@ -7,7 +7,7 @@ namespace Quantum.Game
 
     public class ShopItemSlot : MonoBehaviour
     {
-        [SerializeField] private Hero _hero;
+        [SerializeField] private HeroObject _hero;
         [SerializeField] private Button _button;
         [SerializeField] private Image _background;
         [SerializeField] private GameObject _heroParent;

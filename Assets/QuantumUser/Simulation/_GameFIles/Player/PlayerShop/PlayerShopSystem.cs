@@ -18,7 +18,7 @@ namespace Quantum.Game
             }
 
             int heroID = heroesInPlayerShop[shopIndex];
-            
+
             if (heroID < 0)
             {
                 return;
@@ -27,7 +27,7 @@ namespace Quantum.Game
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             AssetRef<HeroInfo>[] heroInfos = gameConfig.HeroInfos;
             HeroInfo heroInfo = null;
-            
+
             for (int i = 0; i < heroInfos.Length; i++)
             {
                 heroInfo = f.FindAsset(heroInfos[i]);
@@ -38,7 +38,7 @@ namespace Quantum.Game
                 }
             }
 
-            if (heroInfo == null || playerLink->Info.Coins < heroInfo.GetCost(f))
+            if (heroInfo == null)
             {
                 return;
             }
@@ -52,16 +52,23 @@ namespace Quantum.Game
 
             int inventoryIndex = heroesInPlayerInventory.IndexOf(-1);
 
+            if (Player.TryRemoveCoins(f, playerLink, heroInfo.GetCost(f)) == false)
+            {
+                return;
+            }
+
             heroesInPlayerInventory[inventoryIndex] = heroID;
             heroesInPlayerShop[shopIndex] = -1;
-            playerLink->Info.Coins -= heroInfo.GetCost(f);
 
-            f.Events.BuyHero(playerLink->Ref, shopIndex, inventoryIndex, heroID, playerLink->Info.Coins);
+            f.Events.BuyHero(playerLink->Ref, shopIndex, inventoryIndex, heroID);
         }
 
         public void OnReloadShop(Frame f, PlayerLink* playerLink)
         {
-            f.Events.ReloadShop(f, playerLink->Ref, --playerLink->Info.Coins, ReloadShop(f, playerLink->Info.Shop));
+            if (Player.TryRemoveCoins(f, playerLink, 1))
+            {
+                f.Events.ReloadShop(f, playerLink->Ref, ReloadShop(f, playerLink->Info.Shop));
+            }
         }
 
         public void OnEndRound(Frame f)
@@ -70,7 +77,7 @@ namespace Quantum.Game
 
             while (filter.NextUnsafe(out var playerEntity, out PlayerLink* playerLink))
             {
-                f.Events.ReloadShop(f, playerLink->Ref, playerLink->Info.Coins, ReloadShop(f, playerLink->Info.Shop));
+                f.Events.ReloadShop(f, playerLink->Ref, ReloadShop(f, playerLink->Info.Shop));
             }
         }
 

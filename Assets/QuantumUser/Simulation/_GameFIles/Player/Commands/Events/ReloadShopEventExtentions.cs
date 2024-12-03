@@ -11,9 +11,9 @@ namespace Quantum
     {
         public partial struct FrameEvents
         {
-            public readonly EventReloadShop ReloadShop(Frame f, PlayerRef playerRef, int coins, List<int> HeroIDList)
+            public readonly EventReloadShop ReloadShop(Frame f, PlayerRef playerRef, List<int> HeroIDList)
             {
-                var ev = f.Events.ReloadShop(playerRef, coins);
+                var ev = f.Events.ReloadShop(playerRef);
                 ev.HeroIDList = HeroIDList;
                 return ev;
             }

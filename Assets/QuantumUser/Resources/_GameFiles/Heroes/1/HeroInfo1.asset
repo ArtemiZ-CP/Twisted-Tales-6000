@@ -30,17 +30,17 @@ MonoBehaviour:
     Defense: 20
     Damage: 10
     AttackSpeed: 1.1
-    ProjectileSpeed: 2
+    ProjectileSpeed: 5
     Range: 3
   - Health: 675
     Defense: 30
     Damage: 15
     AttackSpeed: 1.1
-    ProjectileSpeed: 2
+    ProjectileSpeed: 5
     Range: 3
   - Health: 900
     Defense: 40
     Damage: 20
     AttackSpeed: 1.1
-    ProjectileSpeed: 2
+    ProjectileSpeed: 5
     Range: 3

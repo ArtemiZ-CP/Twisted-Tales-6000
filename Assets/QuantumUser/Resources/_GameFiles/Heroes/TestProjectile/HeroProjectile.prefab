@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4377976875631123905
 Transform:
   m_ObjectHideFlags: 0
@@ -245,9 +245,12 @@ MonoBehaviour:
           RawValue: 0
         Z:
           RawValue: 0
-      Health: 0
-      Defense: 0
-      Damage: 0
+      Health:
+        RawValue: 0
+      Defense:
+        RawValue: 0
+      Damage:
+        RawValue: 0
       AttackSpeed:
         RawValue: 0
       ProjectileSpeed:
@@ -255,7 +258,8 @@ MonoBehaviour:
       Range: 0
       RangePercentage:
         RawValue: 0
-      CurrentHealth: 0
+      CurrentHealth:
+        RawValue: 0
       AttackTarget: {fileID: 0}
       TargetPositionX: 0
       TargetPositionY: 0
@@ -266,7 +270,9 @@ MonoBehaviour:
         RawValue: 0
     Speed:
       RawValue: 0
-    Damage: 0
+    Damage:
+      RawValue: 0
+    Level: 0
 --- !u!1001 &8950826266543737761
 PrefabInstance:
   m_ObjectHideFlags: 0

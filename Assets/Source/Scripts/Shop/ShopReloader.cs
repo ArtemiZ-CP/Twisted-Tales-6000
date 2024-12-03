@@ -9,7 +9,6 @@ namespace Quantum.Game
 
         private void Awake()
         {
-            QuantumEvent.Subscribe<EventInitPlayer>(listener: this, handler: InitPlayer);
             QuantumEvent.Subscribe<EventReloadShop>(listener: this, handler: ReloadShop);
         }
 
@@ -29,20 +28,11 @@ namespace Quantum.Game
 
             if (QuantumConnection.IsAbleToConnectQuantum())
             {
-                CommandReloadShop commandReloadShop = new();
-                QuantumRunner.DefaultGame.SendCommand(commandReloadShop);
+                QuantumRunner.DefaultGame.SendCommand(new CommandReloadShop());
             }
             else
             {
                 QuantumConnection.OnConnectedToQuantum += SendReloadShopCommand;
-            }
-        }
-
-        private void InitPlayer(EventInitPlayer eventInitPlayer)
-        {
-            if (QuantumConnection.IsPlayerMe(eventInitPlayer.PlayerRef))
-            {
-                SendReloadShopCommand();
             }
         }
 
@@ -51,7 +41,6 @@ namespace Quantum.Game
             if (QuantumConnection.IsPlayerMe(eventReloadShop.PlayerRef))
             {
                 _shop.ReloadShop(eventReloadShop.HeroIDList);
-                _shop.SetCoins(eventReloadShop.Coins);
             }
         }
     }

@@ -3,7 +3,7 @@ using UnityEngine.Rendering;
 
 namespace Quantum.Game
 {
-    public class Hero : MonoBehaviour
+    public class HeroObject : MonoBehaviour
     {
         private HeroState _heroState = HeroState.None;
         private PlayerInventorySlot _playerInventorySlot;

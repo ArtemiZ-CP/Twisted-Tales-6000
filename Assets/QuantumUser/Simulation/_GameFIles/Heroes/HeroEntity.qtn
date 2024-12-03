@@ -1,4 +1,4 @@
-struct Hero
+struct HeroEntity
 {
     entity_ref Ref;
     Int32 ID;

@@ -33,6 +33,10 @@ namespace Quantum.Game
     {
         public const int BoardSize = 8;
 
+        [Header("Player")]
+        public int PlayerHealth = 100;
+        public int CoinsPerRound = 10;
+        public bool ResetCoinsOnEndRound;
         [Header("Hero settings")]
         public AssetRef<HeroInfo>[] HeroInfos;
         public FP HeroMoveSpeed = 1;

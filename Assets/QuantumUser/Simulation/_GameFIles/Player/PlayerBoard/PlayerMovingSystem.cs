@@ -12,7 +12,7 @@ namespace Quantum.Game
         QList<int> _boardLevels;
         QList<int> _shop;
         PlayerLink* _playerLink;
-        Frame _frame;
+        Frame _f;
 
         public void OnMoveHero(Frame f, PlayerLink* playerLink, HeroState HeroFromState, HeroState HeroToState, int positionFromX, int positionFromY, int positionToX, int positionToY)
         {
@@ -22,7 +22,7 @@ namespace Quantum.Game
             _boardLevels = f.ResolveList(playerLink->Info.Board.HeroesLevel);
             _shop = f.ResolveList(playerLink->Info.Shop.HeroesID);
             _playerLink = playerLink;
-            _frame = f;
+            _f = f;
 
             int boardFromIndex = positionFromY * GameConfig.BoardSize + positionFromX;
             int boardToIndex = positionToY * GameConfig.BoardSize + positionToX;
@@ -42,19 +42,25 @@ namespace Quantum.Game
             {
                 HeroInfo heroInfo = GetBuyingHero(f, _shop[positionFromX]);
 
-                if (heroInfo == null || playerLink->Info.Coins < heroInfo.GetCost(f))
+                if (heroInfo == null)
                 {
-                    _frame.Events.MoveHero(_playerLink->Ref, _playerLink->Info.Coins, IsMoved: false);
+                    _f.Events.MoveHero(_playerLink->Ref, IsMoved: false);
+                    return;
+                }
+
+                if (Player.TryRemoveCoins(f, playerLink, heroInfo.GetCost(f)) == false)
+                {
+                    _f.Events.MoveHero(_playerLink->Ref, IsMoved: false);
                     return;
                 }
 
                 if (HeroToState == HeroState.Inventory)
                 {
-                    FromSToI(positionFromX, positionToX, heroInfo.GetCost(f));
+                    FromSToI(positionFromX, positionToX);
                 }
                 else if (HeroToState == HeroState.Board)
                 {
-                    FromSToB(positionFromX, boardToIndex, heroInfo.GetCost(f));
+                    FromSToB(positionFromX, boardToIndex);
                 }
             }
             else if (HeroFromState == HeroState.Board)
@@ -100,11 +106,11 @@ namespace Quantum.Game
             {
                 (_inventory[from], _inventory[to]) = (_inventory[to], _inventory[from]);
                 (_inventoryLevels[from], _inventoryLevels[to]) = (_inventoryLevels[to], _inventoryLevels[from]);
-                _frame.Events.MoveHero(_playerLink->Ref, _playerLink->Info.Coins, IsMoved: true);
+                _f.Events.MoveHero(_playerLink->Ref, IsMoved: true);
             }
             else
             {
-                _frame.Events.MoveHero(_playerLink->Ref, _playerLink->Info.Coins, IsMoved: false);
+                _f.Events.MoveHero(_playerLink->Ref, IsMoved: false);
             }
         }
 
@@ -114,15 +120,15 @@ namespace Quantum.Game
             {
                 (_inventory[from], _board[to]) = (_board[to], _inventory[from]);
                 (_inventoryLevels[from], _boardLevels[to]) = (_boardLevels[to], _inventoryLevels[from]);
-                _frame.Events.MoveHero(_playerLink->Ref, _playerLink->Info.Coins, IsMoved: true);
+                _f.Events.MoveHero(_playerLink->Ref, IsMoved: true);
             }
             else
             {
-                _frame.Events.MoveHero(_playerLink->Ref, _playerLink->Info.Coins, IsMoved: false);
+                _f.Events.MoveHero(_playerLink->Ref, IsMoved: false);
             }
         }
 
-        private void FromSToI(int from, int to, int heroCost)
+        private void FromSToI(int from, int to)
         {
             if (from >= 0 && from < _shop.Count && to >= 0 && to < _inventory.Count)
             {
@@ -130,16 +136,15 @@ namespace Quantum.Game
                 {
                     _inventory[to] = _shop[from];
                     _shop[from] = -1;
-                    _playerLink->Info.Coins -= heroCost;
-                    _frame.Events.MoveHero(_playerLink->Ref, _playerLink->Info.Coins, IsMoved: true);
+                    _f.Events.MoveHero(_playerLink->Ref, IsMoved: true);
                     return;
                 }
             }
 
-            _frame.Events.MoveHero(_playerLink->Ref, _playerLink->Info.Coins, IsMoved: false);
+            _f.Events.MoveHero(_playerLink->Ref, IsMoved: false);
         }
 
-        private void FromSToB(int from, int to, int heroCost)
+        private void FromSToB(int from, int to)
         {
             if (from >= 0 && from < _shop.Count && to >= 0 && to < _board.Count)
             {
@@ -147,13 +152,12 @@ namespace Quantum.Game
                 {
                     _board[to] = _shop[from];
                     _shop[from] = -1;
-                    _playerLink->Info.Coins -= heroCost;
-                    _frame.Events.MoveHero(_playerLink->Ref, _playerLink->Info.Coins, IsMoved: true);
+                    _f.Events.MoveHero(_playerLink->Ref, IsMoved: true);
                     return;
                 }
             }
 
-            _frame.Events.MoveHero(_playerLink->Ref, _playerLink->Info.Coins, IsMoved: false);
+            _f.Events.MoveHero(_playerLink->Ref, IsMoved: false);
         }
 
         private void FromBToI(int from, int to)
@@ -162,11 +166,11 @@ namespace Quantum.Game
             {
                 (_board[from], _inventory[to]) = (_inventory[to], _board[from]);
                 (_boardLevels[from], _inventoryLevels[to]) = (_inventoryLevels[to], _boardLevels[from]);
-                _frame.Events.MoveHero(_playerLink->Ref, _playerLink->Info.Coins, IsMoved: true);
+                _f.Events.MoveHero(_playerLink->Ref, IsMoved: true);
             }
             else
             {
-                _frame.Events.MoveHero(_playerLink->Ref, _playerLink->Info.Coins, IsMoved: false);
+                _f.Events.MoveHero(_playerLink->Ref, IsMoved: false);
             }
         }
 
@@ -176,11 +180,11 @@ namespace Quantum.Game
             {
                 (_board[from], _board[to]) = (_board[to], _board[from]);
                 (_boardLevels[from], _boardLevels[to]) = (_boardLevels[to], _boardLevels[from]);
-                _frame.Events.MoveHero(_playerLink->Ref, _playerLink->Info.Coins, IsMoved: true);
+                _f.Events.MoveHero(_playerLink->Ref, IsMoved: true);
             }
             else
             {
-                _frame.Events.MoveHero(_playerLink->Ref, _playerLink->Info.Coins, IsMoved: false);
+                _f.Events.MoveHero(_playerLink->Ref, IsMoved: false);
             }
         }
     }

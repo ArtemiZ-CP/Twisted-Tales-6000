@@ -1,0 +1,79 @@
+event GetPlayerInfo
+{
+    Frame Frame;
+    player_ref PlayerRef;
+    PlayerInfo PlayerInfo;
+}
+
+event GetCurrentPlayers
+{
+}
+
+event InitPlayer
+{
+    player_ref PlayerRef;
+}
+
+event DestroyHero
+{
+    player_ref PlayerRef1;
+    player_ref PlayerRef2;
+    entity_ref HeroEntity;
+}
+
+event HeroHealthChanged
+{
+    player_ref PlayerRef1;
+    player_ref PlayerRef2;
+    entity_ref HeroEntity;
+    FP CurrentHealth;
+    FP MaxHealth;
+}
+
+event ChangeCoins
+{
+    player_ref PlayerRef;
+    int Coins;
+}
+
+event ReloadShop
+{
+    player_ref PlayerRef;
+}
+
+event BuyHero
+{
+    player_ref PlayerRef;
+    Int32 ShopIndex;
+    Int32 InventoryIndex;
+    Int32 HeroID;
+}
+
+event MoveHero
+{
+    player_ref PlayerRef;
+    bool IsMoved;
+}
+
+event StartRound
+{
+    player_ref Player1;
+    player_ref Player2;
+    entity_ref BoardEntity;
+}
+
+event EndRound
+{
+}
+
+event GetRoundTime
+{
+    bool IsBuyPhase;
+    FP RemainingTime;
+}
+
+event GetProjectiles
+{
+    player_ref Player1;
+    player_ref Player2;
+}

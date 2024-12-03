@@ -25,8 +25,7 @@ namespace Quantum.Game
         {
             if (QuantumConnection.IsAbleToConnectQuantum())
             {
-                CommandStartRound commandStartRound = new();
-                QuantumRunner.DefaultGame.SendCommand(commandStartRound);
+                QuantumRunner.DefaultGame.SendCommand(new CommandStartRound());
             }
         }
 
@@ -34,8 +33,7 @@ namespace Quantum.Game
         {
             if (QuantumConnection.IsAbleToConnectQuantum())
             {
-                CommandEndRound commandEndRound = new();
-                QuantumRunner.DefaultGame.SendCommand(commandEndRound);
+                QuantumRunner.DefaultGame.SendCommand(new CommandEndRound());
             }
         }
     }

@@ -72,11 +72,11 @@ namespace Quantum.Game
             SpawnHeroes(f, playerBoard);
         }
 
-        private void ClearHeroes(Frame f, QListPtr<Hero> heroesPtr)
+        private void ClearHeroes(Frame f, QListPtr<HeroEntity> heroesPtr)
         {
             if (heroesPtr == null) return;
 
-            QList<Hero> heroes = f.ResolveList(heroesPtr);
+            QList<HeroEntity> heroes = f.ResolveList(heroesPtr);
 
             for (int i = 0; i < heroes.Count; i++)
             {
@@ -124,53 +124,17 @@ namespace Quantum.Game
 
         private void SpawnHeroes(Frame f, Board* board)
         {
-            QList<Hero> heroesID1 = f.ResolveList(board->HeroesID1);
-            QList<Hero> heroesID2 = f.ResolveList(board->HeroesID2);
+            QList<HeroEntity> heroesID1 = f.ResolveList(board->HeroesID1);
+            QList<HeroEntity> heroesID2 = f.ResolveList(board->HeroesID2);
 
             for (int i = 0; i < heroesID1.Count; i++)
             {
-                Hero hero = heroesID1[i];
-                if (hero.ID < 0) continue;
-
-                hero = SpawnHero(f, hero);
-                hero.TeamNumber = 1;
-                heroesID1[i] = hero;
-                SetHeroPosition(f, hero);
-                DisactiveEntity(f, hero.Ref);
+                Hero.Spawn(f, heroesID1, i, 1, first: true);
             }
 
             for (int i = 0; i < heroesID2.Count; i++)
             {
-                Hero hero = heroesID2[i];
-                if (hero.ID < 0) continue;
-
-                hero = SpawnHero(f, hero);
-                hero.TeamNumber = 2;
-                heroesID2[i] = hero;
-                SetHeroPosition(f, hero, first: false);
-                DisactiveEntity(f, hero.Ref);
-            }
-        }
-
-        private Hero SpawnHero(Frame f, Hero hero)
-        {
-            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            EntityRef heroEntity = f.Create(gameConfig.GetHeroPrototype(f, hero.ID));
-            hero.Ref = heroEntity;
-            return hero;
-        }
-
-        private void SetHeroPosition(Frame f, Hero hero, bool first = true)
-        {
-            Transform3D* heroTransform = f.Unsafe.GetPointer<Transform3D>(hero.Ref);
-
-            if (first)
-            {
-                heroTransform->Position = hero.DefaultPosition;
-            }
-            else
-            {
-                heroTransform->Position = -hero.DefaultPosition;
+                Hero.Spawn(f, heroesID2, i, 2, first: false);
             }
         }
 
@@ -182,8 +146,8 @@ namespace Quantum.Game
             board->FightingHeroesMap = f.AllocateList<FightingHero>(GameConfig.BoardSize * GameConfig.BoardSize);
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
 
-            board->HeroesID1 = SetupHeroes(f, player1, board->HeroesID1);
-            board->HeroesID2 = SetupHeroes(f, player2, board->HeroesID2);
+            board->HeroesID1 = Hero.SetupHeroes(f, player1, board->HeroesID1);
+            board->HeroesID2 = Hero.SetupHeroes(f, player2, board->HeroesID2);
 
             board->Player1 = *player1;
             board->Player2 = main ? *player2 : default;
@@ -200,69 +164,14 @@ namespace Quantum.Game
             board->FightingHeroesMap = f.AllocateList<FightingHero>(GameConfig.BoardSize * GameConfig.BoardSize);
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
 
-            board->HeroesID1 = SetupHeroes(f, player1, board->HeroesID1);
-            board->HeroesID2 = SetupHeroes(f, roundInfo, board->HeroesID2);
+            board->HeroesID1 = Hero.SetupHeroes(f, player1, board->HeroesID1);
+            board->HeroesID2 = Hero.SetupHeroes(f, roundInfo, board->HeroesID2);
 
             board->Player1 = *player1;
             board->Player2 = default;
 
             QList<Board> boards = f.ResolveList(f.Global->Boards);
             boards.Add(*board);
-        }
-
-        private QListPtr<Hero> SetupHeroes(Frame f, PlayerLink* player, QListPtr<Hero> heroes)
-        {
-            if (player->Ref == default)
-            {
-                return heroes;
-            }
-
-            QList<int> playerHeroesID = f.ResolveList(player->Info.Board.HeroesID);
-            QList<int> playerHeroesLevel = f.ResolveList(player->Info.Board.HeroesLevel);
-            heroes = f.AllocateList<Hero>();
-            QList<Hero> playerHeroes = f.ResolveList(heroes);
-
-            for (int i = 0; i < playerHeroesID.Count; i++)
-            {
-                Hero hero = new()
-                {
-                    ID = playerHeroesID[i],
-                    Level = playerHeroesLevel[i],
-                    DefaultPosition = HeroBoard.GetTilePosition(f, i % GameConfig.BoardSize, i / GameConfig.BoardSize)
-                };
-
-                playerHeroes.Add(hero);
-            }
-
-            return heroes;
-        }
-
-        private QListPtr<Hero> SetupHeroes(Frame f, RoundInfo roundInfo, QListPtr<Hero> heroes)
-        {
-            if (roundInfo == null)
-            {
-                return heroes;
-            }
-
-            heroes = f.AllocateList<Hero>();
-            QList<Hero> playerHeroes = f.ResolveList(heroes);
-
-            for (int i = 0; i < roundInfo.PVEBoard.Count; i++)
-            {
-                for (int j = 0; j < roundInfo.PVEBoard[i].Cells.Count; j++)
-                {
-                    Hero hero = new()
-                    {
-                        ID = roundInfo.PVEBoard[i].Cells[^(j + 1)],
-                        Level = 0,
-                        DefaultPosition = HeroBoard.GetTilePosition(f, j, i),
-                    };
-
-                    playerHeroes.Add(hero);
-                }
-            }
-
-            return heroes;
         }
     }
 }
