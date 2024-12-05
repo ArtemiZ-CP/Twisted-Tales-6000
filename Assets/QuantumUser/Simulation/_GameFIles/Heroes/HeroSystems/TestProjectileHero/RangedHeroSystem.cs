@@ -7,7 +7,7 @@ namespace Quantum.Game.Heroes
     {
         public override void Update(Frame f)
         {
-            BaseHeroFightingSystem.UpdateHeroes<RangedHero>(f, HeroAttack.ProcessProjectileAttack, false);
+            BaseHeroFightingSystem.UpdateHeroes<RangedHero>(f, HeroAttack.ProjectileAttack, false);
         }
     }
 }

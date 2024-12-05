@@ -1,4 +1,5 @@
 using Quantum.Collections;
+using UnityEngine;
 
 namespace Quantum.Game
 {
@@ -20,10 +21,21 @@ namespace Quantum.Game
             if (hero.ID < 0) return;
 
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            EntityRef heroEntity = f.Create(gameConfig.GetHeroPrototype(f, hero.ID));
+            HeroInfo heroInfo = gameConfig.GetHeroInfo(f, hero.ID);
+            EntityRef heroEntity = f.Create(heroInfo.HeroPrototype);
             hero.Ref = heroEntity;
             hero.TeamNumber = teamNumber;
             heroes[heroIndex] = hero;
+
+            switch (heroInfo.HeroType)
+            {
+                case HeroType.Melee:
+                    f.Add<MeleeHero>(heroEntity);
+                    break;
+                case HeroType.Ranged:
+                    f.Add<RangedHero>(heroEntity);
+                    break;
+            }
 
             SetHeroPosition(f, hero, first);
             BoardSystem.DisactiveEntity(f, heroEntity);
@@ -98,5 +110,44 @@ namespace Quantum.Game
             }
         }
 
+        public static FightingHero SetupHero(Frame f, FightingHero hero, int heroIndex)
+        {
+            GameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
+
+            if (HeroBoard.TryGetHeroCords(heroIndex, out Vector2Int position))
+            {
+                hero.Hero.TargetPositionX = position.x;
+                hero.Hero.TargetPositionY = position.y;
+            }
+            else
+            {
+                throw new System.NotSupportedException();
+            }
+
+            hero.Hero.RangePercentage = config.RangePercentage;
+            hero.Hero.ManaRegen = config.ManaRegen;
+            hero.Hero.ManaDamageRegenPersent = config.ManaDamageRegenPersent;
+            hero.Hero.IsAlive = true;
+            hero.Hero.AttackTimer = 0;
+
+            HeroInfo heroInfo = config.GetHeroInfo(f, hero.Hero.ID);
+            hero.Hero.MaxMana = heroInfo.Mana;
+            hero.Hero.CurrentMana = heroInfo.StartMana;
+            hero.Hero.AttackDamageType = (int)heroInfo.AttackDamageType;
+            hero.Hero.AbilityDamageType = (int)heroInfo.AbilityDamageType;
+
+            HeroLevelStats heroLevelStats = heroInfo.HeroStats[hero.Hero.Level];
+            hero.Hero.Health = heroLevelStats.Health;
+            hero.Hero.CurrentHealth = heroLevelStats.Health;
+            hero.Hero.Defense = heroLevelStats.Defense;
+            hero.Hero.MagicDefense = heroLevelStats.MagicDefense;
+            hero.Hero.AttackDamage = heroLevelStats.AttackDamage;
+            hero.Hero.AbilityDamage = heroLevelStats.AbilityDamage;
+            hero.Hero.AttackSpeed = heroLevelStats.AttackSpeed;
+            hero.Hero.ProjectileSpeed = heroLevelStats.ProjectileSpeed;
+            hero.Hero.Range = heroLevelStats.Range;
+
+            return hero;
+        }
     }
 }

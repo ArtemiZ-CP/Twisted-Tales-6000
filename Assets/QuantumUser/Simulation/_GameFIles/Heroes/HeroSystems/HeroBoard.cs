@@ -121,17 +121,17 @@ namespace Quantum.Game
             return false;
         }
 
-        public static FightingHero GetHeroTarget(Frame f, FightingHero fighingHero, out Vector2Int moveTargetPosition)
+        public static FightingHero GetHeroTarget(Frame f, FightingHero fightingHero, out Vector2Int moveTargetPosition)
         {
-            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fighingHero).FightingHeroesMap);
+            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fightingHero).FightingHeroesMap);
 
-            if (HeroAttack.TryFindClosestTargetInAttackRange(f, heroes, fighingHero, out FightingHero targetHero))
+            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, out FightingHero targetHero))
             {
-                moveTargetPosition = GetHeroCords(fighingHero.Hero);
+                moveTargetPosition = GetHeroCords(fightingHero.Hero);
                 return targetHero;
             }
 
-            FightingHero hero = HeroAttack.FindClosestTargetOutOfAttackRange(f, heroes, fighingHero, out moveTargetPosition, out bool inRange);
+            FightingHero hero = HeroAttack.FindClosestTargetOutOfAttackRange(f, fightingHero, out moveTargetPosition, out bool inRange);
 
             return hero;
         }
@@ -185,6 +185,74 @@ namespace Quantum.Game
             }
 
             return closestHero;
+        }
+
+        public static bool TryGetRandomTarget(Frame f, FightingHero fightingHero, out FightingHero target)
+        {
+            List<FightingHero> targets = GetAllTargets(f, fightingHero);
+
+            if (targets.Count == 0)
+            {
+                target = default;
+                return false;
+            }
+
+            target = targets[f.RNG->Next(0, targets.Count)];
+            return true;
+        }
+
+        public static List<FightingHero> GetAllTargetsInRange(Frame f, FightingHero fightingHero)
+        {
+            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fightingHero).FightingHeroesMap);
+            List<Vector2Int> closeTiles = new();
+            List<FightingHero> heroesList = new();
+
+            GetCloseCords(fightingHero.Index, ref closeTiles, fightingHero.Hero.Range);
+
+            foreach (var tile in closeTiles)
+            {
+                if (TryConvertCordsToIndex(tile, out int index) == false)
+                {
+                    continue;
+                }
+
+                if (heroes[index].Hero.ID < 0)
+                {
+                    continue;
+                }
+
+                if (fightingHero.Hero.TeamNumber == heroes[index].Hero.TeamNumber || heroes[index].Hero.IsAlive == false)
+                {
+                    continue;
+                }
+
+                heroesList.Add(heroes[index]);
+            }
+
+            return heroesList;
+        }
+
+        public static List<FightingHero> GetAllTargets(Frame f, FightingHero fightingHero)
+        {
+            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fightingHero).FightingHeroesMap);
+            List<FightingHero> heroesList = new();
+
+            foreach (FightingHero target in heroes)
+            {
+                if (target.Hero.ID < 0)
+                {
+                    continue;
+                }
+
+                if (fightingHero.Hero.TeamNumber == target.Hero.TeamNumber || target.Hero.IsAlive == false)
+                {
+                    continue;
+                }
+
+                heroesList.Add(target);
+            }
+
+            return heroesList;
         }
     }
 }

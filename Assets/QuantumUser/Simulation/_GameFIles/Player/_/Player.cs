@@ -4,24 +4,12 @@ namespace Quantum.Game
 {
     public unsafe class Player
     {
-        public static List<(EntityRef entity, PlayerLink link)> GetAllPlayersEntity(Frame f)
-        {
-            List<(EntityRef entity, PlayerLink link)> playersEntity = new();
-
-            foreach ((EntityRef entity, PlayerLink link) in f.GetComponentIterator<PlayerLink>())
-            {
-                playersEntity.Add((entity, link));
-            }
-
-            return playersEntity;
-        }
-
-        public static PlayerLink* GetPlayerPointer(Frame f, EntityRef entity, PlayerLink playerLink)
+        public static PlayerLink* GetPlayerPointer(Frame f, EntityRef entity)
         {
             return f.Unsafe.GetPointer<PlayerLink>(entity);
         }
 
-        public static List<PlayerLink> GetAllPlayers(Frame f)
+        public static List<PlayerLink> GetAllPlayersLink(Frame f)
         {
             List<PlayerLink> players = new();
 
@@ -33,13 +21,37 @@ namespace Quantum.Game
             return players;
         }
 
+        public static List<EntityRef> GetAllPlayersEntity(Frame f)
+        {
+            List<EntityRef> playersEntity = new();
+
+            foreach ((EntityRef entity, PlayerLink _) in f.GetComponentIterator<PlayerLink>())
+            {
+                playersEntity.Add(entity);
+            }
+
+            return playersEntity;
+        }
+
+        public static List<(EntityRef entity, PlayerLink link)> GetAllPlayers(Frame f)
+        {
+            List<(EntityRef entity, PlayerLink link)> playersEntity = new();
+
+            foreach ((EntityRef entity, PlayerLink link) in f.GetComponentIterator<PlayerLink>())
+            {
+                playersEntity.Add((entity, link));
+            }
+
+            return playersEntity;
+        }
+
         public static void ResetCoins(Frame f)
         {
             var players = GetAllPlayersEntity(f);
 
-            foreach (var (entity, link) in players)
+            foreach (var entity in players)
             {
-                ResetCoins(f, GetPlayerPointer(f, entity, link));
+                ResetCoins(f, GetPlayerPointer(f, entity));
             }
         }
 
@@ -58,9 +70,9 @@ namespace Quantum.Game
 
             var players = GetAllPlayersEntity(f);
 
-            foreach (var (entity, link) in players)
+            foreach (var entity in players)
             {
-                AddCoins(f, GetPlayerPointer(f, entity, link), coins);
+                AddCoins(f, GetPlayerPointer(f, entity), coins);
             }
         }
 

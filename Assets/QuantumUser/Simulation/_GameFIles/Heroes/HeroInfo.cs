@@ -1,4 +1,5 @@
 using System;
+using Photon.Deterministic;
 using UnityEngine;
 
 namespace Quantum.Game
@@ -12,26 +13,48 @@ namespace Quantum.Game
         Legendary
     }
 
+    public enum HeroType
+    {
+        Ranged,
+        Melee
+    }
+
+    public enum HeroAbilityType
+    {
+        None,
+        RandomProjectileAttack,
+    }
+
     [Serializable]
     public struct HeroLevelStats
     {
-        [Min(0)] public float Health;
-        [Min(0)] public float Defense;
-        [Min(0)] public float Damage;
-        [Min(0)] public float AttackSpeed;
-        [Min(0)] public float ProjectileSpeed;
-        [Min(1)] public int Range;
+        public FP Health;
+        public FP Defense;
+        public FP MagicDefense;
+        public FP AttackDamage;
+        public FP AbilityDamage;
+        public FP AttackSpeed;
+        public FP ProjectileSpeed;
+        public int Range;
     }
 
     public class HeroInfo : AssetObject
     {
-        public string Name;
-        public HeroRare Rare;
         public HeroMesh HeroPrefab;
         public AssetRef<EntityPrototype> HeroPrototype;
         public AssetRef<EntityPrototype> ProjectilePrototype;
+        public AssetRef<EntityPrototype> AbilityProjectilePrototype;
+        [Header("Hero Info")]
+        public string Name;
+        public HeroRare Rare;
+        public HeroType HeroType;
+        public HeroAbilityType AbilityType;
         [Header("Stats")]
         public HeroLevelStats[] HeroStats;
+        public HeroAttack.DamageType AttackDamageType;
+        public HeroAttack.DamageType AbilityDamageType;
+        public FP Mana;
+        public FP StartMana;
 
         public int GetCost(Frame frame)
         {

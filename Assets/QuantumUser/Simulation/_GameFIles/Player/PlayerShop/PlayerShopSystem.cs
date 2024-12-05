@@ -1,12 +1,10 @@
-using System.Collections.Generic;
-using System.Linq;
 using Quantum.Collections;
 using UnityEngine.Scripting;
 
 namespace Quantum.Game
 {
     [Preserve]
-    public unsafe class PlayerShopSystem : SystemSignalsOnly, ISignalOnReloadShop, ISignalOnBuyHero, ISignalOnEndRound
+    public unsafe class PlayerShopSystem : SystemSignalsOnly, ISignalOnReloadShop, ISignalOnBuyHero
     {
         public void OnBuyHero(Frame f, PlayerLink* playerLink, int shopIndex)
         {
@@ -67,31 +65,8 @@ namespace Quantum.Game
         {
             if (Player.TryRemoveCoins(f, playerLink, 1))
             {
-                f.Events.ReloadShop(f, playerLink->Ref, ReloadShop(f, playerLink->Info.Shop));
+                Shop.Reload(f, playerLink);
             }
-        }
-
-        public void OnEndRound(Frame f)
-        {
-            var filter = f.Filter<PlayerLink>();
-
-            while (filter.NextUnsafe(out var playerEntity, out PlayerLink* playerLink))
-            {
-                f.Events.ReloadShop(f, playerLink->Ref, ReloadShop(f, playerLink->Info.Shop));
-            }
-        }
-
-        private List<int> ReloadShop(Frame f, PlayerShop playerShop)
-        {
-            QList<int> list = f.ResolveList(playerShop.HeroesID);
-            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-
-            for (int i = 0; i < gameConfig.ShopSize; i++)
-            {
-                list[i] = f.RNG->Next(0, gameConfig.HeroInfos.Length);
-            }
-
-            return list.ToList();
         }
     }
 }

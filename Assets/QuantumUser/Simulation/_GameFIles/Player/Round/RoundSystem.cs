@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using Photon.Deterministic;
 using Quantum.Collections;
 using UnityEngine.Scripting;
 
@@ -25,7 +22,7 @@ namespace Quantum.Game
 
         public void GetPlayersList(Frame f)
         {
-            f.Events.GetCurrentPlayers(f, Player.GetAllPlayers(f), f.ResolveList(f.Global->Boards).ToList());
+            f.Events.GetCurrentPlayers(f, Player.GetAllPlayersLink(f), f.ResolveList(f.Global->Boards).ToList());
         }
 
         public void OnStartRound(Frame f)
@@ -130,6 +127,7 @@ namespace Quantum.Game
 
                     if (f.Global->PVPStreak >= config.PVPStreak)
                     {
+                        Shop.Reload(f);
                         ProcessPlayersCoins(f);
                         EndRound(f);
                     }
@@ -141,6 +139,7 @@ namespace Quantum.Game
                 }
                 else
                 {
+                    Shop.Reload(f);
                     ProcessPlayersCoins(f);
                     EndRound(f);
                 }
@@ -186,7 +185,7 @@ namespace Quantum.Game
         {
             QList<Board> boards = f.ResolveList(f.Global->Boards);
 
-            List<(EntityRef entity, PlayerLink link)> playersEntity = Player.GetAllPlayersEntity(f);
+            var playersEntity = Player.GetAllPlayers(f);
 
             foreach (Board board in boards)
             {
@@ -201,15 +200,13 @@ namespace Quantum.Game
 
                 if (isPlayer1Win && board.Player2.Ref != default)
                 {
-                    var player = playersEntity.First(player => player.link.Ref == board.Player2.Ref);
-                    PlayerLink* playerLink = Player.GetPlayerPointer(f, player.entity, player.link);
-                    playerLink->Info.Health -= damage;
+                    var (entity, link) = playersEntity.First(player => player.link.Ref == board.Player2.Ref);
+                    Player.GetPlayerPointer(f, entity)->Info.Health -= damage;
                 }
                 else if (isPlayer2Win && board.Player1.Ref != default)
                 {
-                    var player = playersEntity.First(player => player.link.Ref == board.Player1.Ref);
-                    PlayerLink* playerLink = Player.GetPlayerPointer(f, player.entity, player.link);
-                    playerLink->Info.Health -= damage;
+                    var (entity, link) = playersEntity.First(player => player.link.Ref == board.Player1.Ref);
+                    Player.GetPlayerPointer(f, entity)->Info.Health -= damage;
                 }
             }
         }

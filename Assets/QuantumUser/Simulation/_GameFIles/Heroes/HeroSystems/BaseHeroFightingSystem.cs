@@ -17,13 +17,13 @@ namespace Quantum.Game
         {
         }
 
-        public static void UpdateHeroes<T>(Frame f, 
-            Action<Frame, FightingHero> Attack, bool isHeroAttackWhileMooving) where T : unmanaged, IComponent
+        public static void UpdateHeroes<T>(Frame f,
+            Action<Frame, FightingHero, HeroAttack.DamageType> Attack, bool isHeroAttackWhileMooving) where T : unmanaged, IComponent
         {
             if (f.Global->IsBuyPhase || f.Global->IsDelayPassed == false || f.Global->IsFighting == false) return;
 
             List<FightingHero> heroesPtr = new();
-            
+
             if (TryGetHeroes<T>(f, ref heroesPtr))
             {
                 foreach (var fightingHero in heroesPtr)
@@ -33,10 +33,10 @@ namespace Quantum.Game
             }
         }
 
-        private static void UpdateHero(Frame f, FightingHero fightingHero, 
-            Action<Frame, FightingHero> Attack, bool isHeroAttackWhileMooving)
+        private static void UpdateHero(Frame f, FightingHero fightingHero,
+            Action<Frame, FightingHero, HeroAttack.DamageType> Attack, bool isHeroAttackWhileMooving)
         {
-            HeroAttack.ProcessReload(f, fightingHero);
+            HeroAttack.Update(f, fightingHero);
 
             if (HeroBoard.IsHeroMoving(f, fightingHero.Hero))
             {
@@ -47,7 +47,7 @@ namespace Quantum.Game
 
             if (HeroBoard.TrySetTarget(f, fightingHero))
             {
-                Attack(f, fightingHero);
+                Attack(f, fightingHero, (HeroAttack.DamageType)fightingHero.Hero.AttackDamageType);
                 return;
             }
         }

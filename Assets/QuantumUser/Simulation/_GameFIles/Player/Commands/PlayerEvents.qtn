@@ -30,6 +30,15 @@ event HeroHealthChanged
     FP MaxHealth;
 }
 
+event HeroManaChanged
+{
+    player_ref PlayerRef1;
+    player_ref PlayerRef2;
+    entity_ref HeroEntity;
+    FP CurrentMana;
+    FP MaxMana;
+}
+
 event ChangeCoins
 {
     player_ref PlayerRef;

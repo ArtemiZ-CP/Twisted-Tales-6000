@@ -25,6 +25,7 @@ public class HealthBar : MonoBehaviour
 
     private void Awake()
     {
+        _healthBar.gameObject.SetActive(false);
         QuantumEvent.Subscribe<EventHeroHealthChanged>(listener: this, handler: OnHeroHealthChanged);
     }
 
@@ -44,6 +45,7 @@ public class HealthBar : MonoBehaviour
             return;
         }
 
+        _healthBar.gameObject.SetActive(true);
         QuantumEntityView quantumEntityView = QuantumEntityViewUpdater.GetView(eventHeroHealthChanged.HeroEntity);
 
         if (_quantumEntityView == quantumEntityView)

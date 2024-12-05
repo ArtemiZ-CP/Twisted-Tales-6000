@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Photon.Deterministic;
 using Quantum.Collections;
+using UnityEditor.VersionControl;
 using UnityEngine.Scripting;
 
 namespace Quantum.Game
@@ -21,23 +22,39 @@ namespace Quantum.Game
             }
         }
 
-        public static void SpawnProjectile(Frame f, FightingHero fighingHero, HeroEntity targetHero)
+        public static void SpawnProjectile(Frame f, FightingHero fighingHero, HeroEntity targetHero, FP damage, 
+            HeroAttack.DamageType damageType, HeroAttack.ProjectileType projectileType)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            HeroEntity hero = fighingHero.Hero;
             Board board = HeroBoard.GetBoard(f, fighingHero);
+
+            AssetRef<EntityPrototype> projectilePrototype;
+
+            switch (projectileType)
+            {
+                case HeroAttack.ProjectileType.Attack:
+                    projectilePrototype = gameConfig.GetHeroInfo(f, fighingHero.Hero.ID).ProjectilePrototype;
+                    break;
+                case HeroAttack.ProjectileType.Ability:
+                    projectilePrototype = gameConfig.GetHeroInfo(f, fighingHero.Hero.ID).AbilityProjectilePrototype;
+                    break;
+                default:
+                    projectilePrototype = gameConfig.GetHeroInfo(f, fighingHero.Hero.ID).ProjectilePrototype;
+                    break;
+            }
 
             HeroProjectile projectile = new()
             {
-                Ref = f.Create(gameConfig.GetHeroInfo(f, hero.ID).ProjectilePrototype),
+                Ref = f.Create(projectilePrototype),
                 Target = targetHero,
-                Damage = hero.Damage,
-                Speed = hero.ProjectileSpeed,
-                Level = hero.Level
+                Damage = damage,
+                DamageType = (int)damageType,
+                Speed = fighingHero.Hero.ProjectileSpeed,
+                Level = fighingHero.Hero.Level
             };
 
             Transform3D* projectileTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Ref);
-            projectileTransform->Position = f.Get<Transform3D>(hero.Ref).Position;
+            projectileTransform->Position = f.Get<Transform3D>(fighingHero.Hero.Ref).Position;
             QList<HeroProjectile> heroProjectiles = f.ResolveList(board.HeroProjectiles);
             heroProjectiles.Add(projectile);
 
@@ -69,7 +86,7 @@ namespace Quantum.Game
 
             if (projectileTransform->Position == targetTransform->Position)
             {
-                HeroAttack.DamageHero(f, board, projectile.Damage, projectile.Target);
+                HeroAttack.DamageHero(f, board, projectile.Damage, projectile.Target, (HeroAttack.DamageType)projectile.DamageType);
                 f.ResolveList(board.HeroProjectiles).Remove(projectile);
                 f.Destroy(projectile.Ref);
             }

@@ -7,15 +7,23 @@ struct HeroEntity
 
     // Stats
     FP Health;
+    FP MaxMana;
+    FP ManaRegen;
+    FP ManaDamageRegenPersent;
     FP Defense;
-    FP Damage;
+    FP MagicDefense;
+    FP AttackDamage;
+    FP AbilityDamage;
     FP AttackSpeed;
     FP ProjectileSpeed;
     int Range;
     FP RangePercentage;
+    int AttackDamageType;
+    int AbilityDamageType;
 
     // Fighing stats only
     FP CurrentHealth;
+    FP CurrentMana;
     entity_ref AttackTarget;
     int TargetPositionX;
     int TargetPositionY;

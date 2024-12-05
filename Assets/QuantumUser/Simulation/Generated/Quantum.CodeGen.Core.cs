@@ -401,7 +401,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct FightingHero {
-    public const Int32 SIZE = 144;
+    public const Int32 SIZE = 200;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
     public HeroEntity Hero;
@@ -427,43 +427,59 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HeroEntity {
-    public const Int32 SIZE = 136;
+    public const Int32 SIZE = 192;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(40)]
-    public EntityRef Ref;
-    [FieldOffset(0)]
-    public Int32 ID;
-    [FieldOffset(4)]
-    public Int32 Level;
-    [FieldOffset(112)]
-    public FPVector3 DefaultPosition;
-    [FieldOffset(88)]
-    public FP Health;
-    [FieldOffset(80)]
-    public FP Defense;
-    [FieldOffset(72)]
-    public FP Damage;
     [FieldOffset(48)]
-    public FP AttackSpeed;
-    [FieldOffset(96)]
-    public FP ProjectileSpeed;
+    public EntityRef Ref;
     [FieldOffset(8)]
-    public Int32 Range;
-    [FieldOffset(104)]
-    public FP RangePercentage;
-    [FieldOffset(64)]
-    public FP CurrentHealth;
-    [FieldOffset(32)]
-    public EntityRef AttackTarget;
+    public Int32 ID;
     [FieldOffset(12)]
-    public Int32 TargetPositionX;
-    [FieldOffset(16)]
-    public Int32 TargetPositionY;
-    [FieldOffset(20)]
-    public Int32 TeamNumber;
-    [FieldOffset(24)]
-    public QBoolean IsAlive;
+    public Int32 Level;
+    [FieldOffset(168)]
+    public FPVector3 DefaultPosition;
+    [FieldOffset(112)]
+    public FP Health;
+    [FieldOffset(144)]
+    public FP MaxMana;
+    [FieldOffset(136)]
+    public FP ManaRegen;
+    [FieldOffset(128)]
+    public FP ManaDamageRegenPersent;
+    [FieldOffset(104)]
+    public FP Defense;
+    [FieldOffset(120)]
+    public FP MagicDefense;
+    [FieldOffset(64)]
+    public FP AttackDamage;
     [FieldOffset(56)]
+    public FP AbilityDamage;
+    [FieldOffset(72)]
+    public FP AttackSpeed;
+    [FieldOffset(152)]
+    public FP ProjectileSpeed;
+    [FieldOffset(16)]
+    public Int32 Range;
+    [FieldOffset(160)]
+    public FP RangePercentage;
+    [FieldOffset(4)]
+    public Int32 AttackDamageType;
+    [FieldOffset(0)]
+    public Int32 AbilityDamageType;
+    [FieldOffset(88)]
+    public FP CurrentHealth;
+    [FieldOffset(96)]
+    public FP CurrentMana;
+    [FieldOffset(40)]
+    public EntityRef AttackTarget;
+    [FieldOffset(20)]
+    public Int32 TargetPositionX;
+    [FieldOffset(24)]
+    public Int32 TargetPositionY;
+    [FieldOffset(28)]
+    public Int32 TeamNumber;
+    [FieldOffset(32)]
+    public QBoolean IsAlive;
+    [FieldOffset(80)]
     public FP AttackTimer;
     public override Int32 GetHashCode() {
       unchecked { 
@@ -473,13 +489,21 @@ namespace Quantum {
         hash = hash * 31 + Level.GetHashCode();
         hash = hash * 31 + DefaultPosition.GetHashCode();
         hash = hash * 31 + Health.GetHashCode();
+        hash = hash * 31 + MaxMana.GetHashCode();
+        hash = hash * 31 + ManaRegen.GetHashCode();
+        hash = hash * 31 + ManaDamageRegenPersent.GetHashCode();
         hash = hash * 31 + Defense.GetHashCode();
-        hash = hash * 31 + Damage.GetHashCode();
+        hash = hash * 31 + MagicDefense.GetHashCode();
+        hash = hash * 31 + AttackDamage.GetHashCode();
+        hash = hash * 31 + AbilityDamage.GetHashCode();
         hash = hash * 31 + AttackSpeed.GetHashCode();
         hash = hash * 31 + ProjectileSpeed.GetHashCode();
         hash = hash * 31 + Range.GetHashCode();
         hash = hash * 31 + RangePercentage.GetHashCode();
+        hash = hash * 31 + AttackDamageType.GetHashCode();
+        hash = hash * 31 + AbilityDamageType.GetHashCode();
         hash = hash * 31 + CurrentHealth.GetHashCode();
+        hash = hash * 31 + CurrentMana.GetHashCode();
         hash = hash * 31 + AttackTarget.GetHashCode();
         hash = hash * 31 + TargetPositionX.GetHashCode();
         hash = hash * 31 + TargetPositionY.GetHashCode();
@@ -491,6 +515,8 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (HeroEntity*)ptr;
+        serializer.Stream.Serialize(&p->AbilityDamageType);
+        serializer.Stream.Serialize(&p->AttackDamageType);
         serializer.Stream.Serialize(&p->ID);
         serializer.Stream.Serialize(&p->Level);
         serializer.Stream.Serialize(&p->Range);
@@ -500,12 +526,18 @@ namespace Quantum {
         QBoolean.Serialize(&p->IsAlive, serializer);
         EntityRef.Serialize(&p->AttackTarget, serializer);
         EntityRef.Serialize(&p->Ref, serializer);
+        FP.Serialize(&p->AbilityDamage, serializer);
+        FP.Serialize(&p->AttackDamage, serializer);
         FP.Serialize(&p->AttackSpeed, serializer);
         FP.Serialize(&p->AttackTimer, serializer);
         FP.Serialize(&p->CurrentHealth, serializer);
-        FP.Serialize(&p->Damage, serializer);
+        FP.Serialize(&p->CurrentMana, serializer);
         FP.Serialize(&p->Defense, serializer);
         FP.Serialize(&p->Health, serializer);
+        FP.Serialize(&p->MagicDefense, serializer);
+        FP.Serialize(&p->ManaDamageRegenPersent, serializer);
+        FP.Serialize(&p->ManaRegen, serializer);
+        FP.Serialize(&p->MaxMana, serializer);
         FP.Serialize(&p->ProjectileSpeed, serializer);
         FP.Serialize(&p->RangePercentage, serializer);
         FPVector3.Serialize(&p->DefaultPosition, serializer);
@@ -811,7 +843,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HeroProjectile : Quantum.IComponent {
-    public const Int32 SIZE = 168;
+    public const Int32 SIZE = 224;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
     public EntityRef Ref;
@@ -822,6 +854,8 @@ namespace Quantum {
     [FieldOffset(16)]
     public FP Damage;
     [FieldOffset(0)]
+    public Int32 DamageType;
+    [FieldOffset(4)]
     public Int32 Level;
     public override Int32 GetHashCode() {
       unchecked { 
@@ -830,12 +864,14 @@ namespace Quantum {
         hash = hash * 31 + Target.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
         hash = hash * 31 + Damage.GetHashCode();
+        hash = hash * 31 + DamageType.GetHashCode();
         hash = hash * 31 + Level.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (HeroProjectile*)ptr;
+        serializer.Stream.Serialize(&p->DamageType);
         serializer.Stream.Serialize(&p->Level);
         EntityRef.Serialize(&p->Ref, serializer);
         FP.Serialize(&p->Damage, serializer);

@@ -124,17 +124,17 @@ namespace Quantum.Game
 
         private void SpawnHeroes(Frame f, Board* board)
         {
-            QList<HeroEntity> heroesID1 = f.ResolveList(board->HeroesID1);
-            QList<HeroEntity> heroesID2 = f.ResolveList(board->HeroesID2);
+            QList<HeroEntity> heroes1 = f.ResolveList(board->HeroesID1);
+            QList<HeroEntity> heroes2 = f.ResolveList(board->HeroesID2);
 
-            for (int i = 0; i < heroesID1.Count; i++)
+            for (int i = 0; i < heroes1.Count; i++)
             {
-                Hero.Spawn(f, heroesID1, i, 1, first: true);
+                Hero.Spawn(f, heroes1, i, 1, first: true);
             }
 
-            for (int i = 0; i < heroesID2.Count; i++)
+            for (int i = 0; i < heroes2.Count; i++)
             {
-                Hero.Spawn(f, heroesID2, i, 2, first: false);
+                Hero.Spawn(f, heroes2, i, 2, first: false);
             }
         }
 

@@ -16,8 +16,6 @@ MonoBehaviour:
     Path: QuantumUser/Resources/_GameFiles/Heroes/0/HeroInfo0
     Guid:
       Value: 503084228704062064
-  Name: "\u0411\u0435\u043B\u044B\u0439 \u043A\u0440\u043E\u043B\u0438\u043A"
-  Rare: 0
   HeroPrefab: {fileID: -5379929345563415316, guid: a538d09f6de5542fa9962ac22e9643aa, type: 3}
   HeroPrototype:
     Id:
@@ -25,22 +23,62 @@ MonoBehaviour:
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
+  AbilityProjectilePrototype:
+    Id:
+      Value: 1376884538976340079
+  Name: "\u0411\u0435\u043B\u044B\u0439 \u043A\u0440\u043E\u043B\u0438\u043A"
+  Rare: 0
+  HeroType: 0
+  AbilityType: 1
   HeroStats:
-  - Health: 500
-    Defense: 10
-    Damage: 15
-    AttackSpeed: 1.4
-    ProjectileSpeed: 0
-    Range: 1
-  - Health: 750
-    Defense: 15
-    Damage: 22.5
-    AttackSpeed: 1.4
-    ProjectileSpeed: 0
-    Range: 1
-  - Health: 1000
-    Defense: 20
-    Damage: 30
-    AttackSpeed: 1.4
-    ProjectileSpeed: 0
-    Range: 1
+  - Health:
+      RawValue: 32768000
+    Defense:
+      RawValue: 655360
+    MagicDefense:
+      RawValue: 983040
+    AttackDamage:
+      RawValue: 983040
+    AbilityDamage:
+      RawValue: 1966080
+    AttackSpeed:
+      RawValue: 91750
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 2
+  - Health:
+      RawValue: 49152000
+    Defense:
+      RawValue: 983040
+    MagicDefense:
+      RawValue: 1474560
+    AttackDamage:
+      RawValue: 1474560
+    AbilityDamage:
+      RawValue: 2949120
+    AttackSpeed:
+      RawValue: 91750
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 2
+  - Health:
+      RawValue: 6553600
+    Defense:
+      RawValue: 1310720
+    MagicDefense:
+      RawValue: 1966080
+    AttackDamage:
+      RawValue: 1966080
+    AbilityDamage:
+      RawValue: 3932160
+    AttackSpeed:
+      RawValue: 91750
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 2
+  AttackDamageType: 0
+  AbilityDamageType: 0
+  Mana:
+    RawValue: 2621440
+  StartMana:
+    RawValue: 1310720

@@ -4,5 +4,6 @@ component HeroProjectile
     HeroEntity Target;
     FP Speed;
     FP Damage;
+    int DamageType;
     int Level;
 }

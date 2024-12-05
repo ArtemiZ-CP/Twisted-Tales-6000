@@ -39,12 +39,16 @@ namespace Quantum.Game
         public bool ResetCoinsOnEndRound;
         [Header("Hero settings")]
         public AssetRef<HeroInfo>[] HeroInfos;
+        [Space(20)]
+        public FP ManaRegen;
+        public FP ManaDamageRegenPersent;
         public FP HeroMoveSpeed = 1;
         [Tooltip("Half damage on current ratio")]
         public FP HeroDefenseRatio = 100;
+        public FP RangePercentage;
+        [Space(20)]
         public int HeroesCountToUpgrade = 3;
         public int MaxLevel = 3;
-        [Range(0, 1)] public float RangePercentage = 0.5f;
         [Header("Shop settings")]
         public HeroShopSettings[] HeroShopSettings;
         public int ShopSize = 8;
@@ -82,11 +86,6 @@ namespace Quantum.Game
             }
             
             return RoundInfos[round];
-        }
-
-        public AssetRef<EntityPrototype> GetHeroPrototype(Frame f, int heroID)
-        {
-            return GetHeroInfo(f, heroID).HeroPrototype;
         }
 
         public HeroInfo GetHeroInfo(Frame f, int heroID)

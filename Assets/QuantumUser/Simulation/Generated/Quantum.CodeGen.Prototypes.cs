@@ -134,13 +134,21 @@ namespace Quantum.Prototypes {
     public Int32 Level;
     public FPVector3 DefaultPosition;
     public FP Health;
+    public FP MaxMana;
+    public FP ManaRegen;
+    public FP ManaDamageRegenPersent;
     public FP Defense;
-    public FP Damage;
+    public FP MagicDefense;
+    public FP AttackDamage;
+    public FP AbilityDamage;
     public FP AttackSpeed;
     public FP ProjectileSpeed;
     public Int32 Range;
     public FP RangePercentage;
+    public Int32 AttackDamageType;
+    public Int32 AbilityDamageType;
     public FP CurrentHealth;
+    public FP CurrentMana;
     public MapEntityId AttackTarget;
     public Int32 TargetPositionX;
     public Int32 TargetPositionY;
@@ -153,13 +161,21 @@ namespace Quantum.Prototypes {
         result.Level = this.Level;
         result.DefaultPosition = this.DefaultPosition;
         result.Health = this.Health;
+        result.MaxMana = this.MaxMana;
+        result.ManaRegen = this.ManaRegen;
+        result.ManaDamageRegenPersent = this.ManaDamageRegenPersent;
         result.Defense = this.Defense;
-        result.Damage = this.Damage;
+        result.MagicDefense = this.MagicDefense;
+        result.AttackDamage = this.AttackDamage;
+        result.AbilityDamage = this.AbilityDamage;
         result.AttackSpeed = this.AttackSpeed;
         result.ProjectileSpeed = this.ProjectileSpeed;
         result.Range = this.Range;
         result.RangePercentage = this.RangePercentage;
+        result.AttackDamageType = this.AttackDamageType;
+        result.AbilityDamageType = this.AbilityDamageType;
         result.CurrentHealth = this.CurrentHealth;
+        result.CurrentMana = this.CurrentMana;
         PrototypeValidator.FindMapEntity(this.AttackTarget, in context, out result.AttackTarget);
         result.TargetPositionX = this.TargetPositionX;
         result.TargetPositionY = this.TargetPositionY;
@@ -175,6 +191,7 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.HeroEntityPrototype Target;
     public FP Speed;
     public FP Damage;
+    public Int32 DamageType;
     public Int32 Level;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.HeroProjectile component = default;
@@ -186,6 +203,7 @@ namespace Quantum.Prototypes {
         this.Target.Materialize(frame, ref result.Target, in context);
         result.Speed = this.Speed;
         result.Damage = this.Damage;
+        result.DamageType = this.DamageType;
         result.Level = this.Level;
     }
   }

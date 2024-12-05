@@ -30,13 +30,18 @@ MonoBehaviour:
       Value: 441504537230468131
   - Id:
       Value: 371199533054399521
+  ManaRegen:
+    RawValue: 327680
+  ManaDamageRegenPersent:
+    RawValue: 16384
   HeroMoveSpeed:
     RawValue: 131072
   HeroDefenseRatio:
     RawValue: 6553600
+  RangePercentage:
+    RawValue: 32768
   HeroesCountToUpgrade: 3
   MaxLevel: 3
-  RangePercentage: 0.5
   HeroShopSettings:
   - Rare: 0
     BackgroundColor: {r: 0.6509434, g: 0.6509434, b: 0.6509434, a: 1}
@@ -126,8 +131,8 @@ MonoBehaviour:
     - Cells: ffffffffffffffff04000000ffffffffffffffff04000000ffffffffffffffff
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
   TileSize: 1.2
-  BuyPhaseTime: 60
-  FightPhaseTime: 60
+  BuyPhaseTime: 30
+  FightPhaseTime: 120
   StartFightingPhaseDelay: 1
   EndFightingPhaseDelay: 3
   PVPStreak: 3

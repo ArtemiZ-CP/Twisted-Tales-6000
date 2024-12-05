@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Photon.Deterministic;
 using Quantum.Collections;
-using UnityEngine;
 using UnityEngine.Scripting;
 
 namespace Quantum.Game
@@ -111,41 +109,11 @@ namespace Quantum.Game
                     continue;
                 }
 
-                fightingHeroesMap[i] = SetupHero(f, fightingHeroesMap[i], i);
+                fightingHeroesMap[i] = Hero.SetupHero(f, fightingHeroesMap[i], i);
             }
 
             List<EntityLevelData> heroDataList = fightingHeroesMap.Select(hero => new EntityLevelData { Ref = hero.Hero.Ref, Level = hero.Hero.Level }).ToList();
             f.Events.StartRound(f, board.Player1.Ref, board.Player2.Ref, board.Ref, heroDataList);
-        }
-
-        private FightingHero SetupHero(Frame f, FightingHero hero, int heroIndex)
-        {
-            GameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
-
-            if (HeroBoard.TryGetHeroCords(heroIndex, out Vector2Int position))
-            {
-                hero.Hero.TargetPositionX = position.x;
-                hero.Hero.TargetPositionY = position.y;
-            }
-            else
-            {
-                throw new System.NotSupportedException();
-            }
-
-            HeroInfo heroInfo = config.GetHeroInfo(f, hero.Hero.ID);
-            HeroLevelStats heroLevelStats = heroInfo.HeroStats[hero.Hero.Level];
-            hero.Hero.Health = FP.FromFloat_UNSAFE(heroLevelStats.Health);
-            hero.Hero.CurrentHealth = FP.FromFloat_UNSAFE(heroLevelStats.Health);
-            hero.Hero.Defense = FP.FromFloat_UNSAFE(heroLevelStats.Defense);
-            hero.Hero.Damage = FP.FromFloat_UNSAFE(heroLevelStats.Damage);
-            hero.Hero.AttackSpeed = FP.FromFloat_UNSAFE(heroLevelStats.AttackSpeed);
-            hero.Hero.ProjectileSpeed = FP.FromFloat_UNSAFE(heroLevelStats.ProjectileSpeed);
-            hero.Hero.Range = heroLevelStats.Range;
-            hero.Hero.RangePercentage = FP.FromFloat_UNSAFE(config.RangePercentage);
-            hero.Hero.IsAlive = true;
-            hero.Hero.AttackTimer = 0;
-
-            return hero;
         }
 
         private List<PlayerLink> GetCurrentPlayers(Frame f)
