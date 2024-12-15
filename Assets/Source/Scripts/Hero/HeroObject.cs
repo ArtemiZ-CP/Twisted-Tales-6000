@@ -1,3 +1,4 @@
+using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -11,7 +12,8 @@ namespace Quantum.Game
         private Board.Tile _boardTile;
         private int _id = -1;
         private int _level = 0;
-        private MeshRenderer _meshRenderer;
+        private MeshRenderer[] _meshRenderers;
+        private Transform _heroTransform;
 
         public HeroState State => _heroState;
         public PlayerInventorySlot PlayerInventorySlot => _playerInventorySlot;
@@ -53,9 +55,10 @@ namespace Quantum.Game
             SpawnHero();
         }
 
-        public void SetBasePosition()
+        public void SetBaseTransform()
         {
             transform.position = GetBasePosition();
+            SetRotation(_heroState == HeroState.Inventory || _heroState == HeroState.Shop);
         }
 
         public Vector3 GetBasePosition()
@@ -69,11 +72,35 @@ namespace Quantum.Game
             };
         }
 
+        public Vector3 GetSlotPosition()
+        {
+            return _heroState switch
+            {
+                HeroState.Inventory => _playerInventorySlot.SlotPosition,
+                HeroState.Shop => _shopItemSlot.SlotPosition,
+                HeroState.Board => _boardTile.Position,
+                _ => Vector3.zero
+            };
+        }
+
         public void SetActiveShadows(bool isActive)
         {
-            if (_meshRenderer != null)
+            if (_meshRenderers == null)
             {
-                _meshRenderer.shadowCastingMode = isActive ? ShadowCastingMode.On : ShadowCastingMode.Off;
+                return;
+            }
+
+            foreach (MeshRenderer meshRenderer in _meshRenderers)
+            {
+                meshRenderer.shadowCastingMode = isActive ? ShadowCastingMode.On : ShadowCastingMode.Off;
+            }
+        }
+
+        public void SetRotation(bool isUIPosition)
+        {
+            if (_heroTransform != null)
+            {
+                _heroTransform.rotation = GameSettings.GetRotation(isUIPosition);
             }
         }
 
@@ -89,13 +116,14 @@ namespace Quantum.Game
             HeroInfo heroInfos = QuantumConnection.GetAssetsList(QuantumConnection.GameConfig.HeroInfos)[_id];
 
             HeroMesh mesh = Instantiate(heroInfos.HeroPrefab);
-            mesh.SetMesh(_level);
+            mesh.SetMesh(_level, _id);
             bool isUIPosition = _heroState == HeroState.Inventory || _heroState == HeroState.Shop;
             mesh.transform.localScale = GameSettings.GetSize(isUIPosition) * Vector3.one;
             mesh.transform.rotation = GameSettings.GetRotation(isUIPosition);
             mesh.transform.SetParent(transform);
             mesh.transform.position = GetBasePosition();
-            _meshRenderer = mesh.GetComponentInChildren<MeshRenderer>();
+            _heroTransform = mesh.transform;
+            _meshRenderers = mesh.GetComponentsInChildren<MeshRenderer>();
             SetActiveShadows(isUIPosition == false);
         }
 

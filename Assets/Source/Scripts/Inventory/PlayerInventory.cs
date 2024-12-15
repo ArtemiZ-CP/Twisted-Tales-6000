@@ -36,7 +36,7 @@ namespace Quantum.Game
 
             for (int i = 0; i < _inventorySlots.Length; i++)
             {
-                float distance = Vector3.Distance(cursorPoint, _inventorySlots[i].HeroParentPosition);
+                float distance = Vector3.Distance(cursorPoint, _inventorySlots[i].SlotPosition);
 
                 if (distance < closestDistance)
                 {
@@ -85,7 +85,7 @@ namespace Quantum.Game
 
         private void BuyHero(EventBuyHero eventBuyHero)
         {
-            if (QuantumConnection.IsPlayerMe(eventBuyHero.PlayerRef))
+            if (QuantumConnection.IsPlayerMe(eventBuyHero.PlayerRef) && eventBuyHero.InventoryIndex >= 0)
             {
                 _inventorySlots[eventBuyHero.InventoryIndex].SetInventoryItem(eventBuyHero.HeroID, 0);
             }

@@ -5,11 +5,12 @@ namespace Quantum.Game
     public class PlayerInventorySlot : MonoBehaviour
     {
         [SerializeField] private HeroObject _hero;
-        [SerializeField] private Button _button;
         [SerializeField] private GameObject _heroParent;
+        [SerializeField] private Transform _slot;
 
         public HeroObject Hero => _hero;
         public Vector3 HeroParentPosition => _heroParent.transform.position;
+        public Vector3 SlotPosition => _slot.position;
         public bool IsSlotEmpty => _hero.Id < 0;
 
         public void SetInventoryItem(int heroId, int level)

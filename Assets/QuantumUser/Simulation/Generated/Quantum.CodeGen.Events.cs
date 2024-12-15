@@ -52,7 +52,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 15;
+        eventCount = 16;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -75,6 +75,7 @@ namespace Quantum {
           case EventEndRound.ID: result = typeof(EventEndRound); return;
           case EventGetRoundTime.ID: result = typeof(EventGetRoundTime); return;
           case EventGetProjectiles.ID: result = typeof(EventGetProjectiles); return;
+          case EventGetShopUpgradeCost.ID: result = typeof(EventGetShopUpgradeCost); return;
           default: break;
         }
       }
@@ -154,11 +155,10 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventStartRound StartRound(PlayerRef Player1, PlayerRef Player2, EntityRef BoardEntity) {
+      public EventStartRound StartRound(PlayerRef Player1, PlayerRef Player2) {
         var ev = _f.Context.AcquireEvent<EventStartRound>(EventStartRound.ID);
         ev.Player1 = Player1;
         ev.Player2 = Player2;
-        ev.BoardEntity = BoardEntity;
         _f.AddEvent(ev);
         return ev;
       }
@@ -178,6 +178,13 @@ namespace Quantum {
         var ev = _f.Context.AcquireEvent<EventGetProjectiles>(EventGetProjectiles.ID);
         ev.Player1 = Player1;
         ev.Player2 = Player2;
+        _f.AddEvent(ev);
+        return ev;
+      }
+      public EventGetShopUpgradeCost GetShopUpgradeCost(PlayerRef PlayerRef, Int32 UpgradeCost) {
+        var ev = _f.Context.AcquireEvent<EventGetShopUpgradeCost>(EventGetShopUpgradeCost.ID);
+        ev.PlayerRef = PlayerRef;
+        ev.UpgradeCost = UpgradeCost;
         _f.AddEvent(ev);
         return ev;
       }
@@ -469,7 +476,6 @@ namespace Quantum {
     public new const Int32 ID = 11;
     public PlayerRef Player1;
     public PlayerRef Player2;
-    public EntityRef BoardEntity;
     protected EventStartRound(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -489,7 +495,6 @@ namespace Quantum {
         var hash = 83;
         hash = hash * 31 + Player1.GetHashCode();
         hash = hash * 31 + Player2.GetHashCode();
-        hash = hash * 31 + BoardEntity.GetHashCode();
         return hash;
       }
     }
@@ -567,6 +572,33 @@ namespace Quantum {
         var hash = 101;
         hash = hash * 31 + Player1.GetHashCode();
         hash = hash * 31 + Player2.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventGetShopUpgradeCost : EventBase {
+    public new const Int32 ID = 15;
+    public PlayerRef PlayerRef;
+    public Int32 UpgradeCost;
+    protected EventGetShopUpgradeCost(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventGetShopUpgradeCost() : 
+        base(15, EventFlags.Server|EventFlags.Client) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 103;
+        hash = hash * 31 + PlayerRef.GetHashCode();
+        hash = hash * 31 + UpgradeCost.GetHashCode();
         return hash;
       }
     }

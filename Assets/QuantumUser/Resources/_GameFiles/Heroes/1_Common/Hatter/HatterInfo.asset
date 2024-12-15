@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
+  m_Name: HatterInfo
+  m_EditorClassIdentifier: 
+  Identifier:
+    Path: QuantumUser/Resources/_GameFiles/Heroes/1_Common/Hatter/HatterInfo
+    Guid:
+      Value: 363468817523190041
+  HeroPrefab: {fileID: -1459247843489039561, guid: bd5dca47372a94ed693e217ae4cb16de, type: 3}
+  HeroPrototype:
+    Id:
+      Value: 1519007499135832026
+  ProjectilePrototype:
+    Id:
+      Value: 1476018119604516482
+  AbilityProjectilePrototype:
+    Id:
+      Value: 1376884538976340079
+  Name: Hatter
+  Rare: 1
+  HeroType: 0
+  AbilityType: 1
+  HeroStats:
+  - Health:
+      RawValue: 29491200
+    Defense:
+      RawValue: 1310720
+    MagicDefense:
+      RawValue: 1638400
+    AttackDamage:
+      RawValue: 655360
+    AbilityDamage:
+      RawValue: 3276800
+    AttackSpeed:
+      RawValue: 72090
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 4
+  - Health:
+      RawValue: 44236800
+    Defense:
+      RawValue: 1966080
+    MagicDefense:
+      RawValue: 2457600
+    AttackDamage:
+      RawValue: 983040
+    AbilityDamage:
+      RawValue: 4915200
+    AttackSpeed:
+      RawValue: 72090
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 4
+  - Health:
+      RawValue: 58982400
+    Defense:
+      RawValue: 2621440
+    MagicDefense:
+      RawValue: 3276800
+    AttackDamage:
+      RawValue: 1310720
+    AbilityDamage:
+      RawValue: 6553600
+    AttackSpeed:
+      RawValue: 72090
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 4
+  AttackDamageType: 0
+  AbilityDamageType: 1
+  Mana:
+    RawValue: 3932160
+  StartMana:
+    RawValue: 0

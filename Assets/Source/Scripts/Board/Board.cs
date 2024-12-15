@@ -25,12 +25,13 @@ namespace Quantum.Game
             {
                 _hero.SetHeroState(this, heroId);
                 _hero.SetLevel(level);
-                _hero.SetBasePosition();
+                _hero.SetBaseTransform();
             }
         }
 
         [SerializeField] private LayerMask _boardLayerMask;
         [SerializeField] private HeroObject _boardHeroPrefab;
+        [SerializeField] private Transform _heroesParent;
         [Header("Board Settings")]
         [SerializeField] private bool _drawGizmos;
 
@@ -41,6 +42,11 @@ namespace Quantum.Game
         private void Awake()
         {
             QuantumEvent.Subscribe<EventGetPlayerInfo>(listener: this, handler: LoadBoard);
+        }
+
+        public void SetActiveHeroes(bool active)
+        {
+            _heroesParent.gameObject.SetActive(active);
         }
 
         public bool TryGetBoardTile(out Tile tile)
@@ -129,7 +135,7 @@ namespace Quantum.Game
                     Vector3 position = new Vector3(x, 0, y) * _tileSize;
                     position -= _tileSize * new Vector3(_boardSize, 0, _boardSize) / 2;
                     position += new Vector3(_tileSize, 0, _tileSize) / 2;
-                    _tiles[x, y] = new Tile(position, _boardHeroPrefab, transform);
+                    _tiles[x, y] = new Tile(position, _boardHeroPrefab, _heroesParent);
                 }
             }
         }
@@ -173,7 +179,7 @@ namespace Quantum.Game
         {
             _tiles = null;
 
-            foreach (Transform child in transform)
+            foreach (Transform child in _heroesParent)
             {
                 Destroy(child.gameObject);
             }

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Quantum.Game
@@ -6,8 +7,17 @@ namespace Quantum.Game
     {
         [SerializeField] private GameObject[] _meshes;
 
-        public void SetMesh(int level)
+        public Action<int> OnSetHero;
+
+        private int _id;
+
+        public int ID => _id;
+
+        public void SetMesh(int level, int ID)
         {
+            _id = ID;
+            OnSetHero?.Invoke(ID);
+
             foreach (var mesh in _meshes)
             {
                 mesh.SetActive(false);

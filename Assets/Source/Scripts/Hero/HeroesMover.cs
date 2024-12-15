@@ -15,6 +15,7 @@ namespace Quantum.Game
         private Camera _camera;
         private HeroObject _selectedHero;
         private HeroObject _newHeroPlace;
+        private Vector3 _dragOffset;
         private bool _isMovingHero = false;
         private bool _isCommandSended = false;
 
@@ -67,6 +68,7 @@ namespace Quantum.Game
             {
                 if (hit.collider.gameObject.TryGetComponent(out _selectedHero))
                 {
+                    _dragOffset = _selectedHero.transform.position - hit.point;
                     return true;
                 }
             }
@@ -95,11 +97,11 @@ namespace Quantum.Game
         {
             if (_selectedHero.State == HeroState.Inventory)
             {
-                MoveHeroFromInventory(cursorPoint, newObjectPosition);
+                MoveHeroFromInventory(cursorPoint, newObjectPosition + _dragOffset);
             }
             else if (_selectedHero.State == HeroState.Shop)
             {
-                MoveHeroFromShop(cursorPoint, newObjectPosition);
+                MoveHeroFromShop(cursorPoint, newObjectPosition + _dragOffset);
             }
             else if (_selectedHero.State == HeroState.Board)
             {
@@ -113,31 +115,27 @@ namespace Quantum.Game
             {
                 if (inventorySlot.Hero != _newHeroPlace)
                 {
-                    SetNewHeroPlace(inventorySlot.Hero, isUIPosition: true);
-                    SetHeroPosition(inventorySlot.HeroParentPosition, isUIPosition: true);
+                    SetNewHeroPlace(inventorySlot.Hero, inventorySlot.HeroParentPosition, isUIScale: true, isUIRotation: true);
                 }
             }
             else if (_playerBoard.TryGetBoardTile(out Board.Tile boardTile))
             {
                 if (boardTile.Hero != _newHeroPlace)
                 {
-                    SetNewHeroPlace(boardTile.Hero, isUIPosition: true);
-                    SetHeroPosition(boardTile.Position, isUIPosition: false);
+                    SetNewHeroPlace(boardTile.Hero, boardTile.Position, isUIScale: false, isUIRotation: false);
                 }
             }
             else
             {
-                SetNewHeroPlace(null, isUIPosition: true);
-                SetHeroPosition(newObjectPosition, isUIPosition: true);
+                SetNewHeroPlace(null, newObjectPosition, isUIScale: true, isUIRotation: true);
             }
         }
 
         private void MoveHeroFromShop(Vector3 cursorPoint, Vector3 newObjectPosition)
         {
-            if (Vector3.Distance(cursorPoint, _selectedHero.GetBasePosition()) < _moveDistanceToStartMove)
+            if (Vector3.Distance(cursorPoint, _selectedHero.GetSlotPosition()) < _moveDistanceToStartMove)
             {
-                SetNewHeroPlace(null, isUIPosition: true);
-                SetHeroPosition(_selectedHero.GetBasePosition(), isUIPosition: true);
+                SetNewHeroPlace(null, _selectedHero.GetBasePosition(), isUIScale: true, isUIRotation: true);
                 return;
             }
 
@@ -145,22 +143,19 @@ namespace Quantum.Game
             {
                 if (inventorySlot.Hero != _newHeroPlace)
                 {
-                    SetNewHeroPlace(inventorySlot.Hero, isUIPosition: true);
-                    SetHeroPosition(inventorySlot.HeroParentPosition, isUIPosition: true);
+                    SetNewHeroPlace(inventorySlot.Hero, inventorySlot.HeroParentPosition, isUIScale: true, isUIRotation: true);
                 }
             }
             else if (_playerBoard.TryGetBoardTile(out Board.Tile boardTile) && boardTile.Hero.Id < 0)
             {
                 if (boardTile.Hero != _newHeroPlace)
                 {
-                    SetNewHeroPlace(boardTile.Hero, isUIPosition: true);
-                    SetHeroPosition(boardTile.Position, isUIPosition: false);
+                    SetNewHeroPlace(boardTile.Hero, boardTile.Position, isUIScale: false, isUIRotation: false);
                 }
             }
             else
             {
-                SetNewHeroPlace(null, isUIPosition: true);
-                SetHeroPosition(newObjectPosition, isUIPosition: true);
+                SetNewHeroPlace(null, newObjectPosition, isUIScale: true, isUIRotation: true);
             }
         }
 
@@ -170,22 +165,19 @@ namespace Quantum.Game
             {
                 if (inventorySlot.Hero != _newHeroPlace)
                 {
-                    SetNewHeroPlace(inventorySlot.Hero, isUIPosition: false);
-                    SetHeroPosition(inventorySlot.HeroParentPosition, isUIPosition: true);
+                    SetNewHeroPlace(inventorySlot.Hero, inventorySlot.HeroParentPosition, isUIScale: true, isUIRotation: true);
                 }
             }
             else if (_playerBoard.TryGetBoardTile(out Board.Tile boardTile))
             {
                 if (boardTile.Hero != _newHeroPlace)
                 {
-                    SetNewHeroPlace(boardTile.Hero, isUIPosition: false);
-                    SetHeroPosition(boardTile.Position, isUIPosition: false);
+                    SetNewHeroPlace(boardTile.Hero, boardTile.Position, isUIScale: false, isUIRotation: false);
                 }
             }
             else
             {
-                SetNewHeroPlace(null, isUIPosition: true);
-                SetHeroPosition(newObjectPosition, isUIPosition: true);
+                SetNewHeroPlace(null, newObjectPosition, isUIScale: true, isUIRotation: true);
             }
         }
 
@@ -197,7 +189,7 @@ namespace Quantum.Game
             }
             else
             {
-                _selectedHero.SetBasePosition();
+                _selectedHero.SetBaseTransform();
                 SetBaseHeroSize(_selectedHero);
                 _selectedHero = null;
                 _newHeroPlace = null;
@@ -265,43 +257,35 @@ namespace Quantum.Game
             }
         }
 
-        private void SetNewHeroPlace(HeroObject hero, bool isUIPosition)
+        private void SetNewHeroPlace(HeroObject hero, Vector3 position, bool isUIScale, bool isUIRotation)
         {
             if (_newHeroPlace != null)
             {
-                _newHeroPlace.SetBasePosition();
+                _newHeroPlace.SetBaseTransform();
                 SetBaseHeroSize(_newHeroPlace);
             }
 
             _newHeroPlace = hero;
 
-            if (hero != null)
-            {
-                _newHeroPlace.transform.position = _selectedHero.GetBasePosition();
-                SetupHero(_newHeroPlace, isUIPosition);
-            }
-        }
-
-        private void SetHeroPosition(Vector3 position, bool isUIPosition)
-        {
             _selectedHero.transform.position = position;
-            SetupHero(_selectedHero, isUIPosition);
+            SetupHero(_selectedHero, isUIScale, isUIRotation);
         }
 
         private void SetBaseHeroSize(HeroObject hero)
         {
-            SetupHero(hero, isUIPosition: hero.State == HeroState.Inventory || hero.State == HeroState.Shop);
+            bool isUI = hero.State == HeroState.Inventory || hero.State == HeroState.Shop;
+            SetupHero(hero, isUIScale: isUI, isUIRotation: isUI);
         }
 
-        private void SetupHero(HeroObject hero, bool isUIPosition)
+        private void SetupHero(HeroObject hero, bool isUIScale, bool isUIRotation)
         {
-            hero.SetActiveShadows(isUIPosition == false);
+            hero.SetActiveShadows(isUIScale == false);
 
             Transform parent = hero.transform.parent;
             hero.transform.SetParent(null);
 
-            hero.transform.localScale = GameSettings.GetSize(isUIPosition) * Vector3.one;
-            hero.transform.rotation = GameSettings.GetRotation(isUIPosition);
+            hero.transform.localScale = GameSettings.GetSize(isUIScale) * Vector3.one;
+            hero.SetRotation(isUIRotation);
 
             hero.transform.SetParent(parent);
         }
@@ -318,10 +302,17 @@ namespace Quantum.Game
         {
             _isCommandSended = false;
 
-            _selectedHero.SetBasePosition();
-            SetBaseHeroSize(_selectedHero);
-            _newHeroPlace.SetBasePosition();
-            SetBaseHeroSize(_newHeroPlace);
+            if (_selectedHero != null)
+            {
+                _selectedHero.SetBaseTransform();
+                SetBaseHeroSize(_selectedHero);
+            }
+
+            if (_newHeroPlace != null)
+            {
+                _newHeroPlace.SetBaseTransform();
+                SetBaseHeroSize(_newHeroPlace);
+            }
 
             if (isMoved == false)
             {

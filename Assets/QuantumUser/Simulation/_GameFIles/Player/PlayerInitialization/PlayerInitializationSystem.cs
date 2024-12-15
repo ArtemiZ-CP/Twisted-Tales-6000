@@ -25,11 +25,11 @@ namespace Quantum.Game
 
                         if (board.Player1.Ref == player)
                         {
-                            f.Events.StartRound(f, player, default, board.Ref, heroDataList);
+                            f.Events.StartRound(f, player, default, heroDataList);
                         }
                         else if (board.Player2.Ref == player)
                         {
-                            f.Events.StartRound(f, default, player, board.Ref, heroDataList);
+                            f.Events.StartRound(f, default, player, heroDataList);
                         }
                     }
                 }
@@ -75,6 +75,7 @@ namespace Quantum.Game
             f.Signals.OnReloadShop(&playerLink);
             f.Add(playerEntity, playerLink);
             f.Events.InitPlayer(player);
+            f.Events.GetShopUpgradeCost(player, gameConfig.ShopUpdrageSettings[0].Cost);
         }
 
         public void OnPlayerRemoved(Frame f, PlayerRef player)

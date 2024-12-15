@@ -6,6 +6,20 @@ using UnityEngine;
 namespace Quantum.Game
 {
     [Serializable]
+    public class ShopUpdrageSettings
+    {
+        public int Cost;
+        public ShopHeroChance[] ShopHeroChances;
+    }
+
+    [Serializable]
+    public class ShopHeroChance
+    {
+        public HeroRare Rare;
+        [Min(0)] public int Chance;
+    }
+
+    [Serializable]
     public class HeroShopSettings
     {
         public HeroRare Rare;
@@ -29,7 +43,7 @@ namespace Quantum.Game
         public List<int> Cells = new();
     }
 
-    public class GameConfig : AssetObject
+    public unsafe class GameConfig : AssetObject
     {
         public const int BoardSize = 8;
 
@@ -51,6 +65,7 @@ namespace Quantum.Game
         public int MaxLevel = 3;
         [Header("Shop settings")]
         public HeroShopSettings[] HeroShopSettings;
+        public ShopUpdrageSettings[] ShopUpdrageSettings;
         public int ShopSize = 8;
         [Header("Inventory settings")]
         public int InventorySize = 8;
@@ -86,6 +101,23 @@ namespace Quantum.Game
             }
             
             return RoundInfos[round];
+        }
+
+        public int GetRandomHero(Frame f, HeroRare heroRare)
+        {
+            List<int> heroes = new();
+
+            for (int i = 0; i < HeroInfos.Length; i++)
+            {
+                HeroInfo heroInfo = f.FindAsset(HeroInfos[i]);
+
+                if (heroInfo.Rare == heroRare)
+                {
+                    heroes.Add(i);
+                }
+            }
+
+            return heroes[f.RNG->Next(0, heroes.Count)];
         }
 
         public HeroInfo GetHeroInfo(Frame f, int heroID)

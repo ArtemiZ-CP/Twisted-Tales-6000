@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Photon.Deterministic;
 using Quantum.Collections;
-using UnityEditor.VersionControl;
 using UnityEngine.Scripting;
 
 namespace Quantum.Game
@@ -22,7 +21,7 @@ namespace Quantum.Game
             }
         }
 
-        public static void SpawnProjectile(Frame f, FightingHero fighingHero, HeroEntity targetHero, FP damage, 
+        public static void SpawnProjectile(Frame f, FightingHero fighingHero, HeroEntity targetHero, FP damage,
             HeroAttack.DamageType damageType, HeroAttack.ProjectileType projectileType)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
@@ -80,6 +79,7 @@ namespace Quantum.Game
 
             Transform3D* projectileTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Ref);
             Transform3D* targetTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Target.Ref);
+
             FP moveOffset = projectile.Speed * f.DeltaTime;
 
             projectileTransform->Position = FPVector3.MoveTowards(projectileTransform->Position, targetTransform->Position, moveOffset);

@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
+  m_Name: CerberusInfo
+  m_EditorClassIdentifier: 
+  Identifier:
+    Path: QuantumUser/Resources/_GameFiles/Heroes/4_Legendary/Cerberus/CerberusInfo
+    Guid:
+      Value: 371199533054399521
+  HeroPrefab: {fileID: 5216602490358044327, guid: af9606400078d4dc89744db925898138, type: 3}
+  HeroPrototype:
+    Id:
+      Value: 1452242489427350242
+  ProjectilePrototype:
+    Id:
+      Value: 1476018119604516482
+  AbilityProjectilePrototype:
+    Id:
+      Value: 1376884538976340079
+  Name: Cerberus
+  Rare: 4
+  HeroType: 1
+  AbilityType: 0
+  HeroStats:
+  - Health:
+      RawValue: 117964800
+    Defense:
+      RawValue: 3932160
+    MagicDefense:
+      RawValue: 2949120
+    AttackDamage:
+      RawValue: 3276800
+    AbilityDamage:
+      RawValue: 0
+    AttackSpeed:
+      RawValue: 45875
+    ProjectileSpeed:
+      RawValue: 0
+    Range: 1
+  - Health:
+      RawValue: 176947200
+    Defense:
+      RawValue: 5898240
+    MagicDefense:
+      RawValue: 4423680
+    AttackDamage:
+      RawValue: 4915200
+    AbilityDamage:
+      RawValue: 0
+    AttackSpeed:
+      RawValue: 45875
+    ProjectileSpeed:
+      RawValue: 0
+    Range: 1
+  - Health:
+      RawValue: 235929600
+    Defense:
+      RawValue: 7864320
+    MagicDefense:
+      RawValue: 5898240
+    AttackDamage:
+      RawValue: 6553600
+    AbilityDamage:
+      RawValue: 0
+    AttackSpeed:
+      RawValue: 45875
+    ProjectileSpeed:
+      RawValue: 0
+    Range: 1
+  AttackDamageType: 0
+  AbilityDamageType: 1
+  Mana:
+    RawValue: 5898240
+  StartMana:
+    RawValue: 3932160

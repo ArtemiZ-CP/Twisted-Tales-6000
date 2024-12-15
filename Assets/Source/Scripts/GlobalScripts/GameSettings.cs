@@ -30,7 +30,9 @@ namespace Quantum.Game
 
         public static Quaternion GetRotation(bool isUIPosition)
         {
-            return isUIPosition ? _instance._playerInventory.transform.rotation : _instance._board.transform.rotation;
+            Quaternion uiRotation = _instance._playerInventory.transform.rotation * Quaternion.Euler(0, 180, 0);
+
+            return isUIPosition ? uiRotation : _instance._board.transform.rotation;
         }
 
         public static void ArrayIndexToCords(int arraySize, int index, out int x, out int y)

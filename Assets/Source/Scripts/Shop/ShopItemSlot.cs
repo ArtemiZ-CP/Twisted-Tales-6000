@@ -16,6 +16,7 @@ namespace Quantum.Game
         public event Action<ShopItemSlot> ItemClicked;
 
         public Vector3 HeroParentPosition => _heroParent.transform.position;
+        public Vector3 SlotPosition => _background.transform.position;
 
         private void Awake()
         {

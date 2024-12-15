@@ -336,6 +336,7 @@ namespace Quantum.Prototypes {
   public unsafe partial class PlayerShopPrototype : StructPrototype {
     [DynamicCollectionAttribute()]
     public Int32[] HeroesID = {};
+    public Int32 Level;
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerShop result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.PlayerShop result, in PrototypeMaterializationContext context = default) {
         if (this.HeroesID.Length == 0) {
@@ -348,6 +349,7 @@ namespace Quantum.Prototypes {
             list.Add(tmp);
           }
         }
+        result.Level = this.Level;
         MaterializeUser(frame, ref result, in context);
     }
   }

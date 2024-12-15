@@ -34,6 +34,9 @@ namespace Quantum.Game
 
             var commandGetPlayerInfo = command as CommandGetPlayerInfo;
             commandGetPlayerInfo?.Execute(f, player);
+
+            var commandUpgradeShop = command as CommandUpgradeShop;
+            commandUpgradeShop?.Execute(f, player);
         }
     }
 }

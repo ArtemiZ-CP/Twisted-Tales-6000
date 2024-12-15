@@ -600,13 +600,13 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerInfo {
-    public const Int32 SIZE = 28;
+    public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 4;
-    [FieldOffset(8)]
+    [FieldOffset(24)]
     public PlayerShop Shop;
-    [FieldOffset(20)]
+    [FieldOffset(16)]
     public PlayerInventory Inventory;
-    [FieldOffset(12)]
+    [FieldOffset(8)]
     public PlayerBoard Board;
     [FieldOffset(0)]
     public Int32 Coins;
@@ -632,9 +632,9 @@ namespace Quantum {
         var p = (PlayerInfo*)ptr;
         serializer.Stream.Serialize(&p->Coins);
         serializer.Stream.Serialize(&p->Health);
-        Quantum.PlayerShop.Serialize(&p->Shop, serializer);
         Quantum.PlayerBoard.Serialize(&p->Board, serializer);
         Quantum.PlayerInventory.Serialize(&p->Inventory, serializer);
+        Quantum.PlayerShop.Serialize(&p->Shop, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -665,14 +665,17 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerShop {
-    public const Int32 SIZE = 4;
+    public const Int32 SIZE = 8;
     public const Int32 ALIGNMENT = 4;
-    [FieldOffset(0)]
+    [FieldOffset(4)]
     public QListPtr<Int32> HeroesID;
+    [FieldOffset(0)]
+    public Int32 Level;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10663;
         hash = hash * 31 + HeroesID.GetHashCode();
+        hash = hash * 31 + Level.GetHashCode();
         return hash;
       }
     }
@@ -681,6 +684,7 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerShop*)ptr;
+        serializer.Stream.Serialize(&p->Level);
         QList.Serialize(&p->HeroesID, serializer, Statics.SerializeInt32);
     }
   }
@@ -789,13 +793,13 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Board : Quantum.IComponent {
-    public const Int32 SIZE = 88;
+    public const Int32 SIZE = 96;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(16)]
     public EntityRef Ref;
     [FieldOffset(24)]
     public PlayerLink Player1;
-    [FieldOffset(56)]
+    [FieldOffset(60)]
     public PlayerLink Player2;
     [FieldOffset(4)]
     public QListPtr<HeroEntity> HeroesID1;
@@ -897,7 +901,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerLink : Quantum.IComponent {
-    public const Int32 SIZE = 32;
+    public const Int32 SIZE = 36;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(0)]
     public PlayerRef Ref;
@@ -943,6 +947,9 @@ namespace Quantum {
   public unsafe partial interface ISignalOnReloadShop : ISignal {
     void OnReloadShop(Frame f, PlayerLink* playerLink);
   }
+  public unsafe partial interface ISignalOnUpgradeShop : ISignal {
+    void OnUpgradeShop(Frame f, PlayerLink* playerLink);
+  }
   public unsafe partial interface ISignalOnBuyHero : ISignal {
     void OnBuyHero(Frame f, PlayerLink* playerLink, Int32 shopIndex);
   }
@@ -974,6 +981,7 @@ namespace Quantum {
   }
   public unsafe partial class Frame {
     private ISignalOnReloadShop[] _ISignalOnReloadShopSystems;
+    private ISignalOnUpgradeShop[] _ISignalOnUpgradeShopSystems;
     private ISignalOnBuyHero[] _ISignalOnBuyHeroSystems;
     private ISignalOnMoveHero[] _ISignalOnMoveHeroSystems;
     private ISignalMakeNewBoardPVP[] _ISignalMakeNewBoardPVPSystems;
@@ -995,6 +1003,7 @@ namespace Quantum {
     partial void InitGen() {
       Initialize(this, this.SimulationConfig.Entities, 256);
       _ISignalOnReloadShopSystems = BuildSignalsArray<ISignalOnReloadShop>();
+      _ISignalOnUpgradeShopSystems = BuildSignalsArray<ISignalOnUpgradeShop>();
       _ISignalOnBuyHeroSystems = BuildSignalsArray<ISignalOnBuyHero>();
       _ISignalOnMoveHeroSystems = BuildSignalsArray<ISignalOnMoveHero>();
       _ISignalMakeNewBoardPVPSystems = BuildSignalsArray<ISignalMakeNewBoardPVP>();
@@ -1079,6 +1088,15 @@ namespace Quantum {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
             s.OnReloadShop(_f, playerLink);
+          }
+        }
+      }
+      public void OnUpgradeShop(PlayerLink* playerLink) {
+        var array = _f._ISignalOnUpgradeShopSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.OnUpgradeShop(_f, playerLink);
           }
         }
       }

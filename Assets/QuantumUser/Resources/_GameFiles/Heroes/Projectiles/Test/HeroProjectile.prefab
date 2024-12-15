@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4377976875631123905
 Transform:
   m_ObjectHideFlags: 0
@@ -255,6 +255,8 @@ MonoBehaviour:
         RawValue: 0
       Defense:
         RawValue: 0
+      MagicDefense:
+        RawValue: 0
       AttackDamage:
         RawValue: 0
       AbilityDamage:
@@ -266,6 +268,8 @@ MonoBehaviour:
       Range: 0
       RangePercentage:
         RawValue: 0
+      AttackDamageType: 0
+      AbilityDamageType: 0
       CurrentHealth:
         RawValue: 0
       CurrentMana:
@@ -282,6 +286,7 @@ MonoBehaviour:
       RawValue: 0
     Damage:
       RawValue: 0
+    DamageType: 0
     Level: 0
 --- !u!1001 &8950826266543737761
 PrefabInstance:

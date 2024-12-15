@@ -45,11 +45,11 @@ public class ManaBar : MonoBehaviour
             return;
         }
 
-        _manaBar.gameObject.SetActive(true);
         QuantumEntityView quantumEntityView = QuantumEntityViewUpdater.GetView(eventHeroManaChanged.HeroEntity);
 
         if (_quantumEntityView == quantumEntityView)
         {
+            _manaBar.gameObject.SetActive(true);
             float mana = (eventHeroManaChanged.CurrentMana / eventHeroManaChanged.MaxMana).AsFloat;
             _manaBar.value = mana;
         }

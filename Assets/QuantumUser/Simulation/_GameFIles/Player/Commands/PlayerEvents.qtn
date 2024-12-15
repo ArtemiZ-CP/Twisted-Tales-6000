@@ -68,7 +68,6 @@ event StartRound
 {
     player_ref Player1;
     player_ref Player2;
-    entity_ref BoardEntity;
 }
 
 event EndRound
@@ -85,4 +84,10 @@ event GetProjectiles
 {
     player_ref Player1;
     player_ref Player2;
+}
+
+event GetShopUpgradeCost
+{
+    player_ref PlayerRef;
+    int UpgradeCost;
 }

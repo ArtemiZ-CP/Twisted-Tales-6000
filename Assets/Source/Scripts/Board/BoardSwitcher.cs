@@ -10,7 +10,6 @@ namespace Quantum.Game
         [SerializeField] private Board _board;
         [SerializeField] private Transform _cameraParent;
 
-        private EntityRef _playerBoardRef;
         private List<EntityLevelData> _heroes = new();
 
         private void Awake()
@@ -23,21 +22,25 @@ namespace Quantum.Game
 
         private void StartRound(EventStartRound eventStartRound)
         {
+            Quaternion rotation;
+
             if (QuantumConnection.IsPlayerMe(eventStartRound.Player1))
             {
-                _cameraParent.rotation = Quaternion.Euler(0, 0, 0);
+                rotation = Quaternion.Euler(0, 0, 0);
             }
             else if (QuantumConnection.IsPlayerMe(eventStartRound.Player2))
             {
-                _cameraParent.rotation = Quaternion.Euler(0, 180, 0);
+                rotation = Quaternion.Euler(0, 180, 0);
             }
             else
             {
                 return;
             }
 
+            _cameraParent.rotation = rotation;
+            _board.transform.rotation = rotation;
+
             _heroes = eventStartRound.Heroes;
-            _playerBoardRef = eventStartRound.BoardEntity;
 
             SetActiveSimulationBoard(true);
         }
@@ -45,7 +48,7 @@ namespace Quantum.Game
         private void EndRound(EventEndRound eventEndRound)
         {
             _cameraParent.rotation = Quaternion.Euler(0, 0, 0);
-            _board.gameObject.SetActive(true);
+            _board.SetActiveHeroes(true);
         }
 
         private void DestroyHero(EventDestroyHero eventDestroyHero)
@@ -85,8 +88,7 @@ namespace Quantum.Game
                 SetLevelMesh(heroData);
             }
 
-            SetActiveEntity(_playerBoardRef, isActive);
-            _board.gameObject.SetActive(isActive == false);
+            _board.SetActiveHeroes(isActive == false);
         }
 
         private void SetActiveEntity(EntityRef entityRef, bool isActive)
@@ -108,7 +110,7 @@ namespace Quantum.Game
 
             if (quantumEntityView != null)
             {
-                quantumEntityView.gameObject.GetComponentInChildren<HeroMesh>().SetMesh(hero.Level);
+                quantumEntityView.gameObject.GetComponentInChildren<HeroMesh>().SetMesh(hero.Level, hero.ID);
             }
         }
     }

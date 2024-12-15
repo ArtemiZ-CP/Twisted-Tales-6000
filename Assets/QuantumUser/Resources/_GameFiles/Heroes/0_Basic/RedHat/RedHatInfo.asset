@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
+  m_Name: RedHatInfo
+  m_EditorClassIdentifier: 
+  Identifier:
+    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/RedHat/RedHatInfo
+    Guid:
+      Value: 532186031317670239
+  HeroPrefab: {fileID: -5379929345563415316, guid: 00fc591b71d454103a881bd5ccf44881, type: 3}
+  HeroPrototype:
+    Id:
+      Value: 1529226282637193225
+  ProjectilePrototype:
+    Id:
+      Value: 1476018119604516482
+  AbilityProjectilePrototype:
+    Id:
+      Value: 1376884538976340079
+  Name: Red Hat
+  Rare: 0
+  HeroType: 0
+  AbilityType: 1
+  HeroStats:
+  - Health:
+      RawValue: 32768000
+    Defense:
+      RawValue: 1310720
+    MagicDefense:
+      RawValue: 983040
+    AttackDamage:
+      RawValue: 1966080
+    AbilityDamage:
+      RawValue: 983040
+    AttackSpeed:
+      RawValue: 85197
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 2
+  - Health:
+      RawValue: 49152000
+    Defense:
+      RawValue: 1966080
+    MagicDefense:
+      RawValue: 1474560
+    AttackDamage:
+      RawValue: 2949120
+    AbilityDamage:
+      RawValue: 1474560
+    AttackSpeed:
+      RawValue: 85197
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 2
+  - Health:
+      RawValue: 65536000
+    Defense:
+      RawValue: 2621440
+    MagicDefense:
+      RawValue: 1966080
+    AttackDamage:
+      RawValue: 3932160
+    AbilityDamage:
+      RawValue: 1966080
+    AttackSpeed:
+      RawValue: 85197
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 2
+  AttackDamageType: 0
+  AbilityDamageType: 1
+  Mana:
+    RawValue: 2621440
+  StartMana:
+    RawValue: 0

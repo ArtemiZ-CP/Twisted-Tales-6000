@@ -56,12 +56,11 @@ namespace Quantum.Game
 
         private void ClearBoard(Frame f, Board board)
         {
-            EntityRef boardEntity = board.Ref;
             ClearHeroes(f, board.HeroesID1);
             ClearHeroes(f, board.HeroesID2);
             ClearProjectiles(f, board.HeroProjectiles);
             f.FreeList(board.FightingHeroesMap);
-            f.Destroy(boardEntity);
+            f.Destroy(board.Ref);
         }
 
         private void ActiveBoard(Frame f, EntityRef boardEntity)
@@ -102,22 +101,26 @@ namespace Quantum.Game
 
         private EntityRef SpawnBoard(Frame f, PlayerLink* player1, PlayerLink* player2, bool main)
         {
-            EntityPrototype boardPrototype = f.FindAsset(f.RuntimeConfig.Board);
-            EntityRef boardEntity = f.Create(boardPrototype);
+            EntityRef boardEntity = SpawnBoard(f);
 
             SetupBoard(f, boardEntity, player1, player2, main);
-            DisactiveEntity(f, boardEntity);
 
             return boardEntity;
         }
 
         private EntityRef SpawnBoard(Frame f, PlayerLink* player1, RoundInfo roundInfo)
         {
-            EntityPrototype boardPrototype = f.FindAsset(f.RuntimeConfig.Board);
-            EntityRef boardEntity = f.Create(boardPrototype);
+            EntityRef boardEntity = SpawnBoard(f);
 
             SetupBoard(f, boardEntity, player1, roundInfo);
-            DisactiveEntity(f, boardEntity);
+
+            return boardEntity;
+        }
+
+        private EntityRef SpawnBoard(Frame f)
+        {
+            EntityRef boardEntity = f.Create();
+            f.Add<Board>(boardEntity);
 
             return boardEntity;
         }
@@ -143,6 +146,7 @@ namespace Quantum.Game
             Board* board = f.Unsafe.GetPointer<Board>(boardEntity);
 
             board->Ref = boardEntity;
+
             board->FightingHeroesMap = f.AllocateList<FightingHero>(GameConfig.BoardSize * GameConfig.BoardSize);
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
 
@@ -160,7 +164,6 @@ namespace Quantum.Game
         {
             Board* board = f.Unsafe.GetPointer<Board>(boardEntity);
 
-            board->Ref = boardEntity;
             board->FightingHeroesMap = f.AllocateList<FightingHero>(GameConfig.BoardSize * GameConfig.BoardSize);
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
 

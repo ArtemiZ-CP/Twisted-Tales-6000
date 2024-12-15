@@ -45,11 +45,11 @@ public class HealthBar : MonoBehaviour
             return;
         }
 
-        _healthBar.gameObject.SetActive(true);
         QuantumEntityView quantumEntityView = QuantumEntityViewUpdater.GetView(eventHeroHealthChanged.HeroEntity);
 
         if (_quantumEntityView == quantumEntityView)
         {
+            _healthBar.gameObject.SetActive(true);
             float health = (eventHeroHealthChanged.CurrentHealth / eventHeroHealthChanged.MaxHealth).AsFloat;
             _healthBar.value = health;
         }

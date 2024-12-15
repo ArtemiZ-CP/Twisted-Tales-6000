@@ -77,6 +77,7 @@ namespace Quantum.Game
             QList<FightingHero> fightingHeroesMap = f.ResolveList(board.FightingHeroesMap);
             QList<HeroEntity> heroesID1 = f.ResolveList(board.HeroesID1);
             QList<HeroEntity> heroesID2 = f.ResolveList(board.HeroesID2);
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
             for (int i = 0; i < GameConfig.BoardSize * GameConfig.BoardSize / 2; i++)
             {
@@ -112,8 +113,8 @@ namespace Quantum.Game
                 fightingHeroesMap[i] = Hero.SetupHero(f, fightingHeroesMap[i], i);
             }
 
-            List<EntityLevelData> heroDataList = fightingHeroesMap.Select(hero => new EntityLevelData { Ref = hero.Hero.Ref, Level = hero.Hero.Level }).ToList();
-            f.Events.StartRound(f, board.Player1.Ref, board.Player2.Ref, board.Ref, heroDataList);
+            List<EntityLevelData> heroDataList = fightingHeroesMap.Select(hero => new EntityLevelData { Ref = hero.Hero.Ref, Level = hero.Hero.Level, ID = hero.Hero.ID }).ToList();
+            f.Events.StartRound(f, board.Player1.Ref, board.Player2.Ref, heroDataList);
         }
 
         private List<PlayerLink> GetCurrentPlayers(Frame f)

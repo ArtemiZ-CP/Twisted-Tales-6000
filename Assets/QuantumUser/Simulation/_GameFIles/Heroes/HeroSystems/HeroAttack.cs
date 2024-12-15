@@ -13,7 +13,7 @@ namespace Quantum.Game
             Physical,
             Magical
         }
-
+        
         public enum ProjectileType
         {
             Attack,
@@ -128,7 +128,6 @@ namespace Quantum.Game
 
             ProcessAbility(f, fightingHero);
 
-            f.Events.HeroManaChanged(board.Player1.Ref, board.Player2.Ref, fighingHero.Hero.Ref, fighingHero.Hero.CurrentMana, fighingHero.Hero.MaxMana);
             f.Events.HeroHealthChanged(board.Player1.Ref, board.Player2.Ref, fighingHero.Hero.Ref, fighingHero.Hero.CurrentHealth, fighingHero.Hero.Health);
         }
 
@@ -159,13 +158,18 @@ namespace Quantum.Game
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             HeroInfo heroInfo = gameConfig.GetHeroInfo(f, fighingHero.Hero.ID);
+            Board board = HeroBoard.GetBoard(f, fighingHero);
 
             switch (heroInfo.AbilityType)
             {
                 case HeroAbilityType.RandomProjectileAttack:
                     RandomProjectileManaAttack(f, fighingHero, (DamageType)fighingHero.Hero.AbilityDamageType);
                     break;
+                default:
+                    return;
             }
+
+            f.Events.HeroManaChanged(board.Player1.Ref, board.Player2.Ref, fighingHero.Hero.Ref, fighingHero.Hero.CurrentMana, fighingHero.Hero.MaxMana);
         }
 
         public static void RandomProjectileManaAttack(Frame f, FightingHero fighingHero, DamageType damageType)
