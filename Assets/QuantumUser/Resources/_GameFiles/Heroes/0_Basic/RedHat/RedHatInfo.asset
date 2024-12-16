@@ -45,7 +45,7 @@ MonoBehaviour:
       RawValue: 85197
     ProjectileSpeed:
       RawValue: 327680
-    Range: 2
+    Range: 4
   - Health:
       RawValue: 49152000
     Defense:
@@ -60,7 +60,7 @@ MonoBehaviour:
       RawValue: 85197
     ProjectileSpeed:
       RawValue: 327680
-    Range: 2
+    Range: 4
   - Health:
       RawValue: 65536000
     Defense:
@@ -75,7 +75,7 @@ MonoBehaviour:
       RawValue: 85197
     ProjectileSpeed:
       RawValue: 327680
-    Range: 2
+    Range: 4
   AttackDamageType: 0
   AbilityDamageType: 1
   Mana:
