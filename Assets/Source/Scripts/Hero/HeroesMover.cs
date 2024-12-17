@@ -267,6 +267,12 @@ namespace Quantum.Game
 
             _newHeroPlace = hero;
 
+            if (hero != null)
+            {
+                _newHeroPlace.transform.position = _selectedHero.GetBasePosition();
+                SetupHero(_newHeroPlace, _selectedHero.IsUI, _selectedHero.IsUI);
+            }
+
             _selectedHero.transform.position = position;
             SetupHero(_selectedHero, isUIScale, isUIRotation);
         }
@@ -312,6 +318,11 @@ namespace Quantum.Game
             {
                 _newHeroPlace.SetBaseTransform();
                 SetBaseHeroSize(_newHeroPlace);
+            }
+
+            if (_selectedHero == null || _newHeroPlace == null)
+            {
+                return;
             }
 
             if (isMoved == false)

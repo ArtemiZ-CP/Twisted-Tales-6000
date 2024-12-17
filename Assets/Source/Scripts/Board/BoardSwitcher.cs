@@ -48,6 +48,7 @@ namespace Quantum.Game
         private void EndRound(EventEndRound eventEndRound)
         {
             _cameraParent.rotation = Quaternion.Euler(0, 0, 0);
+            _board.transform.rotation = Quaternion.Euler(0, 0, 0);
             _board.SetActiveHeroes(true);
         }
 

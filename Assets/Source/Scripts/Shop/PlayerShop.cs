@@ -17,7 +17,6 @@ namespace Quantum.Game
         {
             QuantumEvent.Subscribe<EventBuyHero>(listener: this, handler: BuyHero);
             QuantumEvent.Subscribe<EventGetPlayerInfo>(listener: this, handler: LoadShop);
-            QuantumEvent.Subscribe<EventStartRound>(listener: this, handler: HideShop);
             QuantumEvent.Subscribe<EventChangeCoins>(listener: this, handler: ChangeCoins);
         }
 
@@ -54,14 +53,6 @@ namespace Quantum.Game
         {
             int index = _shopItemSlots.ToList().IndexOf(shopItemSlot);
             _shopItemSlots[index].SetShopItem(heroId: -1);
-        }
-
-        private void HideShop(EventStartRound eventStartRound)
-        {
-            if (QuantumConnection.IsPlayerMe(eventStartRound.Player1) || QuantumConnection.IsPlayerMe(eventStartRound.Player2))
-            {
-                _shopPanel.SetActive(false);
-            }
         }
 
         private void ChangeCoins(EventChangeCoins eventChangeCoins)

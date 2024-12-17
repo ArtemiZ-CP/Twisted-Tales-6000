@@ -12,28 +12,8 @@ namespace Quantum.Game
         {
             if (firstTime == false)
             {
-                f.Events.InitPlayer(player);
+                // reconnecting player
 
-                if (f.Global->IsBuyPhase == false)
-                {
-                    QList<Board> boards = f.ResolveList(f.Global->Boards);
-
-                    foreach (Board board in boards)
-                    {
-                        QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
-                        List<EntityLevelData> heroDataList = heroes.Select(hero => new EntityLevelData { Ref = hero.Hero.Ref, Level = hero.Hero.Level }).ToList();
-
-                        if (board.Player1.Ref == player)
-                        {
-                            f.Events.StartRound(f, player, default, heroDataList);
-                        }
-                        else if (board.Player2.Ref == player)
-                        {
-                            f.Events.StartRound(f, default, player, heroDataList);
-                        }
-                    }
-                }
-                
                 return;
             }
 

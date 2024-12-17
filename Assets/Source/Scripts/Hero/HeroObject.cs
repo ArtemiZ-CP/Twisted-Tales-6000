@@ -1,4 +1,3 @@
-using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -21,6 +20,7 @@ namespace Quantum.Game
         public Board.Tile BoardTile => _boardTile;
         public int Id => _id;
         public int Level => _level;
+        public bool IsUI => _heroState == HeroState.Inventory || _heroState == HeroState.Shop;
 
         public void SetLevel(int level)
         {
