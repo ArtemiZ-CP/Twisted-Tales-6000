@@ -39,7 +39,7 @@ namespace Quantum.Game
 
             _cameraParent.rotation = rotation;
             _board.transform.rotation = rotation;
-
+            
             _heroes = eventStartRound.Heroes;
 
             SetActiveSimulationBoard(true);

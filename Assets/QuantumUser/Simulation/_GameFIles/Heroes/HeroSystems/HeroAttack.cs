@@ -116,19 +116,19 @@ namespace Quantum.Game
             return default;
         }
 
-        public static void Update(Frame f, FightingHero fighingHero)
+        public static void Update(Frame f, FightingHero fightingHero)
         {
-            Board board = HeroBoard.GetBoard(f, fighingHero);
+            Board board = HeroBoard.GetBoard(f, fightingHero);
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
-            FightingHero fightingHero = heroes[fighingHero.Index];
+            fightingHero = heroes[fightingHero.Index];
             fightingHero.Hero.AttackTimer -= f.DeltaTime;
             fightingHero.Hero.CurrentMana += fightingHero.Hero.ManaRegen * f.DeltaTime;
-            heroes[fighingHero.Index] = fightingHero;
+            heroes[fightingHero.Index] = fightingHero;
 
             ProcessAbility(f, fightingHero);
 
-            f.Events.HeroHealthChanged(board.Player1.Ref, board.Player2.Ref, fighingHero.Hero.Ref, fighingHero.Hero.CurrentHealth, fighingHero.Hero.Health);
+            f.Events.HeroHealthChanged(board.Player1.Ref, board.Player2.Ref, fightingHero.Hero.Ref, fightingHero.Hero.CurrentHealth, fightingHero.Hero.Health);
         }
 
         public static void InstantAttack(Frame f, FightingHero fighingHero, DamageType damageType)

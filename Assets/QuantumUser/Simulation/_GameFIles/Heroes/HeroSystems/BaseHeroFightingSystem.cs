@@ -36,6 +36,15 @@ namespace Quantum.Game
         private static void UpdateHero(Frame f, FightingHero fightingHero,
             Action<Frame, FightingHero, HeroAttack.DamageType> Attack, bool isHeroAttackWhileMooving)
         {
+            Board board = HeroBoard.GetBoard(f, fightingHero);
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+            fightingHero = heroes[fightingHero.Index];
+
+            if (fightingHero.Hero.Ref == default || fightingHero.Hero.IsAlive == false)
+            {
+                return;
+            }
+
             HeroAttack.Update(f, fightingHero);
 
             if (HeroBoard.IsHeroMoving(f, fightingHero.Hero))
