@@ -17,7 +17,7 @@ MonoBehaviour:
     Guid:
       Value: 481284669698677807
   PlayerHealth: 100
-  CoinsPerRound: 1000
+  CoinsPerRound: 10
   ResetCoinsOnEndRound: 0
   HeroInfos:
   - Id:

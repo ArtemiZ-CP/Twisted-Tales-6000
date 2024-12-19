@@ -92,6 +92,8 @@ namespace Quantum.Game
 
             foreach (MeshRenderer meshRenderer in _meshRenderers)
             {
+                if (meshRenderer == null) continue;
+                
                 meshRenderer.shadowCastingMode = isActive ? ShadowCastingMode.On : ShadowCastingMode.Off;
             }
         }

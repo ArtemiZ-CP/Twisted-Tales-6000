@@ -18,7 +18,7 @@ MonoBehaviour:
     AppIdQuantum: bd6b1e6f-eae7-4f4d-a3ee-a3c0be18a735
     AppIdChat: 
     AppIdVoice: 
-    AppVersion: 
+    AppVersion: 0.1
     UseNameServer: 1
     FixedRegion: 
     Server: 

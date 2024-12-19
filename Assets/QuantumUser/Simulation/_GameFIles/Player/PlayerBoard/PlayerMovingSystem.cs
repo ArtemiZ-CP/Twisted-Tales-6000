@@ -40,7 +40,16 @@ namespace Quantum.Game
             }
             else if (HeroFromState == HeroState.Shop)
             {
-                HeroInfo heroInfo = GetBuyingHero(f, _shop[positionFromX]);
+                HeroInfo heroInfo;
+
+                if (positionFromX < 0 || positionFromX >= _shop.Count)
+                {
+                    heroInfo = null;
+                }
+                else
+                {
+                    heroInfo = GetBuyingHero(f, _shop[positionFromX]);
+                }
 
                 if (heroInfo == null)
                 {

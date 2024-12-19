@@ -192,6 +192,9 @@ namespace Quantum.Menu
 				}
 			});
 
+			// wait while player count is not reached
+			// await PlayersQueue.WaitForPlayerCountAsync(Client, connectArgs.MaxPlayerCount, _linkedCancellation.Token);
+
 			// LOAD SCENE ---------------------------------------------------------------
 
 			var preloadMap = false;
@@ -209,7 +212,6 @@ namespace Quantum.Menu
 
 			if (preloadMap)
 			{
-
 				ReportProgress("Loading..");
 
 				if (QuantumUnityDB.TryGetGlobalAsset(connectArgs.RuntimeConfig.Map, out Quantum.Map map))
@@ -298,6 +300,18 @@ namespace Quantum.Menu
 			{
 				// Start Quantum and wait for the start protocol to complete
 				Runner = (QuantumRunner)await SessionRunner.StartAsync(sessionRunnerArguments);
+
+				while (Runner.NetworkClient.CurrentRoom.PlayerCount < connectArgs.MaxPlayerCount)
+				{
+					Log.Debug(Runner.NetworkClient.CurrentRoom.PlayerCount.ToString());
+
+					if (_cancellation.IsCancellationRequested)
+					{
+						throw new TaskCanceledException();
+					}
+
+					await Task.Yield();
+				}
 			}
 			catch (Exception e)
 			{

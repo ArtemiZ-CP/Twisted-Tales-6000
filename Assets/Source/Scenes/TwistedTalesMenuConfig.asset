@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8f98ff78397bdc4a9886959982c466e, type: 3}
   m_Name: TwistedTalesMenuConfig
   m_EditorClassIdentifier: 
-  _maxPlayers: 8
+  _maxPlayers: 4
   _adaptFramerateForMobilePlatform: 1
   _availableAppVersions:
   - 3.0
@@ -34,7 +34,7 @@ MonoBehaviour:
     ScenePath: Assets/Source/Scenes/Game.unity
     Preview: {fileID: 0}
     RuntimeConfig:
-      Seed: 0
+      Seed: -45627829
       Map:
         Id:
           Value: 325061981503561656
@@ -47,8 +47,5 @@ MonoBehaviour:
       GameConfig:
         Id:
           Value: 481284669698677807
-      Board:
-        Id:
-          Value: 1292981832991596981
   _machineId: {fileID: -755480892457977500, guid: fbd1d0c57fd428c44b08e505acb8d851, type: 3}
   _codeGenerator: {fileID: 11400000, guid: e38f1fac5a1a5c94da2b4ef21bd48419, type: 2}

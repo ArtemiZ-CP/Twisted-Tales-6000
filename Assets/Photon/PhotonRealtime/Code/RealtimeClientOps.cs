@@ -569,7 +569,6 @@ namespace Photon.Realtime
                 opParameters[ParameterCode.RoomName] = createRoomArgs.RoomName;
             }
 
-
             //this.Listener.DebugReturn(LogLevel.Info, "OpJoinRandomOrCreateRoom: " + SupportClass.DictionaryToString(opParameters, false));
             bool sending = this.RealtimePeer.SendOperation(OperationCode.JoinRandomGame, opParameters, SendOptions.SendReliable);
             this.paramDictionaryPool.Release(opParameters);

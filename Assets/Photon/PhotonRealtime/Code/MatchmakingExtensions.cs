@@ -65,7 +65,7 @@ namespace Photon.Realtime
         }
 
         /// <inheritdoc cref="ConnectToRoomAsync(RealtimeClient, MatchmakingArguments)"/>
-        public static Task<RealtimeClient> ConnectToRoomAsync(MatchmakingArguments arguments, RealtimeClient client = null)
+        public static async Task<RealtimeClient> ConnectToRoomAsync(MatchmakingArguments arguments, RealtimeClient client = null)
         {
             arguments.Validate();
 
@@ -76,7 +76,7 @@ namespace Photon.Realtime
 
             var asyncConfig = arguments.AsyncConfig ?? AsyncConfig.Global;
 
-            return asyncConfig.TaskFactory.StartNew(async () =>
+            return await asyncConfig.TaskFactory.StartNew(async () =>
             {
                 client = client ?? arguments.NetworkClient ?? new RealtimeClient();
                 var isRandom = arguments.RoomName == null;
@@ -128,6 +128,7 @@ namespace Photon.Realtime
                     {
                         arguments.ReconnectInformation.Set(client);
                     }
+
                     return client;
                 }
 
