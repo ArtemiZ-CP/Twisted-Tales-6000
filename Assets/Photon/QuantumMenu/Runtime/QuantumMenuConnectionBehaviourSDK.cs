@@ -151,14 +151,16 @@ namespace Quantum.Menu
 			// Connect to Photon
 			try
 			{
-				if (connectArgs.Reconnecting == false)
+				if (connectArgs.ReconnectInformation.Room == null)
 				{
 					ReportProgress("Connecting..");
 					_client = await MatchmakingExtensions.ConnectToRoomAsync(arguments);
 				}
 				else
 				{
+					QuantumRunner.ShutdownAll();
 					ReportProgress("Reconnecting..");
+					// If reconnect fails, try to connect again
 					_client = await MatchmakingExtensions.ReconnectToRoomAsync(arguments);
 				}
 			}
@@ -301,16 +303,19 @@ namespace Quantum.Menu
 				// Start Quantum and wait for the start protocol to complete
 				Runner = (QuantumRunner)await SessionRunner.StartAsync(sessionRunnerArguments);
 
-				while (Runner.NetworkClient.CurrentRoom.PlayerCount < connectArgs.MaxPlayerCount)
+				if (connectArgs.Reconnecting == false)
 				{
-					Log.Debug(Runner.NetworkClient.CurrentRoom.PlayerCount.ToString());
-
-					if (_cancellation.IsCancellationRequested)
+					while (Runner.NetworkClient.CurrentRoom.PlayerCount < connectArgs.MaxPlayerCount)
 					{
-						throw new TaskCanceledException();
+						if (_cancellation.IsCancellationRequested)
+						{
+							throw new TaskCanceledException();
+						}
+
+						await Task.Yield();
 					}
 
-					await Task.Yield();
+					Client.CurrentRoom.IsOpen = false;
 				}
 			}
 			catch (Exception e)

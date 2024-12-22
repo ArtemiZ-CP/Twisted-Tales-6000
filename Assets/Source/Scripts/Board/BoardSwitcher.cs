@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Quantum.Game
@@ -10,13 +9,10 @@ namespace Quantum.Game
         [SerializeField] private Board _board;
         [SerializeField] private Transform _cameraParent;
 
-        private List<EntityLevelData> _heroes = new();
-
         private void Awake()
         {
             QuantumEvent.Subscribe<EventStartRound>(listener: this, handler: StartRound);
             QuantumEvent.Subscribe<EventEndRound>(listener: this, handler: EndRound);
-            QuantumEvent.Subscribe<EventDestroyHero>(listener: this, handler: DestroyHero);
             QuantumEvent.Subscribe<EventGetProjectiles>(listener: this, handler: GetProjectiles);
         }
 
@@ -40,9 +36,7 @@ namespace Quantum.Game
             _cameraParent.rotation = rotation;
             _board.transform.rotation = rotation;
             
-            _heroes = eventStartRound.Heroes;
-
-            SetActiveSimulationBoard(true);
+            ActiveSimulationBoard(eventStartRound.Heroes);
         }
 
         private void EndRound(EventEndRound eventEndRound)
@@ -50,22 +44,6 @@ namespace Quantum.Game
             _cameraParent.rotation = Quaternion.Euler(0, 0, 0);
             _board.transform.rotation = Quaternion.Euler(0, 0, 0);
             _board.SetActiveHeroes(true);
-        }
-
-        private void DestroyHero(EventDestroyHero eventDestroyHero)
-        {
-            if (QuantumConnection.IsPlayerMe(eventDestroyHero.PlayerRef1) ||
-                QuantumConnection.IsPlayerMe(eventDestroyHero.PlayerRef2))
-            {
-                EntityRef heroRef = eventDestroyHero.HeroEntity;
-
-                if (_heroes.Any(hero => hero.Ref == heroRef))
-                {
-                    EntityLevelData hero = _heroes.Find(hero => hero.Ref == heroRef);
-                    _heroes.Remove(hero);
-                    SetActiveEntity(hero.Ref, false);
-                }
-            }
         }
 
         private void GetProjectiles(EventGetProjectiles eventGetProjectiles)
@@ -81,15 +59,15 @@ namespace Quantum.Game
             }
         }
 
-        private void SetActiveSimulationBoard(bool isActive)
+        private void ActiveSimulationBoard(List<EntityLevelData> heroes)
         {
-            foreach (EntityLevelData heroData in _heroes)
+            foreach (EntityLevelData heroData in heroes)
             {
-                SetActiveEntity(heroData.Ref, isActive);
+                SetActiveEntity(heroData.Ref, true);
                 SetLevelMesh(heroData);
             }
 
-            _board.SetActiveHeroes(isActive == false);
+            _board.SetActiveHeroes(false);
         }
 
         private void SetActiveEntity(EntityRef entityRef, bool isActive)

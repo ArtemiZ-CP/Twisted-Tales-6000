@@ -144,7 +144,7 @@ namespace Quantum.Game
 
             f.Events.GetPlayerInfo(f, playerLink->Ref, playerLink->Info);
         }
-        
+
         private bool TryGetHeroesToUpgrade(Frame f, PlayerLink* playerLink, out List<HeroUpgradeInfo> heroUpgradeInfos)
         {
             QList<int> heroesInventory = f.ResolveList(playerLink->Info.Inventory.HeroesID);

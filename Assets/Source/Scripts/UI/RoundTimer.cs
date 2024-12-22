@@ -7,7 +7,8 @@ namespace Quantum.Game
     {
         [SerializeField] private TMP_Text _roundTimerText;
         [SerializeField] private string _buyPhaseText;
-        [SerializeField] private string _combatPhaseText;
+        [SerializeField] private string _pvpPhaseText;
+        [SerializeField] private string _pvePhaseText;
 
         private void Awake()
         {
@@ -22,7 +23,14 @@ namespace Quantum.Game
             }
             else
             {
-                _roundTimerText.text = $"{_combatPhaseText} {(int)eventRoundTime.RemainingTime}";
+                if (eventRoundTime.IsPVPRound)
+                {
+                    _roundTimerText.text = $"{_pvpPhaseText} {(int)eventRoundTime.RemainingTime}";
+                }
+                else
+                {
+                    _roundTimerText.text = $"{_pvePhaseText} {(int)eventRoundTime.RemainingTime}";
+                }
             }
         }
     }

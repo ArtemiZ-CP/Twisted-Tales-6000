@@ -48,7 +48,6 @@ namespace Quantum.Game
             if (_isFirstTimeConnection && IsAbleToConnectQuantum())
             {
                 OnConnectedToQuantum?.Invoke();
-                QuantumRunner.DefaultGame.SendCommand(new CommandGetPlayerInfo());
                 _isFirstTimeConnection = false;
             }
         }

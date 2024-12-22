@@ -16,12 +16,14 @@ namespace Quantum.Game
         private HeroObject _selectedHero;
         private HeroObject _newHeroPlace;
         private Vector3 _dragOffset;
-        private bool _isMovingHero = false;
         private bool _isCommandSended = false;
+        private bool _isRoundStarted = false;
 
         private void Awake()
         {
             QuantumEvent.Subscribe<EventMoveHero>(listener: this, handler: SwitchHeroes);
+            QuantumEvent.Subscribe<EventStartRound>(listener: this, handler: StartRound);
+            QuantumEvent.Subscribe<EventEndRound>(listener: this, handler: EndRound);
         }
 
         private void Start()
@@ -36,9 +38,9 @@ namespace Quantum.Game
                 return;
             }
 
-            if (UnityEngine.Input.GetMouseButtonDown(0) && _isMovingHero == false)
+            if (UnityEngine.Input.GetMouseButtonDown(0))
             {
-                _isMovingHero = TryGetHero();
+                TryGetHero();
             }
 
             if (UnityEngine.Input.GetMouseButtonUp(0) && _selectedHero != null)
@@ -58,6 +60,16 @@ namespace Quantum.Game
             {
                 MoveHero();
             }
+        }
+
+        private void StartRound(EventStartRound eventStartRound)
+        {
+            _isRoundStarted = true;
+        }
+
+        private void EndRound(EventEndRound eventEndRound)
+        {
+            _isRoundStarted = false;
         }
 
         private bool TryGetHero()
@@ -118,7 +130,7 @@ namespace Quantum.Game
                     SetNewHeroPlace(inventorySlot.Hero, inventorySlot.HeroParentPosition, isUIScale: true, isUIRotation: true);
                 }
             }
-            else if (_playerBoard.TryGetBoardTile(out Board.Tile boardTile))
+            else if (_isRoundStarted == false && _playerBoard.TryGetBoardTile(out Board.Tile boardTile))
             {
                 if (boardTile.Hero != _newHeroPlace)
                 {
@@ -146,7 +158,7 @@ namespace Quantum.Game
                     SetNewHeroPlace(inventorySlot.Hero, inventorySlot.HeroParentPosition, isUIScale: true, isUIRotation: true);
                 }
             }
-            else if (_playerBoard.TryGetBoardTile(out Board.Tile boardTile) && boardTile.Hero.Id < 0)
+            else if (_isRoundStarted == false && _playerBoard.TryGetBoardTile(out Board.Tile boardTile) && boardTile.Hero.Id < 0)
             {
                 if (boardTile.Hero != _newHeroPlace)
                 {
@@ -161,6 +173,8 @@ namespace Quantum.Game
 
         private void MoveHeroFromBoard(Vector3 cursorPoint, Vector3 newObjectPosition)
         {
+            if (_isRoundStarted) return;
+
             if (_playerInventory.TryGetInventoryPoint(cursorPoint, _moveDistanceToStartMove, out PlayerInventorySlot inventorySlot))
             {
                 if (inventorySlot.Hero != _newHeroPlace)
@@ -194,8 +208,6 @@ namespace Quantum.Game
                 _selectedHero = null;
                 _newHeroPlace = null;
             }
-
-            _isMovingHero = false;
         }
 
         private void SendMoveCommand()

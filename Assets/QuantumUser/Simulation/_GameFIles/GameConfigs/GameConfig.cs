@@ -47,6 +47,7 @@ namespace Quantum.Game
     {
         public const int BoardSize = 8;
 
+        public int MaxPlayers = 4;
         [Header("Player")]
         public int PlayerHealth = 100;
         public int CoinsPerRound = 10;

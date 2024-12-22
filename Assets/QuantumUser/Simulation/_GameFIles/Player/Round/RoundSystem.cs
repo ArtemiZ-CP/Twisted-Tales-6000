@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Quantum.Collections;
 using UnityEngine.Scripting;
@@ -17,24 +18,26 @@ namespace Quantum.Game
 
         public override void Update(Frame f)
         {
+            if (IsGameStarted(f) == false) return;
+
             ProcessRound(f);
         }
 
         public void GetPlayersList(Frame f)
         {
-            f.Events.GetCurrentPlayers(f, Player.GetAllPlayersLink(f), f.ResolveList(f.Global->Boards).ToList());
+            f.Events.GetCurrentPlayers(f, Player.GetAllPlayersLink(f), BoardSystem.GetBoards(f));
         }
 
         public void OnStartRound(Frame f)
         {
-            if (IsRoundStarted(f)) return;
+            if (IsRoundStarted(f) || IsGameStarted(f) == false) return;
 
             StartRound(f);
         }
 
         public void OnEndRound(Frame f)
         {
-            if (IsRoundStarted(f) == false) return;
+            if (IsRoundStarted(f) == false || IsGameStarted(f) == false) return;
 
             ProcessEndRound(f, finishAnyway: true);
         }
@@ -90,7 +93,7 @@ namespace Quantum.Game
                 StartRound(f);
             }
 
-            f.Events.GetRoundTime(f.Global->IsBuyPhase, gameConfig.BuyPhaseTime - f.Global->PhaseTime);
+            f.Events.GetRoundTime(f.Global->IsBuyPhase, IsPVPRound: false, gameConfig.BuyPhaseTime - f.Global->PhaseTime);
         }
 
         private void ProcessFightingPhase(Frame f)
@@ -108,7 +111,7 @@ namespace Quantum.Game
                 f.Global->PhaseTime = 0;
             }
 
-            f.Events.GetRoundTime(f.Global->IsBuyPhase, config.FightPhaseTime - f.Global->PhaseTime);
+            f.Events.GetRoundTime(f.Global->IsBuyPhase, f.Global->IsPVPRound, config.FightPhaseTime - f.Global->PhaseTime);
         }
 
         private void ProcessEndRound(Frame f, bool finishAnyway = false)
@@ -146,13 +149,12 @@ namespace Quantum.Game
 
             }
 
-            f.Events.GetRoundTime(f.Global->IsBuyPhase, config.EndFightingPhaseDelay - f.Global->PhaseTime);
+            f.Events.GetRoundTime(f.Global->IsBuyPhase, f.Global->IsPVPRound, config.EndFightingPhaseDelay - f.Global->PhaseTime);
         }
 
         private bool IsAllBoardsFinishRound(Frame f)
         {
-            GameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
-            QList<Board> boards = f.ResolveList(f.Global->Boards);
+            List<Board> boards = BoardSystem.GetBoards(f);
             bool isAllBoardsFinish = true;
 
             foreach (Board board in boards)
@@ -183,7 +185,7 @@ namespace Quantum.Game
 
         private void ProcessResults(Frame f)
         {
-            QList<Board> boards = f.ResolveList(f.Global->Boards);
+            List<Board> boards = BoardSystem.GetBoards(f);
 
             var playersEntity = Player.GetAllPlayers(f);
 
@@ -211,10 +213,9 @@ namespace Quantum.Game
             }
         }
 
-        private bool IsRoundStarted(Frame f)
-        {
-            return f.Global->IsBuyPhase == false;
-        }
+        private bool IsGameStarted(Frame f) => f.Global->IsGameStarted;
+
+        private bool IsRoundStarted(Frame f) => f.Global->IsBuyPhase == false;
 
         private void ProcessPlayersCoins(Frame f)
         {

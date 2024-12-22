@@ -12,24 +12,26 @@ namespace Quantum.Game
         {
             RoundInfo roundInfo = f.FindAsset(f.RuntimeConfig.GameConfig).GetRoundInfo(f, roundIndex);
 
-            QList<Board> boards;
-
             if (roundInfo.IsPVE)
             {
-                boards = MakePVEBoards(f, GetCurrentPlayers(f), roundInfo);
+                MakePVEBoards(f, Player.GetAllPlayersLink(f), roundInfo);
+                f.Global->IsPVPRound = false;
             }
             else
             {
-                boards = MakePVPBoards(f, GetCurrentPlayers(f));
+                MakePVPBoards(f, Player.GetAllPlayersLink(f));
+                f.Global->IsPVPRound = true;
             }
+
+            List<EntityRef> boards = BoardSystem.GetBoardEntities(f);
 
             for (int i = 0; i < boards.Count; i++)
             {
-                SetupBoard(f, boards[i], i);
+                SetupBoard(f, BoardSystem.GetBoardPointer(f, boards[i]), i);
             }
         }
 
-        private QList<Board> MakePVPBoards(Frame f, List<PlayerLink> players)
+        private void MakePVPBoards(Frame f, List<PlayerLink> players)
         {
             if (players.Count < 2)
             {
@@ -58,25 +60,21 @@ namespace Quantum.Game
                     }
                 }
             }
-
-            return f.ResolveList(f.Global->Boards);
         }
 
-        private QList<Board> MakePVEBoards(Frame f, List<PlayerLink> players, RoundInfo roundInfo)
+        private void MakePVEBoards(Frame f, List<PlayerLink> players, RoundInfo roundInfo)
         {
             for (int i = 0; i < players.Count; i++)
             {
                 f.Signals.MakeNewBoardPVE(players[i], roundInfo);
             }
-
-            return f.ResolveList(f.Global->Boards);
         }
 
-        private void SetupBoard(Frame f, Board board, int boardIndex)
+        private void SetupBoard(Frame f, Board* board, int boardIndex)
         {
-            QList<FightingHero> fightingHeroesMap = f.ResolveList(board.FightingHeroesMap);
-            QList<HeroEntity> heroesID1 = f.ResolveList(board.HeroesID1);
-            QList<HeroEntity> heroesID2 = f.ResolveList(board.HeroesID2);
+            QList<FightingHero> fightingHeroesMap = f.ResolveList(board->FightingHeroesMap);
+            QList<HeroEntity> heroesID1 = f.ResolveList(board->HeroesID1);
+            QList<HeroEntity> heroesID2 = f.ResolveList(board->HeroesID2);
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
             for (int i = 0; i < GameConfig.BoardSize * GameConfig.BoardSize / 2; i++)
@@ -114,19 +112,7 @@ namespace Quantum.Game
             }
 
             List<EntityLevelData> heroDataList = fightingHeroesMap.Select(hero => new EntityLevelData { Ref = hero.Hero.Ref, Level = hero.Hero.Level, ID = hero.Hero.ID }).ToList();
-            f.Events.StartRound(f, board.Player1.Ref, board.Player2.Ref, heroDataList);
-        }
-
-        private List<PlayerLink> GetCurrentPlayers(Frame f)
-        {
-            List<PlayerLink> players = new();
-
-            foreach (var (_, player) in f.GetComponentIterator<PlayerLink>())
-            {
-                players.Add(player);
-            }
-
-            return players;
+            f.Events.StartRound(f, board->Player1.Ref, board->Player2.Ref, heroDataList);
         }
     }
 }

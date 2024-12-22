@@ -186,6 +186,7 @@ namespace Quantum.Game
 
             HeroProjectilesSystem.SpawnProjectile(f, fighingHero, targetHero.Hero, targetHero.Hero.AbilityDamage,
                 damageType, ProjectileType.Ability);
+                
             ResetMana(f, fighingHero);
         }
 
@@ -233,7 +234,7 @@ namespace Quantum.Game
 
             if (target.Hero.CurrentHealth <= 0)
             {
-                f.Events.DestroyHero(board.Player1.Ref, board.Player2.Ref, target.Hero.Ref);
+                BoardSystem.DisactiveEntity(f, target.Hero.Ref);
                 target.Hero.IsAlive = false;
                 target.Hero.ID = -1;
                 target.Hero.Ref = default;

@@ -1,10 +1,10 @@
 global
 {
-    list<Board> Boards;
-
     int PhaseNumber;
     int PVPStreak;
+    bool IsGameStarted;
     bool IsBuyPhase;
+    bool IsPVPRound;
     bool IsFighting;
     bool IsDelayPassed;
     FP PhaseDelay;

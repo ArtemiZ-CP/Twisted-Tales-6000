@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Quantum.Collections;
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -7,6 +8,50 @@ namespace Quantum.Game
     [Preserve]
     public unsafe class BoardSystem : SystemSignalsOnly, ISignalMakeNewBoardPVP, ISignalMakeNewBoardPVE, ISignalClearBoards
     {
+        public static List<Board> GetBoards(Frame f)
+        {
+            List<Board> boardEntities = new();
+
+            foreach (var board in f.GetComponentIterator<Board>())
+            {
+                boardEntities.Add(board.Component);
+            }
+
+            return boardEntities;
+        }
+
+        public static Board GetBoard(Frame f, PlayerRef playerRef)
+        {
+            var boards = GetBoards(f);
+
+            for (int i = 0; i < boards.Count; i++)
+            {
+                if (boards[i].Player1.Ref == playerRef || boards[i].Player2.Ref == playerRef)
+                {
+                    return boards[i];
+                }
+            }
+
+            return default;
+        }
+
+        public static List<EntityRef> GetBoardEntities(Frame f)
+        {
+            List<EntityRef> boardEntities = new();
+
+            foreach (var board in f.GetComponentIterator<Board>())
+            {
+                boardEntities.Add(board.Entity);
+            }
+
+            return boardEntities;
+        }
+
+        public static Board* GetBoardPointer(Frame f, EntityRef entity)
+        {
+            return f.Unsafe.GetPointer<Board>(entity);
+        }
+
         public static void DisactiveEntity(Frame f, EntityRef entity)
         {
             GetGameObject(f, entity).SetActive(false);
@@ -23,12 +68,6 @@ namespace Quantum.Game
             return null;
         }
 
-        public override void OnInit(Frame f)
-        {
-            f.Global->Boards = f.AllocateList<Board>();
-            ClearBoards(f);
-        }
-
         public void MakeNewBoardPVP(Frame f, PlayerLink player1, PlayerLink player2, QBoolean main)
         {
             EntityRef boardRef = SpawnBoard(f, &player1, &player2, main);
@@ -43,29 +82,39 @@ namespace Quantum.Game
 
         public void ClearBoards(Frame f)
         {
-            QList<Board> boards = f.ResolveList(f.Global->Boards);
+            List<EntityRef> boards = GetBoardEntities(f);
 
             for (int i = 0; i < boards.Count; i++)
             {
-                Board board = boards[i];
+                Board* board = GetBoardPointer(f, boards[i]);
                 ClearBoard(f, board);
             }
 
             boards.Clear();
         }
 
-        private void ClearBoard(Frame f, Board board)
+        private void ClearBoard(Frame f, Board* board)
         {
-            ClearHeroes(f, board.HeroesID1);
-            ClearHeroes(f, board.HeroesID2);
-            ClearProjectiles(f, board.HeroProjectiles);
-            f.FreeList(board.FightingHeroesMap);
-            f.Destroy(board.Ref);
+            ClearHeroes(f, board->HeroesID1);
+            f.FreeList(board->HeroesID1);
+            board->HeroesID1 = default;
+
+            ClearHeroes(f, board->HeroesID2);
+            f.FreeList(board->HeroesID2);
+            board->HeroesID2 = default;
+
+            ClearProjectiles(f, board->HeroProjectiles);
+            f.FreeList(board->HeroProjectiles);
+            board->HeroProjectiles = default;
+
+            f.FreeList(board->FightingHeroesMap);
+            board->FightingHeroesMap = default;
+
+            f.Destroy(board->Ref);
         }
 
         private void ActiveBoard(Frame f, EntityRef boardEntity)
         {
-            QList<Board> boards = f.ResolveList(f.Global->Boards);
             Board* playerBoard = f.Unsafe.GetPointer<Board>(boardEntity);
 
             SpawnHeroes(f, playerBoard);
@@ -81,8 +130,6 @@ namespace Quantum.Game
             {
                 f.Destroy(heroes[i].Ref);
             }
-
-            f.FreeList(heroesPtr);
         }
 
         private void ClearProjectiles(Frame f, QListPtr<HeroProjectile> projectilesPtr)
@@ -95,8 +142,6 @@ namespace Quantum.Game
             {
                 f.Destroy(projectiles[i].Ref);
             }
-
-            f.FreeList(projectilesPtr);
         }
 
         private EntityRef SpawnBoard(Frame f, PlayerLink* player1, PlayerLink* player2, bool main)
@@ -143,7 +188,7 @@ namespace Quantum.Game
 
         private void SetupBoard(Frame f, EntityRef boardEntity, PlayerLink* player1, PlayerLink* player2, bool main)
         {
-            Board* board = f.Unsafe.GetPointer<Board>(boardEntity);
+            Board* board = GetBoardPointer(f, boardEntity);
 
             board->Ref = boardEntity;
 
@@ -155,15 +200,14 @@ namespace Quantum.Game
 
             board->Player1 = *player1;
             board->Player2 = main ? *player2 : default;
-
-            QList<Board> boards = f.ResolveList(f.Global->Boards);
-            boards.Add(*board);
         }
 
         private void SetupBoard(Frame f, EntityRef boardEntity, PlayerLink* player1, RoundInfo roundInfo)
         {
-            Board* board = f.Unsafe.GetPointer<Board>(boardEntity);
+            Board* board = GetBoardPointer(f, boardEntity);
 
+            board->Ref = boardEntity;
+            
             board->FightingHeroesMap = f.AllocateList<FightingHero>(GameConfig.BoardSize * GameConfig.BoardSize);
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
 
@@ -172,9 +216,6 @@ namespace Quantum.Game
 
             board->Player1 = *player1;
             board->Player2 = default;
-
-            QList<Board> boards = f.ResolveList(f.Global->Boards);
-            boards.Add(*board);
         }
     }
 }

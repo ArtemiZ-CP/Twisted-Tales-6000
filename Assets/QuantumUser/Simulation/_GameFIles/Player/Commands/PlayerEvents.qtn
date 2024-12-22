@@ -9,18 +9,6 @@ event GetCurrentPlayers
 {
 }
 
-event InitPlayer
-{
-    player_ref PlayerRef;
-}
-
-event DestroyHero
-{
-    player_ref PlayerRef1;
-    player_ref PlayerRef2;
-    entity_ref HeroEntity;
-}
-
 event HeroHealthChanged
 {
     player_ref PlayerRef1;
@@ -77,6 +65,7 @@ event EndRound
 event GetRoundTime
 {
     bool IsBuyPhase;
+    bool IsPVPRound;
     FP RemainingTime;
 }
 

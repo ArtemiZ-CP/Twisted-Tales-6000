@@ -45,6 +45,19 @@ namespace Quantum.Game
             return playersEntity;
         }
 
+        public static PlayerLink GetPlayerLink(Frame f, PlayerRef playerRef)
+        {
+            foreach ((EntityRef entity, PlayerLink link) in f.GetComponentIterator<PlayerLink>())
+            {
+                if (link.Ref == playerRef)
+                {
+                    return link;
+                }
+            }
+
+            return default;
+        }
+
         public static void ResetCoins(Frame f)
         {
             var players = GetAllPlayersEntity(f);

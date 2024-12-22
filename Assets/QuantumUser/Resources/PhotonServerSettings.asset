@@ -18,7 +18,7 @@ MonoBehaviour:
     AppIdQuantum: bd6b1e6f-eae7-4f4d-a3ee-a3c0be18a735
     AppIdChat: 
     AppIdVoice: 
-    AppVersion: 0.1
+    AppVersion: 0.2
     UseNameServer: 1
     FixedRegion: 
     Server: 
@@ -30,6 +30,6 @@ MonoBehaviour:
     EnableLobbyStatistics: 0
     NetworkLogging: 1
     ClientLogging: 2
-  PlayerTtlInSeconds: 0
-  EmptyRoomTtlInSeconds: 0
+  PlayerTtlInSeconds: 600
+  EmptyRoomTtlInSeconds: 300
   BestRegionSummaryKey: Quantum.BestRegionSummary

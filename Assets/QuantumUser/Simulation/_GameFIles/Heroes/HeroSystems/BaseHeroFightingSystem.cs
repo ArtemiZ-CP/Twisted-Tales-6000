@@ -63,7 +63,7 @@ namespace Quantum.Game
 
         private static bool TryGetHeroes<T>(Frame f, ref List<FightingHero> heroes) where T : unmanaged, IComponent
         {
-            QList<Board> boards = f.ResolveList(f.Global->Boards);
+            List<Board> boards = BoardSystem.GetBoards(f);
 
             foreach (Board board in boards)
             {

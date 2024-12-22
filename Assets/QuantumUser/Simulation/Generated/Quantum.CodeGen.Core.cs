@@ -690,7 +690,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct _globals_ {
-    public const Int32 SIZE = 624;
+    public const Int32 SIZE = 632;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public AssetRef<Map> Map;
@@ -717,21 +717,23 @@ namespace Quantum {
     private fixed Byte _input_[24];
     [FieldOffset(576)]
     public BitSet6 PlayerLastConnectionState;
-    [FieldOffset(604)]
-    public QListPtr<Board> Boards;
     [FieldOffset(588)]
     public Int32 PhaseNumber;
     [FieldOffset(584)]
     public Int32 PVPStreak;
+    [FieldOffset(604)]
+    public QBoolean IsGameStarted;
     [FieldOffset(592)]
     public QBoolean IsBuyPhase;
+    [FieldOffset(608)]
+    public QBoolean IsPVPRound;
     [FieldOffset(600)]
     public QBoolean IsFighting;
     [FieldOffset(596)]
     public QBoolean IsDelayPassed;
-    [FieldOffset(608)]
-    public FP PhaseDelay;
     [FieldOffset(616)]
+    public FP PhaseDelay;
+    [FieldOffset(624)]
     public FP PhaseTime;
     public FixedArray<Input> input {
       get {
@@ -753,19 +755,17 @@ namespace Quantum {
         hash = hash * 31 + PlayerConnectedCount.GetHashCode();
         hash = hash * 31 + HashCodeUtils.GetArrayHashCode(input);
         hash = hash * 31 + PlayerLastConnectionState.GetHashCode();
-        hash = hash * 31 + Boards.GetHashCode();
         hash = hash * 31 + PhaseNumber.GetHashCode();
         hash = hash * 31 + PVPStreak.GetHashCode();
+        hash = hash * 31 + IsGameStarted.GetHashCode();
         hash = hash * 31 + IsBuyPhase.GetHashCode();
+        hash = hash * 31 + IsPVPRound.GetHashCode();
         hash = hash * 31 + IsFighting.GetHashCode();
         hash = hash * 31 + IsDelayPassed.GetHashCode();
         hash = hash * 31 + PhaseDelay.GetHashCode();
         hash = hash * 31 + PhaseTime.GetHashCode();
         return hash;
       }
-    }
-    partial void ClearPointersPartial(FrameBase f, EntityRef entity) {
-      Boards = default;
     }
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (_globals_*)ptr;
@@ -786,7 +786,8 @@ namespace Quantum {
         QBoolean.Serialize(&p->IsBuyPhase, serializer);
         QBoolean.Serialize(&p->IsDelayPassed, serializer);
         QBoolean.Serialize(&p->IsFighting, serializer);
-        QList.Serialize(&p->Boards, serializer, Statics.SerializeBoard);
+        QBoolean.Serialize(&p->IsGameStarted, serializer);
+        QBoolean.Serialize(&p->IsPVPRound, serializer);
         FP.Serialize(&p->PhaseDelay, serializer);
         FP.Serialize(&p->PhaseTime, serializer);
     }
@@ -1188,14 +1189,12 @@ namespace Quantum {
     public static FrameSerializer.Delegate SerializeHeroProjectile;
     public static FrameSerializer.Delegate SerializeHeroEntity;
     public static FrameSerializer.Delegate SerializeInt32;
-    public static FrameSerializer.Delegate SerializeBoard;
     public static FrameSerializer.Delegate SerializeInput;
     static partial void InitStaticDelegatesGen() {
       SerializeFightingHero = Quantum.FightingHero.Serialize;
       SerializeHeroProjectile = Quantum.HeroProjectile.Serialize;
       SerializeHeroEntity = Quantum.HeroEntity.Serialize;
       SerializeInt32 = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
-      SerializeBoard = Quantum.Board.Serialize;
       SerializeInput = Quantum.Input.Serialize;
     }
     static partial void RegisterSimulationTypesGen(TypeRegistry typeRegistry) {

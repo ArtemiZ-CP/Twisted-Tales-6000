@@ -1,22 +1,48 @@
 using System.Collections.Generic;
-using System.Linq;
 using Quantum.Collections;
 using UnityEngine.Scripting;
+using System.Linq;
 
 namespace Quantum.Game
 {
     [Preserve]
     public unsafe class PlayerInitializationSystem : SystemSignalsOnly, ISignalOnPlayerAdded, ISignalOnPlayerRemoved
     {
+        public override void OnInit(Frame f)
+        {
+            f.Global->RngSession = new Photon.Deterministic.RNGSession(1);
+            f.Global->IsGameStarted = false;
+        }
+
         public void OnPlayerAdded(Frame f, PlayerRef player, bool firstTime)
         {
             if (firstTime == false)
             {
-                // reconnecting player
+                ReinitializePlayer(f, player);
 
                 return;
             }
 
+            if (f.Global->IsGameStarted)
+            {
+                return;
+            }
+
+            InitializeNewPlayer(f, player);
+
+            if (Player.GetAllPlayers(f).Count == f.FindAsset(f.RuntimeConfig.GameConfig).MaxPlayers)
+            {
+                f.Global->IsGameStarted = true;
+            }
+        }
+
+        public void OnPlayerRemoved(Frame f, PlayerRef player)
+        {
+
+        }
+
+        private void InitializeNewPlayer(Frame f, PlayerRef player)
+        {
             RuntimePlayer data = f.GetPlayerData(player);
             EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
@@ -48,19 +74,39 @@ namespace Quantum.Game
 
             FillList(f, playerLink.Info.Shop.HeroesID, gameConfig.ShopSize, -1);
             FillList(f, playerLink.Info.Inventory.HeroesID, gameConfig.InventorySize, -1);
-            FillList(f, playerLink.Info.Board.HeroesID, GameConfig.BoardSize * GameConfig.BoardSize / 2, -1);
             FillList(f, playerLink.Info.Inventory.HeroesLevel, gameConfig.InventorySize, 0);
+            FillList(f, playerLink.Info.Board.HeroesID, GameConfig.BoardSize * GameConfig.BoardSize / 2, -1);
             FillList(f, playerLink.Info.Board.HeroesLevel, GameConfig.BoardSize * GameConfig.BoardSize / 2, 0);
 
-            f.Signals.OnReloadShop(&playerLink);
             f.Add(playerEntity, playerLink);
-            f.Events.InitPlayer(player);
+
+            f.Signals.OnReloadShop(&playerLink);
             f.Events.GetShopUpgradeCost(player, gameConfig.ShopUpdrageSettings[0].Cost);
+            f.Events.GetPlayerInfo(f, player, playerLink.Info);
         }
 
-        public void OnPlayerRemoved(Frame f, PlayerRef player)
+        private void ReinitializePlayer(Frame f, PlayerRef player)
         {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+            PlayerLink playerLink = Player.GetPlayerLink(f, player);
 
+            f.Events.GetPlayerInfo(f, player, playerLink.Info);
+            f.Events.GetCurrentPlayers(f, Player.GetAllPlayersLink(f), BoardSystem.GetBoards(f));
+            f.Events.ChangeCoins(player, playerLink.Info.Coins);
+            f.Events.ReloadShop(f, player, f.ResolveList(playerLink.Info.Shop.HeroesID).ToList());
+            f.Events.GetShopUpgradeCost(player, gameConfig.ShopUpdrageSettings[playerLink.Info.Shop.Level].Cost);
+
+            if (f.Global->IsBuyPhase == false)
+            {
+                Board board = BoardSystem.GetBoard(f, playerLink.Ref);
+                QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+
+                List<EntityLevelData> heroDataList = heroes.Select(hero => new EntityLevelData { Ref = hero.Hero.Ref, Level = hero.Hero.Level, ID = hero.Hero.ID }).ToList();
+                f.Events.StartRound(f, board.Player1.Ref, board.Player2.Ref, heroDataList);
+
+                List<EntityLevelData> projectilesData = f.ResolveList(board.HeroProjectiles).Select(p => new EntityLevelData { Ref = p.Ref, Level = p.Level }).ToList();
+                f.Events.GetProjectiles(f, board.Player1.Ref, board.Player2.Ref, projectilesData);
+            }
         }
 
         private void FillList(Frame frame, QListPtr<int> list, int size, int value)

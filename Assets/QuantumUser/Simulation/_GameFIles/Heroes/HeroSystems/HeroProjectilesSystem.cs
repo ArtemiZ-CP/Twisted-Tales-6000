@@ -13,7 +13,7 @@ namespace Quantum.Game
         {
             if (f.Global->IsBuyPhase || f.Global->IsDelayPassed == false) return;
 
-            QList<Board> boards = f.ResolveList(f.Global->Boards);
+            List<Board> boards = BoardSystem.GetBoards(f);
 
             foreach (Board board in boards)
             {

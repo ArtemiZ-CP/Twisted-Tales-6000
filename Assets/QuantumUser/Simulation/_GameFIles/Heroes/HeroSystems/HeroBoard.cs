@@ -9,7 +9,7 @@ namespace Quantum.Game
     {
         public static Board GetBoard(Frame f, FightingHero fighingHero)
         {
-            QList<Board> boards = f.ResolveList(f.Global->Boards);
+            List<Board> boards = BoardSystem.GetBoards(f);
             return boards[fighingHero.BoardIndex];
         }
 

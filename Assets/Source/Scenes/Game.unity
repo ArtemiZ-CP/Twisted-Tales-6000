@@ -2825,8 +2825,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _roundTimerText: {fileID: 1517817154}
-  _buyPhaseText: 'Buy phase ended in '
-  _combatPhaseText: 'Combat phase ended in '
+  _buyPhaseText: 'Buy:'
+  _pvpPhaseText: 'PVP:'
+  _pvePhaseText: 'PVE:'
 --- !u!1 &1530119975
 GameObject:
   m_ObjectHideFlags: 0

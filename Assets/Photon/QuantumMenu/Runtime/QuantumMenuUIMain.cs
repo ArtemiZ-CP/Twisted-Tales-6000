@@ -9,6 +9,8 @@ namespace Quantum.Menu
   using InputField = UnityEngine.UI.InputField;
 #endif
 	using UnityEngine;
+	using System.Collections.Generic;
+	using Photon.Realtime;
 
 	/// <summary>
 	/// The main menu.
@@ -63,6 +65,8 @@ namespace Quantum.Menu
 		/// The open setting button.
 		/// </summary>
 		[InlineHelp, SerializeField] protected UnityEngine.UI.Button _settingsButton;
+
+		private List<RoomInfo> _roomList = new();
 
 		partial void AwakeUser();
 		partial void InitUser();
@@ -197,9 +201,9 @@ namespace Quantum.Menu
 		/// </summary>
 		protected virtual async void OnPlayButtonPressed()
 		{
-			ConnectionArgs.Session = null;
 			ConnectionArgs.Creating = false;
 			ConnectionArgs.Region = ConnectionArgs.PreferredRegion;
+			ConnectionArgs.Session = null;
 
 			Controller.Show<QuantumMenuUILoading>();
 
