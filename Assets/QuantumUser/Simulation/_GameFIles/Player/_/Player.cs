@@ -113,6 +113,7 @@ namespace Quantum.Game
             }
 
             playerLink->Info.Coins -= coins;
+            
             f.Events.ChangeCoins(playerLink->Ref, playerLink->Info.Coins);
 
             return true;

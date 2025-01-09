@@ -7,10 +7,11 @@ namespace Quantum.Game
     {
         [SerializeField] private UnityEngine.UI.Button _button;
         [SerializeField] private TMP_Text _upgradeCost;
+        [SerializeField] private TMP_Text _heroesChance;
 
         private void Awake()
         {
-            QuantumEvent.Subscribe<EventGetShopUpgradeCost>(listener: this, handler: UpdateCost);
+            QuantumEvent.Subscribe<EventGetShopUpgradeInfo>(listener: this, handler: UpdateInfo);
         }
 
         private void OnEnable()
@@ -37,7 +38,7 @@ namespace Quantum.Game
             }
         }
 
-        private void UpdateCost(EventGetShopUpgradeCost eventGetShopUpgradeCost)
+        private void UpdateInfo(EventGetShopUpgradeInfo eventGetShopUpgradeCost)
         {
             if (QuantumConnection.IsPlayerMe(eventGetShopUpgradeCost.PlayerRef))
             {
@@ -47,8 +48,20 @@ namespace Quantum.Game
                 }
                 else
                 {
-                    _upgradeCost.text = eventGetShopUpgradeCost.UpgradeCost.ToString();
+                    _upgradeCost.text = $"{eventGetShopUpgradeCost.UpgradeCost} coins";
                 }
+
+                string text = string.Empty;
+
+                for (int i = 0; i < eventGetShopUpgradeCost.HeroChanceList.Count; i++)
+                {
+                    float chance = eventGetShopUpgradeCost.HeroChanceList[i];
+                    Color color = QuantumConnection.GameConfig.GetRareColor((HeroRare)i);
+
+                    text += $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{(HeroRare)i}</color>: {chance}%\n";
+                }
+
+                _heroesChance.text = text;
             }
         }
     }

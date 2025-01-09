@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Photon.Deterministic;
+using UnityEditor;
 using UnityEngine;
 
 namespace Quantum.Game
@@ -131,7 +132,7 @@ namespace Quantum.Game
             return HeroShopSettings[(int)rare].BuyCost;
         }
 
-        public Color GetHeroBackgroundColor(HeroRare rare)
+        public Color GetRareColor(HeroRare rare)
         {
             return HeroShopSettings[(int)rare].BackgroundColor;
         }

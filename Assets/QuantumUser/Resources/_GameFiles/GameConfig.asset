@@ -16,8 +16,9 @@ MonoBehaviour:
     Path: QuantumUser/Resources/_GameFiles/GameConfig
     Guid:
       Value: 481284669698677807
+  MaxPlayers: 1
   PlayerHealth: 100
-  CoinsPerRound: 10
+  CoinsPerRound: 1000
   ResetCoinsOnEndRound: 0
   HeroInfos:
   - Id:

@@ -67,7 +67,7 @@ namespace Quantum.Game
                         HeroesID = f.AllocateList<int>(GameConfig.BoardSize * GameConfig.BoardSize / 2),
                         HeroesLevel = f.AllocateList<int>(GameConfig.BoardSize * GameConfig.BoardSize / 2)
                     },
-                    Coins = 1 + gameConfig.CoinsPerRound,
+                    Coins = gameConfig.CoinsPerRound,
                     Health = gameConfig.PlayerHealth
                 }
             };
@@ -80,21 +80,23 @@ namespace Quantum.Game
 
             f.Add(playerEntity, playerLink);
 
-            f.Signals.OnReloadShop(&playerLink);
-            f.Events.GetShopUpgradeCost(player, gameConfig.ShopUpdrageSettings[0].Cost);
-            f.Events.GetPlayerInfo(f, player, playerLink.Info);
+            f.Signals.OnReloadShop(Player.GetPlayerPointer(f, playerEntity), cost: 0);
+
+            ReinitializePlayer(f, player);
         }
 
         private void ReinitializePlayer(Frame f, PlayerRef player)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             PlayerLink playerLink = Player.GetPlayerLink(f, player);
+            int shopLevel = playerLink.Info.Shop.Level;
+            int shopUpgradeCost = gameConfig.ShopUpdrageSettings[shopLevel].Cost;
 
             f.Events.GetPlayerInfo(f, player, playerLink.Info);
             f.Events.GetCurrentPlayers(f, Player.GetAllPlayersLink(f), BoardSystem.GetBoards(f));
             f.Events.ChangeCoins(player, playerLink.Info.Coins);
             f.Events.ReloadShop(f, player, f.ResolveList(playerLink.Info.Shop.HeroesID).ToList());
-            f.Events.GetShopUpgradeCost(player, gameConfig.ShopUpdrageSettings[playerLink.Info.Shop.Level].Cost);
+            f.Events.GetShopUpgradeInfo(f, player, shopUpgradeCost, Shop.GetHeroChances(f, shopLevel));
 
             if (f.Global->IsBuyPhase == false)
             {

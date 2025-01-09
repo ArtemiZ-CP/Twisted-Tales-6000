@@ -1,4 +1,4 @@
-signal OnReloadShop(PlayerLink* playerLink);
+signal OnReloadShop(PlayerLink* playerLink, int cost);
 signal OnUpgradeShop(PlayerLink* playerLink);
 signal OnBuyHero(PlayerLink* playerLink, Int32 shopIndex);
 signal OnMoveHero(PlayerLink* playerLink, Quantum.Game.HeroState HeroFromState, Quantum.Game.HeroState HeroToState, int positionFromX, int positionFromY, int positionToX, int positionToY);

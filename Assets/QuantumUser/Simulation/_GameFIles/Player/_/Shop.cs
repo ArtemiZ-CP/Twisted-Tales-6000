@@ -1,4 +1,7 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using Photon.Deterministic;
 using Quantum.Collections;
 
 namespace Quantum.Game
@@ -42,16 +45,17 @@ namespace Quantum.Game
             if (Player.TryRemoveCoins(f, playerLink, shopUpdrageSettings.Cost))
             {
                 playerLink->Info.Shop.Level++;
+                int shopLevel = playerLink->Info.Shop.Level;
                 Reload(f, playerLink);
 
-                if (playerLink->Info.Shop.Level + 1 >= gameConfig.ShopUpdrageSettings.Length)
+                if (shopLevel + 1 >= gameConfig.ShopUpdrageSettings.Length)
                 {
-                    f.Events.GetShopUpgradeCost(playerLink->Ref, -1);
+                    f.Events.GetShopUpgradeInfo(f, playerLink->Ref, -1, GetHeroChances(f, shopLevel));
                 }
                 else
                 {
-                    f.Events.GetShopUpgradeCost(playerLink->Ref,
-                        gameConfig.ShopUpdrageSettings[playerLink->Info.Shop.Level].Cost);
+                    int upgradeCost = gameConfig.ShopUpdrageSettings[shopLevel].Cost;
+                    f.Events.GetShopUpgradeInfo(f, playerLink->Ref, upgradeCost, GetHeroChances(f, shopLevel));
                 }
 
                 return true;
@@ -60,7 +64,7 @@ namespace Quantum.Game
             return false;
         }
 
-        private static HeroRare GetHeroRare(Frame f, int shopLevel)
+        public static HeroRare GetHeroRare(Frame f, int shopLevel)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             ShopUpdrageSettings shopUpdrageSettings = gameConfig.ShopUpdrageSettings[shopLevel];
@@ -84,7 +88,42 @@ namespace Quantum.Game
                 }
             }
 
-            throw new System.Exception("GetHeroRare failed");
+            throw new Exception("GetHeroRare failed");
+        }
+
+        public static List<float> GetHeroChances(Frame f, int shopLevel)
+        {
+            List<float> chances = new();
+
+            foreach (HeroRare heroRare in Enum.GetValues(typeof(HeroRare)).Cast<HeroRare>())
+            {
+                chances.Add(GetHeroChance(f, shopLevel, heroRare));
+            }
+
+            return chances;
+        }
+
+        private static float GetHeroChance(Frame f, int shopLevel, HeroRare heroRare)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+            ShopUpdrageSettings shopUpdrageSettings = gameConfig.ShopUpdrageSettings[shopLevel];
+
+            int ChanceSum = 0;
+
+            foreach (var ShopHeroChance in shopUpdrageSettings.ShopHeroChances)
+            {
+                ChanceSum += ShopHeroChance.Chance;
+            }
+
+            foreach (var ShopHeroChance in shopUpdrageSettings.ShopHeroChances)
+            {
+                if (ShopHeroChance.Rare == heroRare)
+                {
+                    return (float)ShopHeroChance.Chance / ChanceSum;
+                }
+            }
+
+            throw new Exception("GetHeroChance failed");
         }
     }
 }

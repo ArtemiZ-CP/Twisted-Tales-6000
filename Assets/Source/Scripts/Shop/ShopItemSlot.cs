@@ -45,7 +45,7 @@ namespace Quantum.Game
             {
                 _heroParent.SetActive(true);
                 _hero.SetHeroState(this, heroId);
-                _background.color = QuantumConnection.GameConfig.GetHeroBackgroundColor(QuantumConnection.GetHeroInfo(heroId).Rare);
+                _background.color = QuantumConnection.GameConfig.GetRareColor(QuantumConnection.GetHeroInfo(heroId).Rare);
             }
         }
 

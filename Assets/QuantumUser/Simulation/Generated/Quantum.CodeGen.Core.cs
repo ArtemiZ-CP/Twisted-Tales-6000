@@ -946,7 +946,7 @@ namespace Quantum {
     }
   }
   public unsafe partial interface ISignalOnReloadShop : ISignal {
-    void OnReloadShop(Frame f, PlayerLink* playerLink);
+    void OnReloadShop(Frame f, PlayerLink* playerLink, Int32 cost);
   }
   public unsafe partial interface ISignalOnUpgradeShop : ISignal {
     void OnUpgradeShop(Frame f, PlayerLink* playerLink);
@@ -1083,12 +1083,12 @@ namespace Quantum {
       Physics3D.Init(_globals->PhysicsState3D.MapStaticCollidersState.TrackedMap);
     }
     public unsafe partial struct FrameSignals {
-      public void OnReloadShop(PlayerLink* playerLink) {
+      public void OnReloadShop(PlayerLink* playerLink, Int32 cost) {
         var array = _f._ISignalOnReloadShopSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
-            s.OnReloadShop(_f, playerLink);
+            s.OnReloadShop(_f, playerLink, cost);
           }
         }
       }

@@ -73,7 +73,7 @@ namespace Quantum {
           case EventEndRound.ID: result = typeof(EventEndRound); return;
           case EventGetRoundTime.ID: result = typeof(EventGetRoundTime); return;
           case EventGetProjectiles.ID: result = typeof(EventGetProjectiles); return;
-          case EventGetShopUpgradeCost.ID: result = typeof(EventGetShopUpgradeCost); return;
+          case EventGetShopUpgradeInfo.ID: result = typeof(EventGetShopUpgradeInfo); return;
           default: break;
         }
       }
@@ -166,8 +166,8 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventGetShopUpgradeCost GetShopUpgradeCost(PlayerRef PlayerRef, Int32 UpgradeCost) {
-        var ev = _f.Context.AcquireEvent<EventGetShopUpgradeCost>(EventGetShopUpgradeCost.ID);
+      public EventGetShopUpgradeInfo GetShopUpgradeInfo(PlayerRef PlayerRef, Int32 UpgradeCost) {
+        var ev = _f.Context.AcquireEvent<EventGetShopUpgradeInfo>(EventGetShopUpgradeInfo.ID);
         ev.PlayerRef = PlayerRef;
         ev.UpgradeCost = UpgradeCost;
         _f.AddEvent(ev);
@@ -509,14 +509,14 @@ namespace Quantum {
       }
     }
   }
-  public unsafe partial class EventGetShopUpgradeCost : EventBase {
+  public unsafe partial class EventGetShopUpgradeInfo : EventBase {
     public new const Int32 ID = 13;
     public PlayerRef PlayerRef;
     public Int32 UpgradeCost;
-    protected EventGetShopUpgradeCost(Int32 id, EventFlags flags) : 
+    protected EventGetShopUpgradeInfo(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
-    public EventGetShopUpgradeCost() : 
+    public EventGetShopUpgradeInfo() : 
         base(13, EventFlags.Server|EventFlags.Client) {
     }
     public new QuantumGame Game {

@@ -44,9 +44,9 @@ namespace Quantum.Game
             }
         }
 
-        public void OnReloadShop(Frame f, PlayerLink* playerLink)
+        public void OnReloadShop(Frame f, PlayerLink* playerLink, int cost)
         {
-            if (Player.TryRemoveCoins(f, playerLink, 1))
+            if (Player.TryRemoveCoins(f, playerLink, cost))
             {
                 Shop.Reload(f, playerLink);
             }

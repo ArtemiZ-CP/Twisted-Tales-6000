@@ -158,9 +158,7 @@ namespace Quantum.Menu
 				}
 				else
 				{
-					QuantumRunner.ShutdownAll();
 					ReportProgress("Reconnecting..");
-					// If reconnect fails, try to connect again
 					_client = await MatchmakingExtensions.ReconnectToRoomAsync(arguments);
 				}
 			}
@@ -193,9 +191,6 @@ namespace Quantum.Menu
 					_cancellation.Cancel();
 				}
 			});
-
-			// wait while player count is not reached
-			// await PlayersQueue.WaitForPlayerCountAsync(Client, connectArgs.MaxPlayerCount, _linkedCancellation.Token);
 
 			// LOAD SCENE ---------------------------------------------------------------
 
@@ -286,13 +281,6 @@ namespace Quantum.Menu
 				DeltaTimeType = connectArgs.DeltaTimeType,
 				StartGameTimeoutInSeconds = connectArgs.StartGameTimeoutInSeconds,
 			};
-
-			QuantumMppm.MainEditor?.Send(new QuantumMenuMppmJoinCommand()
-			{
-				AppVersion = connectArgs.AppVersion,
-				Session = Client.CurrentRoom.Name,
-				Region = Client.CurrentRegion,
-			});
 
 			// Register to plugin disconnect messages to display errors
 			string pluginDisconnectReason = null;

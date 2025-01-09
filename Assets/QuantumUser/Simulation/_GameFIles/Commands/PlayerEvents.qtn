@@ -75,7 +75,7 @@ event GetProjectiles
     player_ref Player2;
 }
 
-event GetShopUpgradeCost
+event GetShopUpgradeInfo
 {
     player_ref PlayerRef;
     int UpgradeCost;
