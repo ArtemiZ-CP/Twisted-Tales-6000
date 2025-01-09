@@ -10,7 +10,7 @@ namespace Quantum.Game
 
         public void Execute(Frame f, PlayerLink* playerLink)
         {
-            f.Signals.OnReloadShop(playerLink, cost: 1);
+            f.Signals.OnReloadShop(playerLink, cost: 2);
         }
     }
 }

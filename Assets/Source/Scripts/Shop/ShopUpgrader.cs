@@ -55,7 +55,7 @@ namespace Quantum.Game
 
                 for (int i = 0; i < eventGetShopUpgradeCost.HeroChanceList.Count; i++)
                 {
-                    float chance = eventGetShopUpgradeCost.HeroChanceList[i];
+                    int chance = Mathf.RoundToInt(eventGetShopUpgradeCost.HeroChanceList[i] * 100);
                     Color color = QuantumConnection.GameConfig.GetRareColor((HeroRare)i);
 
                     text += $"<color=#{ColorUtility.ToHtmlStringRGB(color)}>{(HeroRare)i}</color>: {chance}%\n";

@@ -18,7 +18,7 @@ MonoBehaviour:
       Value: 481284669698677807
   MaxPlayers: 1
   PlayerHealth: 100
-  CoinsPerRound: 1000
+  CoinsPerRound: 5
   ResetCoinsOnEndRound: 0
   HeroInfos:
   - Id:
@@ -105,14 +105,26 @@ MonoBehaviour:
     SellCost2: 5
     SellCost3: 5
   ShopUpdrageSettings:
-  - Cost: 2
+  - Cost: 1
     ShopHeroChances:
     - Rare: 0
-      Chance: 6
+      Chance: 8
+    - Rare: 1
+      Chance: 2
+    - Rare: 2
+      Chance: 0
+    - Rare: 3
+      Chance: 0
+    - Rare: 4
+      Chance: 0
+  - Cost: 1
+    ShopHeroChances:
+    - Rare: 0
+      Chance: 7
     - Rare: 1
       Chance: 3
     - Rare: 2
-      Chance: 1
+      Chance: 0
     - Rare: 3
       Chance: 0
     - Rare: 4
@@ -120,51 +132,99 @@ MonoBehaviour:
   - Cost: 5
     ShopHeroChances:
     - Rare: 0
-      Chance: 2
+      Chance: 55
     - Rare: 1
-      Chance: 4
+      Chance: 35
     - Rare: 2
-      Chance: 4
+      Chance: 10
     - Rare: 3
       Chance: 0
     - Rare: 4
       Chance: 0
-  - Cost: 10
+  - Cost: 45
     ShopHeroChances:
     - Rare: 0
-      Chance: 2
+      Chance: 45
     - Rare: 1
-      Chance: 3
+      Chance: 40
     - Rare: 2
-      Chance: 4
+      Chance: 15
     - Rare: 3
-      Chance: 1
+      Chance: 0
     - Rare: 4
       Chance: 0
   - Cost: 20
     ShopHeroChances:
     - Rare: 0
-      Chance: 1
+      Chance: 35
     - Rare: 1
-      Chance: 3
+      Chance: 40
     - Rare: 2
-      Chance: 4
+      Chance: 25
     - Rare: 3
-      Chance: 2
+      Chance: 0
     - Rare: 4
       Chance: 0
-  - Cost: 30
+  - Cost: 25
     ShopHeroChances:
     - Rare: 0
-      Chance: 1
+      Chance: 25
     - Rare: 1
-      Chance: 2
+      Chance: 35
     - Rare: 2
-      Chance: 3
+      Chance: 35
     - Rare: 3
-      Chance: 3
+      Chance: 5
     - Rare: 4
-      Chance: 1
+      Chance: 0
+  - Cost: 35
+    ShopHeroChances:
+    - Rare: 0
+      Chance: 20
+    - Rare: 1
+      Chance: 30
+    - Rare: 2
+      Chance: 40
+    - Rare: 3
+      Chance: 10
+    - Rare: 4
+      Chance: 0
+  - Cost: 40
+    ShopHeroChances:
+    - Rare: 0
+      Chance: 18
+    - Rare: 1
+      Chance: 24
+    - Rare: 2
+      Chance: 35
+    - Rare: 3
+      Chance: 20
+    - Rare: 4
+      Chance: 3
+  - Cost: 45
+    ShopHeroChances:
+    - Rare: 0
+      Chance: 15
+    - Rare: 1
+      Chance: 21
+    - Rare: 2
+      Chance: 30
+    - Rare: 3
+      Chance: 28
+    - Rare: 4
+      Chance: 6
+  - Cost: 0
+    ShopHeroChances:
+    - Rare: 0
+      Chance: 12
+    - Rare: 1
+      Chance: 18
+    - Rare: 2
+      Chance: 28
+    - Rare: 3
+      Chance: 32
+    - Rare: 4
+      Chance: 10
   ShopSize: 8
   InventorySize: 8
   RoundInfos:
