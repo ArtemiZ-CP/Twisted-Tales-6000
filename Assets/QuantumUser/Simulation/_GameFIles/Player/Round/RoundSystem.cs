@@ -60,6 +60,7 @@ namespace Quantum.Game
             f.Global->PhaseTime = 0;
             f.Signals.ClearBoards();
             f.Events.EndRound();
+            Shop.AddXP(f, f.FindAsset(f.RuntimeConfig.GameConfig).XPByRound);
             GetPlayersList(f);
         }
 
@@ -131,8 +132,8 @@ namespace Quantum.Game
                     if (f.Global->PVPStreak >= config.PVPStreak)
                     {
                         Shop.Reload(f);
-                        ProcessPlayersCoins(f);
                         EndRound(f);
+                        ProcessPlayersCoins(f);
                     }
                     else
                     {
@@ -143,8 +144,8 @@ namespace Quantum.Game
                 else
                 {
                     Shop.Reload(f);
-                    ProcessPlayersCoins(f);
                     EndRound(f);
+                    ProcessPlayersCoins(f);
                 }
 
             }
@@ -221,9 +222,23 @@ namespace Quantum.Game
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
-            if (gameConfig.ResetCoinsOnEndRound) Player.ResetCoins(f);
+            if (gameConfig.ResetCoinsOnEndRound)
+            {
+                Player.ResetCoins(f);
+            }
 
-            Player.AddCoins(f, gameConfig.CoinsPerRound);
+            int coins;
+
+            if (f.Global->PhaseNumber < gameConfig.CoinsPerRound.Count)
+            {
+                coins = gameConfig.CoinsPerRound[f.Global->PhaseNumber];
+            }
+            else
+            {
+                coins = gameConfig.CoinsPerRound[^1];
+            }
+
+            Player.AddCoins(f, coins);
         }
     }
 }

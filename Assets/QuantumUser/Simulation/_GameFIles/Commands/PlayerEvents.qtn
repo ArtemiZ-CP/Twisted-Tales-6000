@@ -78,5 +78,7 @@ event GetProjectiles
 event GetShopUpgradeInfo
 {
     player_ref PlayerRef;
-    int UpgradeCost;
+    int CurrentXP;
+    int MaxXPCost;
+    int CurrentLevel;
 }

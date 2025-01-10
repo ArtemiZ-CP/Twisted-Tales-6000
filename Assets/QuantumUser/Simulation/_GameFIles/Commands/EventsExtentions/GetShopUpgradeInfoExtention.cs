@@ -11,9 +11,9 @@ namespace Quantum
     {
         public partial struct FrameEvents
         {
-            public readonly EventGetShopUpgradeInfo GetShopUpgradeInfo(Frame f, PlayerRef playerRef, int UpgradeCost, List<float> HeroChanceList)
+            public readonly EventGetShopUpgradeInfo GetShopUpgradeInfo(Frame f, PlayerRef playerRef, int CurrentXP, int MaxXPCost, int CurrentLevel, List<float> HeroChanceList)
             {
-                var ev = f.Events.GetShopUpgradeInfo(playerRef, UpgradeCost);
+                var ev = f.Events.GetShopUpgradeInfo(playerRef, CurrentXP, MaxXPCost, CurrentLevel);
                 ev.HeroChanceList = HeroChanceList;
                 return ev;
             }

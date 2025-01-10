@@ -6,7 +6,8 @@ namespace Quantum.Game
     public class ShopUpgrader : MonoBehaviour
     {
         [SerializeField] private UnityEngine.UI.Button _button;
-        [SerializeField] private TMP_Text _upgradeCost;
+        [SerializeField] private TMP_Text _xp;
+        [SerializeField] private TMP_Text _level;
         [SerializeField] private TMP_Text _heroesChance;
 
         private void Awake()
@@ -42,13 +43,15 @@ namespace Quantum.Game
         {
             if (QuantumConnection.IsPlayerMe(eventGetShopUpgradeCost.PlayerRef))
             {
-                if (eventGetShopUpgradeCost.UpgradeCost < 0)
+                _level .text = $"Level: {eventGetShopUpgradeCost.CurrentLevel}";
+
+                if (eventGetShopUpgradeCost.CurrentXP < 0)
                 {
-                    _upgradeCost.text = string.Empty;
+                    _xp.text = string.Empty;
                 }
                 else
                 {
-                    _upgradeCost.text = $"{eventGetShopUpgradeCost.UpgradeCost} coins";
+                    _xp.text = $"{eventGetShopUpgradeCost.CurrentXP}/{eventGetShopUpgradeCost.MaxXPCost}";
                 }
 
                 string text = string.Empty;

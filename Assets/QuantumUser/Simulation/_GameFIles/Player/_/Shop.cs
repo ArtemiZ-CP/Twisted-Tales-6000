@@ -35,33 +35,93 @@ namespace Quantum.Game
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
-            if (playerLink->Info.Shop.Level + 1 >= gameConfig.ShopUpdrageSettings.Length)
+            if (IsShopMaxLevel(f, playerLink))
             {
                 return false;
             }
 
             ShopUpdrageSettings shopUpdrageSettings = gameConfig.ShopUpdrageSettings[playerLink->Info.Shop.Level];
 
-            if (Player.TryRemoveCoins(f, playerLink, shopUpdrageSettings.Cost))
-            {
-                playerLink->Info.Shop.Level++;
-                int shopLevel = playerLink->Info.Shop.Level;
-                Reload(f, playerLink);
+            int upgradeCostToNextLevel = shopUpdrageSettings.Cost - playerLink->Info.Shop.XP;
 
-                if (shopLevel + 1 >= gameConfig.ShopUpdrageSettings.Length)
+            if (playerLink->Info.Shop.Level + 2 >= gameConfig.ShopUpdrageSettings.Length)
+            {
+                if (upgradeCostToNextLevel < gameConfig.ShopUpgrageCost)
                 {
-                    f.Events.GetShopUpgradeInfo(f, playerLink->Ref, -1, GetHeroChances(f, shopLevel));
+                    if (Player.TryRemoveCoins(f, playerLink, upgradeCostToNextLevel))
+                    {
+                        AddXP(f, playerLink, upgradeCostToNextLevel);
+
+                        return true;
+                    }
                 }
-                else
-                {
-                    int upgradeCost = gameConfig.ShopUpdrageSettings[shopLevel].Cost;
-                    f.Events.GetShopUpgradeInfo(f, playerLink->Ref, upgradeCost, GetHeroChances(f, shopLevel));
-                }
+            }
+
+            if (Player.TryRemoveCoins(f, playerLink, gameConfig.ShopUpgrageCost))
+            {
+                AddXP(f, playerLink, gameConfig.ShopUpgrageCost);
 
                 return true;
             }
 
             return false;
+        }
+
+        public static void AddXP(Frame f, int xp)
+        {
+            List<EntityRef> playerEntities = Player.GetAllPlayersEntity(f);
+
+            foreach (EntityRef playerEntitie in playerEntities)
+            {
+                AddXP(f, Player.GetPlayerPointer(f, playerEntitie), xp);
+            }
+        }
+
+        public static void AddXP(Frame f, PlayerLink* playerLink, int xp)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+            ShopUpdrageSettings shopUpdrageSettings = gameConfig.ShopUpdrageSettings[playerLink->Info.Shop.Level];
+
+            if (IsShopMaxLevel(f, playerLink))
+            {
+                return;
+            }
+
+            playerLink->Info.Shop.XP += xp;
+
+            while (playerLink->Info.Shop.XP >= shopUpdrageSettings.Cost)
+            {
+                playerLink->Info.Shop.XP -= shopUpdrageSettings.Cost;
+                playerLink->Info.Shop.Level++;
+                shopUpdrageSettings = gameConfig.ShopUpdrageSettings[playerLink->Info.Shop.Level];
+
+                Reload(f, playerLink);
+
+                if (IsShopMaxLevel(f, playerLink))
+                {
+                    playerLink->Info.Shop.XP = -1;
+                    break;
+                }
+
+            }
+
+            SendShopUpgradeInfo(f, playerLink);
+        }
+
+        public static void SendShopUpgradeInfo(Frame f, PlayerLink* playerLink)
+        {
+            int CurrentXP = playerLink->Info.Shop.XP;
+            int MaxXPCost = -1;
+            int CurrentLevel = playerLink->Info.Shop.Level;
+
+            if (IsShopMaxLevel(f, playerLink) == false)
+            {
+                GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+                ShopUpdrageSettings shopUpdrageSettings = gameConfig.ShopUpdrageSettings[playerLink->Info.Shop.Level];
+                MaxXPCost = shopUpdrageSettings.Cost;
+            }
+
+            f.Events.GetShopUpgradeInfo(f, playerLink->Ref, CurrentXP, MaxXPCost, CurrentLevel, GetHeroChances(f, playerLink->Info.Shop.Level));
         }
 
         public static HeroRare GetHeroRare(Frame f, int shopLevel)
@@ -101,6 +161,12 @@ namespace Quantum.Game
             }
 
             return chances;
+        }
+
+        private static bool IsShopMaxLevel(Frame f, PlayerLink* playerLink)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+            return playerLink->Info.Shop.Level + 1 >= gameConfig.ShopUpdrageSettings.Length;
         }
 
         private static float GetHeroChance(Frame f, int shopLevel, HeroRare heroRare)

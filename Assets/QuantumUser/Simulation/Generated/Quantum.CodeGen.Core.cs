@@ -600,7 +600,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerInfo {
-    public const Int32 SIZE = 32;
+    public const Int32 SIZE = 36;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(24)]
     public PlayerShop Shop;
@@ -665,17 +665,20 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerShop {
-    public const Int32 SIZE = 8;
+    public const Int32 SIZE = 12;
     public const Int32 ALIGNMENT = 4;
-    [FieldOffset(4)]
+    [FieldOffset(8)]
     public QListPtr<Int32> HeroesID;
     [FieldOffset(0)]
     public Int32 Level;
+    [FieldOffset(4)]
+    public Int32 XP;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10663;
         hash = hash * 31 + HeroesID.GetHashCode();
         hash = hash * 31 + Level.GetHashCode();
+        hash = hash * 31 + XP.GetHashCode();
         return hash;
       }
     }
@@ -685,6 +688,7 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerShop*)ptr;
         serializer.Stream.Serialize(&p->Level);
+        serializer.Stream.Serialize(&p->XP);
         QList.Serialize(&p->HeroesID, serializer, Statics.SerializeInt32);
     }
   }
@@ -794,13 +798,13 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Board : Quantum.IComponent {
-    public const Int32 SIZE = 96;
+    public const Int32 SIZE = 104;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(16)]
     public EntityRef Ref;
     [FieldOffset(24)]
     public PlayerLink Player1;
-    [FieldOffset(60)]
+    [FieldOffset(64)]
     public PlayerLink Player2;
     [FieldOffset(4)]
     public QListPtr<HeroEntity> HeroesID1;
@@ -902,7 +906,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerLink : Quantum.IComponent {
-    public const Int32 SIZE = 36;
+    public const Int32 SIZE = 40;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(0)]
     public PlayerRef Ref;

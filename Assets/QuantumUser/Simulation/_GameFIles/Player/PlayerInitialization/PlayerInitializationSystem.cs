@@ -67,7 +67,7 @@ namespace Quantum.Game
                         HeroesID = f.AllocateList<int>(GameConfig.BoardSize * GameConfig.BoardSize / 2),
                         HeroesLevel = f.AllocateList<int>(GameConfig.BoardSize * GameConfig.BoardSize / 2)
                     },
-                    Coins = gameConfig.CoinsPerRound,
+                    Coins = gameConfig.CoinsPerRound[0],
                     Health = gameConfig.PlayerHealth
                 }
             };
@@ -88,19 +88,19 @@ namespace Quantum.Game
         private void ReinitializePlayer(Frame f, PlayerRef player)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            PlayerLink playerLink = Player.GetPlayerLink(f, player);
-            int shopLevel = playerLink.Info.Shop.Level;
+            PlayerLink* playerLink = Player.GetPlayerPointer(f, player);
+            int shopLevel = playerLink->Info.Shop.Level;
             int shopUpgradeCost = gameConfig.ShopUpdrageSettings[shopLevel].Cost;
 
-            f.Events.GetPlayerInfo(f, player, playerLink.Info);
+            f.Events.GetPlayerInfo(f, player, playerLink->Info);
             f.Events.GetCurrentPlayers(f, Player.GetAllPlayersLink(f), BoardSystem.GetBoards(f));
-            f.Events.ChangeCoins(player, playerLink.Info.Coins);
-            f.Events.ReloadShop(f, player, f.ResolveList(playerLink.Info.Shop.HeroesID).ToList());
-            f.Events.GetShopUpgradeInfo(f, player, shopUpgradeCost, Shop.GetHeroChances(f, shopLevel));
+            f.Events.ChangeCoins(player, playerLink->Info.Coins);
+            f.Events.ReloadShop(f, player, f.ResolveList(playerLink->Info.Shop.HeroesID).ToList());
+            Shop.SendShopUpgradeInfo(f, playerLink);
 
             if (f.Global->IsBuyPhase == false)
             {
-                Board board = BoardSystem.GetBoard(f, playerLink.Ref);
+                Board board = BoardSystem.GetBoard(f, playerLink->Ref);
                 QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
                 List<EntityLevelData> heroDataList = heroes.Select(hero => new EntityLevelData { Ref = hero.Hero.Ref, Level = hero.Hero.Level, ID = hero.Hero.ID }).ToList();

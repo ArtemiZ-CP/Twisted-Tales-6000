@@ -51,7 +51,7 @@ namespace Quantum.Game
         public int MaxPlayers = 4;
         [Header("Player")]
         public int PlayerHealth = 100;
-        public int CoinsPerRound = 10;
+        public List<int> CoinsPerRound;
         public bool ResetCoinsOnEndRound;
         [Header("Hero settings")]
         public AssetRef<HeroInfo>[] HeroInfos;
@@ -69,10 +69,12 @@ namespace Quantum.Game
         public HeroShopSettings[] HeroShopSettings;
         public ShopUpdrageSettings[] ShopUpdrageSettings;
         public int ShopSize = 8;
+        public int ShopUpgrageCost = 5;
         [Header("Inventory settings")]
         public int InventorySize = 8;
         [Header("Round settings")]
         public List<RoundInfo> RoundInfos = new();
+        public int XPByRound = 1;
         [Header("Board settings")]
         public float TileSize = 1.2f;
         [Header("Phase settings")]

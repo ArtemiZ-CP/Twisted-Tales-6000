@@ -17,6 +17,7 @@ struct PlayerShop
 {
     list<Int32> HeroesID;
     int Level;
+    int XP;
 }
 
 struct PlayerInventory

@@ -166,10 +166,12 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventGetShopUpgradeInfo GetShopUpgradeInfo(PlayerRef PlayerRef, Int32 UpgradeCost) {
+      public EventGetShopUpgradeInfo GetShopUpgradeInfo(PlayerRef PlayerRef, Int32 CurrentXP, Int32 MaxXPCost, Int32 CurrentLevel) {
         var ev = _f.Context.AcquireEvent<EventGetShopUpgradeInfo>(EventGetShopUpgradeInfo.ID);
         ev.PlayerRef = PlayerRef;
-        ev.UpgradeCost = UpgradeCost;
+        ev.CurrentXP = CurrentXP;
+        ev.MaxXPCost = MaxXPCost;
+        ev.CurrentLevel = CurrentLevel;
         _f.AddEvent(ev);
         return ev;
       }
@@ -512,7 +514,9 @@ namespace Quantum {
   public unsafe partial class EventGetShopUpgradeInfo : EventBase {
     public new const Int32 ID = 13;
     public PlayerRef PlayerRef;
-    public Int32 UpgradeCost;
+    public Int32 CurrentXP;
+    public Int32 MaxXPCost;
+    public Int32 CurrentLevel;
     protected EventGetShopUpgradeInfo(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -531,7 +535,9 @@ namespace Quantum {
       unchecked {
         var hash = 97;
         hash = hash * 31 + PlayerRef.GetHashCode();
-        hash = hash * 31 + UpgradeCost.GetHashCode();
+        hash = hash * 31 + CurrentXP.GetHashCode();
+        hash = hash * 31 + MaxXPCost.GetHashCode();
+        hash = hash * 31 + CurrentLevel.GetHashCode();
         return hash;
       }
     }

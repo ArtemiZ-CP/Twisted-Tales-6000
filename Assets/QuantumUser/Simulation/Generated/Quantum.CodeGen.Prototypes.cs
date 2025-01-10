@@ -337,6 +337,7 @@ namespace Quantum.Prototypes {
     [DynamicCollectionAttribute()]
     public Int32[] HeroesID = {};
     public Int32 Level;
+    public Int32 XP;
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerShop result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.PlayerShop result, in PrototypeMaterializationContext context = default) {
         if (this.HeroesID.Length == 0) {
@@ -350,6 +351,7 @@ namespace Quantum.Prototypes {
           }
         }
         result.Level = this.Level;
+        result.XP = this.XP;
         MaterializeUser(frame, ref result, in context);
     }
   }
