@@ -1,11 +1,13 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Quantum.Game
 {
     public class ShopUpgrader : MonoBehaviour
     {
         [SerializeField] private UnityEngine.UI.Button _button;
+        [SerializeField] private Image _progress;
         [SerializeField] private TMP_Text _xp;
         [SerializeField] private TMP_Text _level;
         [SerializeField] private TMP_Text _heroesChance;
@@ -48,10 +50,12 @@ namespace Quantum.Game
                 if (eventGetShopUpgradeCost.CurrentXP < 0)
                 {
                     _xp.text = string.Empty;
+                    _progress.fillAmount = 1;
                 }
                 else
                 {
                     _xp.text = $"{eventGetShopUpgradeCost.CurrentXP}/{eventGetShopUpgradeCost.MaxXPCost}";
+                    _progress.fillAmount = (float)eventGetShopUpgradeCost.CurrentXP/eventGetShopUpgradeCost.MaxXPCost;
                 }
 
                 string text = string.Empty;
