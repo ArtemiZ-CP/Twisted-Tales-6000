@@ -11,6 +11,8 @@ struct PlayerInfo
     PlayerBoard Board;
     int Coins;
     int Health;
+    int Streak;
+    bool IsWinStreak;
 }
 
 struct PlayerShop

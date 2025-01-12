@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Photon.Deterministic;
-using UnityEditor;
 using UnityEngine;
 
 namespace Quantum.Game
@@ -48,11 +47,17 @@ namespace Quantum.Game
     {
         public const int BoardSize = 8;
 
-        public int MaxPlayers = 4;
         [Header("Player")]
         public int PlayerHealth = 100;
+        [Header("Coins settings")]
+        public int CoinsPerWin = 1;
+        public int CoinsPerLose = 0;
         public List<int> CoinsPerRound;
         public bool ResetCoinsOnEndRound;
+        public List<int> WinStreakCoins;
+        public bool ResetWinStreakOnEnd;
+        public List<int> LoseStreakCoins;
+        public bool ResetLoseStreakOnEnd;
         [Header("Hero settings")]
         public AssetRef<HeroInfo>[] HeroInfos;
         [Space(20)]

@@ -234,7 +234,7 @@ namespace Quantum.Game
 
             if (target.Hero.CurrentHealth <= 0)
             {
-                BoardSystem.DisactiveEntity(f, target.Hero.Ref);
+                f.Destroy(target.Hero.Ref);
                 target.Hero.IsAlive = false;
                 target.Hero.ID = -1;
                 target.Hero.Ref = default;

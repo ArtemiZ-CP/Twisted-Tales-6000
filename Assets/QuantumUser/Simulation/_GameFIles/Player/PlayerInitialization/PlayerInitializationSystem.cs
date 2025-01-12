@@ -30,7 +30,7 @@ namespace Quantum.Game
 
             InitializeNewPlayer(f, player);
 
-            if (Player.GetAllPlayers(f).Count == f.FindAsset(f.RuntimeConfig.GameConfig).MaxPlayers)
+            if (Player.GetAllPlayers(f).Count == f.SessionConfig.PlayerCount)
             {
                 f.Global->IsGameStarted = true;
             }

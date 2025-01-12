@@ -189,6 +189,7 @@ namespace Quantum.Prototypes {
   public unsafe class HeroProjectilePrototype : ComponentPrototype<Quantum.HeroProjectile> {
     public MapEntityId Ref;
     public Quantum.Prototypes.HeroEntityPrototype Target;
+    public FPVector3 TargetPosition;
     public FP Speed;
     public FP Damage;
     public Int32 DamageType;
@@ -201,6 +202,7 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.HeroProjectile result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.FindMapEntity(this.Ref, in context, out result.Ref);
         this.Target.Materialize(frame, ref result.Target, in context);
+        result.TargetPosition = this.TargetPosition;
         result.Speed = this.Speed;
         result.Damage = this.Damage;
         result.DamageType = this.DamageType;
@@ -272,6 +274,8 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.PlayerBoardPrototype Board;
     public Int32 Coins;
     public Int32 Health;
+    public Int32 Streak;
+    public QBoolean IsWinStreak;
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerInfo result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.PlayerInfo result, in PrototypeMaterializationContext context = default) {
         this.Shop.Materialize(frame, ref result.Shop, in context);
@@ -279,6 +283,8 @@ namespace Quantum.Prototypes {
         this.Board.Materialize(frame, ref result.Board, in context);
         result.Coins = this.Coins;
         result.Health = this.Health;
+        result.Streak = this.Streak;
+        result.IsWinStreak = this.IsWinStreak;
         MaterializeUser(frame, ref result, in context);
     }
   }

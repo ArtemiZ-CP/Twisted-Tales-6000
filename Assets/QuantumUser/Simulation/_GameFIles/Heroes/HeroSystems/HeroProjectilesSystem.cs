@@ -46,6 +46,7 @@ namespace Quantum.Game
             {
                 Ref = f.Create(projectilePrototype),
                 Target = targetHero,
+                TargetPosition = f.Get<Transform3D>(targetHero.Ref).Position,
                 Damage = damage,
                 DamageType = (int)damageType,
                 Speed = fighingHero.Hero.ProjectileSpeed,
@@ -78,13 +79,17 @@ namespace Quantum.Game
             if (f.Exists(projectile.Ref) == false) return;
 
             Transform3D* projectileTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Ref);
-            Transform3D* targetTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Target.Ref);
+
+            if (f.Exists(projectile.Target.Ref))
+            {
+                Transform3D* targetTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Target.Ref);
+                projectile.TargetPosition = targetTransform->Position;
+            }
 
             FP moveOffset = projectile.Speed * f.DeltaTime;
+            projectileTransform->Position = FPVector3.MoveTowards(projectileTransform->Position, projectile.TargetPosition, moveOffset);
 
-            projectileTransform->Position = FPVector3.MoveTowards(projectileTransform->Position, targetTransform->Position, moveOffset);
-
-            if (projectileTransform->Position == targetTransform->Position)
+            if (projectileTransform->Position == projectile.TargetPosition)
             {
                 HeroAttack.DamageHero(f, board, projectile.Damage, projectile.Target, (HeroAttack.DamageType)projectile.DamageType);
                 f.ResolveList(board.HeroProjectiles).Remove(projectile);

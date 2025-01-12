@@ -2,6 +2,7 @@ component HeroProjectile
 {
     entity_ref Ref;
     HeroEntity Target;
+    FPVector3 TargetPosition;
     FP Speed;
     FP Damage;
     int DamageType;

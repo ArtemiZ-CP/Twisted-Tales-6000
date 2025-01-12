@@ -156,6 +156,7 @@ namespace Quantum.Prototypes.Unity {
   public unsafe partial class HeroProjectilePrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.HeroProjectilePrototype> {
     public Quantum.QuantumEntityPrototype Ref;
     public Quantum.Prototypes.Unity.HeroEntityPrototype Target;
+    public FPVector3 TargetPosition;
     public FP Speed;
     public FP Damage;
     public Int32 DamageType;
@@ -165,6 +166,7 @@ namespace Quantum.Prototypes.Unity {
       var result = new Quantum.Prototypes.HeroProjectilePrototype();
       converter.Convert(this.Ref, out result.Ref);
       converter.Convert(this.Target, out result.Target);
+      converter.Convert(this.TargetPosition, out result.TargetPosition);
       converter.Convert(this.Speed, out result.Speed);
       converter.Convert(this.Damage, out result.Damage);
       converter.Convert(this.DamageType, out result.DamageType);

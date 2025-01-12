@@ -139,6 +139,7 @@ namespace Quantum.Game
                     {
                         f.Signals.ClearBoards();
                         StartRound(f);
+                        ProcessPlayersCoins(f);
                     }
                 }
                 else
@@ -201,16 +202,34 @@ namespace Quantum.Game
                 bool isPlayer2Win = player2Count > 0 && player1Count == 0;
                 int damage = player1Count + player2Count;
 
-                if (isPlayer1Win && board.Player2.Ref != default)
+                ProcessResult(f, board, isPlayer1Win, isPlayer2Win, damage);
+            }
+        }
+
+        private void ProcessResult(Frame f, Board board, bool isPlayer1Win, bool isPlayer2Win, int damage)
+        {
+            ProcessResult(f, board.Player1.Ref, board.Player2.Ref, isPlayer1Win, isPlayer2Win, damage);
+            ProcessResult(f, board.Player2.Ref, board.Player1.Ref, isPlayer2Win, isPlayer1Win, damage);
+        }
+
+        private void ProcessResult(Frame f, PlayerRef targetRef, PlayerRef enemyRef, bool isPlayerWin, bool isEnemyWin, int damage)
+        {
+            if (targetRef != default)
+            {
+                PlayerLink* playerLink = Player.GetPlayerPointer(f, targetRef);
+                int roundResult = 0;
+
+                if (isPlayerWin)
                 {
-                    var (entity, link) = playersEntity.First(player => player.link.Ref == board.Player2.Ref);
-                    Player.GetPlayerPointer(f, entity)->Info.Health -= damage;
+                    roundResult = 1;
                 }
-                else if (isPlayer2Win && board.Player1.Ref != default)
+                else if (isEnemyWin)
                 {
-                    var (entity, link) = playersEntity.First(player => player.link.Ref == board.Player1.Ref);
-                    Player.GetPlayerPointer(f, entity)->Info.Health -= damage;
+                    playerLink->Info.Health -= damage;
+                    roundResult = -1;
                 }
+
+                ProcessStreak(f, playerLink, roundResult);
             }
         }
 
@@ -227,18 +246,90 @@ namespace Quantum.Game
                 Player.ResetCoins(f);
             }
 
-            int coins;
+            int coins = 0;
 
             if (f.Global->PhaseNumber < gameConfig.CoinsPerRound.Count)
             {
-                coins = gameConfig.CoinsPerRound[f.Global->PhaseNumber];
+                coins += gameConfig.CoinsPerRound[f.Global->PhaseNumber];
             }
             else
             {
-                coins = gameConfig.CoinsPerRound[^1];
+                coins += gameConfig.CoinsPerRound[^1];
             }
 
-            Player.AddCoins(f, coins);
+            var players = Player.GetAllPlayersEntity(f);
+
+            foreach (EntityRef player in players)
+            {
+                ProcessPlayerCoins(f, Player.GetPlayerPointer(f, player), coins);
+            }
+        }
+
+        private void ProcessPlayerCoins(Frame f, PlayerLink* player, int coins)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+
+            if (player->Info.Streak != 0)
+            {
+                int streakIndex = player->Info.Streak - 1;
+
+                if (player->Info.IsWinStreak)
+                {
+                    if (streakIndex < gameConfig.WinStreakCoins.Count)
+                    {
+                        coins += gameConfig.WinStreakCoins[streakIndex];
+                    }
+                    else
+                    {
+                        coins += gameConfig.WinStreakCoins[^1];
+                    }
+                }
+                else
+                {
+                    if (streakIndex < gameConfig.LoseStreakCoins.Count)
+                    {
+                        coins += gameConfig.LoseStreakCoins[streakIndex];
+                    }
+                    else
+                    {
+                        coins += gameConfig.LoseStreakCoins[^1];
+                    }
+                }
+            }
+
+            Player.AddCoins(f, player, coins);
+        }
+
+        private void ProcessStreak(Frame f, PlayerLink* player, int roundResult)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+
+            if (roundResult == 0)
+            {
+                player->Info.Streak = 0;
+                return;
+            }
+
+            bool isWin = roundResult > 0;
+
+            if (isWin == player->Info.IsWinStreak)
+            {
+                player->Info.Streak++;
+
+                if (gameConfig.ResetWinStreakOnEnd && isWin && player->Info.Streak >= gameConfig.WinStreakCoins.Count)
+                {
+                    player->Info.Streak = 0;
+                }
+                else if (gameConfig.ResetLoseStreakOnEnd && isWin == false && player->Info.Streak >= gameConfig.LoseStreakCoins.Count)
+                {
+                    player->Info.Streak = 0;
+                }
+            }
+            else
+            {
+                player->Info.Streak = 1;
+                player->Info.IsWinStreak = isWin;
+            }
         }
     }
 }
