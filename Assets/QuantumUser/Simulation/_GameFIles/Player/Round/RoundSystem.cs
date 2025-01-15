@@ -246,81 +246,81 @@ namespace Quantum.Game
                 Player.ResetCoins(f);
             }
 
-            int coins = 0;
-
-            if (f.Global->PhaseNumber < gameConfig.CoinsPerRound.Count)
-            {
-                coins += gameConfig.CoinsPerRound[f.Global->PhaseNumber];
-            }
-            else
-            {
-                coins += gameConfig.CoinsPerRound[^1];
-            }
-
             var players = Player.GetAllPlayersEntity(f);
 
             foreach (EntityRef player in players)
             {
-                ProcessPlayerCoins(f, Player.GetPlayerPointer(f, player), coins);
+                ProcessPlayerCoins(f, Player.GetPlayerPointer(f, player));
             }
         }
 
-        private void ProcessPlayerCoins(Frame f, PlayerLink* player, int coins)
+        private void ProcessPlayerCoins(Frame f, PlayerLink* player)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
-            if (player->Info.Streak != 0)
+            int baseCoins;
+
+            if (f.Global->PhaseNumber < gameConfig.CoinsPerRound.Count)
+            {
+                baseCoins = gameConfig.CoinsPerRound[f.Global->PhaseNumber];
+            }
+            else
+            {
+                baseCoins = gameConfig.CoinsPerRound[^1];
+            }
+
+            int roundResultCoins = 0;
+            int streakCoins = 0;
+
+            if (player->Info.StreakType != 0)
             {
                 int streakIndex = player->Info.Streak - 1;
 
-                if (player->Info.IsWinStreak)
+                if (player->Info.StreakType > 0)
                 {
+                    roundResultCoins = gameConfig.CoinsPerWin;
+
                     if (streakIndex < gameConfig.WinStreakCoins.Count)
                     {
-                        coins += gameConfig.WinStreakCoins[streakIndex];
+                        streakCoins = gameConfig.WinStreakCoins[streakIndex];
                     }
                     else
                     {
-                        coins += gameConfig.WinStreakCoins[^1];
+                        streakCoins = gameConfig.WinStreakCoins[^1];
                     }
                 }
-                else
+                else if (player->Info.StreakType < 0)
                 {
+                    roundResultCoins = gameConfig.CoinsPerLose;
+
                     if (streakIndex < gameConfig.LoseStreakCoins.Count)
                     {
-                        coins += gameConfig.LoseStreakCoins[streakIndex];
+                        streakCoins = gameConfig.LoseStreakCoins[streakIndex];
                     }
                     else
                     {
-                        coins += gameConfig.LoseStreakCoins[^1];
+                        streakCoins = gameConfig.LoseStreakCoins[^1];
                     }
                 }
             }
 
-            Player.AddCoins(f, player, coins);
+            Player.AddCoins(f, player, baseCoins + roundResultCoins + streakCoins);
+            f.Events.ShowCoinsReward(player->Ref, player->Info.StreakType, baseCoins, roundResultCoins, streakCoins);
         }
 
         private void ProcessStreak(Frame f, PlayerLink* player, int roundResult)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
-            if (roundResult == 0)
-            {
-                player->Info.Streak = 0;
-                return;
-            }
-
-            bool isWin = roundResult > 0;
-
-            if (isWin == player->Info.IsWinStreak)
+            if (roundResult == player->Info.StreakType)
             {
                 player->Info.Streak++;
 
-                if (gameConfig.ResetWinStreakOnEnd && isWin && player->Info.Streak >= gameConfig.WinStreakCoins.Count)
+                if (gameConfig.ResetWinStreakOnEnd && roundResult > 0 && player->Info.Streak >= gameConfig.WinStreakCoins.Count)
                 {
                     player->Info.Streak = 0;
                 }
-                else if (gameConfig.ResetLoseStreakOnEnd && isWin == false && player->Info.Streak >= gameConfig.LoseStreakCoins.Count)
+                else if (gameConfig.ResetLoseStreakOnEnd && roundResult < 0 && player->Info.Streak >= gameConfig.LoseStreakCoins.Count)
                 {
                     player->Info.Streak = 0;
                 }
@@ -328,7 +328,7 @@ namespace Quantum.Game
             else
             {
                 player->Info.Streak = 1;
-                player->Info.IsWinStreak = isWin;
+                player->Info.StreakType = roundResult;
             }
         }
     }

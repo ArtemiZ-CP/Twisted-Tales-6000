@@ -615,7 +615,7 @@ namespace Quantum {
     [FieldOffset(8)]
     public Int32 Streak;
     [FieldOffset(12)]
-    public QBoolean IsWinStreak;
+    public Int32 StreakType;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 13049;
@@ -625,7 +625,7 @@ namespace Quantum {
         hash = hash * 31 + Coins.GetHashCode();
         hash = hash * 31 + Health.GetHashCode();
         hash = hash * 31 + Streak.GetHashCode();
-        hash = hash * 31 + IsWinStreak.GetHashCode();
+        hash = hash * 31 + StreakType.GetHashCode();
         return hash;
       }
     }
@@ -639,7 +639,7 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->Coins);
         serializer.Stream.Serialize(&p->Health);
         serializer.Stream.Serialize(&p->Streak);
-        QBoolean.Serialize(&p->IsWinStreak, serializer);
+        serializer.Stream.Serialize(&p->StreakType);
         Quantum.PlayerBoard.Serialize(&p->Board, serializer);
         Quantum.PlayerInventory.Serialize(&p->Inventory, serializer);
         Quantum.PlayerShop.Serialize(&p->Shop, serializer);

@@ -52,7 +52,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 14;
+        eventCount = 15;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -74,6 +74,7 @@ namespace Quantum {
           case EventGetRoundTime.ID: result = typeof(EventGetRoundTime); return;
           case EventGetProjectiles.ID: result = typeof(EventGetProjectiles); return;
           case EventGetShopUpgradeInfo.ID: result = typeof(EventGetShopUpgradeInfo); return;
+          case EventShowCoinsReward.ID: result = typeof(EventShowCoinsReward); return;
           default: break;
         }
       }
@@ -172,6 +173,16 @@ namespace Quantum {
         ev.CurrentXP = CurrentXP;
         ev.MaxXPCost = MaxXPCost;
         ev.CurrentLevel = CurrentLevel;
+        _f.AddEvent(ev);
+        return ev;
+      }
+      public EventShowCoinsReward ShowCoinsReward(PlayerRef PlayerRef, Int32 RoundResult, Int32 BaseCoins, Int32 RoundResultCoins, Int32 StreakCoins) {
+        var ev = _f.Context.AcquireEvent<EventShowCoinsReward>(EventShowCoinsReward.ID);
+        ev.PlayerRef = PlayerRef;
+        ev.RoundResult = RoundResult;
+        ev.BaseCoins = BaseCoins;
+        ev.RoundResultCoins = RoundResultCoins;
+        ev.StreakCoins = StreakCoins;
         _f.AddEvent(ev);
         return ev;
       }
@@ -538,6 +549,39 @@ namespace Quantum {
         hash = hash * 31 + CurrentXP.GetHashCode();
         hash = hash * 31 + MaxXPCost.GetHashCode();
         hash = hash * 31 + CurrentLevel.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventShowCoinsReward : EventBase {
+    public new const Int32 ID = 14;
+    public PlayerRef PlayerRef;
+    public Int32 RoundResult;
+    public Int32 BaseCoins;
+    public Int32 RoundResultCoins;
+    public Int32 StreakCoins;
+    protected EventShowCoinsReward(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventShowCoinsReward() : 
+        base(14, EventFlags.Server|EventFlags.Client) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 101;
+        hash = hash * 31 + PlayerRef.GetHashCode();
+        hash = hash * 31 + RoundResult.GetHashCode();
+        hash = hash * 31 + BaseCoins.GetHashCode();
+        hash = hash * 31 + RoundResultCoins.GetHashCode();
+        hash = hash * 31 + StreakCoins.GetHashCode();
         return hash;
       }
     }

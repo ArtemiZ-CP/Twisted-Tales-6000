@@ -16,11 +16,10 @@ MonoBehaviour:
     Path: QuantumUser/Resources/_GameFiles/GameConfig
     Guid:
       Value: 481284669698677807
-  MaxPlayers: 2
   PlayerHealth: 100
   CoinsPerWin: 1
   CoinsPerLose: 0
-  CoinsPerRound: 0100000002000000030000000400000005000000
+  CoinsPerRound: 0200000002000000030000000400000005000000
   ResetCoinsOnEndRound: 0
   WinStreakCoins: 0000000000000000010000000100000002000000020000000300000004000000
   ResetWinStreakOnEnd: 1
@@ -112,6 +111,7 @@ MonoBehaviour:
     SellCost3: 5
   ShopUpdrageSettings:
   - Cost: 1
+    MaxCharactersOnBoard: 1
     ShopHeroChances:
     - Rare: 0
       Chance: 100
@@ -124,6 +124,7 @@ MonoBehaviour:
     - Rare: 4
       Chance: 0
   - Cost: 1
+    MaxCharactersOnBoard: 2
     ShopHeroChances:
     - Rare: 0
       Chance: 75
@@ -136,6 +137,7 @@ MonoBehaviour:
     - Rare: 4
       Chance: 0
   - Cost: 5
+    MaxCharactersOnBoard: 3
     ShopHeroChances:
     - Rare: 0
       Chance: 55
@@ -148,6 +150,7 @@ MonoBehaviour:
     - Rare: 4
       Chance: 0
   - Cost: 15
+    MaxCharactersOnBoard: 4
     ShopHeroChances:
     - Rare: 0
       Chance: 45
@@ -160,6 +163,7 @@ MonoBehaviour:
     - Rare: 4
       Chance: 0
   - Cost: 20
+    MaxCharactersOnBoard: 5
     ShopHeroChances:
     - Rare: 0
       Chance: 30
@@ -172,6 +176,7 @@ MonoBehaviour:
     - Rare: 4
       Chance: 0
   - Cost: 25
+    MaxCharactersOnBoard: 6
     ShopHeroChances:
     - Rare: 0
       Chance: 19
@@ -184,6 +189,7 @@ MonoBehaviour:
     - Rare: 4
       Chance: 1
   - Cost: 35
+    MaxCharactersOnBoard: 7
     ShopHeroChances:
     - Rare: 0
       Chance: 18
@@ -196,6 +202,7 @@ MonoBehaviour:
     - Rare: 4
       Chance: 3
   - Cost: 40
+    MaxCharactersOnBoard: 8
     ShopHeroChances:
     - Rare: 0
       Chance: 15
@@ -208,6 +215,7 @@ MonoBehaviour:
     - Rare: 4
       Chance: 10
   - Cost: 45
+    MaxCharactersOnBoard: 9
     ShopHeroChances:
     - Rare: 0
       Chance: 5
@@ -220,6 +228,7 @@ MonoBehaviour:
     - Rare: 4
       Chance: 25
   - Cost: 0
+    MaxCharactersOnBoard: 10
     ShopHeroChances:
     - Rare: 0
       Chance: 2
@@ -233,6 +242,7 @@ MonoBehaviour:
       Chance: 35
   ShopSize: 8
   ShopUpgrageCost: 5
+  ReloadOnUpgrade: 0
   InventorySize: 8
   RoundInfos:
   - IsPVE: 1
@@ -295,4 +305,4 @@ MonoBehaviour:
   FightPhaseTime: 120
   StartFightingPhaseDelay: 1
   EndFightingPhaseDelay: 3
-  PVPStreak: 3
+  PVPStreak: 1

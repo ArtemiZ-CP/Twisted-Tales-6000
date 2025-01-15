@@ -275,7 +275,7 @@ namespace Quantum.Prototypes {
     public Int32 Coins;
     public Int32 Health;
     public Int32 Streak;
-    public QBoolean IsWinStreak;
+    public Int32 StreakType;
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerInfo result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.PlayerInfo result, in PrototypeMaterializationContext context = default) {
         this.Shop.Materialize(frame, ref result.Shop, in context);
@@ -284,7 +284,7 @@ namespace Quantum.Prototypes {
         result.Coins = this.Coins;
         result.Health = this.Health;
         result.Streak = this.Streak;
-        result.IsWinStreak = this.IsWinStreak;
+        result.StreakType = this.StreakType;
         MaterializeUser(frame, ref result, in context);
     }
   }

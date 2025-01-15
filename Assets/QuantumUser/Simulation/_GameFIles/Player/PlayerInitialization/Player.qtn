@@ -12,7 +12,7 @@ struct PlayerInfo
     int Coins;
     int Health;
     int Streak;
-    bool IsWinStreak;
+    int StreakType;
 }
 
 struct PlayerShop

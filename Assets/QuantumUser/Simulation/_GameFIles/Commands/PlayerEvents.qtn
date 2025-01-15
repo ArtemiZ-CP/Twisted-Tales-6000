@@ -82,3 +82,12 @@ event GetShopUpgradeInfo
     int MaxXPCost;
     int CurrentLevel;
 }
+
+event ShowCoinsReward
+{
+    player_ref PlayerRef;
+    int RoundResult;
+    int BaseCoins;
+    int RoundResultCoins;
+    int StreakCoins;
+}

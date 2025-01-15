@@ -338,6 +338,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: HeroCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 1725715646452888207, guid: 4838e4e431e12432d80c1b0c89fcbe97, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1765037607261575583, guid: 4838e4e431e12432d80c1b0c89fcbe97, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
