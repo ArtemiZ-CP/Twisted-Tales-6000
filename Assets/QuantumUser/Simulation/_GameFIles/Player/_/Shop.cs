@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Photon.Deterministic;
 using Quantum.Collections;
 
 namespace Quantum.Game
@@ -88,21 +87,25 @@ namespace Quantum.Game
             }
 
             playerLink->Info.Shop.XP += xp;
+            bool isUpgrade = false;
 
             while (playerLink->Info.Shop.XP >= shopUpdrageSettings.Cost)
             {
                 playerLink->Info.Shop.XP -= shopUpdrageSettings.Cost;
                 playerLink->Info.Shop.Level++;
                 shopUpdrageSettings = gameConfig.ShopUpdrageSettings[playerLink->Info.Shop.Level];
-
-                Reload(f, playerLink);
+                isUpgrade = true;
 
                 if (IsShopMaxLevel(f, playerLink))
                 {
                     playerLink->Info.Shop.XP = -1;
                     break;
                 }
+            }
 
+            if (isUpgrade && gameConfig.ReloadOnUpgrade)
+            {
+                Reload(f, playerLink);
             }
 
             SendShopUpgradeInfo(f, playerLink);

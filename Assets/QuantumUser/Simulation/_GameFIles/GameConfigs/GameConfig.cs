@@ -9,6 +9,7 @@ namespace Quantum.Game
     public class ShopUpdrageSettings
     {
         public int Cost;
+        public int MaxCharactersOnBoard;
         public ShopHeroChance[] ShopHeroChances;
     }
 
@@ -75,6 +76,7 @@ namespace Quantum.Game
         public ShopUpdrageSettings[] ShopUpdrageSettings;
         public int ShopSize = 8;
         public int ShopUpgrageCost = 5;
+        public bool ReloadOnUpgrade = false;
         [Header("Inventory settings")]
         public int InventorySize = 8;
         [Header("Round settings")]

@@ -45,7 +45,7 @@ namespace Quantum.Game
         {
             if (QuantumConnection.IsPlayerMe(eventGetShopUpgradeCost.PlayerRef))
             {
-                _level .text = $"Level: {eventGetShopUpgradeCost.CurrentLevel}";
+                _level .text = $"Level: {eventGetShopUpgradeCost.CurrentLevel + 1}";
 
                 if (eventGetShopUpgradeCost.CurrentXP < 0)
                 {

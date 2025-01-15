@@ -1,31 +1,11 @@
 using Quantum;
 using Quantum.Game;
-using UnityEngine;
-using UnityEngine.UI;
 
-public class ManaBar : MonoBehaviour
+public class ManaBar : Bar
 {
-    [SerializeField] private QuantumEntityView _quantumEntityView;
-    [SerializeField] private Slider _manaBar;
-
-    private QuantumEntityViewUpdater _quantumEntityViewUpdater;
-
-    private QuantumEntityViewUpdater QuantumEntityViewUpdater
+    protected override void Awake()
     {
-        get
-        {
-            if (_quantumEntityViewUpdater == null)
-            {
-                _quantumEntityViewUpdater = FindFirstObjectByType<QuantumEntityViewUpdater>();
-            }
-
-            return _quantumEntityViewUpdater;
-        }
-    }
-
-    private void Awake()
-    {
-        _manaBar.gameObject.SetActive(false);
+        base.Awake();
         QuantumEvent.Subscribe<EventHeroManaChanged>(listener: this, handler: OnHeroManaChanged);
     }
 
@@ -34,24 +14,7 @@ public class ManaBar : MonoBehaviour
         if (QuantumConnection.IsPlayerMe(eventHeroManaChanged.PlayerRef1) ||
             QuantumConnection.IsPlayerMe(eventHeroManaChanged.PlayerRef2))
         {
-            UpdateManaBar(eventHeroManaChanged);
-        }
-    }
-
-    private void UpdateManaBar(EventHeroManaChanged eventHeroManaChanged)
-    {
-        if (QuantumEntityViewUpdater == null)
-        {
-            return;
-        }
-
-        QuantumEntityView quantumEntityView = QuantumEntityViewUpdater.GetView(eventHeroManaChanged.HeroEntity);
-
-        if (_quantumEntityView == quantumEntityView)
-        {
-            _manaBar.gameObject.SetActive(true);
-            float mana = (eventHeroManaChanged.CurrentMana / eventHeroManaChanged.MaxMana).AsFloat;
-            _manaBar.value = mana;
+            UpdateBar(eventHeroManaChanged.HeroEntity, eventHeroManaChanged.CurrentMana, eventHeroManaChanged.MaxMana);
         }
     }
 }
