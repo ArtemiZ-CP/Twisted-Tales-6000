@@ -36,12 +36,28 @@ namespace Quantum.Game
     {
         public bool IsPVE;
         public List<BoardRow> PVEBoard = new();
+
+        public RoundInfo()
+        {
+            for (int i = 0; i < GameConfig.BoardSize; i++)
+            {
+                PVEBoard.Add(new BoardRow());
+            }
+        }
     }
 
     [Serializable]
     public class BoardRow
     {
         public List<int> Cells = new();
+
+        public BoardRow()
+        {
+            for (int i = 0; i < GameConfig.BoardSize; i++)
+            {
+                Cells.Add(-1);
+            }
+        }
     }
 
     public unsafe class GameConfig : AssetObject

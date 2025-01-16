@@ -10,75 +10,75 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
-  m_Name: MerlinInfo
+  m_Name: B RedHatInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/3_Epic/Merlin/MerlinInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/RedHat/B RedHatInfo
     Guid:
-      Value: 536054989330170122
-  HeroPrefab: {fileID: 611860465380146796, guid: e14c94e663259486baa69dffa8d1ec63, type: 3}
+      Value: 532186031317670239
+  HeroPrefab: {fileID: -5379929345563415316, guid: 00fc591b71d454103a881bd5ccf44881, type: 3}
   HeroPrototype:
     Id:
-      Value: 1510544133590904235
+      Value: 1529226282637193225
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Merlin
-  Rare: 3
+  Name: Red Hat
+  Rare: 0
   HeroType: 0
   AbilityType: 1
   HeroStats:
   - Health:
-      RawValue: 39321600
+      RawValue: 32768000
     Defense:
       RawValue: 1310720
     MagicDefense:
-      RawValue: 1638400
+      RawValue: 983040
     AttackDamage:
-      RawValue: 655360
+      RawValue: 1966080
     AbilityDamage:
-      RawValue: 4587520
+      RawValue: 983040
     AttackSpeed:
-      RawValue: 65536
+      RawValue: 85197
     ProjectileSpeed:
       RawValue: 327680
     Range: 4
   - Health:
-      RawValue: 58982400
+      RawValue: 49152000
     Defense:
       RawValue: 1966080
     MagicDefense:
-      RawValue: 2457600
+      RawValue: 1474560
     AttackDamage:
-      RawValue: 983040
+      RawValue: 2949120
     AbilityDamage:
-      RawValue: 6881280
+      RawValue: 1474560
     AttackSpeed:
-      RawValue: 65536
+      RawValue: 85197
     ProjectileSpeed:
       RawValue: 327680
     Range: 4
   - Health:
-      RawValue: 78643200
+      RawValue: 65536000
     Defense:
       RawValue: 2621440
     MagicDefense:
-      RawValue: 3276800
+      RawValue: 1966080
     AttackDamage:
-      RawValue: 1310720
+      RawValue: 3932160
     AbilityDamage:
-      RawValue: 9175040
+      RawValue: 1966080
     AttackSpeed:
-      RawValue: 65536
+      RawValue: 85197
     ProjectileSpeed:
       RawValue: 327680
     Range: 4
   AttackDamageType: 0
   AbilityDamageType: 1
   Mana:
-    RawValue: 6553600
+    RawValue: 2621440
   StartMana:
-    RawValue: 3276800
+    RawValue: 0

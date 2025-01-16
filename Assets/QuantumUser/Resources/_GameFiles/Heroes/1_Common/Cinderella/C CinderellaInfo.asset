@@ -10,75 +10,75 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
-  m_Name: AladdinInfo
+  m_Name: C CinderellaInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/2_Rare/Aladdin/AladdinInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/1_Common/Cinderella/C CinderellaInfo
     Guid:
-      Value: 303387769962901111
-  HeroPrefab: {fileID: 2736862171815421011, guid: 67a868a465c544a569b74db124773cb7, type: 3}
+      Value: 306578907051825668
+  HeroPrefab: {fileID: -1459247843489039561, guid: 8fb6fd8cff5dc48f89a4e224527f1541, type: 3}
   HeroPrototype:
     Id:
-      Value: 1506580996918908299
+      Value: 1427829614913663807
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Aladdin
-  Rare: 2
+  Name: Cinderella
+  Rare: 1
   HeroType: 1
   AbilityType: 1
   HeroStats:
   - Health:
-      RawValue: 36044800
+      RawValue: 29491200
     Defense:
-      RawValue: 1310720
-    MagicDefense:
       RawValue: 983040
+    MagicDefense:
+      RawValue: 1310720
     AttackDamage:
-      RawValue: 2621440
-    AbilityDamage:
       RawValue: 1638400
-    AttackSpeed:
-      RawValue: 85197
-    ProjectileSpeed:
-      RawValue: 327680
-    Range: 1
-  - Health:
-      RawValue: 54067200
-    Defense:
-      RawValue: 1966080
-    MagicDefense:
-      RawValue: 1474560
-    AttackDamage:
-      RawValue: 3932160
     AbilityDamage:
-      RawValue: 2457600
-    AttackSpeed:
-      RawValue: 85197
-    ProjectileSpeed:
-      RawValue: 327680
-    Range: 1
-  - Health:
-      RawValue: 72089600
-    Defense:
       RawValue: 2621440
+    AttackSpeed:
+      RawValue: 78643
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 1
+  - Health:
+      RawValue: 44236800
+    Defense:
+      RawValue: 1474560
     MagicDefense:
       RawValue: 1966080
     AttackDamage:
-      RawValue: 5242880
+      RawValue: 2457600
     AbilityDamage:
-      RawValue: 3276800
+      RawValue: 3932160
     AttackSpeed:
-      RawValue: 85197
+      RawValue: 78643
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 1
+  - Health:
+      RawValue: 58982400
+    Defense:
+      RawValue: 1966080
+    MagicDefense:
+      RawValue: 2621440
+    AttackDamage:
+      RawValue: 3276800
+    AbilityDamage:
+      RawValue: 5242880
+    AttackSpeed:
+      RawValue: 78643
     ProjectileSpeed:
       RawValue: 327680
     Range: 1
   AttackDamageType: 0
   AbilityDamageType: 1
   Mana:
-    RawValue: 3276800
+    RawValue: 3932160
   StartMana:
-    RawValue: 1310720
+    RawValue: 1966080

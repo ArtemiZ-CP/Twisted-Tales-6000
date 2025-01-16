@@ -103,9 +103,14 @@ namespace Quantum.Game
                 }
             }
 
-            if (isUpgrade && gameConfig.ReloadOnUpgrade)
+            if (isUpgrade)
             {
-                Reload(f, playerLink);
+                if (gameConfig.ReloadOnUpgrade)
+                {
+                    Reload(f, playerLink);
+                }
+                
+                PlayerMovingSystem.ShowHeroesOnBoardCount(f, playerLink);
             }
 
             SendShopUpgradeInfo(f, playerLink);

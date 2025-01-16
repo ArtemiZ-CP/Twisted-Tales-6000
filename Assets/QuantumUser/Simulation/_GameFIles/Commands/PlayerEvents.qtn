@@ -91,3 +91,10 @@ event ShowCoinsReward
     int RoundResultCoins;
     int StreakCoins;
 }
+
+event ShowHeroesOnBoardCount
+{
+    player_ref PlayerRef;
+    int HeroesOnBoard;
+    int MaxHeroesOnBoard;
+}

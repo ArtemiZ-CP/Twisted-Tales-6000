@@ -52,7 +52,7 @@ namespace Quantum {
   public unsafe partial class Frame {
     public unsafe partial struct FrameEvents {
       static partial void GetEventTypeCountCodeGen(ref Int32 eventCount) {
-        eventCount = 15;
+        eventCount = 16;
       }
       static partial void GetParentEventIDCodeGen(Int32 eventID, ref Int32 parentEventID) {
         switch (eventID) {
@@ -75,6 +75,7 @@ namespace Quantum {
           case EventGetProjectiles.ID: result = typeof(EventGetProjectiles); return;
           case EventGetShopUpgradeInfo.ID: result = typeof(EventGetShopUpgradeInfo); return;
           case EventShowCoinsReward.ID: result = typeof(EventShowCoinsReward); return;
+          case EventShowHeroesOnBoardCount.ID: result = typeof(EventShowHeroesOnBoardCount); return;
           default: break;
         }
       }
@@ -183,6 +184,14 @@ namespace Quantum {
         ev.BaseCoins = BaseCoins;
         ev.RoundResultCoins = RoundResultCoins;
         ev.StreakCoins = StreakCoins;
+        _f.AddEvent(ev);
+        return ev;
+      }
+      public EventShowHeroesOnBoardCount ShowHeroesOnBoardCount(PlayerRef PlayerRef, Int32 HeroesOnBoard, Int32 MaxHeroesOnBoard) {
+        var ev = _f.Context.AcquireEvent<EventShowHeroesOnBoardCount>(EventShowHeroesOnBoardCount.ID);
+        ev.PlayerRef = PlayerRef;
+        ev.HeroesOnBoard = HeroesOnBoard;
+        ev.MaxHeroesOnBoard = MaxHeroesOnBoard;
         _f.AddEvent(ev);
         return ev;
       }
@@ -582,6 +591,35 @@ namespace Quantum {
         hash = hash * 31 + BaseCoins.GetHashCode();
         hash = hash * 31 + RoundResultCoins.GetHashCode();
         hash = hash * 31 + StreakCoins.GetHashCode();
+        return hash;
+      }
+    }
+  }
+  public unsafe partial class EventShowHeroesOnBoardCount : EventBase {
+    public new const Int32 ID = 15;
+    public PlayerRef PlayerRef;
+    public Int32 HeroesOnBoard;
+    public Int32 MaxHeroesOnBoard;
+    protected EventShowHeroesOnBoardCount(Int32 id, EventFlags flags) : 
+        base(id, flags) {
+    }
+    public EventShowHeroesOnBoardCount() : 
+        base(15, EventFlags.Server|EventFlags.Client) {
+    }
+    public new QuantumGame Game {
+      get {
+        return (QuantumGame)base.Game;
+      }
+      set {
+        base.Game = value;
+      }
+    }
+    public override Int32 GetHashCode() {
+      unchecked {
+        var hash = 103;
+        hash = hash * 31 + PlayerRef.GetHashCode();
+        hash = hash * 31 + HeroesOnBoard.GetHashCode();
+        hash = hash * 31 + MaxHeroesOnBoard.GetHashCode();
         return hash;
       }
     }

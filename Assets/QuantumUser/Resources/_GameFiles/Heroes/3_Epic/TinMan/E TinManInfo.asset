@@ -10,75 +10,75 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
-  m_Name: FirebirdInfo
+  m_Name: E TinManInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/4_Legendary/Firebird/FirebirdInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/3_Epic/TinMan/E TinManInfo
     Guid:
-      Value: 365386012224251476
-  HeroPrefab: {fileID: 5216602490358044327, guid: 80ce73a1f1c844a12b45b49991eaf06d, type: 3}
+      Value: 441504537230468131
+  HeroPrefab: {fileID: 611860465380146796, guid: 23617f6e67a7e4f758eeddcbf776f05a, type: 3}
   HeroPrototype:
     Id:
-      Value: 1448278535626308789
+      Value: 1271657597270191120
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Firebird
-  Rare: 4
-  HeroType: 0
+  Name: Tin Man
+  Rare: 3
+  HeroType: 1
   AbilityType: 1
   HeroStats:
   - Health:
-      RawValue: 52428800
+      RawValue: 72089600
     Defense:
-      RawValue: 1310720
+      RawValue: 3276800
     MagicDefense:
-      RawValue: 1966080
-    AttackDamage:
-      RawValue: 2949120
-    AbilityDamage:
-      RawValue: 4587520
-    AttackSpeed:
-      RawValue: 72090
-    ProjectileSpeed:
-      RawValue: 327680
-    Range: 4
-  - Health:
-      RawValue: 78643200
-    Defense:
-      RawValue: 1966080
-    MagicDefense:
-      RawValue: 2949120
-    AttackDamage:
-      RawValue: 4423680
-    AbilityDamage:
-      RawValue: 6881280
-    AttackSpeed:
-      RawValue: 72090
-    ProjectileSpeed:
-      RawValue: 327680
-    Range: 4
-  - Health:
-      RawValue: 104857600
-    Defense:
       RawValue: 2621440
+    AttackDamage:
+      RawValue: 2293760
+    AbilityDamage:
+      RawValue: 655360
+    AttackSpeed:
+      RawValue: 52429
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 1
+  - Health:
+      RawValue: 108134400
+    Defense:
+      RawValue: 4915200
     MagicDefense:
       RawValue: 3932160
     AttackDamage:
-      RawValue: 5898240
+      RawValue: 3440640
     AbilityDamage:
-      RawValue: 9175040
+      RawValue: 983040
     AttackSpeed:
-      RawValue: 72090
+      RawValue: 52429
     ProjectileSpeed:
       RawValue: 327680
-    Range: 4
+    Range: 1
+  - Health:
+      RawValue: 144179200
+    Defense:
+      RawValue: 6553600
+    MagicDefense:
+      RawValue: 5242880
+    AttackDamage:
+      RawValue: 4587520
+    AbilityDamage:
+      RawValue: 1310720
+    AttackSpeed:
+      RawValue: 52429
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 1
   AttackDamageType: 0
   AbilityDamageType: 1
   Mana:
-    RawValue: 6553600
+    RawValue: 4587520
   StartMana:
-    RawValue: 3276800
+    RawValue: 1310720

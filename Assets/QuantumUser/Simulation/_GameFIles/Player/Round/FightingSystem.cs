@@ -19,8 +19,15 @@ namespace Quantum.Game
             }
             else
             {
-                MakePVPBoards(f, Player.GetAllPlayersLink(f));
-                f.Global->IsPVPRound = true;
+                if (TryMakePVPBoards(f, Player.GetAllPlayersLink(f)))
+                {
+                    f.Global->IsPVPRound = true;
+                }
+                else
+                {
+                    MakePVEBoards(f, Player.GetAllPlayersLink(f), new RoundInfo());
+                    f.Global->IsPVPRound = false;
+                }
             }
 
             List<EntityRef> boards = BoardSystem.GetBoardEntities(f);
@@ -31,11 +38,11 @@ namespace Quantum.Game
             }
         }
 
-        private void MakePVPBoards(Frame f, List<PlayerLink> players)
+        private bool TryMakePVPBoards(Frame f, List<PlayerLink> players)
         {
             if (players.Count < 2)
             {
-                throw new System.Exception("Not enough players to start the round");
+                return false;
             }
 
             players = players.OrderBy(_ => f.RNG->Next()).ToList();
@@ -60,6 +67,8 @@ namespace Quantum.Game
                     }
                 }
             }
+
+            return true;
         }
 
         private void MakePVEBoards(Frame f, List<PlayerLink> players, RoundInfo roundInfo)

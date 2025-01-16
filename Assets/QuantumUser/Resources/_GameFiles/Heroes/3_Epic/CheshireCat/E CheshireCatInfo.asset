@@ -10,75 +10,75 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
-  m_Name: WhiteRabbitInfo
+  m_Name: E CheshireCatInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/WhiteRabbit/WhiteRabbitInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/3_Epic/CheshireCat/E CheshireCatInfo
     Guid:
-      Value: 503084228704062064
-  HeroPrefab: {fileID: -5379929345563415316, guid: a538d09f6de5542fa9962ac22e9643aa, type: 3}
+      Value: 501224868207807805
+  HeroPrefab: {fileID: 611860465380146796, guid: cd3d2c3c1f1fb4080924195e581d1f46, type: 3}
   HeroPrototype:
     Id:
-      Value: 1289144196792391907
+      Value: 1494035313518397803
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: White Rabbit
-  Rare: 0
+  Name: Cheshire Cat
+  Rare: 3
   HeroType: 0
   AbilityType: 1
   HeroStats:
   - Health:
-      RawValue: 32768000
-    Defense:
-      RawValue: 655360
-    MagicDefense:
-      RawValue: 983040
-    AttackDamage:
-      RawValue: 983040
-    AbilityDamage:
-      RawValue: 1966080
-    AttackSpeed:
-      RawValue: 91750
-    ProjectileSpeed:
-      RawValue: 327680
-    Range: 2
-  - Health:
-      RawValue: 49152000
+      RawValue: 36044800
     Defense:
       RawValue: 983040
     MagicDefense:
-      RawValue: 1474560
-    AttackDamage:
-      RawValue: 1474560
-    AbilityDamage:
-      RawValue: 2949120
-    AttackSpeed:
-      RawValue: 91750
-    ProjectileSpeed:
-      RawValue: 327680
-    Range: 2
-  - Health:
-      RawValue: 6553600
-    Defense:
       RawValue: 1310720
-    MagicDefense:
-      RawValue: 1966080
     AttackDamage:
-      RawValue: 1966080
+      RawValue: 2293760
     AbilityDamage:
       RawValue: 3932160
     AttackSpeed:
-      RawValue: 91750
+      RawValue: 85197
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 2
+  - Health:
+      RawValue: 54067200
+    Defense:
+      RawValue: 1474560
+    MagicDefense:
+      RawValue: 1966080
+    AttackDamage:
+      RawValue: 3440640
+    AbilityDamage:
+      RawValue: 5898240
+    AttackSpeed:
+      RawValue: 93716
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 2
+  - Health:
+      RawValue: 72089600
+    Defense:
+      RawValue: 1966080
+    MagicDefense:
+      RawValue: 2621440
+    AttackDamage:
+      RawValue: 4587520
+    AbilityDamage:
+      RawValue: 7864320
+    AttackSpeed:
+      RawValue: 102236
     ProjectileSpeed:
       RawValue: 327680
     Range: 2
   AttackDamageType: 0
   AbilityDamageType: 1
   Mana:
-    RawValue: 2621440
+    RawValue: 5242880
   StartMana:
-    RawValue: 1310720
+    RawValue: 0

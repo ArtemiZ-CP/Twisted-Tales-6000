@@ -10,75 +10,75 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
-  m_Name: PussInBootsInfo
+  m_Name: L BabaYagaInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/2_Rare/PussInBoots/PussInBootsInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/4_Legendary/BabaYaga/L BabaYagaInfo
     Guid:
-      Value: 382699101315151786
-  HeroPrefab: {fileID: 2736862171815421011, guid: ffd2cf4b00ea84f1c8c3a49f4e252530, type: 3}
+      Value: 451262027935121510
+  HeroPrefab: {fileID: 5216602490358044327, guid: ef12ea852e75a4ea48fb41f0ccd2bdd2, type: 3}
   HeroPrototype:
     Id:
-      Value: 1445489930404279411
+      Value: 1360261742996428055
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Puss In Boots
-  Rare: 2
-  HeroType: 1
+  Name: Baba Yaga
+  Rare: 4
+  HeroType: 0
   AbilityType: 1
   HeroStats:
   - Health:
-      RawValue: 29491200
+      RawValue: 39321600
     Defense:
-      RawValue: 1310720
+      RawValue: 1638400
     MagicDefense:
-      RawValue: 1310720
+      RawValue: 2621440
     AttackDamage:
-      RawValue: 3276800
+      RawValue: 655360
     AbilityDamage:
-      RawValue: 983040
+      RawValue: 3932160
     AttackSpeed:
-      RawValue: 91750
+      RawValue: 58982
     ProjectileSpeed:
       RawValue: 327680
-    Range: 1
-  - Health:
-      RawValue: 44236800
-    Defense:
-      RawValue: 1966080
-    MagicDefense:
-      RawValue: 1966080
-    AttackDamage:
-      RawValue: 4915200
-    AbilityDamage:
-      RawValue: 1474560
-    AttackSpeed:
-      RawValue: 100925
-    ProjectileSpeed:
-      RawValue: 327680
-    Range: 1
+    Range: 2
   - Health:
       RawValue: 58982400
     Defense:
-      RawValue: 2621440
+      RawValue: 2457600
     MagicDefense:
-      RawValue: 2621440
+      RawValue: 3932160
     AttackDamage:
-      RawValue: 6553600
+      RawValue: 983040
     AbilityDamage:
-      RawValue: 1966080
+      RawValue: 5898240
     AttackSpeed:
-      RawValue: 110100
+      RawValue: 58982
     ProjectileSpeed:
       RawValue: 327680
-    Range: 1
+    Range: 2
+  - Health:
+      RawValue: 78643200
+    Defense:
+      RawValue: 3276800
+    MagicDefense:
+      RawValue: 5242880
+    AttackDamage:
+      RawValue: 1310720
+    AbilityDamage:
+      RawValue: 7864320
+    AttackSpeed:
+      RawValue: 58982
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 2
   AttackDamageType: 0
   AbilityDamageType: 1
   Mana:
-    RawValue: 3276800
+    RawValue: 6553600
   StartMana:
-    RawValue: 0
+    RawValue: 2621440

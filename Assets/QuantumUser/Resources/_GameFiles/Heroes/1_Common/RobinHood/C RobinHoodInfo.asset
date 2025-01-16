@@ -10,72 +10,72 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
-  m_Name: SlyFoxInfo
+  m_Name: C RobinHoodInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/SlyFox/SlyFoxInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/1_Common/RobinHood/C RobinHoodInfo
     Guid:
-      Value: 359663575108472497
-  HeroPrefab: {fileID: -5379929345563415316, guid: df396b8258daa4bc49077010302d06db, type: 3}
+      Value: 427396510785044345
+  HeroPrefab: {fileID: -1459247843489039561, guid: ec5c08fe95f9944cca99bd60f3f953c3, type: 3}
   HeroPrototype:
     Id:
-      Value: 1276217754154539486
+      Value: 1338584202011679092
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Sly Fox
-  Rare: 0
-  HeroType: 1
+  Name: Robin Hood
+  Rare: 1
+  HeroType: 0
   AbilityType: 1
   HeroStats:
   - Health:
-      RawValue: 26214400
+      RawValue: 29491200
     Defense:
       RawValue: 1310720
     MagicDefense:
-      RawValue: 1310720
+      RawValue: 1638400
     AttackDamage:
+      RawValue: 655360
+    AbilityDamage:
       RawValue: 3276800
-    AbilityDamage:
+    AttackSpeed:
+      RawValue: 72090
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 4
+  - Health:
+      RawValue: 44236800
+    Defense:
+      RawValue: 1966080
+    MagicDefense:
+      RawValue: 2457600
+    AttackDamage:
       RawValue: 983040
-    AttackSpeed:
-      RawValue: 91750
-    ProjectileSpeed:
-      RawValue: 327680
-    Range: 1
-  - Health:
-      RawValue: 39321600
-    Defense:
-      RawValue: 1966080
-    MagicDefense:
-      RawValue: 1966080
-    AttackDamage:
+    AbilityDamage:
       RawValue: 4915200
-    AbilityDamage:
-      RawValue: 1474560
     AttackSpeed:
-      RawValue: 100925
+      RawValue: 72090
     ProjectileSpeed:
       RawValue: 327680
-    Range: 1
+    Range: 4
   - Health:
-      RawValue: 52428800
+      RawValue: 58982400
     Defense:
       RawValue: 2621440
     MagicDefense:
-      RawValue: 2621440
+      RawValue: 3276800
     AttackDamage:
-      RawValue: 6553600
+      RawValue: 1310720
     AbilityDamage:
-      RawValue: 1966080
+      RawValue: 6553600
     AttackSpeed:
-      RawValue: 110100
+      RawValue: 72090
     ProjectileSpeed:
       RawValue: 327680
-    Range: 1
+    Range: 4
   AttackDamageType: 0
   AbilityDamageType: 1
   Mana:

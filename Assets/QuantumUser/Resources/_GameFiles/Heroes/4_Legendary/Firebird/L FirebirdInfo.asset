@@ -10,75 +10,75 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
-  m_Name: SnowWhiteInfo
+  m_Name: L FirebirdInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/SnowWhite/SnowWhiteInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/4_Legendary/Firebird/L FirebirdInfo
     Guid:
-      Value: 503196197881011723
-  HeroPrefab: {fileID: -5379929345563415316, guid: 87cdb2ede9f0240dea39843a56cd6e67, type: 3}
+      Value: 365386012224251476
+  HeroPrefab: {fileID: 5216602490358044327, guid: 80ce73a1f1c844a12b45b49991eaf06d, type: 3}
   HeroPrototype:
     Id:
-      Value: 1426754357237334912
+      Value: 1448278535626308789
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Snow White
-  Rare: 0
+  Name: Firebird
+  Rare: 4
   HeroType: 0
   AbilityType: 1
   HeroStats:
   - Health:
-      RawValue: 32768000
+      RawValue: 52428800
     Defense:
-      RawValue: 983040
+      RawValue: 1310720
     MagicDefense:
       RawValue: 1966080
     AttackDamage:
-      RawValue: 1310720
+      RawValue: 2949120
     AbilityDamage:
-      RawValue: 3276800
+      RawValue: 4587520
     AttackSpeed:
-      RawValue: 65536
+      RawValue: 72090
     ProjectileSpeed:
       RawValue: 327680
     Range: 4
   - Health:
-      RawValue: 49152000
+      RawValue: 78643200
     Defense:
-      RawValue: 1474560
+      RawValue: 1966080
     MagicDefense:
       RawValue: 2949120
     AttackDamage:
-      RawValue: 1966080
+      RawValue: 4423680
     AbilityDamage:
-      RawValue: 4915200
+      RawValue: 6881280
     AttackSpeed:
-      RawValue: 65536
+      RawValue: 72090
     ProjectileSpeed:
       RawValue: 327680
     Range: 4
   - Health:
-      RawValue: 65536000
+      RawValue: 104857600
     Defense:
-      RawValue: 1966080
+      RawValue: 2621440
     MagicDefense:
       RawValue: 3932160
     AttackDamage:
-      RawValue: 2621440
+      RawValue: 5898240
     AbilityDamage:
-      RawValue: 6553600
+      RawValue: 9175040
     AttackSpeed:
-      RawValue: 65536
+      RawValue: 72090
     ProjectileSpeed:
       RawValue: 327680
     Range: 4
   AttackDamageType: 0
   AbilityDamageType: 1
   Mana:
-    RawValue: 3276800
+    RawValue: 6553600
   StartMana:
-    RawValue: 1966080
+    RawValue: 3276800

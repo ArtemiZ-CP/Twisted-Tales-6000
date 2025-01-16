@@ -89,6 +89,37 @@ namespace Quantum.Game
                     FromBToB(boardFromIndex, boardToIndex);
                 }
             }
+
+            f.Events.ShowHeroesOnBoardCount(playerLink->Ref, GetHeroesCountOnBoard(_board), GetMaxHeroesCountOnBoard(f, playerLink));
+        }
+
+        public static void ShowHeroesOnBoardCount(Frame f, PlayerLink* playerLink)
+        {
+            int heroesCountOnBoard = GetHeroesCountOnBoard(f.ResolveList(playerLink->Info.Board.HeroesID));
+            int maxHeroesCountOnBoard = GetMaxHeroesCountOnBoard(f, playerLink);
+            f.Events.ShowHeroesOnBoardCount(playerLink->Ref, heroesCountOnBoard, maxHeroesCountOnBoard);
+        }
+
+        private static int GetHeroesCountOnBoard(QList<int> board)
+        {
+            int count = 0;
+
+            for (int i = 0; i < board.Count; i++)
+            {
+                if (board[i] >= 0)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+
+        private static int GetMaxHeroesCountOnBoard(Frame f, PlayerLink* playerLink)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+
+            return gameConfig.ShopUpdrageSettings[playerLink->Info.Shop.Level].MaxCharactersOnBoard;
         }
 
         private HeroInfo GetBuyingHero(Frame f, int heroID)
@@ -205,28 +236,6 @@ namespace Quantum.Game
             }
         }
 
-        private int GetHeroesCountOnBoard()
-        {
-            int count = 0;
-
-            for (int i = 0; i < _board.Count; i++)
-            {
-                if (_board[i] >= 0)
-                {
-                    count++;
-                }
-            }
-
-            return count;
-        }
-
-        private bool IsAbleToMoveOnBoard()
-        {
-            GameConfig gameConfig = _f.FindAsset(_f.RuntimeConfig.GameConfig);
-
-            int maxHeroesOnBoard = gameConfig.ShopUpdrageSettings[_playerLink->Info.Shop.Level].MaxCharactersOnBoard;
-
-            return GetHeroesCountOnBoard() < maxHeroesOnBoard;
-        }
+        private bool IsAbleToMoveOnBoard() => GetHeroesCountOnBoard(_board) < GetMaxHeroesCountOnBoard(_f, _playerLink);
     }
 }

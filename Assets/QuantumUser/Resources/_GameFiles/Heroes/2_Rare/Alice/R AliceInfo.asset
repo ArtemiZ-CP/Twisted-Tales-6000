@@ -10,75 +10,75 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
-  m_Name: RedHatInfo
+  m_Name: R AliceInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/RedHat/RedHatInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/2_Rare/Alice/R AliceInfo
     Guid:
-      Value: 532186031317670239
-  HeroPrefab: {fileID: -5379929345563415316, guid: 00fc591b71d454103a881bd5ccf44881, type: 3}
+      Value: 327196791218117515
+  HeroPrefab: {fileID: 2736862171815421011, guid: fdfd08c4603234b6f826bce50daceab3, type: 3}
   HeroPrototype:
     Id:
-      Value: 1529226282637193225
+      Value: 1508160180531561391
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Red Hat
-  Rare: 0
+  Name: Alice
+  Rare: 2
   HeroType: 0
   AbilityType: 1
   HeroStats:
   - Health:
-      RawValue: 32768000
+      RawValue: 39321600
     Defense:
+      RawValue: 983040
+    MagicDefense:
       RawValue: 1310720
-    MagicDefense:
-      RawValue: 983040
     AttackDamage:
-      RawValue: 1966080
+      RawValue: 1310720
     AbilityDamage:
-      RawValue: 983040
-    AttackSpeed:
-      RawValue: 85197
-    ProjectileSpeed:
-      RawValue: 327680
-    Range: 4
-  - Health:
-      RawValue: 49152000
-    Defense:
-      RawValue: 1966080
-    MagicDefense:
-      RawValue: 1474560
-    AttackDamage:
-      RawValue: 2949120
-    AbilityDamage:
-      RawValue: 1474560
-    AttackSpeed:
-      RawValue: 85197
-    ProjectileSpeed:
-      RawValue: 327680
-    Range: 4
-  - Health:
-      RawValue: 65536000
-    Defense:
       RawValue: 2621440
+    AttackSpeed:
+      RawValue: 65536
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 4
+  - Health:
+      RawValue: 58982400
+    Defense:
+      RawValue: 1474560
     MagicDefense:
       RawValue: 1966080
     AttackDamage:
-      RawValue: 3932160
-    AbilityDamage:
       RawValue: 1966080
+    AbilityDamage:
+      RawValue: 3932160
     AttackSpeed:
-      RawValue: 85197
+      RawValue: 65536
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 4
+  - Health:
+      RawValue: 78643200
+    Defense:
+      RawValue: 1966080
+    MagicDefense:
+      RawValue: 2621440
+    AttackDamage:
+      RawValue: 2621440
+    AbilityDamage:
+      RawValue: 5242880
+    AttackSpeed:
+      RawValue: 65536
     ProjectileSpeed:
       RawValue: 327680
     Range: 4
   AttackDamageType: 0
   AbilityDamageType: 1
   Mana:
-    RawValue: 2621440
+    RawValue: 5242880
   StartMana:
-    RawValue: 0
+    RawValue: 3932160
