@@ -159,7 +159,8 @@ namespace Quantum.Menu
 				else
 				{
 					ReportProgress("Reconnecting..");
-					_client = await MatchmakingExtensions.ReconnectToRoomAsync(arguments);
+					_client = await MatchmakingExtensions.ConnectToRoomAsync(arguments);
+					// _client = await MatchmakingExtensions.ReconnectToRoomAsync(arguments);
 				}
 			}
 			catch (Exception e)
@@ -211,7 +212,7 @@ namespace Quantum.Menu
 			{
 				ReportProgress("Loading..");
 
-				if (QuantumUnityDB.TryGetGlobalAsset(connectArgs.RuntimeConfig.Map, out Quantum.Map map))
+				if (QuantumUnityDB.TryGetGlobalAsset(connectArgs.RuntimeConfig.Map, out Map map))
 				{
 					return new ConnectResult
 					{
@@ -290,21 +291,6 @@ namespace Quantum.Menu
 			{
 				// Start Quantum and wait for the start protocol to complete
 				Runner = (QuantumRunner)await SessionRunner.StartAsync(sessionRunnerArguments);
-
-				if (connectArgs.Reconnecting == false)
-				{
-					while (Runner.NetworkClient.CurrentRoom.PlayerCount < connectArgs.MaxPlayerCount)
-					{
-						if (_cancellation.IsCancellationRequested)
-						{
-							throw new TaskCanceledException();
-						}
-
-						await Task.Yield();
-					}
-
-					Client.CurrentRoom.IsOpen = false;
-				}
 			}
 			catch (Exception e)
 			{

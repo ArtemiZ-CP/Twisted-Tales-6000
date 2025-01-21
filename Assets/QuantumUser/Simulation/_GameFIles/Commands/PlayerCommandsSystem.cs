@@ -17,10 +17,7 @@ namespace Quantum.Game
             PlayerLink* player = filter.Player;
             DeterministicCommand command = f.GetPlayerCommand(player->Ref);
 
-            var commandStartRound = command as CommandStartRound;
-            commandStartRound?.Execute(f);
-
-            var commandEndRound = command as CommandEndRound;
+            var commandEndRound = command as CommandNextRound;
             commandEndRound?.Execute(f);
 
             var commandReloadShop = command as CommandReloadShop;
@@ -37,6 +34,9 @@ namespace Quantum.Game
 
             var commandUpgradeShop = command as CommandUpgradeShop;
             commandUpgradeShop?.Execute(f, player);
+
+            var commandSellHero = command as CommandSellHero;
+            commandSellHero?.Execute(f, player);
         }
     }
 }

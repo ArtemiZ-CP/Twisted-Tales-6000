@@ -1,3 +1,4 @@
+using Photon.Deterministic;
 using Quantum.Collections;
 using UnityEngine;
 
@@ -5,6 +6,13 @@ namespace Quantum.Game
 {
     public unsafe class Hero
     {
+        public static int GetHeroCost(Frame f, int heroID)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+            HeroInfo heroInfo = gameConfig.GetHeroInfo(f, heroID);
+            return heroInfo.GetCost(f);
+        }
+
         public static void SetNewBoardPosision(QList<FightingHero> heroes, FightingHero fightingHero, int heroNewIndex)
         {
             FightingHero empty = heroes[heroNewIndex];
@@ -37,7 +45,7 @@ namespace Quantum.Game
                     break;
             }
 
-            SetHeroPosition(f, hero, first);
+            SetHeroTransform(f, hero, first);
             BoardSystem.DisactiveEntity(f, heroEntity);
         }
 
@@ -96,20 +104,6 @@ namespace Quantum.Game
             return heroes;
         }
 
-        private static void SetHeroPosition(Frame f, HeroEntity hero, bool first = true)
-        {
-            Transform3D* heroTransform = f.Unsafe.GetPointer<Transform3D>(hero.Ref);
-
-            if (first)
-            {
-                heroTransform->Position = hero.DefaultPosition;
-            }
-            else
-            {
-                heroTransform->Position = -hero.DefaultPosition;
-            }
-        }
-
         public static FightingHero SetupHero(Frame f, FightingHero hero, int heroIndex)
         {
             GameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
@@ -148,6 +142,54 @@ namespace Quantum.Game
             hero.Hero.Range = heroLevelStats.Range;
 
             return hero;
+        }
+
+        public static void Rotate(Frame f, HeroEntity hero, FPVector3 targetPosition)
+        {
+            Transform3D* heroTransform = f.Unsafe.GetPointer<Transform3D>(hero.Ref);
+
+            FPVector3 direction = targetPosition - heroTransform->Position;
+
+            if (direction == FPVector3.Zero)
+            {
+                return;
+            }
+            
+            FPQuaternion targetRotation = FPQuaternion.LookRotation(direction);
+
+            Rotate(f, hero, targetRotation);
+        }
+
+        public static void Rotate(Frame f, HeroEntity hero, FPQuaternion targetRotation)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+
+            Transform3D* heroTransform = f.Unsafe.GetPointer<Transform3D>(hero.Ref);
+
+            if (heroTransform->Rotation.Equals(targetRotation))
+            {
+                return;
+            }
+
+            FP rotationDelta = gameConfig.HeroRotationSpeed * f.DeltaTime;
+
+            heroTransform->Rotation = FPQuaternion.RotateTowards(heroTransform->Rotation, targetRotation, rotationDelta);
+        }
+
+        private static void SetHeroTransform(Frame f, HeroEntity hero, bool first = true)
+        {
+            Transform3D* heroTransform = f.Unsafe.GetPointer<Transform3D>(hero.Ref);
+
+            if (first)
+            {
+                heroTransform->Position = hero.DefaultPosition;
+                heroTransform->Rotation = FPQuaternion.LookRotation(FPVector3.Forward);
+            }
+            else
+            {
+                heroTransform->Position = -hero.DefaultPosition;
+                heroTransform->Rotation = FPQuaternion.LookRotation(FPVector3.Back);
+            }
         }
     }
 }

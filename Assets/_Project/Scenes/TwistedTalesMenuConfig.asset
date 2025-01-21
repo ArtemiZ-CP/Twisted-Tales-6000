@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8f98ff78397bdc4a9886959982c466e, type: 3}
   m_Name: TwistedTalesMenuConfig
   m_EditorClassIdentifier: 
-  _maxPlayers: 2
+  _maxPlayers: 4
   _adaptFramerateForMobilePlatform: 1
   _availableAppVersions:
   - 3.0
@@ -31,7 +31,7 @@ MonoBehaviour:
   - usw
   _availableScenes:
   - Name: TwistedTales
-    ScenePath: Assets/Source/Scenes/Game.unity
+    ScenePath: Assets/_Project/Scenes/Game.unity
     Preview: {fileID: 0}
     RuntimeConfig:
       Seed: -45627829

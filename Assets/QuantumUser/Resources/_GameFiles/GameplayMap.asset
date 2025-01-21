@@ -20,7 +20,7 @@ MonoBehaviour:
     Id:
       Value: 0
   Scene: Game
-  ScenePath: Assets/Source/Scenes/Game.unity
+  ScenePath: Assets/_Project/Scenes/Game.unity
   SceneGuid: 13887a40c84664899bd6ca81551db495
   WorldSize: 256
   BucketsCount: 16

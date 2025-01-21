@@ -96,7 +96,7 @@ namespace Quantum.Game
             f.Events.GetCurrentPlayers(f, Player.GetAllPlayersLink(f), BoardSystem.GetBoards(f));
             f.Events.ChangeCoins(player, playerLink->Info.Coins);
             f.Events.ReloadShop(f, player, f.ResolveList(playerLink->Info.Shop.HeroesID).ToList());
-            PlayerMovingSystem.ShowHeroesOnBoardCount(f, playerLink);
+            HeroMovingSystem.ShowHeroesOnBoardCount(f, playerLink);
             Shop.SendShopUpgradeInfo(f, playerLink);
 
             if (f.Global->IsBuyPhase == false)

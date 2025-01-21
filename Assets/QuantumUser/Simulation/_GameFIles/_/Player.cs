@@ -58,6 +58,16 @@ namespace Quantum.Game
             return playersEntity;
         }
 
+        public static void EventGetPlayerInfos(Frame f)
+        {
+            var players = GetAllPlayersLink(f);
+
+            foreach (var playerLink in players)
+            {
+                f.Events.GetPlayerInfo(f, playerLink.Ref, playerLink.Info);
+            }
+        }
+
         public static void ResetCoins(Frame f)
         {
             var players = GetAllPlayersEntity(f);

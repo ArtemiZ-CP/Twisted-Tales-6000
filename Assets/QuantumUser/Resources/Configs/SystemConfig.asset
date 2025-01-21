@@ -45,7 +45,7 @@ MonoBehaviour:
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Quantum.Game.PlayerMovingSystem, Quantum.Simulation
+      AssemblyQualifiedName: Quantum.Game.HeroMovingSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []

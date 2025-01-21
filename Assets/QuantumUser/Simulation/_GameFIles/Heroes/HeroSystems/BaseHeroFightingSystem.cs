@@ -56,6 +56,11 @@ namespace Quantum.Game
 
             if (HeroBoard.TrySetTarget(f, fightingHero))
             {
+                if (fightingHero.Hero.AttackTarget != default)
+                {
+                    Hero.Rotate(f, fightingHero.Hero, f.Get<Transform3D>(fightingHero.Hero.AttackTarget).Position);
+                }
+
                 Attack(f, fightingHero, (HeroAttack.DamageType)fightingHero.Hero.AttackDamageType);
                 return;
             }
@@ -96,6 +101,8 @@ namespace Quantum.Game
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             Transform3D* transform = f.Unsafe.GetPointer<Transform3D>(fightingHero.Hero.Ref);
             FP moveOffset = gameConfig.HeroMoveSpeed * f.DeltaTime;
+
+            Hero.Rotate(f, fightingHero.Hero, movePosition);
 
             transform->Position = FPVector3.MoveTowards(transform->Position, movePosition, moveOffset);
         }

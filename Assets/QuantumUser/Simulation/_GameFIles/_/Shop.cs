@@ -110,7 +110,7 @@ namespace Quantum.Game
                     Reload(f, playerLink);
                 }
                 
-                PlayerMovingSystem.ShowHeroesOnBoardCount(f, playerLink);
+                HeroMovingSystem.ShowHeroesOnBoardCount(f, playerLink);
             }
 
             SendShopUpgradeInfo(f, playerLink);

@@ -61,6 +61,11 @@ namespace Quantum.Game
             SetRotation(_heroState == HeroState.Inventory || _heroState == HeroState.Shop);
         }
 
+        public void SellHero()
+        {
+            ClearHero();
+        }
+
         public Vector3 GetBasePosition()
         {
             return _heroState switch
@@ -93,7 +98,7 @@ namespace Quantum.Game
             foreach (MeshRenderer meshRenderer in _meshRenderers)
             {
                 if (meshRenderer == null) continue;
-                
+
                 meshRenderer.shadowCastingMode = isActive ? ShadowCastingMode.On : ShadowCastingMode.Off;
             }
         }

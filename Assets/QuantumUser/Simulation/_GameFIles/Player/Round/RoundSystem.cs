@@ -54,6 +54,7 @@ namespace Quantum.Game
 
         private void EndRound(Frame f)
         {
+            Shop.Reload(f);
             f.Global->IsBuyPhase = true;
             f.Global->PhaseNumber++;
             f.Global->PVPStreak = 0;
@@ -62,6 +63,7 @@ namespace Quantum.Game
             f.Events.EndRound();
             Shop.AddXP(f, f.FindAsset(f.RuntimeConfig.GameConfig).XPByRound);
             GetPlayersList(f);
+            Player.EventGetPlayerInfos(f);
         }
 
         private void ProcessRound(Frame f)
@@ -131,7 +133,6 @@ namespace Quantum.Game
 
                     if (f.Global->PVPStreak >= config.PVPStreak)
                     {
-                        Shop.Reload(f);
                         EndRound(f);
                         ProcessPlayersCoins(f);
                     }
@@ -144,7 +145,6 @@ namespace Quantum.Game
                 }
                 else
                 {
-                    Shop.Reload(f);
                     EndRound(f);
                     ProcessPlayersCoins(f);
                 }

@@ -123,8 +123,6 @@ namespace Quantum.Game
 
         public static FightingHero GetHeroTarget(Frame f, FightingHero fightingHero, out Vector2Int moveTargetPosition)
         {
-            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fightingHero).FightingHeroesMap);
-
             if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, out FightingHero targetHero))
             {
                 moveTargetPosition = GetHeroCords(fightingHero.Hero);

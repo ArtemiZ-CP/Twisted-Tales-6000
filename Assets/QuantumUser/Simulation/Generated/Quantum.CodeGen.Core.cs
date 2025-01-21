@@ -994,6 +994,9 @@ namespace Quantum {
   public unsafe partial interface ISignalStartFight : ISignal {
     void StartFight(Frame f, Int32 roundIndex);
   }
+  public unsafe partial interface ISignalSellHero : ISignal {
+    void SellHero(Frame f, PlayerLink* playerLink, Quantum.Game.HeroState state, Int32 positionX, Int32 positionY);
+  }
   public static unsafe partial class Constants {
   }
   public unsafe partial class Frame {
@@ -1008,6 +1011,7 @@ namespace Quantum {
     private ISignalOnStartRound[] _ISignalOnStartRoundSystems;
     private ISignalOnEndRound[] _ISignalOnEndRoundSystems;
     private ISignalStartFight[] _ISignalStartFightSystems;
+    private ISignalSellHero[] _ISignalSellHeroSystems;
     partial void AllocGen() {
       _globals = (_globals_*)Context.Allocator.AllocAndClear(sizeof(_globals_));
     }
@@ -1030,6 +1034,7 @@ namespace Quantum {
       _ISignalOnStartRoundSystems = BuildSignalsArray<ISignalOnStartRound>();
       _ISignalOnEndRoundSystems = BuildSignalsArray<ISignalOnEndRound>();
       _ISignalStartFightSystems = BuildSignalsArray<ISignalStartFight>();
+      _ISignalSellHeroSystems = BuildSignalsArray<ISignalSellHero>();
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       BuildSignalsArrayOnComponentAdded<Quantum.Board>();
@@ -1195,6 +1200,15 @@ namespace Quantum {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
             s.StartFight(_f, roundIndex);
+          }
+        }
+      }
+      public void SellHero(PlayerLink* playerLink, Quantum.Game.HeroState state, Int32 positionX, Int32 positionY) {
+        var array = _f._ISignalSellHeroSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.SellHero(_f, playerLink, state, positionX, positionY);
           }
         }
       }

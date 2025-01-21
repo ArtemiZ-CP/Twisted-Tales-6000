@@ -14,7 +14,10 @@ namespace Quantum.Game
 
         private void DisplayHeroesCount(EventShowHeroesOnBoardCount eventShowHeroesOnBoardCount)
         {
-            _text.text = $"{eventShowHeroesOnBoardCount.HeroesOnBoard}/{eventShowHeroesOnBoardCount.MaxHeroesOnBoard}";
+            if (QuantumConnection.IsPlayerMe(eventShowHeroesOnBoardCount.PlayerRef))
+            {
+                _text.text = $"{eventShowHeroesOnBoardCount.HeroesOnBoard}/{eventShowHeroesOnBoardCount.MaxHeroesOnBoard}";
+            }
         }
     }
 }

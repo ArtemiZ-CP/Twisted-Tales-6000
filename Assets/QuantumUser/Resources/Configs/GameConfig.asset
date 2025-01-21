@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GameConfig
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/GameConfig
+    Path: QuantumUser/Resources/Configs/GameConfig
     Guid:
       Value: 481284669698677807
   PlayerHealth: 100
@@ -72,6 +72,8 @@ MonoBehaviour:
     RawValue: 16384
   HeroMoveSpeed:
     RawValue: 131072
+  HeroRotationSpeed:
+    RawValue: 19660800
   HeroDefenseRatio:
     RawValue: 6553600
   RangePercentage:
@@ -83,32 +85,32 @@ MonoBehaviour:
     BackgroundColor: {r: 0.6509434, g: 0.6509434, b: 0.6509434, a: 1}
     BuyCost: 1
     SellCost1: 1
-    SellCost2: 1
-    SellCost3: 1
+    SellCost2: 2
+    SellCost3: 4
   - Rare: 1
     BackgroundColor: {r: 0, g: 0.764151, b: 0.0480094, a: 1}
     BuyCost: 2
     SellCost1: 2
-    SellCost2: 2
-    SellCost3: 2
+    SellCost2: 4
+    SellCost3: 8
   - Rare: 2
     BackgroundColor: {r: 0, g: 0.2635255, b: 1, a: 1}
     BuyCost: 3
     SellCost1: 3
-    SellCost2: 3
-    SellCost3: 3
+    SellCost2: 6
+    SellCost3: 12
   - Rare: 3
     BackgroundColor: {r: 0.7194538, g: 0, b: 1, a: 1}
     BuyCost: 4
     SellCost1: 4
-    SellCost2: 4
-    SellCost3: 4
+    SellCost2: 8
+    SellCost3: 16
   - Rare: 4
     BackgroundColor: {r: 1, g: 0.8772963, b: 0, a: 1}
     BuyCost: 5
     SellCost1: 5
-    SellCost2: 5
-    SellCost3: 5
+    SellCost2: 10
+    SellCost3: 20
   ShopUpdrageSettings:
   - Cost: 1
     MaxCharactersOnBoard: 3

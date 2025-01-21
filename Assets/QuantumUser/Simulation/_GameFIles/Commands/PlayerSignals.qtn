@@ -9,3 +9,4 @@ signal GetPlayersList();
 signal OnStartRound();
 signal OnEndRound();
 signal StartFight(int roundIndex);
+signal SellHero(PlayerLink* playerLink, Quantum.Game.HeroState state, int positionX, int positionY);

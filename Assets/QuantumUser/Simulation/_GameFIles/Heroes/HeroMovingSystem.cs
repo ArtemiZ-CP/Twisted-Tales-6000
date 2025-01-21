@@ -4,7 +4,7 @@ using UnityEngine.Scripting;
 namespace Quantum.Game
 {
     [Preserve]
-    public unsafe class PlayerMovingSystem : SystemSignalsOnly, ISignalOnMoveHero
+    public unsafe class HeroMovingSystem : SystemSignalsOnly, ISignalOnMoveHero, ISignalSellHero
     {
         QList<int> _inventory;
         QList<int> _inventoryLevels;
@@ -13,6 +13,50 @@ namespace Quantum.Game
         QList<int> _shop;
         PlayerLink* _playerLink;
         Frame _f;
+
+        public void SellHero(Frame f, PlayerLink* playerLink, HeroState heroState, int positionX, int positionY)
+        {
+            _inventory = f.ResolveList(playerLink->Info.Inventory.HeroesID);
+            _inventoryLevels = f.ResolveList(playerLink->Info.Inventory.HeroesLevel);
+            _board = f.ResolveList(playerLink->Info.Board.HeroesID);
+            _boardLevels = f.ResolveList(playerLink->Info.Board.HeroesLevel);
+            _shop = f.ResolveList(playerLink->Info.Shop.HeroesID);
+            _playerLink = playerLink;
+            _f = f;
+            
+            if (heroState == HeroState.Shop)
+            {
+                return;
+            }
+            else if (heroState == HeroState.Inventory)
+            {
+                int heroIndex = positionX;
+
+                if (heroIndex >= 0 && heroIndex < _inventory.Count)
+                {
+                    if (_inventory[heroIndex] >= 0)
+                    {
+                        Player.AddCoins(f, playerLink, 1);
+                        _inventory[heroIndex] = -1;
+                        _inventoryLevels[heroIndex] = 0;
+                    }
+                }
+            }
+            else if (heroState == HeroState.Board)
+            {
+                int heroIndex = positionY * GameConfig.BoardSize + positionX;
+
+                if (heroIndex >= 0 && heroIndex < _board.Count)
+                {
+                    if (_board[heroIndex] >= 0)
+                    {
+                        Player.AddCoins(f, playerLink, 1);
+                        _board[heroIndex] = -1;
+                        _boardLevels[heroIndex] = 0;
+                    }
+                }
+            }
+        }
 
         public void OnMoveHero(Frame f, PlayerLink* playerLink, HeroState HeroFromState, HeroState HeroToState, int positionFromX, int positionFromY, int positionToX, int positionToY)
         {
