@@ -4,9 +4,27 @@ namespace Quantum.Game
 {
     public unsafe class Player
     {
+        public static EntityRef GetPlayerEntity(Frame f, PlayerRef playerRef)
+        {
+            foreach ((EntityRef entity, PlayerLink link) in f.GetComponentIterator<PlayerLink>())
+            {
+                if (link.Ref == playerRef)
+                {
+                    return entity;
+                }
+            }
+
+            return default;
+        }
+
         public static PlayerLink* GetPlayerPointer(Frame f, EntityRef entity)
         {
             return f.Unsafe.GetPointer<PlayerLink>(entity);
+        }
+
+        public static PlayerLink GetPlayer(Frame f, EntityRef entity)
+        {
+            return f.Get<PlayerLink>(entity);
         }
 
         public static PlayerLink* GetPlayerPointer(Frame f, PlayerRef playerRef)
@@ -16,6 +34,19 @@ namespace Quantum.Game
                 if (link.Ref == playerRef)
                 {
                     return GetPlayerPointer(f, entity);
+                }
+            }
+
+            return default;
+        }
+
+        public static PlayerLink GetPlayer(Frame f, PlayerRef playerRef)
+        {
+            foreach ((EntityRef entity, PlayerLink link) in f.GetComponentIterator<PlayerLink>())
+            {
+                if (link.Ref == playerRef)
+                {
+                    return link;
                 }
             }
 
@@ -56,16 +87,6 @@ namespace Quantum.Game
             }
 
             return playersEntity;
-        }
-
-        public static void EventGetPlayerInfos(Frame f)
-        {
-            var players = GetAllPlayersLink(f);
-
-            foreach (var playerLink in players)
-            {
-                f.Events.GetPlayerInfo(f, playerLink.Ref, playerLink.Info);
-            }
         }
 
         public static void ResetCoins(Frame f)

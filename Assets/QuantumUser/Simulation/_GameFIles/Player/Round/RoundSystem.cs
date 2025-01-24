@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Quantum.Collections;
+using Quantum.Game.Quantum;
 using UnityEngine.Scripting;
 
 namespace Quantum.Game
@@ -63,7 +64,8 @@ namespace Quantum.Game
             f.Events.EndRound();
             Shop.AddXP(f, f.FindAsset(f.RuntimeConfig.GameConfig).XPByRound);
             GetPlayersList(f);
-            Player.EventGetPlayerInfos(f);
+            Events.GetBoardHeroes(f);
+            Events.GetInventoryHeroes(f);
         }
 
         private void ProcessRound(Frame f)
@@ -274,7 +276,7 @@ namespace Quantum.Game
 
             if (player->Info.StreakType != 0)
             {
-                int streakIndex = player->Info.Streak - 1;
+                int streakIndex = player->Info.Streak;
 
                 if (player->Info.StreakType > 0)
                 {
@@ -327,7 +329,7 @@ namespace Quantum.Game
             }
             else
             {
-                player->Info.Streak = 1;
+                player->Info.Streak = 0;
                 player->Info.StreakType = roundResult;
             }
         }

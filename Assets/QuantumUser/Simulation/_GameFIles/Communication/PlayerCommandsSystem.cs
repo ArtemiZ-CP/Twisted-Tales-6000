@@ -29,9 +29,6 @@ namespace Quantum.Game
             var commandMoveHero = command as CommandMoveHero;
             commandMoveHero?.Execute(f, player);
 
-            var commandGetPlayerInfo = command as CommandGetPlayerInfo;
-            commandGetPlayerInfo?.Execute(f, player);
-
             var commandUpgradeShop = command as CommandUpgradeShop;
             commandUpgradeShop?.Execute(f, player);
 

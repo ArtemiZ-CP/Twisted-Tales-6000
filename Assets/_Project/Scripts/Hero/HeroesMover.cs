@@ -66,6 +66,7 @@ namespace Quantum.Game
         private void StartRound(EventStartRound eventStartRound)
         {
             _isRoundStarted = true;
+            ResetSelectedHeroes();
         }
 
         private void EndRound(EventEndRound eventEndRound)
@@ -79,13 +80,14 @@ namespace Quantum.Game
 
             if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, _heroLayerMask))
             {
-                if (hit.collider.gameObject.TryGetComponent(out _selectedHero))
+                if (hit.collider.gameObject.TryGetComponent(out _selectedHero) && _selectedHero.Id >= 0)
                 {
                     _dragOffset = _selectedHero.transform.position - hit.point;
                     return true;
                 }
             }
 
+            _selectedHero = null;
             return false;
         }
 
@@ -198,23 +200,42 @@ namespace Quantum.Game
 
         private void EndMoveHero()
         {
-            if (_newHeroPlace != null && _selectedHero != _newHeroPlace)
+            if (_selectedHero != null && _selectedHero.Id >= 0)
             {
-                SendMoveCommand();
+                if (_newHeroPlace != null && _selectedHero != _newHeroPlace)
+                {
+                    SendMoveCommand();
+
+                    return;
+                }
+                else if (TrySellHero())
+                {
+                    _selectedHero.SellHero();
+                    _selectedHero.SetBaseTransform();
+                    SetBaseHeroSize(_selectedHero);
+                    _selectedHero = null;
+                    _newHeroPlace = null;
+
+                    return;
+                }
             }
-            else if (TrySellHero())
+
+            ResetSelectedHeroes();
+        }
+
+        private void ResetSelectedHeroes()
+        {
+            if (_selectedHero != null)
             {
                 _selectedHero.SetBaseTransform();
                 SetBaseHeroSize(_selectedHero);
-                _selectedHero.SellHero();
                 _selectedHero = null;
-                _newHeroPlace = null;
             }
-            else
+
+            if (_newHeroPlace != null)
             {
-                _selectedHero.SetBaseTransform();
-                SetBaseHeroSize(_selectedHero);
-                _selectedHero = null;
+                _newHeroPlace.SetBaseTransform();
+                SetBaseHeroSize(_newHeroPlace);
                 _newHeroPlace = null;
             }
         }

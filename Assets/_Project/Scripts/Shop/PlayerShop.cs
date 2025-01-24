@@ -16,7 +16,6 @@ namespace Quantum.Game
         private void Awake()
         {
             QuantumEvent.Subscribe<EventBuyHero>(listener: this, handler: BuyHero);
-            QuantumEvent.Subscribe<EventGetPlayerInfo>(listener: this, handler: LoadShop);
             QuantumEvent.Subscribe<EventChangeCoins>(listener: this, handler: ChangeCoins);
         }
 
@@ -33,19 +32,19 @@ namespace Quantum.Game
             return -1;
         }
 
-        public void ReloadShop(List<int> shopItemsID)
+        public void ReloadShop(IEnumerable<int> shopItemsID)
         {
             _shopPanel.SetActive(true);
-            SpawnShopItems(shopItemsID.Count);
+            SpawnShopItems(shopItemsID.Count());
 
-            for (int i = 0; i < shopItemsID.Count; i++)
+            for (int i = 0; i < shopItemsID.Count(); i++)
             {
-                if (shopItemsID[i] < 0)
+                if (shopItemsID.ElementAt(i) < 0)
                 {
                     continue;
                 }
 
-                _shopItemSlots[i].SetShopItem(shopItemsID[i]);
+                _shopItemSlots[i].SetShopItem(shopItemsID.ElementAt(i));
             }
         }
 
@@ -66,15 +65,6 @@ namespace Quantum.Game
         private void SetCoins(int coins)
         {
             _coinsText.text = $"Coins: {coins}";
-        }
-
-        private void LoadShop(EventGetPlayerInfo eventGetPlayerInfo)
-        {
-            if (QuantumConnection.IsPlayerMe(eventGetPlayerInfo.PlayerRef))
-            {
-                ReloadShop(eventGetPlayerInfo.Frame.ResolveList(eventGetPlayerInfo.PlayerInfo.Shop.HeroesID).ToList());
-                SetCoins(eventGetPlayerInfo.PlayerInfo.Coins);
-            }
         }
 
         private void BuyHero(EventBuyHero eventBuyHero)

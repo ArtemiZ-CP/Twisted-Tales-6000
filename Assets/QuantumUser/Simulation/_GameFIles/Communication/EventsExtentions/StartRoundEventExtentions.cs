@@ -11,14 +11,14 @@ namespace Quantum
 
     public partial class EventStartRound
     {
-        public List<EntityLevelData> Heroes;
+        public IEnumerable<EntityLevelData> Heroes;
     }
 
     public partial class Frame
     {
         public partial struct FrameEvents
         {
-            public readonly EventStartRound StartRound(Frame f, PlayerRef playerRef1, PlayerRef playerRef2, List<EntityLevelData> Heroes)
+            public readonly EventStartRound StartRound(Frame f, PlayerRef playerRef1, PlayerRef playerRef2, IEnumerable<EntityLevelData> Heroes)
             {
                 var ev = f.Events.StartRound(playerRef1, playerRef2);
                 ev.Heroes = Heroes;

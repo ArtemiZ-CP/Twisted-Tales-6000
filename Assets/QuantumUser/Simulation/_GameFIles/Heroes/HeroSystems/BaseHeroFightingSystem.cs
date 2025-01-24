@@ -56,7 +56,7 @@ namespace Quantum.Game
 
             if (HeroBoard.TrySetTarget(f, fightingHero))
             {
-                if (fightingHero.Hero.AttackTarget != default)
+                if (fightingHero.Hero.AttackTarget != default && f.Exists(fightingHero.Hero.AttackTarget))
                 {
                     Hero.Rotate(f, fightingHero.Hero, f.Get<Transform3D>(fightingHero.Hero.AttackTarget).Position);
                 }

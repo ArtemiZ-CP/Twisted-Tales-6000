@@ -1,0 +1,11 @@
+event ShowHeroesOnBoardCount
+{
+    player_ref PlayerRef;
+    int HeroesOnBoard;
+    int MaxHeroesOnBoard;
+}
+
+event GetBoardHeroes
+{
+    player_ref PlayerRef;
+}

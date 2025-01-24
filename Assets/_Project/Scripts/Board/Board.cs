@@ -41,7 +41,7 @@ namespace Quantum.Game
 
         private void Awake()
         {
-            QuantumEvent.Subscribe<EventGetPlayerInfo>(listener: this, handler: LoadBoard);
+            QuantumEvent.Subscribe<EventGetBoardHeroes>(listener: this, handler: LoadBoard);
         }
 
         public void SetActiveHeroes(bool active)
@@ -99,14 +99,14 @@ namespace Quantum.Game
             return new Vector2Int(-1, -1);
         }
 
-        private void LoadBoard(EventGetPlayerInfo eventGetPlayerInfo)
+        private void LoadBoard(EventGetBoardHeroes eventGetBoardHeroes)
         {
-            if (QuantumConnection.IsPlayerMe(eventGetPlayerInfo.PlayerRef))
+            if (QuantumConnection.IsPlayerMe(eventGetBoardHeroes.PlayerRef))
             {
                 InitializeBoard();
 
-                QList<int> heroesID = eventGetPlayerInfo.Frame.ResolveList(eventGetPlayerInfo.PlayerInfo.Board.HeroesID);
-                QList<int> heroesLevel = eventGetPlayerInfo.Frame.ResolveList(eventGetPlayerInfo.PlayerInfo.Board.HeroesLevel);
+                QList<int> heroesID = eventGetBoardHeroes.HeroIDList;
+                QList<int> heroesLevel = eventGetBoardHeroes.HeroLevelList;
 
                 for (int x = 0; x < _boardSize; x++)
                 {

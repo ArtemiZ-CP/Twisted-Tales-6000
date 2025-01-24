@@ -84,33 +84,23 @@ MonoBehaviour:
   - Rare: 0
     BackgroundColor: {r: 0.6509434, g: 0.6509434, b: 0.6509434, a: 1}
     BuyCost: 1
-    SellCost1: 1
-    SellCost2: 2
-    SellCost3: 4
+    SellCosts: 010000000200000006000000
   - Rare: 1
     BackgroundColor: {r: 0, g: 0.764151, b: 0.0480094, a: 1}
     BuyCost: 2
-    SellCost1: 2
-    SellCost2: 4
-    SellCost3: 8
+    SellCosts: 02000000040000000c000000
   - Rare: 2
     BackgroundColor: {r: 0, g: 0.2635255, b: 1, a: 1}
     BuyCost: 3
-    SellCost1: 3
-    SellCost2: 6
-    SellCost3: 12
+    SellCosts: 030000000600000012000000
   - Rare: 3
     BackgroundColor: {r: 0.7194538, g: 0, b: 1, a: 1}
     BuyCost: 4
-    SellCost1: 4
-    SellCost2: 8
-    SellCost3: 16
+    SellCosts: 040000000800000018000000
   - Rare: 4
     BackgroundColor: {r: 1, g: 0.8772963, b: 0, a: 1}
     BuyCost: 5
-    SellCost1: 5
-    SellCost2: 10
-    SellCost3: 20
+    SellCosts: 050000000a0000001e000000
   ShopUpdrageSettings:
   - Cost: 1
     MaxCharactersOnBoard: 3

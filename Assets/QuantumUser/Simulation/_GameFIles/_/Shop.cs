@@ -27,14 +27,14 @@ namespace Quantum.Game
                 list[i] = gameConfig.GetRandomHero(f, GetHeroRare(f, playerLink->Info.Shop.Level));
             }
 
-            f.Events.ReloadShop(f, playerLink->Ref, list.ToList());
+            f.Events.GetShopHeroes(f, playerLink->Ref, list);
         }
 
         public static bool TryUpgradeShop(Frame f, PlayerLink* playerLink)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
-            if (IsShopMaxLevel(f, playerLink))
+            if (IsShopMaxLevel(f, *playerLink))
             {
                 return false;
             }
@@ -81,7 +81,7 @@ namespace Quantum.Game
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             ShopUpdrageSettings shopUpdrageSettings = gameConfig.ShopUpdrageSettings[playerLink->Info.Shop.Level];
 
-            if (IsShopMaxLevel(f, playerLink))
+            if (IsShopMaxLevel(f, *playerLink))
             {
                 return;
             }
@@ -96,7 +96,7 @@ namespace Quantum.Game
                 shopUpdrageSettings = gameConfig.ShopUpdrageSettings[playerLink->Info.Shop.Level];
                 isUpgrade = true;
 
-                if (IsShopMaxLevel(f, playerLink))
+                if (IsShopMaxLevel(f, *playerLink))
                 {
                     playerLink->Info.Shop.XP = -1;
                     break;
@@ -110,26 +110,26 @@ namespace Quantum.Game
                     Reload(f, playerLink);
                 }
                 
-                HeroMovingSystem.ShowHeroesOnBoardCount(f, playerLink);
+                HeroMovingSystem.ShowHeroesOnBoardCount(f, *playerLink);
             }
 
-            SendShopUpgradeInfo(f, playerLink);
+            SendShopUpgradeInfo(f, *playerLink);
         }
 
-        public static void SendShopUpgradeInfo(Frame f, PlayerLink* playerLink)
+        public static void SendShopUpgradeInfo(Frame f, PlayerLink playerLink)
         {
-            int CurrentXP = playerLink->Info.Shop.XP;
+            int CurrentXP = playerLink.Info.Shop.XP;
             int MaxXPCost = -1;
-            int CurrentLevel = playerLink->Info.Shop.Level;
+            int CurrentLevel = playerLink.Info.Shop.Level;
 
             if (IsShopMaxLevel(f, playerLink) == false)
             {
                 GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-                ShopUpdrageSettings shopUpdrageSettings = gameConfig.ShopUpdrageSettings[playerLink->Info.Shop.Level];
+                ShopUpdrageSettings shopUpdrageSettings = gameConfig.ShopUpdrageSettings[playerLink.Info.Shop.Level];
                 MaxXPCost = shopUpdrageSettings.Cost;
             }
 
-            f.Events.GetShopUpgradeInfo(f, playerLink->Ref, CurrentXP, MaxXPCost, CurrentLevel, GetHeroChances(f, playerLink->Info.Shop.Level));
+            f.Events.GetShopUpgradeInfo(f, playerLink.Ref, CurrentXP, MaxXPCost, CurrentLevel, GetHeroChances(f, playerLink.Info.Shop.Level));
         }
 
         public static HeroRare GetHeroRare(Frame f, int shopLevel)
@@ -171,10 +171,10 @@ namespace Quantum.Game
             return chances;
         }
 
-        private static bool IsShopMaxLevel(Frame f, PlayerLink* playerLink)
+        private static bool IsShopMaxLevel(Frame f, PlayerLink playerLink)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            return playerLink->Info.Shop.Level + 1 >= gameConfig.ShopUpdrageSettings.Length;
+            return playerLink.Info.Shop.Level + 1 >= gameConfig.ShopUpdrageSettings.Length;
         }
 
         private static float GetHeroChance(Frame f, int shopLevel, HeroRare heroRare)

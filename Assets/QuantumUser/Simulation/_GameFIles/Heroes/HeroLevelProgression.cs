@@ -25,6 +25,7 @@ namespace Quantum.Game
             if (TryGetHeroesToUpgrade(f, filter.PlayerLink, out List<HeroUpgradeInfo> heroUpgradeInfos))
             {
                 UpgradeHeroes(f, filter.PlayerLink, heroUpgradeInfos);
+                HeroMovingSystem.ShowHeroesOnBoardCount(f, *filter.PlayerLink);
             }
         }
 
@@ -142,7 +143,12 @@ namespace Quantum.Game
                 heroesLevelInventory[heroIndex] = heroLevel + 1;
             }
 
-            f.Events.GetPlayerInfo(f, playerLink->Ref, playerLink->Info);
+            f.Events.GetBoardHeroes(f, playerLink->Ref, 
+                f.ResolveList(playerLink->Info.Board.HeroesID),
+                f.ResolveList(playerLink->Info.Board.HeroesLevel));
+            f.Events.GetInventoryHeroes(f, playerLink->Ref, 
+                f.ResolveList(playerLink->Info.Inventory.HeroesID),
+                f.ResolveList(playerLink->Info.Inventory.HeroesLevel));
         }
 
         private bool TryGetHeroesToUpgrade(Frame f, PlayerLink* playerLink, out List<HeroUpgradeInfo> heroUpgradeInfos)

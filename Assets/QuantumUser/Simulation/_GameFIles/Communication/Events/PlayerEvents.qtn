@@ -1,0 +1,9 @@
+event GetCurrentPlayers
+{
+}
+
+event MoveHero
+{
+    player_ref PlayerRef;
+    bool IsMoved;
+}

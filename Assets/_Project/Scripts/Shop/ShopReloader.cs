@@ -9,7 +9,7 @@ namespace Quantum.Game
 
         private void Awake()
         {
-            QuantumEvent.Subscribe<EventReloadShop>(listener: this, handler: ReloadShop);
+            QuantumEvent.Subscribe<EventGetShopHeroes>(listener: this, handler: ReloadShop);
         }
 
         private void OnEnable()
@@ -36,11 +36,11 @@ namespace Quantum.Game
             }
         }
 
-        private void ReloadShop(EventReloadShop eventReloadShop)
+        private void ReloadShop(EventGetShopHeroes eventGetShopHeroes)
         {
-            if (QuantumConnection.IsPlayerMe(eventReloadShop.PlayerRef))
+            if (QuantumConnection.IsPlayerMe(eventGetShopHeroes.PlayerRef))
             {
-                _shop.ReloadShop(eventReloadShop.HeroIDList);
+                _shop.ReloadShop(eventGetShopHeroes.HeroIDList);
             }
         }
     }

@@ -59,7 +59,7 @@ namespace Quantum.Game
             }
         }
 
-        private void ActiveSimulationBoard(List<EntityLevelData> heroes)
+        private void ActiveSimulationBoard(IEnumerable<EntityLevelData> heroes)
         {
             foreach (EntityLevelData heroData in heroes)
             {
