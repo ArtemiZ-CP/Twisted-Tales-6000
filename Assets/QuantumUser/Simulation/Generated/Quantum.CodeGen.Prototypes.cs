@@ -129,6 +129,7 @@ namespace Quantum.Prototypes {
     public QBoolean IsAlive;
     public FP AttackTimer;
     public FP DealedDamage;
+    public FP TakenDamage;
     public void Materialize(Frame frame, ref Quantum.FightingHero result, in PrototypeMaterializationContext context = default) {
         this.Hero.Materialize(frame, ref result.Hero, in context);
         result.Index = this.Index;
@@ -142,6 +143,7 @@ namespace Quantum.Prototypes {
         result.IsAlive = this.IsAlive;
         result.AttackTimer = this.AttackTimer;
         result.DealedDamage = this.DealedDamage;
+        result.TakenDamage = this.TakenDamage;
     }
   }
   [System.SerializableAttribute()]

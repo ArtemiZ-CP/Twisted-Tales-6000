@@ -38,7 +38,7 @@ namespace Quantum.Game
                 SetupBoard(f, BoardSystem.GetBoardPointer(f, boards[i]), i);
             }
 
-            StatsDisplayer.UpdateAllStats(f);
+            StatsDisplayer.UpdateStats(f);
         }
 
         private bool TryMakePVPBoards(Frame f, List<PlayerLink> players)

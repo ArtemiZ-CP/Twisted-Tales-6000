@@ -401,9 +401,9 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct FightingHero {
-    public const Int32 SIZE = 216;
+    public const Int32 SIZE = 224;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(64)]
+    [FieldOffset(72)]
     public HeroEntity Hero;
     [FieldOffset(4)]
     public Int32 Index;
@@ -427,6 +427,8 @@ namespace Quantum {
     public FP AttackTimer;
     [FieldOffset(56)]
     public FP DealedDamage;
+    [FieldOffset(64)]
+    public FP TakenDamage;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 467;
@@ -442,6 +444,7 @@ namespace Quantum {
         hash = hash * 31 + IsAlive.GetHashCode();
         hash = hash * 31 + AttackTimer.GetHashCode();
         hash = hash * 31 + DealedDamage.GetHashCode();
+        hash = hash * 31 + TakenDamage.GetHashCode();
         return hash;
       }
     }
@@ -458,6 +461,7 @@ namespace Quantum {
         FP.Serialize(&p->CurrentHealth, serializer);
         FP.Serialize(&p->CurrentMana, serializer);
         FP.Serialize(&p->DealedDamage, serializer);
+        FP.Serialize(&p->TakenDamage, serializer);
         Quantum.HeroEntity.Serialize(&p->Hero, serializer);
     }
   }
@@ -872,13 +876,13 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HeroProjectile : Quantum.IComponent {
-    public const Int32 SIZE = 480;
+    public const Int32 SIZE = 496;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
     public EntityRef Ref;
     [FieldOffset(48)]
     public FightingHero Owner;
-    [FieldOffset(264)]
+    [FieldOffset(272)]
     public FightingHero Target;
     [FieldOffset(24)]
     public FPVector3 TargetPosition;

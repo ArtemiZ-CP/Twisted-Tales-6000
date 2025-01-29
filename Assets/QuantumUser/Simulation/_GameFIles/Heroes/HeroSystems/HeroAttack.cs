@@ -13,7 +13,7 @@ namespace Quantum.Game
             Physical,
             Magical
         }
-        
+
         public enum ProjectileType
         {
             Attack,
@@ -186,40 +186,45 @@ namespace Quantum.Game
 
             HeroProjectilesSystem.SpawnProjectile(f, fightingHero, targetHero, targetHero.Hero.AbilityDamage,
                 damageType, ProjectileType.Ability);
-                
+
             ResetMana(f, fightingHero);
         }
 
         public static void ResetAttackTimer(Frame f, FightingHero fightingHero)
         {
             QList<FightingHero> heroes = f.ResolveList(HeroBoard.GetBoard(f, fightingHero).FightingHeroesMap);
-            FightingHero hero = heroes[fightingHero.Index];
-            hero.AttackTimer = 1 / hero.Hero.AttackSpeed;
-            heroes[fightingHero.Index] = hero;
+            fightingHero = heroes[fightingHero.Index];
+            fightingHero.AttackTimer = 1 / fightingHero.Hero.AttackSpeed;
+            heroes[fightingHero.Index] = fightingHero;
         }
 
         public static void ResetMana(Frame f, FightingHero fightingHero)
         {
-            Board board = HeroBoard.GetBoard(f, fightingHero);
-            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
-            FightingHero hero = heroes[fightingHero.Index];
-            hero.CurrentMana = 0;
-            heroes[fightingHero.Index] = hero;
+            QList<FightingHero> heroes = f.ResolveList(HeroBoard.GetBoard(f, fightingHero).FightingHeroesMap);
+            fightingHero = heroes[fightingHero.Index];
+            fightingHero.CurrentMana = 0;
+            heroes[fightingHero.Index] = fightingHero;
         }
 
         public static void DamageHero(Frame f, FightingHero fightingHero, FightingHero targetHero, DamageType damageType)
         {
-            Board board = HeroBoard.GetBoard(f, fightingHero); 
-            FP damage = fightingHero.Hero.AttackDamage;
+            Board board = HeroBoard.GetBoard(f, fightingHero);
 
+            int fightingHeroIndex = fightingHero.Index;
             int targetHeroIndex = targetHero.Index;
+
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+
+            fightingHero = heroes[fightingHeroIndex];
+            targetHero = heroes[targetHeroIndex];
+
+            FP damage = fightingHero.Hero.AttackDamage;
 
             if (targetHeroIndex < 0)
             {
                 return;
             }
 
-            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
             switch (damageType)
@@ -242,14 +247,18 @@ namespace Quantum.Game
             }
             else
             {
-                fightingHero.CurrentMana += damage * fightingHero.Hero.ManaDealDamageRegenPersent;
                 targetHero.CurrentMana += damage * targetHero.Hero.ManaTakeDamageRegenPersent;
             }
 
-            // heroes[fightingHero.Index] = fightingHero;
+            fightingHero.CurrentMana += damage * fightingHero.Hero.ManaDealDamageRegenPersent;
+
+            fightingHero.DealedDamage += damage;
+            targetHero.TakenDamage += damage;
+
+            heroes[fightingHeroIndex] = fightingHero;
             heroes[targetHeroIndex] = targetHero;
 
-            StatsDisplayer.UpdateDamageStats(f, fightingHero, damage);
+            StatsDisplayer.UpdateStats(f, board);
         }
 
         private static bool TryFindAttackTarget(Frame f, FightingHero fighingHero, out FightingHero targetHero)

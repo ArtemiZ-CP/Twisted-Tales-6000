@@ -16,4 +16,5 @@ struct FightingHero
 
     // Stats
     FP DealedDamage;
+    FP TakenDamage;
 }

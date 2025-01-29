@@ -90,6 +90,7 @@ namespace Quantum.Prototypes.Unity {
     public QBoolean IsAlive;
     public FP AttackTimer;
     public FP DealedDamage;
+    public FP TakenDamage;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.FightingHeroPrototype prototype);
     public override Quantum.Prototypes.FightingHeroPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.FightingHeroPrototype();
@@ -105,6 +106,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.IsAlive, out result.IsAlive);
       converter.Convert(this.AttackTimer, out result.AttackTimer);
       converter.Convert(this.DealedDamage, out result.DealedDamage);
+      converter.Convert(this.TakenDamage, out result.TakenDamage);
       ConvertUser(converter, ref result);
       return result;
     }
