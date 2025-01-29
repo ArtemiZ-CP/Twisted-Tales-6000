@@ -117,11 +117,6 @@ namespace Quantum.Game
 
             for (int i = 0; i < fightingHeroesMap.Count; i++)
             {
-                if (fightingHeroesMap[i].Hero.Ref == default)
-                {
-                    continue;
-                }
-
                 fightingHeroesMap[i] = Hero.SetupHero(f, fightingHeroesMap[i], i);
             }
 

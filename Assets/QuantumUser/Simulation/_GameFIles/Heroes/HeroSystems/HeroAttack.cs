@@ -246,7 +246,7 @@ namespace Quantum.Game
                 targetHero.CurrentMana += damage * targetHero.Hero.ManaTakeDamageRegenPersent;
             }
 
-            heroes[fightingHero.Index] = fightingHero;
+            // heroes[fightingHero.Index] = fightingHero;
             heroes[targetHeroIndex] = targetHero;
 
             StatsDisplayer.UpdateDamageStats(f, fightingHero, damage);

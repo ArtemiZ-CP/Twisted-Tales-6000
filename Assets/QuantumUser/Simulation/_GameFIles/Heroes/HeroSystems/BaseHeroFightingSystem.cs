@@ -56,13 +56,13 @@ namespace Quantum.Game
 
             if (HeroBoard.TrySetTarget(f, fightingHero))
             {
-            //     if (fightingHero.AttackTarget != default && f.Exists(fightingHero.AttackTarget))
-            //     {
-            //         Hero.Rotate(f, fightingHero.Hero, f.Get<Transform3D>(fightingHero.AttackTarget).Position);
-            //     }
+                if (fightingHero.AttackTarget != default && f.Exists(fightingHero.AttackTarget))
+                {
+                    Hero.Rotate(f, fightingHero.Hero, f.Get<Transform3D>(fightingHero.AttackTarget).Position);
+                }
 
-            //     Attack(f, fightingHero, (HeroAttack.DamageType)fightingHero.Hero.AttackDamageType);
-            //     return;
+                Attack(f, fightingHero, (HeroAttack.DamageType)fightingHero.Hero.AttackDamageType);
+                return;
             }
         }
 

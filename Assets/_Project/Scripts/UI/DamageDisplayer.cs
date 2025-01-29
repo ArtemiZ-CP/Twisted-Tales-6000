@@ -37,12 +37,12 @@ namespace Quantum.Game
                 ClearActiveTexts();
 
                 var team1Heroes = eventDisplayDamage.Heroes
-                    .Where(h => h.TeamNumber == GameplayConstants.Team1)
+                    .Where(h => h.Hero.ID >= 0 && h.TeamNumber == GameplayConstants.Team1)
                     .OrderByDescending(h => h.DealedDamage)
                     .ToList();
 
                 var team2Heroes = eventDisplayDamage.Heroes
-                    .Where(h => h.TeamNumber == GameplayConstants.Team2)
+                    .Where(h => h.Hero.ID >= 0 && h.TeamNumber == GameplayConstants.Team2)
                     .OrderByDescending(h => h.DealedDamage)
                     .ToList();
 

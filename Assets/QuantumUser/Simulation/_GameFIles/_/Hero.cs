@@ -105,6 +105,12 @@ namespace Quantum.Game
 
         public static FightingHero SetupHero(Frame f, FightingHero hero, int heroIndex)
         {
+            if (hero.Hero.ID < 0)
+            {
+                hero.IsAlive = false;
+                return hero;
+            }
+
             GameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
 
             if (HeroBoard.TryGetHeroCords(heroIndex, out Vector2Int position))
