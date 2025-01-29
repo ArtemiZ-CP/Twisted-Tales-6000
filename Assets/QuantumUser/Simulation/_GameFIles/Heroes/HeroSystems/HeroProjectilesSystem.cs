@@ -21,7 +21,7 @@ namespace Quantum.Game
             }
         }
 
-        public static void SpawnProjectile(Frame f, FightingHero fighingHero, HeroEntity targetHero, FP damage,
+        public static void SpawnProjectile(Frame f, FightingHero fighingHero, FightingHero targetHero, FP damage,
             HeroAttack.DamageType damageType, HeroAttack.ProjectileType projectileType)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
@@ -46,8 +46,8 @@ namespace Quantum.Game
             {
                 Ref = f.Create(projectilePrototype),
                 Target = targetHero,
-                TargetPosition = f.Get<Transform3D>(targetHero.Ref).Position,
-                Damage = damage,
+                Owner = fighingHero,
+                TargetPosition = f.Get<Transform3D>(targetHero.Hero.Ref).Position,
                 DamageType = (int)damageType,
                 Speed = fighingHero.Hero.ProjectileSpeed,
                 Level = fighingHero.Hero.Level
@@ -80,9 +80,9 @@ namespace Quantum.Game
 
             Transform3D* projectileTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Ref);
 
-            if (f.Exists(projectile.Target.Ref))
+            if (f.Exists(projectile.Target.Hero.Ref))
             {
-                Transform3D* targetTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Target.Ref);
+                Transform3D* targetTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Target.Hero.Ref);
                 projectile.TargetPosition = targetTransform->Position;
             }
 
@@ -91,7 +91,7 @@ namespace Quantum.Game
 
             if (projectileTransform->Position == projectile.TargetPosition)
             {
-                HeroAttack.DamageHero(f, board, projectile.Damage, projectile.Target, (HeroAttack.DamageType)projectile.DamageType);
+                HeroAttack.DamageHero(f, projectile.Owner, projectile.Target, (HeroAttack.DamageType)projectile.DamageType);
                 f.ResolveList(board.HeroProjectiles).Remove(projectile);
                 f.Destroy(projectile.Ref);
             }

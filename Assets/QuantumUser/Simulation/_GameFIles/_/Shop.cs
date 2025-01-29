@@ -7,13 +7,18 @@ namespace Quantum.Game
 {
     public unsafe class Shop
     {
-        public static void Reload(Frame f)
+        public static void ReloadOnEndRound(Frame f)
         {
             var players = Player.GetAllPlayersEntity(f);
 
             foreach (var entity in players)
             {
-                Reload(f, Player.GetPlayerPointer(f, entity));
+                PlayerLink* playerLink = Player.GetPlayerPointer(f, entity);
+
+                if (playerLink->Info.Shop.IsLocked == false)
+                {
+                    Reload(f, Player.GetPlayerPointer(f, entity));
+                }
             }
         }
 
@@ -109,7 +114,7 @@ namespace Quantum.Game
                 {
                     Reload(f, playerLink);
                 }
-                
+
                 HeroMovingSystem.ShowHeroesOnBoardCount(f, *playerLink);
             }
 

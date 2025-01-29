@@ -26,7 +26,7 @@ namespace Quantum.Game
 
             if (TryGetHeroes<T>(f, ref heroesPtr))
             {
-                foreach (var fightingHero in heroesPtr)
+                foreach (FightingHero fightingHero in heroesPtr)
                 {
                     UpdateHero(f, fightingHero, Attack, isHeroAttackWhileMooving);
                 }
@@ -40,29 +40,29 @@ namespace Quantum.Game
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             fightingHero = heroes[fightingHero.Index];
 
-            if (fightingHero.Hero.Ref == default || fightingHero.Hero.IsAlive == false)
+            if (fightingHero.Hero.Ref == default || fightingHero.IsAlive == false)
             {
                 return;
             }
 
             HeroAttack.Update(f, fightingHero);
 
-            if (HeroBoard.IsHeroMoving(f, fightingHero.Hero))
+            if (HeroBoard.IsHeroMoving(f, fightingHero))
             {
-                MoveHero(f, fightingHero, HeroBoard.GetHeroPosition(f, fightingHero.Hero));
+                MoveHero(f, fightingHero, HeroBoard.GetHeroPosition(f, fightingHero));
 
                 if (isHeroAttackWhileMooving == false) return;
             }
 
             if (HeroBoard.TrySetTarget(f, fightingHero))
             {
-                if (fightingHero.Hero.AttackTarget != default && f.Exists(fightingHero.Hero.AttackTarget))
-                {
-                    Hero.Rotate(f, fightingHero.Hero, f.Get<Transform3D>(fightingHero.Hero.AttackTarget).Position);
-                }
+            //     if (fightingHero.AttackTarget != default && f.Exists(fightingHero.AttackTarget))
+            //     {
+            //         Hero.Rotate(f, fightingHero.Hero, f.Get<Transform3D>(fightingHero.AttackTarget).Position);
+            //     }
 
-                Attack(f, fightingHero, (HeroAttack.DamageType)fightingHero.Hero.AttackDamageType);
-                return;
+            //     Attack(f, fightingHero, (HeroAttack.DamageType)fightingHero.Hero.AttackDamageType);
+            //     return;
             }
         }
 
@@ -76,7 +76,7 @@ namespace Quantum.Game
 
                 foreach (FightingHero fightingHero in fightingHeroes)
                 {
-                    if (fightingHero.Hero.Ref == default || fightingHero.Hero.IsAlive == false)
+                    if (fightingHero.Hero.Ref == default || fightingHero.IsAlive == false)
                     {
                         continue;
                     }

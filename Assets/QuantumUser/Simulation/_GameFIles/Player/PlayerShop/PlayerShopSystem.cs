@@ -4,7 +4,7 @@ using UnityEngine.Scripting;
 namespace Quantum.Game
 {
     [Preserve]
-    public unsafe class PlayerShopSystem : SystemSignalsOnly, ISignalOnReloadShop, ISignalOnBuyHero, ISignalOnUpgradeShop
+    public unsafe class PlayerShopSystem : SystemSignalsOnly, ISignalOnReloadShop, ISignalOnBuyHero, ISignalOnUpgradeShop, ISignalFreezeShop
     {
         public void OnBuyHero(Frame f, PlayerLink* playerLink, int shopIndex)
         {
@@ -42,6 +42,12 @@ namespace Quantum.Game
                     f.Events.BuyHero(playerLink->Ref, shopIndex, inventoryIndex, heroID);
                 }
             }
+        }
+
+        public void FreezeShop(Frame f, PlayerLink* playerLink)
+        {
+            playerLink->Info.Shop.IsLocked = playerLink->Info.Shop.IsLocked == false;
+            Events.FreezeShop(f, *playerLink);
         }
 
         public void OnReloadShop(Frame f, PlayerLink* playerLink, int cost)

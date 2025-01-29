@@ -81,12 +81,30 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.Prototypes.Unity.HeroEntityPrototype Hero;
     public Int32 Index;
     public Int32 BoardIndex;
+    public FP CurrentHealth;
+    public FP CurrentMana;
+    public Quantum.QuantumEntityPrototype AttackTarget;
+    public Int32 TargetPositionX;
+    public Int32 TargetPositionY;
+    public Int32 TeamNumber;
+    public QBoolean IsAlive;
+    public FP AttackTimer;
+    public FP DealedDamage;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.FightingHeroPrototype prototype);
     public override Quantum.Prototypes.FightingHeroPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.FightingHeroPrototype();
       converter.Convert(this.Hero, out result.Hero);
       converter.Convert(this.Index, out result.Index);
       converter.Convert(this.BoardIndex, out result.BoardIndex);
+      converter.Convert(this.CurrentHealth, out result.CurrentHealth);
+      converter.Convert(this.CurrentMana, out result.CurrentMana);
+      converter.Convert(this.AttackTarget, out result.AttackTarget);
+      converter.Convert(this.TargetPositionX, out result.TargetPositionX);
+      converter.Convert(this.TargetPositionY, out result.TargetPositionY);
+      converter.Convert(this.TeamNumber, out result.TeamNumber);
+      converter.Convert(this.IsAlive, out result.IsAlive);
+      converter.Convert(this.AttackTimer, out result.AttackTimer);
+      converter.Convert(this.DealedDamage, out result.DealedDamage);
       ConvertUser(converter, ref result);
       return result;
     }
@@ -100,7 +118,8 @@ namespace Quantum.Prototypes.Unity {
     public FP Health;
     public FP MaxMana;
     public FP ManaRegen;
-    public FP ManaDamageRegenPersent;
+    public FP ManaDealDamageRegenPersent;
+    public FP ManaTakeDamageRegenPersent;
     public FP Defense;
     public FP MagicDefense;
     public FP AttackDamage;
@@ -111,14 +130,6 @@ namespace Quantum.Prototypes.Unity {
     public FP RangePercentage;
     public Int32 AttackDamageType;
     public Int32 AbilityDamageType;
-    public FP CurrentHealth;
-    public FP CurrentMana;
-    public Quantum.QuantumEntityPrototype AttackTarget;
-    public Int32 TargetPositionX;
-    public Int32 TargetPositionY;
-    public Int32 TeamNumber;
-    public QBoolean IsAlive;
-    public FP AttackTimer;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.HeroEntityPrototype prototype);
     public override Quantum.Prototypes.HeroEntityPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.HeroEntityPrototype();
@@ -129,7 +140,8 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.Health, out result.Health);
       converter.Convert(this.MaxMana, out result.MaxMana);
       converter.Convert(this.ManaRegen, out result.ManaRegen);
-      converter.Convert(this.ManaDamageRegenPersent, out result.ManaDamageRegenPersent);
+      converter.Convert(this.ManaDealDamageRegenPersent, out result.ManaDealDamageRegenPersent);
+      converter.Convert(this.ManaTakeDamageRegenPersent, out result.ManaTakeDamageRegenPersent);
       converter.Convert(this.Defense, out result.Defense);
       converter.Convert(this.MagicDefense, out result.MagicDefense);
       converter.Convert(this.AttackDamage, out result.AttackDamage);
@@ -140,14 +152,6 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.RangePercentage, out result.RangePercentage);
       converter.Convert(this.AttackDamageType, out result.AttackDamageType);
       converter.Convert(this.AbilityDamageType, out result.AbilityDamageType);
-      converter.Convert(this.CurrentHealth, out result.CurrentHealth);
-      converter.Convert(this.CurrentMana, out result.CurrentMana);
-      converter.Convert(this.AttackTarget, out result.AttackTarget);
-      converter.Convert(this.TargetPositionX, out result.TargetPositionX);
-      converter.Convert(this.TargetPositionY, out result.TargetPositionY);
-      converter.Convert(this.TeamNumber, out result.TeamNumber);
-      converter.Convert(this.IsAlive, out result.IsAlive);
-      converter.Convert(this.AttackTimer, out result.AttackTimer);
       ConvertUser(converter, ref result);
       return result;
     }
@@ -155,20 +159,20 @@ namespace Quantum.Prototypes.Unity {
   [System.SerializableAttribute()]
   public unsafe partial class HeroProjectilePrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.HeroProjectilePrototype> {
     public Quantum.QuantumEntityPrototype Ref;
-    public Quantum.Prototypes.Unity.HeroEntityPrototype Target;
+    public Quantum.Prototypes.Unity.FightingHeroPrototype Owner;
+    public Quantum.Prototypes.Unity.FightingHeroPrototype Target;
     public FPVector3 TargetPosition;
     public FP Speed;
-    public FP Damage;
     public Int32 DamageType;
     public Int32 Level;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.HeroProjectilePrototype prototype);
     public override Quantum.Prototypes.HeroProjectilePrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.HeroProjectilePrototype();
       converter.Convert(this.Ref, out result.Ref);
+      converter.Convert(this.Owner, out result.Owner);
       converter.Convert(this.Target, out result.Target);
       converter.Convert(this.TargetPosition, out result.TargetPosition);
       converter.Convert(this.Speed, out result.Speed);
-      converter.Convert(this.Damage, out result.Damage);
       converter.Convert(this.DamageType, out result.DamageType);
       converter.Convert(this.Level, out result.Level);
       ConvertUser(converter, ref result);

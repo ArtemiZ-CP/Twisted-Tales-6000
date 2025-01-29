@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using Quantum.Collections;
 using UnityEngine.Scripting;
 using System.Linq;
-using Quantum.Game.Quantum;
 
 namespace Quantum.Game
 {
@@ -56,7 +55,8 @@ namespace Quantum.Game
                 {
                     Shop = new()
                     {
-                        HeroesID = f.AllocateList<int>(gameConfig.ShopSize)
+                        HeroesID = f.AllocateList<int>(gameConfig.ShopSize),
+                        IsLocked = false,
                     },
                     Inventory = new()
                     {
@@ -100,6 +100,7 @@ namespace Quantum.Game
             Events.GetInventoryHeroes(f, playerLink);
             HeroMovingSystem.ShowHeroesOnBoardCount(f, playerLink);
             Shop.SendShopUpgradeInfo(f, playerLink);
+            Events.FreezeShop(f, playerLink);
 
             if (f.Global->IsBuyPhase == false)
             {

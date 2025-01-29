@@ -7,18 +7,20 @@ namespace Quantum.Game
     {
         [SerializeField] private GameObject[] _meshes;
 
-        public Action<int> OnSetHero;
+        public Action<int, int> OnSetHero;
 
         private int _id;
+        private int _level;
 
         public int ID => _id;
+        public int Level => _level;
 
-        public void SetMesh(int level, int ID)
+        public void SetMesh(int level, int id)
         {
-            _id = ID;
-            OnSetHero?.Invoke(ID);
+            _id = id;
+            OnSetHero?.Invoke(id, level);
 
-            foreach (var mesh in _meshes)
+            foreach (var mesh in _meshes)   
             {
                 mesh.SetActive(false);
             }

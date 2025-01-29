@@ -9,7 +9,8 @@ struct HeroEntity
     FP Health;
     FP MaxMana;
     FP ManaRegen;
-    FP ManaDamageRegenPersent;
+    FP ManaDealDamageRegenPersent;
+    FP ManaTakeDamageRegenPersent;
     FP Defense;
     FP MagicDefense;
     FP AttackDamage;
@@ -20,14 +21,4 @@ struct HeroEntity
     FP RangePercentage;
     int AttackDamageType;
     int AbilityDamageType;
-
-    // Fighing stats only
-    FP CurrentHealth;
-    FP CurrentMana;
-    entity_ref AttackTarget;
-    int TargetPositionX;
-    int TargetPositionY;
-    int TeamNumber;
-    bool IsAlive;
-    FP AttackTimer;
 }

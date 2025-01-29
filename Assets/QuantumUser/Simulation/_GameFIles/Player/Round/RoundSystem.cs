@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Quantum.Collections;
-using Quantum.Game.Quantum;
 using UnityEngine.Scripting;
 
 namespace Quantum.Game
@@ -55,7 +54,7 @@ namespace Quantum.Game
 
         private void EndRound(Frame f)
         {
-            Shop.Reload(f);
+            Shop.ReloadOnEndRound(f);
             f.Global->IsBuyPhase = true;
             f.Global->PhaseNumber++;
             f.Global->PVPStreak = 0;
@@ -127,7 +126,7 @@ namespace Quantum.Game
             {
                 ProcessResults(f);
 
-                RoundInfo roundInfo = config.GetRoundInfo(f, f.Global->PhaseNumber);
+                RoundInfo roundInfo = config.GetRoundInfo(f.Global->PhaseNumber);
 
                 if (roundInfo.IsPVE == false)
                 {
@@ -176,8 +175,8 @@ namespace Quantum.Game
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
-            int player1Count = heroes.Count(hero => hero.Hero.TeamNumber == 1 && hero.Hero.IsAlive);
-            int player2Count = heroes.Count(hero => hero.Hero.TeamNumber == 2 && hero.Hero.IsAlive);
+            int player1Count = heroes.Count(hero => hero.TeamNumber == GameplayConstants.Team1 && hero.IsAlive);
+            int player2Count = heroes.Count(hero => hero.TeamNumber == GameplayConstants.Team2 && hero.IsAlive);
 
             isPlayer1Win = player1Count > 0 && player2Count == 0;
             isPlayer2Win = player2Count > 0 && player1Count == 0;
@@ -197,8 +196,8 @@ namespace Quantum.Game
             {
                 QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
-                int player1Count = heroes.Count(hero => hero.Hero.TeamNumber == 1 && hero.Hero.IsAlive);
-                int player2Count = heroes.Count(hero => hero.Hero.TeamNumber == 2 && hero.Hero.IsAlive);
+                int player1Count = heroes.Count(hero => hero.TeamNumber == GameplayConstants.Team1 && hero.IsAlive);
+                int player2Count = heroes.Count(hero => hero.TeamNumber == GameplayConstants.Team2 && hero.IsAlive);
 
                 bool isPlayer1Win = player1Count > 0 && player2Count == 0;
                 bool isPlayer2Win = player2Count > 0 && player1Count == 0;

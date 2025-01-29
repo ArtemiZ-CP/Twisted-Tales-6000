@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Photon.Deterministic;
-using UnityEditor;
 using UnityEngine;
 
 namespace Quantum.Game
@@ -25,7 +24,8 @@ namespace Quantum.Game
         public AssetRef<HeroInfo>[] HeroInfos;
         [Space(20)]
         public FP ManaRegen;
-        public FP ManaDamageRegenPersent;
+        public FP ManaDealDamageRegenPersent;
+        public FP ManaTakeDamageRegenPersent;
         public FP HeroMoveSpeed = 1;
         public FP HeroRotationSpeed = 1;
         [Tooltip("Half damage on current ratio")]
@@ -67,7 +67,7 @@ namespace Quantum.Game
             }
         }
 
-        public RoundInfo GetRoundInfo(Frame f, int round)
+        public RoundInfo GetRoundInfo(int round)
         {
             if (round >= RoundInfos.Count)
             {

@@ -24,3 +24,9 @@ event ChangeCoins
     player_ref PlayerRef;
     int Coins;
 }
+
+event FreezeShop
+{
+    player_ref PlayerRef;
+    bool Freezed;
+}

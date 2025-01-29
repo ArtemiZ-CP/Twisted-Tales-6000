@@ -21,3 +21,9 @@ event GetProjectiles
     player_ref Player1;
     player_ref Player2;
 }
+
+event DisplayStats
+{
+    player_ref Player1;
+    player_ref Player2;
+}

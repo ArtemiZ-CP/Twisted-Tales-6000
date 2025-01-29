@@ -67,8 +67,10 @@ MonoBehaviour:
   - Id:
       Value: 365386012224251476
   ManaRegen:
-    RawValue: 327680
-  ManaDamageRegenPersent:
+    RawValue: 0
+  ManaDealDamageRegenPersent:
+    RawValue: 16384
+  ManaTakeDamageRegenPersent:
     RawValue: 16384
   HeroMoveSpeed:
     RawValue: 131072

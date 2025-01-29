@@ -34,6 +34,9 @@ namespace Quantum.Game
 
             var commandSellHero = command as CommandSellHero;
             commandSellHero?.Execute(f, player);
+
+            var commandFreezeShop = command as CommandFreezeShop;
+            commandFreezeShop?.Execute(f, player);
         }
     }
 }

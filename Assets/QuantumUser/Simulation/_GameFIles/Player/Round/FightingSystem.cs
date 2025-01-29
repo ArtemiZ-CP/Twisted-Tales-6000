@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Quantum.Collections;
 using UnityEngine.Scripting;
 
@@ -11,7 +10,7 @@ namespace Quantum.Game
     {
         public void StartFight(Frame f, int roundIndex)
         {
-            RoundInfo roundInfo = f.FindAsset(f.RuntimeConfig.GameConfig).GetRoundInfo(f, roundIndex);
+            RoundInfo roundInfo = f.FindAsset(f.RuntimeConfig.GameConfig).GetRoundInfo(roundIndex);
 
             if (roundInfo.IsPVE)
             {
@@ -37,6 +36,8 @@ namespace Quantum.Game
             {
                 SetupBoard(f, BoardSystem.GetBoardPointer(f, boards[i]), i);
             }
+
+            StatsDisplayer.UpdateAllStats(f);
         }
 
         private bool TryMakePVPBoards(Frame f, List<PlayerLink> players)
@@ -93,7 +94,8 @@ namespace Quantum.Game
                 {
                     Hero = heroesID1[i],
                     Index = i,
-                    BoardIndex = boardIndex
+                    BoardIndex = boardIndex,
+                    TeamNumber = GameplayConstants.Team1
                 };
 
                 fightingHeroesMap.Add(hero);
@@ -105,7 +107,8 @@ namespace Quantum.Game
                 {
                     Hero = heroesID2[^(i + 1)],
                     Index = GameConfig.BoardSize * GameConfig.BoardSize / 2 + i,
-                    BoardIndex = boardIndex
+                    BoardIndex = boardIndex,
+                    TeamNumber = GameplayConstants.Team2
                 };
 
                 fightingHeroesMap.Add(hero);
