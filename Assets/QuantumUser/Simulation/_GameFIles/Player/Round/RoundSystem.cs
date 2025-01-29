@@ -54,7 +54,7 @@ namespace Quantum.Game
 
         private void EndRound(Frame f)
         {
-            Shop.Reload(f);
+            Shop.ReloadOnEndRound(f);
             f.Global->IsBuyPhase = true;
             f.Global->PhaseNumber++;
             f.Global->PVPStreak = 0;
@@ -63,7 +63,8 @@ namespace Quantum.Game
             f.Events.EndRound();
             Shop.AddXP(f, f.FindAsset(f.RuntimeConfig.GameConfig).XPByRound);
             GetPlayersList(f);
-            Player.EventGetPlayerInfos(f);
+            Events.GetBoardHeroes(f);
+            Events.GetInventoryHeroes(f);
         }
 
         private void ProcessRound(Frame f)
@@ -125,7 +126,7 @@ namespace Quantum.Game
             {
                 ProcessResults(f);
 
-                RoundInfo roundInfo = config.GetRoundInfo(f, f.Global->PhaseNumber);
+                RoundInfo roundInfo = config.GetRoundInfo(f.Global->PhaseNumber);
 
                 if (roundInfo.IsPVE == false)
                 {
@@ -174,8 +175,8 @@ namespace Quantum.Game
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
-            int player1Count = heroes.Count(hero => hero.Hero.TeamNumber == 1 && hero.Hero.IsAlive);
-            int player2Count = heroes.Count(hero => hero.Hero.TeamNumber == 2 && hero.Hero.IsAlive);
+            int player1Count = heroes.Count(hero => hero.TeamNumber == GameplayConstants.Team1 && hero.IsAlive);
+            int player2Count = heroes.Count(hero => hero.TeamNumber == GameplayConstants.Team2 && hero.IsAlive);
 
             isPlayer1Win = player1Count > 0 && player2Count == 0;
             isPlayer2Win = player2Count > 0 && player1Count == 0;
@@ -195,8 +196,8 @@ namespace Quantum.Game
             {
                 QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
-                int player1Count = heroes.Count(hero => hero.Hero.TeamNumber == 1 && hero.Hero.IsAlive);
-                int player2Count = heroes.Count(hero => hero.Hero.TeamNumber == 2 && hero.Hero.IsAlive);
+                int player1Count = heroes.Count(hero => hero.TeamNumber == GameplayConstants.Team1 && hero.IsAlive);
+                int player2Count = heroes.Count(hero => hero.TeamNumber == GameplayConstants.Team2 && hero.IsAlive);
 
                 bool isPlayer1Win = player1Count > 0 && player2Count == 0;
                 bool isPlayer2Win = player2Count > 0 && player1Count == 0;
@@ -274,7 +275,7 @@ namespace Quantum.Game
 
             if (player->Info.StreakType != 0)
             {
-                int streakIndex = player->Info.Streak - 1;
+                int streakIndex = player->Info.Streak;
 
                 if (player->Info.StreakType > 0)
                 {
@@ -327,7 +328,7 @@ namespace Quantum.Game
             }
             else
             {
-                player->Info.Streak = 1;
+                player->Info.Streak = 0;
                 player->Info.StreakType = roundResult;
             }
         }

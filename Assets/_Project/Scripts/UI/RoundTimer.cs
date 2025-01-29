@@ -15,6 +15,11 @@ namespace Quantum.Game
             QuantumEvent.Subscribe<EventGetRoundTime>(listener: this, handler: UpdateTime);
         }
 
+        private void Start()
+        {
+            _roundTimerText.text = "Waiting for another players...";
+        }
+
         private void UpdateTime(EventGetRoundTime eventRoundTime)
         {
             if (eventRoundTime.IsBuyPhase)

@@ -23,7 +23,8 @@ namespace Quantum.Game
             _shop = f.ResolveList(playerLink->Info.Shop.HeroesID);
             _playerLink = playerLink;
             _f = f;
-            
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+
             if (heroState == HeroState.Shop)
             {
                 return;
@@ -36,7 +37,7 @@ namespace Quantum.Game
                 {
                     if (_inventory[heroIndex] >= 0)
                     {
-                        Player.AddCoins(f, playerLink, 1);
+                        Player.AddCoins(f, playerLink, gameConfig.GetHeroSellCost(f, _inventory[heroIndex], _inventoryLevels[heroIndex]));
                         _inventory[heroIndex] = -1;
                         _inventoryLevels[heroIndex] = 0;
                     }
@@ -50,12 +51,14 @@ namespace Quantum.Game
                 {
                     if (_board[heroIndex] >= 0)
                     {
-                        Player.AddCoins(f, playerLink, 1);
+                        Player.AddCoins(f, playerLink, gameConfig.GetHeroSellCost(f, _board[heroIndex], _boardLevels[heroIndex]));
                         _board[heroIndex] = -1;
                         _boardLevels[heroIndex] = 0;
                     }
                 }
             }
+
+            ShowHeroesOnBoardCount(f, *playerLink);
         }
 
         public void OnMoveHero(Frame f, PlayerLink* playerLink, HeroState HeroFromState, HeroState HeroToState, int positionFromX, int positionFromY, int positionToX, int positionToY)
@@ -134,14 +137,14 @@ namespace Quantum.Game
                 }
             }
 
-            f.Events.ShowHeroesOnBoardCount(playerLink->Ref, GetHeroesCountOnBoard(_board), GetMaxHeroesCountOnBoard(f, playerLink));
+            ShowHeroesOnBoardCount(f, *playerLink);
         }
 
-        public static void ShowHeroesOnBoardCount(Frame f, PlayerLink* playerLink)
+        public static void ShowHeroesOnBoardCount(Frame f, PlayerLink playerLink)
         {
-            int heroesCountOnBoard = GetHeroesCountOnBoard(f.ResolveList(playerLink->Info.Board.HeroesID));
+            int heroesCountOnBoard = GetHeroesCountOnBoard(f.ResolveList(playerLink.Info.Board.HeroesID));
             int maxHeroesCountOnBoard = GetMaxHeroesCountOnBoard(f, playerLink);
-            f.Events.ShowHeroesOnBoardCount(playerLink->Ref, heroesCountOnBoard, maxHeroesCountOnBoard);
+            f.Events.ShowHeroesOnBoardCount(playerLink.Ref, heroesCountOnBoard, maxHeroesCountOnBoard);
         }
 
         private static int GetHeroesCountOnBoard(QList<int> board)
@@ -159,11 +162,11 @@ namespace Quantum.Game
             return count;
         }
 
-        private static int GetMaxHeroesCountOnBoard(Frame f, PlayerLink* playerLink)
+        private static int GetMaxHeroesCountOnBoard(Frame f, PlayerLink playerLink)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
-            return gameConfig.ShopUpdrageSettings[playerLink->Info.Shop.Level].MaxCharactersOnBoard;
+            return gameConfig.ShopUpdrageSettings[playerLink.Info.Shop.Level].MaxCharactersOnBoard;
         }
 
         private HeroInfo GetBuyingHero(Frame f, int heroID)
@@ -192,7 +195,7 @@ namespace Quantum.Game
 
         private void FromIToI(int from, int to)
         {
-            if (from >= 0 && from < _inventory.Count && to >= 0 && to < _inventory.Count)
+            if (from >= 0 && from < _inventory.Count && to >= 0 && to < _inventory.Count && _inventory[from] >= 0)
             {
                 (_inventory[from], _inventory[to]) = (_inventory[to], _inventory[from]);
                 (_inventoryLevels[from], _inventoryLevels[to]) = (_inventoryLevels[to], _inventoryLevels[from]);
@@ -206,11 +209,18 @@ namespace Quantum.Game
 
         private void FromIToB(int from, int to)
         {
-            if (from >= 0 && from < _inventory.Count && to >= 0 && to < _board.Count && IsAbleToMoveOnBoard())
+            if (from >= 0 && from < _inventory.Count && to >= 0 && to < _board.Count && _inventory[from] >= 0)
             {
-                (_inventory[from], _board[to]) = (_board[to], _inventory[from]);
-                (_inventoryLevels[from], _boardLevels[to]) = (_boardLevels[to], _inventoryLevels[from]);
-                _f.Events.MoveHero(_playerLink->Ref, IsMoved: true);
+                if (_board[to] < 0 && IsAbleToMoveOnBoard() == false)
+                {
+                    _f.Events.MoveHero(_playerLink->Ref, IsMoved: false);
+                }
+                else
+                {
+                    (_inventory[from], _board[to]) = (_board[to], _inventory[from]);
+                    (_inventoryLevels[from], _boardLevels[to]) = (_boardLevels[to], _inventoryLevels[from]);
+                    _f.Events.MoveHero(_playerLink->Ref, IsMoved: true);
+                }
             }
             else
             {
@@ -220,7 +230,7 @@ namespace Quantum.Game
 
         private bool FromSToI(int from, int to)
         {
-            if (from >= 0 && from < _shop.Count && to >= 0 && to < _inventory.Count)
+            if (from >= 0 && from < _shop.Count && to >= 0 && to < _inventory.Count && _shop[from] >= 0)
             {
                 if (_shop[from] >= 0 && _inventory[to] < 0)
                 {
@@ -237,7 +247,7 @@ namespace Quantum.Game
 
         private bool FromSToB(int from, int to)
         {
-            if (from >= 0 && from < _shop.Count && to >= 0 && to < _board.Count && IsAbleToMoveOnBoard())
+            if (from >= 0 && from < _shop.Count && to >= 0 && to < _board.Count && _shop[from] >= 0 && IsAbleToMoveOnBoard())
             {
                 if (_shop[from] >= 0 && _board[to] < 0)
                 {
@@ -254,7 +264,7 @@ namespace Quantum.Game
 
         private void FromBToI(int from, int to)
         {
-            if (from >= 0 && from < _board.Count && to >= 0 && to < _inventory.Count)
+            if (from >= 0 && from < _board.Count && to >= 0 && to < _inventory.Count && _board[from] >= 0)
             {
                 (_board[from], _inventory[to]) = (_inventory[to], _board[from]);
                 (_boardLevels[from], _inventoryLevels[to]) = (_inventoryLevels[to], _boardLevels[from]);
@@ -268,7 +278,7 @@ namespace Quantum.Game
 
         private void FromBToB(int from, int to)
         {
-            if (from >= 0 && from < _board.Count && to >= 0 && to < _board.Count)
+            if (from >= 0 && from < _board.Count && to >= 0 && to < _board.Count && _board[from] >= 0)
             {
                 (_board[from], _board[to]) = (_board[to], _board[from]);
                 (_boardLevels[from], _boardLevels[to]) = (_boardLevels[to], _boardLevels[from]);
@@ -280,6 +290,6 @@ namespace Quantum.Game
             }
         }
 
-        private bool IsAbleToMoveOnBoard() => GetHeroesCountOnBoard(_board) < GetMaxHeroesCountOnBoard(_f, _playerLink);
+        private bool IsAbleToMoveOnBoard() => GetHeroesCountOnBoard(_board) < GetMaxHeroesCountOnBoard(_f, *_playerLink);
     }
 }

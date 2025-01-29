@@ -63,6 +63,8 @@ namespace Quantum.Game
 
         public void SellHero()
         {
+            _id = -1;
+            _level = 0;
             ClearHero();
         }
 

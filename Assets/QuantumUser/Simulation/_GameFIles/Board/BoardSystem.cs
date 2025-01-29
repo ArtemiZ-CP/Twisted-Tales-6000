@@ -177,12 +177,12 @@ namespace Quantum.Game
 
             for (int i = 0; i < heroes1.Count; i++)
             {
-                Hero.Spawn(f, heroes1, i, 1, first: true);
+                Hero.Spawn(f, heroes1, i, first: true);
             }
 
             for (int i = 0; i < heroes2.Count; i++)
             {
-                Hero.Spawn(f, heroes2, i, 2, first: false);
+                Hero.Spawn(f, heroes2, i, first: false);
             }
         }
 

@@ -1,0 +1,25 @@
+event StartRound
+{
+    player_ref Player1;
+    player_ref Player2;
+}
+
+event EndRound
+{
+}
+
+event GetRoundTime
+{
+    bool IsBuyPhase;
+    bool IsPVPRound;
+    FP RemainingTime;
+}
+
+event ShowCoinsReward
+{
+    player_ref PlayerRef;
+    int RoundResult;
+    int BaseCoins;
+    int RoundResultCoins;
+    int StreakCoins;
+}

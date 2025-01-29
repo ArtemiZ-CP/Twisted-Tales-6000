@@ -22,7 +22,7 @@ namespace Quantum.Game
             heroes[heroNewIndex] = fightingHero;
         }
 
-        public static void Spawn(Frame f, QList<HeroEntity> heroes, int heroIndex, int teamNumber, bool first)
+        public static void Spawn(Frame f, QList<HeroEntity> heroes, int heroIndex, bool first)
         {
             HeroEntity hero = heroes[heroIndex];
 
@@ -32,7 +32,6 @@ namespace Quantum.Game
             HeroInfo heroInfo = gameConfig.GetHeroInfo(f, hero.ID);
             EntityRef heroEntity = f.Create(heroInfo.HeroPrototype);
             hero.Ref = heroEntity;
-            hero.TeamNumber = teamNumber;
             heroes[heroIndex] = hero;
 
             switch (heroInfo.HeroType)
@@ -106,12 +105,18 @@ namespace Quantum.Game
 
         public static FightingHero SetupHero(Frame f, FightingHero hero, int heroIndex)
         {
+            if (hero.Hero.ID < 0)
+            {
+                hero.IsAlive = false;
+                return hero;
+            }
+
             GameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
 
             if (HeroBoard.TryGetHeroCords(heroIndex, out Vector2Int position))
             {
-                hero.Hero.TargetPositionX = position.x;
-                hero.Hero.TargetPositionY = position.y;
+                hero.TargetPositionX = position.x;
+                hero.TargetPositionY = position.y;
             }
             else
             {
@@ -120,19 +125,20 @@ namespace Quantum.Game
 
             hero.Hero.RangePercentage = config.RangePercentage;
             hero.Hero.ManaRegen = config.ManaRegen;
-            hero.Hero.ManaDamageRegenPersent = config.ManaDamageRegenPersent;
-            hero.Hero.IsAlive = true;
-            hero.Hero.AttackTimer = 0;
+            hero.Hero.ManaDealDamageRegenPersent = config.ManaDealDamageRegenPersent;
+            hero.Hero.ManaTakeDamageRegenPersent = config.ManaTakeDamageRegenPersent;
+            hero.IsAlive = true;
+            hero.AttackTimer = 0;
 
             HeroInfo heroInfo = config.GetHeroInfo(f, hero.Hero.ID);
             hero.Hero.MaxMana = heroInfo.Mana;
-            hero.Hero.CurrentMana = heroInfo.StartMana;
+            hero.CurrentMana = heroInfo.StartMana;
             hero.Hero.AttackDamageType = (int)heroInfo.AttackDamageType;
             hero.Hero.AbilityDamageType = (int)heroInfo.AbilityDamageType;
 
             HeroLevelStats heroLevelStats = heroInfo.HeroStats[hero.Hero.Level];
             hero.Hero.Health = heroLevelStats.Health;
-            hero.Hero.CurrentHealth = heroLevelStats.Health;
+            hero.CurrentHealth = heroLevelStats.Health;
             hero.Hero.Defense = heroLevelStats.Defense;
             hero.Hero.MagicDefense = heroLevelStats.MagicDefense;
             hero.Hero.AttackDamage = heroLevelStats.AttackDamage;
@@ -154,7 +160,7 @@ namespace Quantum.Game
             {
                 return;
             }
-            
+
             FPQuaternion targetRotation = FPQuaternion.LookRotation(direction);
 
             Rotate(f, hero, targetRotation);

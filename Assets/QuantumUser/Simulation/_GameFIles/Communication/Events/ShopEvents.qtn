@@ -1,0 +1,32 @@
+event GetShopHeroes
+{
+    player_ref PlayerRef;
+}
+
+event BuyHero
+{
+    player_ref PlayerRef;
+    Int32 ShopIndex;
+    Int32 InventoryIndex;
+    Int32 HeroID;
+}
+
+event GetShopUpgradeInfo
+{
+    player_ref PlayerRef;
+    int CurrentXP;
+    int MaxXPCost;
+    int CurrentLevel;
+}
+
+event ChangeCoins
+{
+    player_ref PlayerRef;
+    int Coins;
+}
+
+event FreezeShop
+{
+    player_ref PlayerRef;
+    bool Freezed;
+}

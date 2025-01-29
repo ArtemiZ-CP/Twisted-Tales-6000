@@ -55,7 +55,8 @@ namespace Quantum.Game
                 {
                     Shop = new()
                     {
-                        HeroesID = f.AllocateList<int>(gameConfig.ShopSize)
+                        HeroesID = f.AllocateList<int>(gameConfig.ShopSize),
+                        IsLocked = false,
                     },
                     Inventory = new()
                     {
@@ -88,26 +89,28 @@ namespace Quantum.Game
         private void ReinitializePlayer(Frame f, PlayerRef player)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            PlayerLink* playerLink = Player.GetPlayerPointer(f, player);
-            int shopLevel = playerLink->Info.Shop.Level;
+            PlayerLink playerLink = Player.GetPlayer(f, player);
+            int shopLevel = playerLink.Info.Shop.Level;
             int shopUpgradeCost = gameConfig.ShopUpdrageSettings[shopLevel].Cost;
 
-            f.Events.GetPlayerInfo(f, player, playerLink->Info);
-            f.Events.GetCurrentPlayers(f, Player.GetAllPlayersLink(f), BoardSystem.GetBoards(f));
-            f.Events.ChangeCoins(player, playerLink->Info.Coins);
-            f.Events.ReloadShop(f, player, f.ResolveList(playerLink->Info.Shop.HeroesID).ToList());
+            Events.GetCurrentPlayers(f);
+            Events.ChangeCoins(f, player);
+            Events.GetShopHeroes(f, player);
+            Events.GetBoardHeroes(f, playerLink);
+            Events.GetInventoryHeroes(f, playerLink);
             HeroMovingSystem.ShowHeroesOnBoardCount(f, playerLink);
             Shop.SendShopUpgradeInfo(f, playerLink);
+            Events.FreezeShop(f, playerLink);
 
             if (f.Global->IsBuyPhase == false)
             {
-                Board board = BoardSystem.GetBoard(f, playerLink->Ref);
+                Board board = BoardSystem.GetBoard(f, playerLink.Ref);
                 QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
-                List<EntityLevelData> heroDataList = heroes.Select(hero => new EntityLevelData { Ref = hero.Hero.Ref, Level = hero.Hero.Level, ID = hero.Hero.ID }).ToList();
+                IEnumerable<EntityLevelData> heroDataList = heroes.Select(hero => new EntityLevelData { Ref = hero.Hero.Ref, Level = hero.Hero.Level, ID = hero.Hero.ID });
                 f.Events.StartRound(f, board.Player1.Ref, board.Player2.Ref, heroDataList);
 
-                List<EntityLevelData> projectilesData = f.ResolveList(board.HeroProjectiles).Select(p => new EntityLevelData { Ref = p.Ref, Level = p.Level }).ToList();
+                IEnumerable<EntityLevelData> projectilesData = f.ResolveList(board.HeroProjectiles).Select(p => new EntityLevelData { Ref = p.Ref, Level = p.Level });
                 f.Events.GetProjectiles(f, board.Player1.Ref, board.Player2.Ref, projectilesData);
             }
         }

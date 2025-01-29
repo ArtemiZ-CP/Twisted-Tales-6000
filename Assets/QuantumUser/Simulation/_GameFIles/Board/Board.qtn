@@ -10,10 +10,3 @@ component Board
     list<FightingHero> FightingHeroesMap;
     list<HeroProjectile> HeroProjectiles;
 }
-
-struct FightingHero
-{
-    HeroEntity Hero;
-    int Index;
-    int BoardIndex;
-}

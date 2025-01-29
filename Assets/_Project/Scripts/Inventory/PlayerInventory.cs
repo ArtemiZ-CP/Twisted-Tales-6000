@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Quantum.Collections;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ namespace Quantum.Game
         private void Awake()
         {
             QuantumEvent.Subscribe<EventBuyHero>(listener: this, handler: BuyHero);
-            QuantumEvent.Subscribe<EventGetPlayerInfo>(listener: this, handler: LoadInventory);
+            QuantumEvent.Subscribe<EventGetInventoryHeroes>(listener: this, handler: LoadInventory);
         }
 
         public int GetSlotIndex(PlayerInventorySlot inventorySlot)
@@ -60,20 +61,20 @@ namespace Quantum.Game
             _inventorySlots[inventoryIndex].SetInventoryItem(heroID, 0);
         }
 
-        private void LoadInventory(EventGetPlayerInfo eventGetPlayerInfo)
+        private void LoadInventory(EventGetInventoryHeroes eventGetInventoryHeroes)
         {
-            if (QuantumConnection.IsPlayerMe(eventGetPlayerInfo.PlayerRef))
+            if (QuantumConnection.IsPlayerMe(eventGetInventoryHeroes.PlayerRef))
             {
                 ClearInventory();
-                InitializeInventory(eventGetPlayerInfo.Frame, eventGetPlayerInfo.PlayerInfo);
+                InitializeInventory(eventGetInventoryHeroes);
             }
         }
 
-        private void InitializeInventory(Frame frame, PlayerInfo playerInfo)
+        private void InitializeInventory(EventGetInventoryHeroes eventGetInventoryHeroes)
         {
             _inventorySlots = new PlayerInventorySlot[QuantumConnection.GameConfig.InventorySize];
-            QList<int> inventory = frame.ResolveList(playerInfo.Inventory.HeroesID);
-            QList<int> levels = frame.ResolveList(playerInfo.Inventory.HeroesLevel);
+            QList<int> inventory = eventGetInventoryHeroes.HeroIDList;
+            QList<int> levels = eventGetInventoryHeroes.HeroLevelList;
 
             for (int i = 0; i < _inventorySlots.Length; i++)
             {

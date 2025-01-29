@@ -401,20 +401,50 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct FightingHero {
-    public const Int32 SIZE = 200;
+    public const Int32 SIZE = 224;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(8)]
+    [FieldOffset(72)]
     public HeroEntity Hero;
     [FieldOffset(4)]
     public Int32 Index;
     [FieldOffset(0)]
     public Int32 BoardIndex;
+    [FieldOffset(40)]
+    public FP CurrentHealth;
+    [FieldOffset(48)]
+    public FP CurrentMana;
+    [FieldOffset(24)]
+    public EntityRef AttackTarget;
+    [FieldOffset(8)]
+    public Int32 TargetPositionX;
+    [FieldOffset(12)]
+    public Int32 TargetPositionY;
+    [FieldOffset(16)]
+    public Int32 TeamNumber;
+    [FieldOffset(20)]
+    public QBoolean IsAlive;
+    [FieldOffset(32)]
+    public FP AttackTimer;
+    [FieldOffset(56)]
+    public FP DealedDamage;
+    [FieldOffset(64)]
+    public FP TakenDamage;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 467;
         hash = hash * 31 + Hero.GetHashCode();
         hash = hash * 31 + Index.GetHashCode();
         hash = hash * 31 + BoardIndex.GetHashCode();
+        hash = hash * 31 + CurrentHealth.GetHashCode();
+        hash = hash * 31 + CurrentMana.GetHashCode();
+        hash = hash * 31 + AttackTarget.GetHashCode();
+        hash = hash * 31 + TargetPositionX.GetHashCode();
+        hash = hash * 31 + TargetPositionY.GetHashCode();
+        hash = hash * 31 + TeamNumber.GetHashCode();
+        hash = hash * 31 + IsAlive.GetHashCode();
+        hash = hash * 31 + AttackTimer.GetHashCode();
+        hash = hash * 31 + DealedDamage.GetHashCode();
+        hash = hash * 31 + TakenDamage.GetHashCode();
         return hash;
       }
     }
@@ -422,65 +452,61 @@ namespace Quantum {
         var p = (FightingHero*)ptr;
         serializer.Stream.Serialize(&p->BoardIndex);
         serializer.Stream.Serialize(&p->Index);
+        serializer.Stream.Serialize(&p->TargetPositionX);
+        serializer.Stream.Serialize(&p->TargetPositionY);
+        serializer.Stream.Serialize(&p->TeamNumber);
+        QBoolean.Serialize(&p->IsAlive, serializer);
+        EntityRef.Serialize(&p->AttackTarget, serializer);
+        FP.Serialize(&p->AttackTimer, serializer);
+        FP.Serialize(&p->CurrentHealth, serializer);
+        FP.Serialize(&p->CurrentMana, serializer);
+        FP.Serialize(&p->DealedDamage, serializer);
+        FP.Serialize(&p->TakenDamage, serializer);
         Quantum.HeroEntity.Serialize(&p->Hero, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HeroEntity {
-    public const Int32 SIZE = 192;
+    public const Int32 SIZE = 152;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(48)]
+    [FieldOffset(24)]
     public EntityRef Ref;
     [FieldOffset(8)]
     public Int32 ID;
     [FieldOffset(12)]
     public Int32 Level;
-    [FieldOffset(168)]
-    public FPVector3 DefaultPosition;
-    [FieldOffset(112)]
-    public FP Health;
-    [FieldOffset(144)]
-    public FP MaxMana;
-    [FieldOffset(136)]
-    public FP ManaRegen;
     [FieldOffset(128)]
-    public FP ManaDamageRegenPersent;
-    [FieldOffset(104)]
-    public FP Defense;
-    [FieldOffset(120)]
-    public FP MagicDefense;
+    public FPVector3 DefaultPosition;
     [FieldOffset(64)]
-    public FP AttackDamage;
+    public FP Health;
+    [FieldOffset(104)]
+    public FP MaxMana;
+    [FieldOffset(88)]
+    public FP ManaRegen;
+    [FieldOffset(80)]
+    public FP ManaDealDamageRegenPersent;
+    [FieldOffset(96)]
+    public FP ManaTakeDamageRegenPersent;
     [FieldOffset(56)]
-    public FP AbilityDamage;
+    public FP Defense;
     [FieldOffset(72)]
+    public FP MagicDefense;
+    [FieldOffset(40)]
+    public FP AttackDamage;
+    [FieldOffset(32)]
+    public FP AbilityDamage;
+    [FieldOffset(48)]
     public FP AttackSpeed;
-    [FieldOffset(152)]
+    [FieldOffset(112)]
     public FP ProjectileSpeed;
     [FieldOffset(16)]
     public Int32 Range;
-    [FieldOffset(160)]
+    [FieldOffset(120)]
     public FP RangePercentage;
     [FieldOffset(4)]
     public Int32 AttackDamageType;
     [FieldOffset(0)]
     public Int32 AbilityDamageType;
-    [FieldOffset(88)]
-    public FP CurrentHealth;
-    [FieldOffset(96)]
-    public FP CurrentMana;
-    [FieldOffset(40)]
-    public EntityRef AttackTarget;
-    [FieldOffset(20)]
-    public Int32 TargetPositionX;
-    [FieldOffset(24)]
-    public Int32 TargetPositionY;
-    [FieldOffset(28)]
-    public Int32 TeamNumber;
-    [FieldOffset(32)]
-    public QBoolean IsAlive;
-    [FieldOffset(80)]
-    public FP AttackTimer;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 2081;
@@ -491,7 +517,8 @@ namespace Quantum {
         hash = hash * 31 + Health.GetHashCode();
         hash = hash * 31 + MaxMana.GetHashCode();
         hash = hash * 31 + ManaRegen.GetHashCode();
-        hash = hash * 31 + ManaDamageRegenPersent.GetHashCode();
+        hash = hash * 31 + ManaDealDamageRegenPersent.GetHashCode();
+        hash = hash * 31 + ManaTakeDamageRegenPersent.GetHashCode();
         hash = hash * 31 + Defense.GetHashCode();
         hash = hash * 31 + MagicDefense.GetHashCode();
         hash = hash * 31 + AttackDamage.GetHashCode();
@@ -502,14 +529,6 @@ namespace Quantum {
         hash = hash * 31 + RangePercentage.GetHashCode();
         hash = hash * 31 + AttackDamageType.GetHashCode();
         hash = hash * 31 + AbilityDamageType.GetHashCode();
-        hash = hash * 31 + CurrentHealth.GetHashCode();
-        hash = hash * 31 + CurrentMana.GetHashCode();
-        hash = hash * 31 + AttackTarget.GetHashCode();
-        hash = hash * 31 + TargetPositionX.GetHashCode();
-        hash = hash * 31 + TargetPositionY.GetHashCode();
-        hash = hash * 31 + TeamNumber.GetHashCode();
-        hash = hash * 31 + IsAlive.GetHashCode();
-        hash = hash * 31 + AttackTimer.GetHashCode();
         return hash;
       }
     }
@@ -520,23 +539,16 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->ID);
         serializer.Stream.Serialize(&p->Level);
         serializer.Stream.Serialize(&p->Range);
-        serializer.Stream.Serialize(&p->TargetPositionX);
-        serializer.Stream.Serialize(&p->TargetPositionY);
-        serializer.Stream.Serialize(&p->TeamNumber);
-        QBoolean.Serialize(&p->IsAlive, serializer);
-        EntityRef.Serialize(&p->AttackTarget, serializer);
         EntityRef.Serialize(&p->Ref, serializer);
         FP.Serialize(&p->AbilityDamage, serializer);
         FP.Serialize(&p->AttackDamage, serializer);
         FP.Serialize(&p->AttackSpeed, serializer);
-        FP.Serialize(&p->AttackTimer, serializer);
-        FP.Serialize(&p->CurrentHealth, serializer);
-        FP.Serialize(&p->CurrentMana, serializer);
         FP.Serialize(&p->Defense, serializer);
         FP.Serialize(&p->Health, serializer);
         FP.Serialize(&p->MagicDefense, serializer);
-        FP.Serialize(&p->ManaDamageRegenPersent, serializer);
+        FP.Serialize(&p->ManaDealDamageRegenPersent, serializer);
         FP.Serialize(&p->ManaRegen, serializer);
+        FP.Serialize(&p->ManaTakeDamageRegenPersent, serializer);
         FP.Serialize(&p->MaxMana, serializer);
         FP.Serialize(&p->ProjectileSpeed, serializer);
         FP.Serialize(&p->RangePercentage, serializer);
@@ -600,7 +612,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerInfo {
-    public const Int32 SIZE = 44;
+    public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(32)]
     public PlayerShop Shop;
@@ -673,20 +685,23 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerShop {
-    public const Int32 SIZE = 12;
+    public const Int32 SIZE = 16;
     public const Int32 ALIGNMENT = 4;
-    [FieldOffset(8)]
+    [FieldOffset(12)]
     public QListPtr<Int32> HeroesID;
     [FieldOffset(0)]
     public Int32 Level;
     [FieldOffset(4)]
     public Int32 XP;
+    [FieldOffset(8)]
+    public QBoolean IsLocked;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10663;
         hash = hash * 31 + HeroesID.GetHashCode();
         hash = hash * 31 + Level.GetHashCode();
         hash = hash * 31 + XP.GetHashCode();
+        hash = hash * 31 + IsLocked.GetHashCode();
         return hash;
       }
     }
@@ -697,6 +712,7 @@ namespace Quantum {
         var p = (PlayerShop*)ptr;
         serializer.Stream.Serialize(&p->Level);
         serializer.Stream.Serialize(&p->XP);
+        QBoolean.Serialize(&p->IsLocked, serializer);
         QList.Serialize(&p->HeroesID, serializer, Statics.SerializeInt32);
     }
   }
@@ -806,13 +822,13 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Board : Quantum.IComponent {
-    public const Int32 SIZE = 120;
+    public const Int32 SIZE = 128;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(16)]
     public EntityRef Ref;
     [FieldOffset(24)]
     public PlayerLink Player1;
-    [FieldOffset(72)]
+    [FieldOffset(76)]
     public PlayerLink Player2;
     [FieldOffset(4)]
     public QListPtr<HeroEntity> HeroesID1;
@@ -860,18 +876,18 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HeroProjectile : Quantum.IComponent {
-    public const Int32 SIZE = 248;
+    public const Int32 SIZE = 496;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
     public EntityRef Ref;
-    [FieldOffset(56)]
-    public HeroEntity Target;
-    [FieldOffset(32)]
-    public FPVector3 TargetPosition;
+    [FieldOffset(48)]
+    public FightingHero Owner;
+    [FieldOffset(272)]
+    public FightingHero Target;
     [FieldOffset(24)]
-    public FP Speed;
+    public FPVector3 TargetPosition;
     [FieldOffset(16)]
-    public FP Damage;
+    public FP Speed;
     [FieldOffset(0)]
     public Int32 DamageType;
     [FieldOffset(4)]
@@ -880,10 +896,10 @@ namespace Quantum {
       unchecked { 
         var hash = 10301;
         hash = hash * 31 + Ref.GetHashCode();
+        hash = hash * 31 + Owner.GetHashCode();
         hash = hash * 31 + Target.GetHashCode();
         hash = hash * 31 + TargetPosition.GetHashCode();
         hash = hash * 31 + Speed.GetHashCode();
-        hash = hash * 31 + Damage.GetHashCode();
         hash = hash * 31 + DamageType.GetHashCode();
         hash = hash * 31 + Level.GetHashCode();
         return hash;
@@ -894,10 +910,10 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->DamageType);
         serializer.Stream.Serialize(&p->Level);
         EntityRef.Serialize(&p->Ref, serializer);
-        FP.Serialize(&p->Damage, serializer);
         FP.Serialize(&p->Speed, serializer);
         FPVector3.Serialize(&p->TargetPosition, serializer);
-        Quantum.HeroEntity.Serialize(&p->Target, serializer);
+        Quantum.FightingHero.Serialize(&p->Owner, serializer);
+        Quantum.FightingHero.Serialize(&p->Target, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -918,7 +934,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerLink : Quantum.IComponent {
-    public const Int32 SIZE = 48;
+    public const Int32 SIZE = 52;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(0)]
     public PlayerRef Ref;
@@ -997,6 +1013,9 @@ namespace Quantum {
   public unsafe partial interface ISignalSellHero : ISignal {
     void SellHero(Frame f, PlayerLink* playerLink, Quantum.Game.HeroState state, Int32 positionX, Int32 positionY);
   }
+  public unsafe partial interface ISignalFreezeShop : ISignal {
+    void FreezeShop(Frame f, PlayerLink* playerLink);
+  }
   public static unsafe partial class Constants {
   }
   public unsafe partial class Frame {
@@ -1012,6 +1031,7 @@ namespace Quantum {
     private ISignalOnEndRound[] _ISignalOnEndRoundSystems;
     private ISignalStartFight[] _ISignalStartFightSystems;
     private ISignalSellHero[] _ISignalSellHeroSystems;
+    private ISignalFreezeShop[] _ISignalFreezeShopSystems;
     partial void AllocGen() {
       _globals = (_globals_*)Context.Allocator.AllocAndClear(sizeof(_globals_));
     }
@@ -1035,6 +1055,7 @@ namespace Quantum {
       _ISignalOnEndRoundSystems = BuildSignalsArray<ISignalOnEndRound>();
       _ISignalStartFightSystems = BuildSignalsArray<ISignalStartFight>();
       _ISignalSellHeroSystems = BuildSignalsArray<ISignalSellHero>();
+      _ISignalFreezeShopSystems = BuildSignalsArray<ISignalFreezeShop>();
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       BuildSignalsArrayOnComponentAdded<Quantum.Board>();
@@ -1209,6 +1230,15 @@ namespace Quantum {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
             s.SellHero(_f, playerLink, state, positionX, positionY);
+          }
+        }
+      }
+      public void FreezeShop(PlayerLink* playerLink) {
+        var array = _f._ISignalFreezeShopSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.FreezeShop(_f, playerLink);
           }
         }
       }

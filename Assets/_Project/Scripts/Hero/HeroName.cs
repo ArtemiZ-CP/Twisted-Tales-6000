@@ -10,8 +10,8 @@ namespace Quantum.Game
 
         private void OnEnable()
         {
-            SetHeroName(_heroMesh.ID);
             _heroMesh.OnSetHero += SetHeroName;
+            SetHeroName(_heroMesh.ID, _heroMesh.Level);
         }
 
         private void OnDisable()
@@ -19,9 +19,15 @@ namespace Quantum.Game
             _heroMesh.OnSetHero -= SetHeroName;
         }
 
-        private void SetHeroName(int id)
+        private void SetHeroName(int id, int level)
         {
-            _heroNameText.text = QuantumConnection.GetHeroInfo(id).Name;
+            _heroNameText.text = $"{QuantumConnection.GetHeroInfo(id).Name}";
+
+            if (level != 0)
+            {
+                _heroNameText.text += $" ({level + 1})";
+
+            }
         }
     }
 }

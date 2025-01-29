@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Photon.Deterministic;
-using UnityEditor;
 using UnityEngine;
 
 namespace Quantum.Game
@@ -25,7 +24,8 @@ namespace Quantum.Game
         public AssetRef<HeroInfo>[] HeroInfos;
         [Space(20)]
         public FP ManaRegen;
-        public FP ManaDamageRegenPersent;
+        public FP ManaDealDamageRegenPersent;
+        public FP ManaTakeDamageRegenPersent;
         public FP HeroMoveSpeed = 1;
         public FP HeroRotationSpeed = 1;
         [Tooltip("Half damage on current ratio")]
@@ -67,7 +67,7 @@ namespace Quantum.Game
             }
         }
 
-        public RoundInfo GetRoundInfo(Frame f, int round)
+        public RoundInfo GetRoundInfo(int round)
         {
             if (round >= RoundInfos.Count)
             {
@@ -108,6 +108,17 @@ namespace Quantum.Game
         {
             return HeroShopSettings[(int)rare].BackgroundColor;
         }
+
+        public int GetHeroSellCost(Frame f, int heroID, int level)
+        {
+            HeroInfo heroInfo = GetHeroInfo(f, heroID);
+            return GetHeroSellCost(heroInfo.Rare, level);
+        }
+
+        public int GetHeroSellCost(HeroRare rare, int level)
+        {
+            return HeroShopSettings[(int)rare].SellCosts[level];
+        }
     }
 
     [Serializable]
@@ -131,9 +142,7 @@ namespace Quantum.Game
         public HeroRare Rare;
         public Color BackgroundColor;
         [Min(0)] public int BuyCost;
-        [Min(0)] public int SellCost1;
-        [Min(0)] public int SellCost2;
-        [Min(0)] public int SellCost3;
+        [Min(0)] public int[] SellCosts;
     }
 
     [Serializable]

@@ -13,12 +13,12 @@ namespace Quantum.Game
             return boards[fighingHero.BoardIndex];
         }
 
-        public static Vector2Int GetHeroCords(HeroEntity hero)
+        public static Vector2Int GetHeroCords(FightingHero hero)
         {
             return new Vector2Int(hero.TargetPositionX, hero.TargetPositionY);
         }
 
-        public static FPVector3 GetHeroPosition(Frame f, HeroEntity hero)
+        public static FPVector3 GetHeroPosition(Frame f, FightingHero hero)
         {
             Vector2Int cords = GetHeroCords(hero);
 
@@ -35,9 +35,9 @@ namespace Quantum.Game
             return GetTilePosition(f, cords.x, cords.y);
         }
 
-        public static bool IsHeroMoving(Frame f, HeroEntity hero)
+        public static bool IsHeroMoving(Frame f, FightingHero hero)
         {
-            Transform3D transform = f.Get<Transform3D>(hero.Ref);
+            Transform3D transform = f.Get<Transform3D>(hero.Hero.Ref);
             FPVector3 position = GetHeroPosition(f, hero);
 
             return transform.Position != position;
@@ -111,7 +111,7 @@ namespace Quantum.Game
                 return false;
             }
 
-            if (moveTargetPosition == GetHeroCords(fightingHero.Hero))
+            if (moveTargetPosition == GetHeroCords(fightingHero))
             {
                 SetHeroTarget(f, fightingHero, target.Hero.Ref);
                 return true;
@@ -125,7 +125,7 @@ namespace Quantum.Game
         {
             if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, out FightingHero targetHero))
             {
-                moveTargetPosition = GetHeroCords(fightingHero.Hero);
+                moveTargetPosition = GetHeroCords(fightingHero);
                 return targetHero;
             }
 
@@ -142,9 +142,9 @@ namespace Quantum.Game
             {
                 if (fightingHero.Index < 0 || heroes[heroNewIndex].Hero.Ref != default) return;
 
-                fightingHero.Hero.AttackTarget = attackTarget;
-                fightingHero.Hero.TargetPositionX = targetPosition.x;
-                fightingHero.Hero.TargetPositionY = targetPosition.y;
+                fightingHero.AttackTarget = attackTarget;
+                fightingHero.TargetPositionX = targetPosition.x;
+                fightingHero.TargetPositionY = targetPosition.y;
                 Hero.SetNewBoardPosision(heroes, fightingHero, heroNewIndex);
             }
         }
@@ -154,7 +154,7 @@ namespace Quantum.Game
             QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fighingHero).FightingHeroesMap);
 
             FightingHero fightingHero = heroes[fighingHero.Index];
-            fightingHero.Hero.AttackTarget = attackTarget;
+            fightingHero.AttackTarget = attackTarget;
             heroes[fighingHero.Index] = fightingHero;
         }
 
@@ -165,7 +165,7 @@ namespace Quantum.Game
 
             foreach (var target in heroes)
             {
-                if (target.Hero.ID < 0 || target.Hero.Ref == hero.Hero.Ref)
+                if (target.IsAlive == false || target.Hero.Ref == hero.Hero.Ref)
                 {
                     continue;
                 }
@@ -214,12 +214,12 @@ namespace Quantum.Game
                     continue;
                 }
 
-                if (heroes[index].Hero.ID < 0)
+                if (heroes[index].IsAlive == false)
                 {
                     continue;
                 }
 
-                if (fightingHero.Hero.TeamNumber == heroes[index].Hero.TeamNumber || heroes[index].Hero.IsAlive == false)
+                if (fightingHero.TeamNumber == heroes[index].TeamNumber || heroes[index].IsAlive == false)
                 {
                     continue;
                 }
@@ -237,12 +237,12 @@ namespace Quantum.Game
 
             foreach (FightingHero target in heroes)
             {
-                if (target.Hero.ID < 0)
+                if (target.IsAlive == false)
                 {
                     continue;
                 }
 
-                if (fightingHero.Hero.TeamNumber == target.Hero.TeamNumber || target.Hero.IsAlive == false)
+                if (fightingHero.TeamNumber == target.TeamNumber || target.IsAlive == false)
                 {
                     continue;
                 }

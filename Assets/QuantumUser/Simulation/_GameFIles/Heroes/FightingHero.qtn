@@ -1,0 +1,20 @@
+struct FightingHero
+{
+    HeroEntity Hero;
+    int Index;
+    int BoardIndex;
+    
+    // Fighing stats
+    FP CurrentHealth;
+    FP CurrentMana;
+    entity_ref AttackTarget;
+    int TargetPositionX;
+    int TargetPositionY;
+    int TeamNumber;
+    bool IsAlive;
+    FP AttackTimer;
+
+    // Stats
+    FP DealedDamage;
+    FP TakenDamage;
+}

@@ -120,10 +120,30 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.HeroEntityPrototype Hero;
     public Int32 Index;
     public Int32 BoardIndex;
+    public FP CurrentHealth;
+    public FP CurrentMana;
+    public MapEntityId AttackTarget;
+    public Int32 TargetPositionX;
+    public Int32 TargetPositionY;
+    public Int32 TeamNumber;
+    public QBoolean IsAlive;
+    public FP AttackTimer;
+    public FP DealedDamage;
+    public FP TakenDamage;
     public void Materialize(Frame frame, ref Quantum.FightingHero result, in PrototypeMaterializationContext context = default) {
         this.Hero.Materialize(frame, ref result.Hero, in context);
         result.Index = this.Index;
         result.BoardIndex = this.BoardIndex;
+        result.CurrentHealth = this.CurrentHealth;
+        result.CurrentMana = this.CurrentMana;
+        PrototypeValidator.FindMapEntity(this.AttackTarget, in context, out result.AttackTarget);
+        result.TargetPositionX = this.TargetPositionX;
+        result.TargetPositionY = this.TargetPositionY;
+        result.TeamNumber = this.TeamNumber;
+        result.IsAlive = this.IsAlive;
+        result.AttackTimer = this.AttackTimer;
+        result.DealedDamage = this.DealedDamage;
+        result.TakenDamage = this.TakenDamage;
     }
   }
   [System.SerializableAttribute()]
@@ -136,7 +156,8 @@ namespace Quantum.Prototypes {
     public FP Health;
     public FP MaxMana;
     public FP ManaRegen;
-    public FP ManaDamageRegenPersent;
+    public FP ManaDealDamageRegenPersent;
+    public FP ManaTakeDamageRegenPersent;
     public FP Defense;
     public FP MagicDefense;
     public FP AttackDamage;
@@ -147,14 +168,6 @@ namespace Quantum.Prototypes {
     public FP RangePercentage;
     public Int32 AttackDamageType;
     public Int32 AbilityDamageType;
-    public FP CurrentHealth;
-    public FP CurrentMana;
-    public MapEntityId AttackTarget;
-    public Int32 TargetPositionX;
-    public Int32 TargetPositionY;
-    public Int32 TeamNumber;
-    public QBoolean IsAlive;
-    public FP AttackTimer;
     public void Materialize(Frame frame, ref Quantum.HeroEntity result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.FindMapEntity(this.Ref, in context, out result.Ref);
         result.ID = this.ID;
@@ -163,7 +176,8 @@ namespace Quantum.Prototypes {
         result.Health = this.Health;
         result.MaxMana = this.MaxMana;
         result.ManaRegen = this.ManaRegen;
-        result.ManaDamageRegenPersent = this.ManaDamageRegenPersent;
+        result.ManaDealDamageRegenPersent = this.ManaDealDamageRegenPersent;
+        result.ManaTakeDamageRegenPersent = this.ManaTakeDamageRegenPersent;
         result.Defense = this.Defense;
         result.MagicDefense = this.MagicDefense;
         result.AttackDamage = this.AttackDamage;
@@ -174,24 +188,16 @@ namespace Quantum.Prototypes {
         result.RangePercentage = this.RangePercentage;
         result.AttackDamageType = this.AttackDamageType;
         result.AbilityDamageType = this.AbilityDamageType;
-        result.CurrentHealth = this.CurrentHealth;
-        result.CurrentMana = this.CurrentMana;
-        PrototypeValidator.FindMapEntity(this.AttackTarget, in context, out result.AttackTarget);
-        result.TargetPositionX = this.TargetPositionX;
-        result.TargetPositionY = this.TargetPositionY;
-        result.TeamNumber = this.TeamNumber;
-        result.IsAlive = this.IsAlive;
-        result.AttackTimer = this.AttackTimer;
     }
   }
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.HeroProjectile))]
   public unsafe class HeroProjectilePrototype : ComponentPrototype<Quantum.HeroProjectile> {
     public MapEntityId Ref;
-    public Quantum.Prototypes.HeroEntityPrototype Target;
+    public Quantum.Prototypes.FightingHeroPrototype Owner;
+    public Quantum.Prototypes.FightingHeroPrototype Target;
     public FPVector3 TargetPosition;
     public FP Speed;
-    public FP Damage;
     public Int32 DamageType;
     public Int32 Level;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -201,10 +207,10 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.HeroProjectile result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.FindMapEntity(this.Ref, in context, out result.Ref);
+        this.Owner.Materialize(frame, ref result.Owner, in context);
         this.Target.Materialize(frame, ref result.Target, in context);
         result.TargetPosition = this.TargetPosition;
         result.Speed = this.Speed;
-        result.Damage = this.Damage;
         result.DamageType = this.DamageType;
         result.Level = this.Level;
     }
@@ -344,6 +350,7 @@ namespace Quantum.Prototypes {
     public Int32[] HeroesID = {};
     public Int32 Level;
     public Int32 XP;
+    public QBoolean IsLocked;
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerShop result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.PlayerShop result, in PrototypeMaterializationContext context = default) {
         if (this.HeroesID.Length == 0) {
@@ -358,6 +365,7 @@ namespace Quantum.Prototypes {
         }
         result.Level = this.Level;
         result.XP = this.XP;
+        result.IsLocked = this.IsLocked;
         MaterializeUser(frame, ref result, in context);
     }
   }

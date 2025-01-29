@@ -1,0 +1,29 @@
+event HeroHealthChanged
+{
+    player_ref PlayerRef1;
+    player_ref PlayerRef2;
+    entity_ref HeroEntity;
+    FP CurrentHealth;
+    FP MaxHealth;
+}
+
+event HeroManaChanged
+{
+    player_ref PlayerRef1;
+    player_ref PlayerRef2;
+    entity_ref HeroEntity;
+    FP CurrentMana;
+    FP MaxMana;
+}
+
+event GetProjectiles
+{
+    player_ref Player1;
+    player_ref Player2;
+}
+
+event DisplayStats
+{
+    player_ref Player1;
+    player_ref Player2;
+}
