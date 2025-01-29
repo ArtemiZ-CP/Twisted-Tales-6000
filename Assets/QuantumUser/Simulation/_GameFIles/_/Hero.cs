@@ -154,7 +154,7 @@ namespace Quantum.Game
             {
                 return;
             }
-            
+
             FPQuaternion targetRotation = FPQuaternion.LookRotation(direction);
 
             Rotate(f, hero, targetRotation);
