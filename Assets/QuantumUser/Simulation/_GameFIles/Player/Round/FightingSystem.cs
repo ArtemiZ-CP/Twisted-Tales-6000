@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Quantum.Collections;
 using UnityEngine.Scripting;
 
@@ -116,6 +117,8 @@ namespace Quantum.Game
 
             for (int i = 0; i < fightingHeroesMap.Count; i++)
             {
+                Log.Debug($"Hero {i} is {fightingHeroesMap[i].Hero.ID}");
+
                 if (fightingHeroesMap[i].Hero.Ref == default)
                 {
                     continue;
