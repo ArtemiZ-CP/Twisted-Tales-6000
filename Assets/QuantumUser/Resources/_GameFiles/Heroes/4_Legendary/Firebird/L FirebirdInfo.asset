@@ -32,47 +32,47 @@ MonoBehaviour:
   AbilityType: 1
   HeroStats:
   - Health:
-      RawValue: 52428800
+      RawValue: 58982400
     Defense:
-      RawValue: 1310720
+      RawValue: 1638400
     MagicDefense:
-      RawValue: 1966080
+      RawValue: 3276800
     AttackDamage:
-      RawValue: 2949120
+      RawValue: 5242880
     AbilityDamage:
-      RawValue: 4587520
+      RawValue: 5242880
     AttackSpeed:
-      RawValue: 72090
+      RawValue: 52429
     ProjectileSpeed:
       RawValue: 327680
     Range: 4
   - Health:
-      RawValue: 78643200
+      RawValue: 106168320
     Defense:
-      RawValue: 1966080
+      RawValue: 1638400
     MagicDefense:
-      RawValue: 2949120
+      RawValue: 3276800
     AttackDamage:
-      RawValue: 4423680
+      RawValue: 7864320
     AbilityDamage:
-      RawValue: 6881280
+      RawValue: 7864320
     AttackSpeed:
-      RawValue: 72090
+      RawValue: 52429
     ProjectileSpeed:
       RawValue: 327680
     Range: 4
   - Health:
-      RawValue: 104857600
+      RawValue: 191102976
     Defense:
-      RawValue: 2621440
+      RawValue: 1638400
     MagicDefense:
-      RawValue: 3932160
+      RawValue: 3276800
     AttackDamage:
-      RawValue: 5898240
+      RawValue: 11796480
     AbilityDamage:
-      RawValue: 9175040
+      RawValue: 11796480
     AttackSpeed:
-      RawValue: 72090
+      RawValue: 52429
     ProjectileSpeed:
       RawValue: 327680
     Range: 4

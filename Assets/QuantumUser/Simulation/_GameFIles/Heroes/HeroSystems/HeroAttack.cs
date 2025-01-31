@@ -14,9 +14,9 @@ namespace Quantum.Game
             Magical
         }
 
-        public enum ProjectileType
+        public enum AttackType
         {
-            Attack,
+            Base,
             Ability
         }
 
@@ -131,18 +131,18 @@ namespace Quantum.Game
             f.Events.HeroHealthChanged(board.Player1.Ref, board.Player2.Ref, fightingHero.Hero.Ref, fightingHero.CurrentHealth, fightingHero.Hero.Health);
         }
 
-        public static void InstantAttack(Frame f, FightingHero fightingHero, DamageType damageType)
+        public static void InstantAttack(Frame f, FightingHero fightingHero, DamageType damageType, AttackType attackType)
         {
             if (IsAbleToAttack(f, fightingHero, out FightingHero targetHero) == false)
             {
                 return;
             }
 
-            DamageHero(f, fightingHero, targetHero, damageType);
+            DamageHero(f, fightingHero, targetHero, damageType, attackType);
             ResetAttackTimer(f, fightingHero);
         }
 
-        public static void ProjectileAttack(Frame f, FightingHero fightingHero, DamageType damageType)
+        public static void ProjectileAttack(Frame f, FightingHero fightingHero, DamageType damageType, AttackType attackType)
         {
             if (IsAbleToAttack(f, fightingHero, out FightingHero targetHero) == false)
             {
@@ -150,7 +150,7 @@ namespace Quantum.Game
             }
 
             HeroProjectilesSystem.SpawnProjectile(f, fightingHero, targetHero, targetHero.Hero.AttackDamage,
-                damageType, ProjectileType.Attack);
+                damageType, attackType);
             ResetAttackTimer(f, fightingHero);
         }
 
@@ -185,7 +185,7 @@ namespace Quantum.Game
             }
 
             HeroProjectilesSystem.SpawnProjectile(f, fightingHero, targetHero, targetHero.Hero.AbilityDamage,
-                damageType, ProjectileType.Ability);
+                damageType, AttackType.Ability);
 
             ResetMana(f, fightingHero);
         }
@@ -206,7 +206,7 @@ namespace Quantum.Game
             heroes[fightingHero.Index] = fightingHero;
         }
 
-        public static void DamageHero(Frame f, FightingHero fightingHero, FightingHero targetHero, DamageType damageType)
+        public static void DamageHero(Frame f, FightingHero fightingHero, FightingHero targetHero, DamageType damageType, AttackType attackType)
         {
             Board board = HeroBoard.GetBoard(f, fightingHero);
 
@@ -252,7 +252,15 @@ namespace Quantum.Game
 
             fightingHero.CurrentMana += damage * fightingHero.Hero.ManaDealDamageRegenPersent;
 
-            fightingHero.DealedDamage += damage;
+            if (attackType == AttackType.Ability)
+            {
+                fightingHero.DealedAbilityDamage += damage;
+            }
+            else
+            {
+                fightingHero.DealedBaseDamage += damage;
+            }
+
             targetHero.TakenDamage += damage;
 
             heroes[fightingHeroIndex] = fightingHero;

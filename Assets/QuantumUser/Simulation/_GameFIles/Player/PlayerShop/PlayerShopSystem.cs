@@ -42,6 +42,8 @@ namespace Quantum.Game
                     f.Events.BuyHero(playerLink->Ref, shopIndex, inventoryIndex, heroID);
                 }
             }
+
+            f.Signals.TryUpgradeHero(playerLink);
         }
 
         public void FreezeShop(Frame f, PlayerLink* playerLink)

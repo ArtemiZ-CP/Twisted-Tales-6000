@@ -34,45 +34,45 @@ MonoBehaviour:
   - Health:
       RawValue: 65536000
     Defense:
-      RawValue: 2621440
+      RawValue: 2490368
     MagicDefense:
-      RawValue: 2293760
+      RawValue: 2490368
     AttackDamage:
-      RawValue: 3604480
+      RawValue: 5898240
     AbilityDamage:
-      RawValue: 1310720
+      RawValue: 5898240
     AttackSpeed:
-      RawValue: 58982
+      RawValue: 39322
     ProjectileSpeed:
       RawValue: 327680
     Range: 1
   - Health:
-      RawValue: 98304000
+      RawValue: 117964800
     Defense:
-      RawValue: 3932160
+      RawValue: 2490368
     MagicDefense:
-      RawValue: 3440640
+      RawValue: 2490368
     AttackDamage:
-      RawValue: 5406720
+      RawValue: 8847360
     AbilityDamage:
-      RawValue: 1966080
+      RawValue: 8847360
     AttackSpeed:
-      RawValue: 58982
+      RawValue: 39322
     ProjectileSpeed:
       RawValue: 327680
     Range: 1
   - Health:
-      RawValue: 131072000
+      RawValue: 212336640
     Defense:
-      RawValue: 5242880
+      RawValue: 2490368
     MagicDefense:
-      RawValue: 4587520
+      RawValue: 2490368
     AttackDamage:
-      RawValue: 7208960
+      RawValue: 13303808
     AbilityDamage:
-      RawValue: 2621440
+      RawValue: 13303808
     AttackSpeed:
-      RawValue: 58982
+      RawValue: 39322
     ProjectileSpeed:
       RawValue: 327680
     Range: 1

@@ -124,6 +124,8 @@ namespace Quantum.Game
                         Player.AddCoins(f, playerLink, heroInfo.GetCost(f));
                     }
                 }
+
+                f.Signals.TryUpgradeHero(playerLink);
             }
             else if (HeroFromState == HeroState.Board)
             {

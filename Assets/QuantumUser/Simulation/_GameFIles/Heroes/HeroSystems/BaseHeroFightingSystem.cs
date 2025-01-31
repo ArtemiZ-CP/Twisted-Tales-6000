@@ -18,7 +18,7 @@ namespace Quantum.Game
         }
 
         public static void UpdateHeroes<T>(Frame f,
-            Action<Frame, FightingHero, HeroAttack.DamageType> Attack, bool isHeroAttackWhileMooving) where T : unmanaged, IComponent
+            Action<Frame, FightingHero, HeroAttack.DamageType, HeroAttack.AttackType> Attack, bool isHeroAttackWhileMooving) where T : unmanaged, IComponent
         {
             if (f.Global->IsBuyPhase || f.Global->IsDelayPassed == false || f.Global->IsFighting == false) return;
 
@@ -34,7 +34,7 @@ namespace Quantum.Game
         }
 
         private static void UpdateHero(Frame f, FightingHero fightingHero,
-            Action<Frame, FightingHero, HeroAttack.DamageType> Attack, bool isHeroAttackWhileMooving)
+            Action<Frame, FightingHero, HeroAttack.DamageType, HeroAttack.AttackType> Attack, bool isHeroAttackWhileMooving)
         {
             Board board = HeroBoard.GetBoard(f, fightingHero);
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
@@ -61,7 +61,7 @@ namespace Quantum.Game
                     Hero.Rotate(f, fightingHero.Hero, f.Get<Transform3D>(fightingHero.AttackTarget).Position);
                 }
 
-                Attack(f, fightingHero, (HeroAttack.DamageType)fightingHero.Hero.AttackDamageType);
+                Attack(f, fightingHero, (HeroAttack.DamageType)fightingHero.Hero.AttackDamageType, HeroAttack.AttackType.Base);
                 return;
             }
         }

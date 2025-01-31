@@ -6,27 +6,16 @@ using UnityEngine.Scripting;
 namespace Quantum.Game
 {
     [Preserve]
-    public unsafe class HeroLevelProgression : SystemMainThreadFilter<HeroLevelProgression.Filter>
+    public unsafe class HeroLevelProgression : SystemSignalsOnly, ISignalTryUpgradeHero
     {
-        public struct Filter
+        public void TryUpgradeHero(Frame f, PlayerLink* playerLink)
         {
-            public EntityRef Entity;
-            public PlayerLink* PlayerLink;
-        }
-
-        private struct HeroUpgradeInfo
-        {
-            public int HeroID;
-            public int HeroLevel;
-        }
-
-        public override void Update(Frame f, ref Filter filter)
-        {
-            if (TryGetHeroesToUpgrade(f, filter.PlayerLink, out List<HeroUpgradeInfo> heroUpgradeInfos))
+            while (TryGetHeroesToUpgrade(f, playerLink, out List<HeroUpgradeInfo> heroUpgradeInfos))
             {
-                UpgradeHeroes(f, filter.PlayerLink, heroUpgradeInfos);
-                HeroMovingSystem.ShowHeroesOnBoardCount(f, *filter.PlayerLink);
+                UpgradeHeroes(f, playerLink, heroUpgradeInfos);
             }
+            
+            HeroMovingSystem.ShowHeroesOnBoardCount(f, *playerLink);
         }
 
         public static int GetHeroCount(Frame f, PlayerLink* playerLink, int heroID, int heroLevel)
@@ -143,10 +132,10 @@ namespace Quantum.Game
                 heroesLevelInventory[heroIndex] = heroLevel + 1;
             }
 
-            f.Events.GetBoardHeroes(f, playerLink->Ref, 
+            f.Events.GetBoardHeroes(f, playerLink->Ref,
                 f.ResolveList(playerLink->Info.Board.HeroesID),
                 f.ResolveList(playerLink->Info.Board.HeroesLevel));
-            f.Events.GetInventoryHeroes(f, playerLink->Ref, 
+            f.Events.GetInventoryHeroes(f, playerLink->Ref,
                 f.ResolveList(playerLink->Info.Inventory.HeroesID),
                 f.ResolveList(playerLink->Info.Inventory.HeroesLevel));
         }
@@ -209,6 +198,12 @@ namespace Quantum.Game
             {
                 UpgradeHero(f, playerLink, heroUpgradeInfo.HeroID, heroUpgradeInfo.HeroLevel, gameConfig.HeroesCountToUpgrade);
             }
+        }
+
+        private struct HeroUpgradeInfo
+        {
+            public int HeroID;
+            public int HeroLevel;
         }
     }
 }

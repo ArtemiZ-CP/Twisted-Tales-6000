@@ -53,7 +53,7 @@ namespace Quantum.Game
             return default;
         }
 
-        public static List<PlayerLink> GetAllPlayersLink(Frame f)
+        public static List<PlayerLink> GetAllPlayerLinks(Frame f)
         {
             List<PlayerLink> players = new();
 

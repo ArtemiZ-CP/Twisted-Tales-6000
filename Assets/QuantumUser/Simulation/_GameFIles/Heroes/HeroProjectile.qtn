@@ -7,4 +7,5 @@ component HeroProjectile
     FP Speed;
     int DamageType;
     int Level;
+    int AttackType;
 }

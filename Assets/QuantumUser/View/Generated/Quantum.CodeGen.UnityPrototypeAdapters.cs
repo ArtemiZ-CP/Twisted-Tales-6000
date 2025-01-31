@@ -89,7 +89,8 @@ namespace Quantum.Prototypes.Unity {
     public Int32 TeamNumber;
     public QBoolean IsAlive;
     public FP AttackTimer;
-    public FP DealedDamage;
+    public FP DealedBaseDamage;
+    public FP DealedAbilityDamage;
     public FP TakenDamage;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.FightingHeroPrototype prototype);
     public override Quantum.Prototypes.FightingHeroPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
@@ -105,7 +106,8 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.TeamNumber, out result.TeamNumber);
       converter.Convert(this.IsAlive, out result.IsAlive);
       converter.Convert(this.AttackTimer, out result.AttackTimer);
-      converter.Convert(this.DealedDamage, out result.DealedDamage);
+      converter.Convert(this.DealedBaseDamage, out result.DealedBaseDamage);
+      converter.Convert(this.DealedAbilityDamage, out result.DealedAbilityDamage);
       converter.Convert(this.TakenDamage, out result.TakenDamage);
       ConvertUser(converter, ref result);
       return result;
@@ -167,6 +169,7 @@ namespace Quantum.Prototypes.Unity {
     public FP Speed;
     public Int32 DamageType;
     public Int32 Level;
+    public Int32 AttackType;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.HeroProjectilePrototype prototype);
     public override Quantum.Prototypes.HeroProjectilePrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.HeroProjectilePrototype();
@@ -177,6 +180,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.Speed, out result.Speed);
       converter.Convert(this.DamageType, out result.DamageType);
       converter.Convert(this.Level, out result.Level);
+      converter.Convert(this.AttackType, out result.AttackType);
       ConvertUser(converter, ref result);
       return result;
     }

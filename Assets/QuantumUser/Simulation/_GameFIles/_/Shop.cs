@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Quantum.Collections;
 
 namespace Quantum.Game
@@ -29,7 +30,22 @@ namespace Quantum.Game
 
             for (int i = 0; i < gameConfig.ShopSize; i++)
             {
-                list[i] = gameConfig.GetRandomHero(f, GetHeroRare(f, playerLink->Info.Shop.Level));
+                list[i] = -1;
+            }
+
+            for (int i = 0; i < gameConfig.ShopSize; i++)
+            {
+                HeroRare heroRare = GetHeroRare(f, playerLink->Info.Shop.Level);
+                int heroID = GetRandomHero(f, playerLink, heroRare);
+
+                if (heroID < 0)
+                {
+                    list[i] = gameConfig.GetRandomHero(f, heroRare);
+                }
+                else
+                {
+                    list[i] = GetRandomHero(f, playerLink, heroRare);
+                }
             }
 
             f.Events.GetShopHeroes(f, playerLink->Ref, list);
@@ -203,6 +219,108 @@ namespace Quantum.Game
             }
 
             throw new Exception("GetHeroChance failed");
+        }
+
+        private static int GetRandomHero(Frame f, PlayerLink* playerLink, HeroRare heroRare)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+            QList<int> shop = f.ResolveList(playerLink->Info.Shop.HeroesID);
+
+            List<int> heroes = new();
+
+            for (int i = 0; i < gameConfig.HeroInfos.Length; i++)
+            {
+                HeroInfo heroInfo = f.FindAsset(gameConfig.HeroInfos[i]);
+
+                if (heroInfo.Rare == heroRare)
+                {
+                    if (GetHeroCountByPlayer(f, *playerLink, i) < GetHeroCount(f, gameConfig.MaxLevel - 1))
+                    {
+                        if (GetCountHeroInGame(f, i) < gameConfig.HeroShopSettings[(int)heroInfo.Rare].MaxCount)
+                        {
+                            heroes.Add(i);
+                        }
+                    }
+                }
+            }
+
+            if (heroes.Count == 0)
+            {
+                return -1;
+            }
+
+            return heroes[f.RNG->Next(0, heroes.Count)];
+        }
+
+        private static int GetCountHeroInGame(Frame f, int heroID)
+        {
+            int count = 0;
+
+            foreach (PlayerLink player in Player.GetAllPlayerLinks(f))
+            {
+                count += GetHeroCountByPlayer(f, player, heroID);
+            }
+
+            return count;
+        }
+
+        private static int GetHeroCountByPlayer(Frame f, PlayerLink playerLink, int heroID)
+        {
+            int count = 0;
+
+            QList<int> inventoryHeroesID = f.ResolveList(playerLink.Info.Inventory.HeroesID);
+            QList<int> inventoryHeroesLevel = f.ResolveList(playerLink.Info.Inventory.HeroesLevel);
+
+            for (int i = 0; i < inventoryHeroesID.Count; i++)
+            {
+                if (inventoryHeroesID[i] == heroID)
+                {
+                    count += GetHeroCount(f, inventoryHeroesLevel[i]);
+                }
+            }
+
+            QList<int> shopHeroesID = f.ResolveList(playerLink.Info.Shop.HeroesID);
+
+            for (int i = 0; i < shopHeroesID.Count; i++)
+            {
+                if (shopHeroesID[i] == heroID)
+                {
+                    count++;
+                }
+            }
+
+            QList<int> boardHeroesID = f.ResolveList(playerLink.Info.Board.HeroesID);
+            QList<int> boardHeroesLevel = f.ResolveList(playerLink.Info.Board.HeroesLevel);
+
+            for (int i = 0; i < boardHeroesID.Count; i++)
+            {
+                if (boardHeroesID[i] == heroID)
+                {
+                    count += GetHeroCount(f, boardHeroesLevel[i]);
+                }
+            }
+
+            return count;
+        }
+
+        private static int GetHeroCount(Frame f, int level)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+
+            if (level == 0)
+            {
+                return 1;
+            }
+            else if (level == 1)
+            {
+                return gameConfig.HeroesCountToUpgrade;
+            }
+            else if (level == 2)
+            {
+                return gameConfig.HeroesCountToUpgrade * gameConfig.HeroesCountToUpgrade;
+            }
+
+            throw new Exception("GetHeroCount failed");
         }
     }
 }

@@ -15,6 +15,7 @@ struct FightingHero
     FP AttackTimer;
 
     // Stats
-    FP DealedDamage;
+    FP DealedBaseDamage;
+    FP DealedAbilityDamage;
     FP TakenDamage;
 }

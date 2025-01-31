@@ -15,7 +15,7 @@ namespace Quantum.Game
 
         public static void GetBoardHeroes(Frame f)
         {
-            foreach (PlayerLink player in Player.GetAllPlayersLink(f))
+            foreach (PlayerLink player in Player.GetAllPlayerLinks(f))
             {
                 GetBoardHeroes(f, player.Ref);
             }
@@ -36,7 +36,7 @@ namespace Quantum.Game
 
         public static void GetInventoryHeroes(Frame f)
         {
-            foreach (PlayerLink player in Player.GetAllPlayersLink(f))
+            foreach (PlayerLink player in Player.GetAllPlayerLinks(f))
             {
                 GetInventoryHeroes(f, player.Ref);
             }
@@ -63,7 +63,7 @@ namespace Quantum.Game
 
         public static void GetCurrentPlayers(Frame f)
         {
-            f.Events.GetCurrentPlayers(f, Player.GetAllPlayersLink(f), BoardSystem.GetBoards(f));
+            f.Events.GetCurrentPlayers(f, Player.GetAllPlayerLinks(f), BoardSystem.GetBoards(f));
         }
     }
 }

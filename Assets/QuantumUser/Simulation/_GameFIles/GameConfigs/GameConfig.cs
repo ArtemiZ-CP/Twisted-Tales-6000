@@ -143,6 +143,7 @@ namespace Quantum.Game
         public Color BackgroundColor;
         [Min(0)] public int BuyCost;
         [Min(0)] public int[] SellCosts;
+        [Min(0)] public int MaxCount;
     }
 
     [Serializable]

@@ -128,7 +128,8 @@ namespace Quantum.Prototypes {
     public Int32 TeamNumber;
     public QBoolean IsAlive;
     public FP AttackTimer;
-    public FP DealedDamage;
+    public FP DealedBaseDamage;
+    public FP DealedAbilityDamage;
     public FP TakenDamage;
     public void Materialize(Frame frame, ref Quantum.FightingHero result, in PrototypeMaterializationContext context = default) {
         this.Hero.Materialize(frame, ref result.Hero, in context);
@@ -142,7 +143,8 @@ namespace Quantum.Prototypes {
         result.TeamNumber = this.TeamNumber;
         result.IsAlive = this.IsAlive;
         result.AttackTimer = this.AttackTimer;
-        result.DealedDamage = this.DealedDamage;
+        result.DealedBaseDamage = this.DealedBaseDamage;
+        result.DealedAbilityDamage = this.DealedAbilityDamage;
         result.TakenDamage = this.TakenDamage;
     }
   }
@@ -200,6 +202,7 @@ namespace Quantum.Prototypes {
     public FP Speed;
     public Int32 DamageType;
     public Int32 Level;
+    public Int32 AttackType;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.HeroProjectile component = default;
         Materialize((Frame)f, ref component, in context);
@@ -213,6 +216,7 @@ namespace Quantum.Prototypes {
         result.Speed = this.Speed;
         result.DamageType = this.DamageType;
         result.Level = this.Level;
+        result.AttackType = this.AttackType;
     }
   }
   [System.SerializableAttribute()]

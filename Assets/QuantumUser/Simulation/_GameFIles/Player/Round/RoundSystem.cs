@@ -25,7 +25,7 @@ namespace Quantum.Game
 
         public void GetPlayersList(Frame f)
         {
-            f.Events.GetCurrentPlayers(f, Player.GetAllPlayersLink(f), BoardSystem.GetBoards(f));
+            f.Events.GetCurrentPlayers(f, Player.GetAllPlayerLinks(f), BoardSystem.GetBoards(f));
         }
 
         public void OnStartRound(Frame f)
@@ -196,12 +196,14 @@ namespace Quantum.Game
             {
                 QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
-                int player1Count = heroes.Count(hero => hero.TeamNumber == GameplayConstants.Team1 && hero.IsAlive);
-                int player2Count = heroes.Count(hero => hero.TeamNumber == GameplayConstants.Team2 && hero.IsAlive);
+                int player1StarsCount = heroes.Where(hero => hero.TeamNumber == GameplayConstants.Team1 && hero.IsAlive)
+                                            .Sum(hero => hero.Hero.Level);
+                int player2StarsCount = heroes.Where(hero => hero.TeamNumber == GameplayConstants.Team2 && hero.IsAlive)
+                                            .Sum(hero => hero.Hero.Level + 1);
 
-                bool isPlayer1Win = player1Count > 0 && player2Count == 0;
-                bool isPlayer2Win = player2Count > 0 && player1Count == 0;
-                int damage = player1Count + player2Count;
+                bool isPlayer1Win = player1StarsCount > 0 && player2StarsCount == 0;
+                bool isPlayer2Win = player2StarsCount > 0 && player1StarsCount == 0;
+                int damage = player1StarsCount + player2StarsCount;
 
                 ProcessResult(f, board, isPlayer1Win, isPlayer2Win, damage);
             }

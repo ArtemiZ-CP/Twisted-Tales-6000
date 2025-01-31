@@ -19,15 +19,21 @@ namespace Quantum.Game
             _heroMesh.OnSetHero -= SetHeroName;
         }
 
-        private void SetHeroName(int id, int level)
+        public static string GetHeroName(int id, int level)
         {
-            _heroNameText.text = $"{QuantumConnection.GetHeroInfo(id).Name}";
+            string name = $"{QuantumConnection.GetHeroInfo(id).Name}";
 
             if (level != 0)
             {
-                _heroNameText.text += $" ({level + 1})";
-
+               name += $" ({level + 1})";
             }
+
+            return name;
+        }
+
+        private void SetHeroName(int id, int level)
+        {
+            _heroNameText.text = GetHeroName(id, level);
         }
     }
 }

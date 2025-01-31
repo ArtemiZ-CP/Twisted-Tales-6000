@@ -15,18 +15,18 @@ namespace Quantum.Game
 
             if (roundInfo.IsPVE)
             {
-                MakePVEBoards(f, Player.GetAllPlayersLink(f), roundInfo);
+                MakePVEBoards(f, Player.GetAllPlayerLinks(f), roundInfo);
                 f.Global->IsPVPRound = false;
             }
             else
             {
-                if (TryMakePVPBoards(f, Player.GetAllPlayersLink(f)))
+                if (TryMakePVPBoards(f, Player.GetAllPlayerLinks(f)))
                 {
                     f.Global->IsPVPRound = true;
                 }
                 else
                 {
-                    MakePVEBoards(f, Player.GetAllPlayersLink(f), new RoundInfo());
+                    MakePVEBoards(f, Player.GetAllPlayerLinks(f), new RoundInfo());
                     f.Global->IsPVPRound = false;
                 }
             }
