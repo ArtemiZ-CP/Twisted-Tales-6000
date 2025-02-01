@@ -10,5 +10,5 @@ signal OnStartRound();
 signal OnEndRound();
 signal StartFight(int roundIndex);
 signal SellHero(PlayerLink* playerLink, Quantum.Game.HeroState state, int positionX, int positionY);
-signal FreezeShop(PlayerLink* playerLink);
+signal ChangeFreezeShop(PlayerLink* playerLink);
 signal TryUpgradeHero(PlayerLink* playerLink);

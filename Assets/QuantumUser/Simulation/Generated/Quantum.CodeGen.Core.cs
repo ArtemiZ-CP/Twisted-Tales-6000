@@ -401,7 +401,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct FightingHero {
-    public const Int32 SIZE = 232;
+    public const Int32 SIZE = 216;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(80)]
     public HeroEntity Hero;
@@ -471,7 +471,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HeroEntity {
-    public const Int32 SIZE = 152;
+    public const Int32 SIZE = 136;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
     public EntityRef Ref;
@@ -479,18 +479,14 @@ namespace Quantum {
     public Int32 ID;
     [FieldOffset(12)]
     public Int32 Level;
-    [FieldOffset(128)]
+    [FieldOffset(112)]
     public FPVector3 DefaultPosition;
     [FieldOffset(64)]
     public FP Health;
-    [FieldOffset(104)]
-    public FP MaxMana;
     [FieldOffset(88)]
-    public FP ManaRegen;
+    public FP MaxMana;
     [FieldOffset(80)]
-    public FP ManaDealDamageRegenPersent;
-    [FieldOffset(96)]
-    public FP ManaTakeDamageRegenPersent;
+    public FP ManaRegen;
     [FieldOffset(56)]
     public FP Defense;
     [FieldOffset(72)]
@@ -501,11 +497,11 @@ namespace Quantum {
     public FP AbilityDamage;
     [FieldOffset(48)]
     public FP AttackSpeed;
-    [FieldOffset(112)]
+    [FieldOffset(96)]
     public FP ProjectileSpeed;
     [FieldOffset(16)]
     public Int32 Range;
-    [FieldOffset(120)]
+    [FieldOffset(104)]
     public FP RangePercentage;
     [FieldOffset(4)]
     public Int32 AttackDamageType;
@@ -521,8 +517,6 @@ namespace Quantum {
         hash = hash * 31 + Health.GetHashCode();
         hash = hash * 31 + MaxMana.GetHashCode();
         hash = hash * 31 + ManaRegen.GetHashCode();
-        hash = hash * 31 + ManaDealDamageRegenPersent.GetHashCode();
-        hash = hash * 31 + ManaTakeDamageRegenPersent.GetHashCode();
         hash = hash * 31 + Defense.GetHashCode();
         hash = hash * 31 + MagicDefense.GetHashCode();
         hash = hash * 31 + AttackDamage.GetHashCode();
@@ -550,9 +544,7 @@ namespace Quantum {
         FP.Serialize(&p->Defense, serializer);
         FP.Serialize(&p->Health, serializer);
         FP.Serialize(&p->MagicDefense, serializer);
-        FP.Serialize(&p->ManaDealDamageRegenPersent, serializer);
         FP.Serialize(&p->ManaRegen, serializer);
-        FP.Serialize(&p->ManaTakeDamageRegenPersent, serializer);
         FP.Serialize(&p->MaxMana, serializer);
         FP.Serialize(&p->ProjectileSpeed, serializer);
         FP.Serialize(&p->RangePercentage, serializer);
@@ -880,13 +872,13 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HeroProjectile : Quantum.IComponent {
-    public const Int32 SIZE = 520;
+    public const Int32 SIZE = 488;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(16)]
     public EntityRef Ref;
     [FieldOffset(56)]
     public FightingHero Owner;
-    [FieldOffset(288)]
+    [FieldOffset(272)]
     public FightingHero Target;
     [FieldOffset(32)]
     public FPVector3 TargetPosition;
@@ -1021,8 +1013,8 @@ namespace Quantum {
   public unsafe partial interface ISignalSellHero : ISignal {
     void SellHero(Frame f, PlayerLink* playerLink, Quantum.Game.HeroState state, Int32 positionX, Int32 positionY);
   }
-  public unsafe partial interface ISignalFreezeShop : ISignal {
-    void FreezeShop(Frame f, PlayerLink* playerLink);
+  public unsafe partial interface ISignalChangeFreezeShop : ISignal {
+    void ChangeFreezeShop(Frame f, PlayerLink* playerLink);
   }
   public unsafe partial interface ISignalTryUpgradeHero : ISignal {
     void TryUpgradeHero(Frame f, PlayerLink* playerLink);
@@ -1042,7 +1034,7 @@ namespace Quantum {
     private ISignalOnEndRound[] _ISignalOnEndRoundSystems;
     private ISignalStartFight[] _ISignalStartFightSystems;
     private ISignalSellHero[] _ISignalSellHeroSystems;
-    private ISignalFreezeShop[] _ISignalFreezeShopSystems;
+    private ISignalChangeFreezeShop[] _ISignalChangeFreezeShopSystems;
     private ISignalTryUpgradeHero[] _ISignalTryUpgradeHeroSystems;
     partial void AllocGen() {
       _globals = (_globals_*)Context.Allocator.AllocAndClear(sizeof(_globals_));
@@ -1067,7 +1059,7 @@ namespace Quantum {
       _ISignalOnEndRoundSystems = BuildSignalsArray<ISignalOnEndRound>();
       _ISignalStartFightSystems = BuildSignalsArray<ISignalStartFight>();
       _ISignalSellHeroSystems = BuildSignalsArray<ISignalSellHero>();
-      _ISignalFreezeShopSystems = BuildSignalsArray<ISignalFreezeShop>();
+      _ISignalChangeFreezeShopSystems = BuildSignalsArray<ISignalChangeFreezeShop>();
       _ISignalTryUpgradeHeroSystems = BuildSignalsArray<ISignalTryUpgradeHero>();
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
@@ -1246,12 +1238,12 @@ namespace Quantum {
           }
         }
       }
-      public void FreezeShop(PlayerLink* playerLink) {
-        var array = _f._ISignalFreezeShopSystems;
+      public void ChangeFreezeShop(PlayerLink* playerLink) {
+        var array = _f._ISignalChangeFreezeShopSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
-            s.FreezeShop(_f, playerLink);
+            s.ChangeFreezeShop(_f, playerLink);
           }
         }
       }

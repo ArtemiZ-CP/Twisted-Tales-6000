@@ -158,8 +158,6 @@ namespace Quantum.Prototypes {
     public FP Health;
     public FP MaxMana;
     public FP ManaRegen;
-    public FP ManaDealDamageRegenPersent;
-    public FP ManaTakeDamageRegenPersent;
     public FP Defense;
     public FP MagicDefense;
     public FP AttackDamage;
@@ -178,8 +176,6 @@ namespace Quantum.Prototypes {
         result.Health = this.Health;
         result.MaxMana = this.MaxMana;
         result.ManaRegen = this.ManaRegen;
-        result.ManaDealDamageRegenPersent = this.ManaDealDamageRegenPersent;
-        result.ManaTakeDamageRegenPersent = this.ManaTakeDamageRegenPersent;
         result.Defense = this.Defense;
         result.MagicDefense = this.MagicDefense;
         result.AttackDamage = this.AttackDamage;

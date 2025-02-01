@@ -65,6 +65,7 @@ namespace Quantum.Game
             GetPlayersList(f);
             Events.GetBoardHeroes(f);
             Events.GetInventoryHeroes(f);
+            Shop.SetFreezeShop(f, isLocked: false);
         }
 
         private void ProcessRound(Frame f)

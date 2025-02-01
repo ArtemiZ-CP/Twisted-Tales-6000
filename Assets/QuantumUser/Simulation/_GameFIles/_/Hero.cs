@@ -125,8 +125,6 @@ namespace Quantum.Game
 
             hero.Hero.RangePercentage = config.RangePercentage;
             hero.Hero.ManaRegen = config.ManaRegen;
-            hero.Hero.ManaDealDamageRegenPersent = config.ManaDealDamageRegenPersent;
-            hero.Hero.ManaTakeDamageRegenPersent = config.ManaTakeDamageRegenPersent;
             hero.IsAlive = true;
             hero.AttackTimer = 0;
 

@@ -122,8 +122,6 @@ namespace Quantum.Prototypes.Unity {
     public FP Health;
     public FP MaxMana;
     public FP ManaRegen;
-    public FP ManaDealDamageRegenPersent;
-    public FP ManaTakeDamageRegenPersent;
     public FP Defense;
     public FP MagicDefense;
     public FP AttackDamage;
@@ -144,8 +142,6 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.Health, out result.Health);
       converter.Convert(this.MaxMana, out result.MaxMana);
       converter.Convert(this.ManaRegen, out result.ManaRegen);
-      converter.Convert(this.ManaDealDamageRegenPersent, out result.ManaDealDamageRegenPersent);
-      converter.Convert(this.ManaTakeDamageRegenPersent, out result.ManaTakeDamageRegenPersent);
       converter.Convert(this.Defense, out result.Defense);
       converter.Convert(this.MagicDefense, out result.MagicDefense);
       converter.Convert(this.AttackDamage, out result.AttackDamage);

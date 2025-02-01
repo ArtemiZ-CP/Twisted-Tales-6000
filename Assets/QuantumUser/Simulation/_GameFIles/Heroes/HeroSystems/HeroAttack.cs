@@ -208,6 +208,7 @@ namespace Quantum.Game
 
         public static void DamageHero(Frame f, FightingHero fightingHero, FightingHero targetHero, DamageType damageType, AttackType attackType)
         {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             Board board = HeroBoard.GetBoard(f, fightingHero);
 
             int fightingHeroIndex = fightingHero.Index;
@@ -225,19 +226,12 @@ namespace Quantum.Game
                 return;
             }
 
-            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-
-            switch (damageType)
+            targetHero.CurrentHealth -= damageType switch
             {
-                case DamageType.Physical:
-                    targetHero.CurrentHealth -= damage * (gameConfig.HeroDefenseRatio / (gameConfig.HeroDefenseRatio + targetHero.Hero.Defense));
-                    break;
-                case DamageType.Magical:
-                    targetHero.CurrentHealth -= damage * (gameConfig.HeroDefenseRatio / (gameConfig.HeroDefenseRatio + targetHero.Hero.MagicDefense));
-                    break;
-                default:
-                    throw new System.ArgumentException("Invalid damage type", nameof(damageType));
-            }
+                DamageType.Physical => damage * (gameConfig.HeroDefenseRatio / (gameConfig.HeroDefenseRatio + targetHero.Hero.Defense)),
+                DamageType.Magical => damage * (gameConfig.HeroDefenseRatio / (gameConfig.HeroDefenseRatio + targetHero.Hero.MagicDefense)),
+                _ => throw new System.ArgumentException("Invalid damage type", nameof(damageType)),
+            };
 
             if (targetHero.CurrentHealth <= 0)
             {
@@ -247,10 +241,24 @@ namespace Quantum.Game
             }
             else
             {
-                targetHero.CurrentMana += damage * targetHero.Hero.ManaTakeDamageRegenPersent;
+                if (gameConfig.AddManaWithPetsentage)
+                {
+                    targetHero.CurrentMana += damage * gameConfig.ManaTakeDamageRegen;
+                }
+                else
+                {
+                    targetHero.CurrentMana += gameConfig.ManaTakeDamageRegen;
+                }
             }
 
-            fightingHero.CurrentMana += damage * fightingHero.Hero.ManaDealDamageRegenPersent;
+            if (gameConfig.AddManaWithPetsentage)
+            {
+                fightingHero.CurrentMana += damage * gameConfig.ManaDealDamageRegen;
+            }
+            else
+            {
+                fightingHero.CurrentMana += gameConfig.ManaDealDamageRegen;
+            }
 
             if (attackType == AttackType.Ability)
             {

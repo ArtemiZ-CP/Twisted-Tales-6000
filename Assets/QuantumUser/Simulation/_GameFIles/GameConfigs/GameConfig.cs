@@ -24,8 +24,9 @@ namespace Quantum.Game
         public AssetRef<HeroInfo>[] HeroInfos;
         [Space(20)]
         public FP ManaRegen;
-        public FP ManaDealDamageRegenPersent;
-        public FP ManaTakeDamageRegenPersent;
+        public bool AddManaWithPetsentage;
+        public FP ManaDealDamageRegen;
+        public FP ManaTakeDamageRegen;
         public FP HeroMoveSpeed = 1;
         public FP HeroRotationSpeed = 1;
         [Tooltip("Half damage on current ratio")]

@@ -9,8 +9,6 @@ struct HeroEntity
     FP Health;
     FP MaxMana;
     FP ManaRegen;
-    FP ManaDealDamageRegenPersent;
-    FP ManaTakeDamageRegenPersent;
     FP Defense;
     FP MagicDefense;
     FP AttackDamage;

@@ -1,12 +1,13 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Quantum.Game
 {
+    using UnityEngine.UI;
+    
     public class ShopUpgrader : MonoBehaviour
     {
-        [SerializeField] private UnityEngine.UI.Button _button;
+        [SerializeField] private Button _button;
         [SerializeField] private Image _progress;
         [SerializeField] private TMP_Text _xp;
         [SerializeField] private TMP_Text _level;
@@ -45,7 +46,7 @@ namespace Quantum.Game
         {
             if (QuantumConnection.IsPlayerMe(eventGetShopUpgradeCost.PlayerRef))
             {
-                _level .text = $"Level: {eventGetShopUpgradeCost.CurrentLevel + 1}";
+                _level.text = $"Level: {eventGetShopUpgradeCost.CurrentLevel + 1}";
 
                 if (eventGetShopUpgradeCost.CurrentXP < 0)
                 {
@@ -55,7 +56,7 @@ namespace Quantum.Game
                 else
                 {
                     _xp.text = $"{eventGetShopUpgradeCost.CurrentXP}/{eventGetShopUpgradeCost.MaxXPCost}";
-                    _progress.fillAmount = (float)eventGetShopUpgradeCost.CurrentXP/eventGetShopUpgradeCost.MaxXPCost;
+                    _progress.fillAmount = (float)eventGetShopUpgradeCost.CurrentXP / eventGetShopUpgradeCost.MaxXPCost;
                 }
 
                 string text = string.Empty;

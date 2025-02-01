@@ -5,35 +5,9 @@ namespace Quantum.Game
 {
     public class Board : MonoBehaviour
     {
-        public class Tile
-        {
-            private Vector3 _position;
-            private HeroObject _hero;
-
-            public Vector3 Position => _position;
-            public HeroObject Hero => _hero;
-
-            public Tile(Vector3 position, HeroObject heroPrefab, Transform parent)
-            {
-                _position = position;
-                _hero = Instantiate(heroPrefab, _position, Quaternion.identity, parent);
-                _hero.transform.localScale = GameSettings.GetSize(isUIPosition: false) * Vector3.one;
-                _hero.SetHeroState(this, heroId: -1);
-            }
-
-            public void SetNewHero(int heroId, int level)
-            {
-                _hero.SetHeroState(this, heroId);
-                _hero.SetLevel(level);
-                _hero.SetBaseTransform();
-            }
-        }
-
         [SerializeField] private LayerMask _boardLayerMask;
         [SerializeField] private HeroObject _boardHeroPrefab;
         [SerializeField] private Transform _heroesParent;
-        [Header("Board Settings")]
-        [SerializeField] private bool _drawGizmos;
 
         private Tile[,] _tiles;
         private int _boardSize;
@@ -185,24 +159,27 @@ namespace Quantum.Game
             }
         }
 
-        private void OnDrawGizmos()
+        public class Tile
         {
-            if (_drawGizmos == false)
+            private Vector3 _position;
+            private HeroObject _hero;
+
+            public Vector3 Position => _position;
+            public HeroObject Hero => _hero;
+
+            public Tile(Vector3 position, HeroObject heroPrefab, Transform parent)
             {
-                return;
+                _position = position;
+                _hero = Instantiate(heroPrefab, _position, Quaternion.identity, parent);
+                _hero.transform.localScale = GameSettings.GetSize(isUIPosition: false) * Vector3.one;
+                _hero.SetHeroState(this, heroId: -1);
             }
 
-            Gizmos.color = Color.white;
-
-            if (Application.isPlaying)
+            public void SetNewHero(int heroId, int level)
             {
-                for (int x = 0; x < _boardSize; x++)
-                {
-                    for (int y = 0; y < _boardSize; y++)
-                    {
-                        Gizmos.DrawWireCube(_tiles[x, y].Position, Vector3.one * _tileSize);
-                    }
-                }
+                _hero.SetHeroState(this, heroId);
+                _hero.SetLevel(level);
+                _hero.SetBaseTransform();
             }
         }
     }

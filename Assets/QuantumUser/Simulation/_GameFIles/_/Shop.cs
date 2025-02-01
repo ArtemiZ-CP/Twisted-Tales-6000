@@ -1,13 +1,26 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using Quantum.Collections;
 
 namespace Quantum.Game
 {
     public unsafe class Shop
     {
+        public static void SetFreezeShop(Frame f, bool isLocked)
+        {
+            foreach (PlayerLink player in Player.GetAllPlayerLinks(f))
+            {
+                SetFreezeShop(f, &player, isLocked);
+            }
+        }
+
+        public static void SetFreezeShop(Frame f, PlayerLink* playerLink, bool isLocked)
+        {
+            playerLink->Info.Shop.IsLocked = isLocked;
+            Events.FreezeShop(f, *playerLink);
+        }
+
         public static void ReloadOnEndRound(Frame f)
         {
             var players = Player.GetAllPlayersEntity(f);

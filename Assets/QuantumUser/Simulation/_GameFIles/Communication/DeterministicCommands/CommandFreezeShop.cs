@@ -10,7 +10,7 @@ namespace Quantum.Game
 
         public void Execute(Frame f, PlayerLink* playerLink)
         {
-            f.Signals.FreezeShop(playerLink);
+            f.Signals.ChangeFreezeShop(playerLink);
         }
     }
 }
