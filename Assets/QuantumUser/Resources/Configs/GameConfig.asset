@@ -68,11 +68,11 @@ MonoBehaviour:
       Value: 365386012224251476
   ManaRegen:
     RawValue: 0
-  AddManaWithPetsentage: 0
+  AddManaWithPetsentage: 1
   ManaDealDamageRegen:
-    RawValue: 327680
+    RawValue: 6554
   ManaTakeDamageRegen:
-    RawValue: 327680
+    RawValue: 3277
   HeroMoveSpeed:
     RawValue: 131072
   HeroRotationSpeed:

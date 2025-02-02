@@ -40,7 +40,7 @@ MonoBehaviour:
     AttackDamage:
       RawValue: 2949120
     AbilityDamage:
-      RawValue: 2949120
+      RawValue: 8847360
     AttackSpeed:
       RawValue: 49152
     ProjectileSpeed:
@@ -55,7 +55,7 @@ MonoBehaviour:
     AttackDamage:
       RawValue: 4456448
     AbilityDamage:
-      RawValue: 4456448
+      RawValue: 13369344
     AttackSpeed:
       RawValue: 49152
     ProjectileSpeed:
@@ -70,7 +70,7 @@ MonoBehaviour:
     AttackDamage:
       RawValue: 6619136
     AbilityDamage:
-      RawValue: 6619136
+      RawValue: 19857408
     AttackSpeed:
       RawValue: 49152
     ProjectileSpeed:
