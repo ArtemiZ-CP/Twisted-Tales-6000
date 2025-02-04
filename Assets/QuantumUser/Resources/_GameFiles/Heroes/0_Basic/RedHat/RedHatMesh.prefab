@@ -296,6 +296,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: RedHat
       objectReference: {fileID: 0}
+    - target: {fileID: 1120329534764406016, guid: 0936526e3e5cb4429baa19ef558d87b7, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1938831532955375339, guid: 0936526e3e5cb4429baa19ef558d87b7, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4081056770068311364, guid: 0936526e3e5cb4429baa19ef558d87b7, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

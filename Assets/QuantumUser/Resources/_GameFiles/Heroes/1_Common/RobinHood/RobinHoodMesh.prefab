@@ -228,6 +228,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -2365311503009087104, guid: 53b48fe9e69c94957b092a7d791ac9f1, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -559002309440711190, guid: 53b48fe9e69c94957b092a7d791ac9f1, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 53b48fe9e69c94957b092a7d791ac9f1, type: 3}
       propertyPath: m_Name
       value: Robin
