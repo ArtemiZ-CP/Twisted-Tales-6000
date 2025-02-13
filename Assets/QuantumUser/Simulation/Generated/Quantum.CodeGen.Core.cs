@@ -608,7 +608,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerInfo {
-    public const Int32 SIZE = 48;
+    public const Int32 SIZE = 52;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(32)]
     public PlayerShop Shop;
@@ -681,16 +681,18 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerShop {
-    public const Int32 SIZE = 16;
+    public const Int32 SIZE = 20;
     public const Int32 ALIGNMENT = 4;
-    [FieldOffset(12)]
+    [FieldOffset(16)]
     public QListPtr<Int32> HeroesID;
     [FieldOffset(0)]
     public Int32 Level;
-    [FieldOffset(4)]
-    public Int32 XP;
     [FieldOffset(8)]
+    public Int32 XP;
+    [FieldOffset(12)]
     public QBoolean IsLocked;
+    [FieldOffset(4)]
+    public Int32 RollCost;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10663;
@@ -698,6 +700,7 @@ namespace Quantum {
         hash = hash * 31 + Level.GetHashCode();
         hash = hash * 31 + XP.GetHashCode();
         hash = hash * 31 + IsLocked.GetHashCode();
+        hash = hash * 31 + RollCost.GetHashCode();
         return hash;
       }
     }
@@ -707,6 +710,7 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerShop*)ptr;
         serializer.Stream.Serialize(&p->Level);
+        serializer.Stream.Serialize(&p->RollCost);
         serializer.Stream.Serialize(&p->XP);
         QBoolean.Serialize(&p->IsLocked, serializer);
         QList.Serialize(&p->HeroesID, serializer, Statics.SerializeInt32);
@@ -759,6 +763,8 @@ namespace Quantum {
     public FP PhaseDelay;
     [FieldOffset(624)]
     public FP PhaseTime;
+    [FieldOffset(612)]
+    public QListPtr<HeroProjectile> ProjectilesPool;
     public FixedArray<Input> input {
       get {
         fixed (byte* p = _input_) { return new FixedArray<Input>(p, 4, 6); }
@@ -788,8 +794,12 @@ namespace Quantum {
         hash = hash * 31 + IsDelayPassed.GetHashCode();
         hash = hash * 31 + PhaseDelay.GetHashCode();
         hash = hash * 31 + PhaseTime.GetHashCode();
+        hash = hash * 31 + ProjectilesPool.GetHashCode();
         return hash;
       }
+    }
+    partial void ClearPointersPartial(FrameBase f, EntityRef entity) {
+      ProjectilesPool = default;
     }
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (_globals_*)ptr;
@@ -812,19 +822,20 @@ namespace Quantum {
         QBoolean.Serialize(&p->IsFighting, serializer);
         QBoolean.Serialize(&p->IsGameStarted, serializer);
         QBoolean.Serialize(&p->IsPVPRound, serializer);
+        QList.Serialize(&p->ProjectilesPool, serializer, Statics.SerializeHeroProjectile);
         FP.Serialize(&p->PhaseDelay, serializer);
         FP.Serialize(&p->PhaseTime, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Board : Quantum.IComponent {
-    public const Int32 SIZE = 128;
+    public const Int32 SIZE = 136;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(16)]
     public EntityRef Ref;
     [FieldOffset(24)]
     public PlayerLink Player1;
-    [FieldOffset(76)]
+    [FieldOffset(80)]
     public PlayerLink Player2;
     [FieldOffset(4)]
     public QListPtr<HeroEntity> HeroesID1;
@@ -872,15 +883,17 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HeroProjectile : Quantum.IComponent {
-    public const Int32 SIZE = 488;
+    public const Int32 SIZE = 496;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(16)]
     public EntityRef Ref;
-    [FieldOffset(56)]
-    public FightingHero Owner;
-    [FieldOffset(272)]
-    public FightingHero Target;
     [FieldOffset(32)]
+    public Int64 Guid;
+    [FieldOffset(64)]
+    public FightingHero Owner;
+    [FieldOffset(280)]
+    public FightingHero Target;
+    [FieldOffset(40)]
     public FPVector3 TargetPosition;
     [FieldOffset(24)]
     public FP Speed;
@@ -890,10 +903,13 @@ namespace Quantum {
     public Int32 Level;
     [FieldOffset(0)]
     public Int32 AttackType;
+    [FieldOffset(12)]
+    public QBoolean IsActive;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10301;
         hash = hash * 31 + Ref.GetHashCode();
+        hash = hash * 31 + Guid.GetHashCode();
         hash = hash * 31 + Owner.GetHashCode();
         hash = hash * 31 + Target.GetHashCode();
         hash = hash * 31 + TargetPosition.GetHashCode();
@@ -901,6 +917,7 @@ namespace Quantum {
         hash = hash * 31 + DamageType.GetHashCode();
         hash = hash * 31 + Level.GetHashCode();
         hash = hash * 31 + AttackType.GetHashCode();
+        hash = hash * 31 + IsActive.GetHashCode();
         return hash;
       }
     }
@@ -909,8 +926,10 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->AttackType);
         serializer.Stream.Serialize(&p->DamageType);
         serializer.Stream.Serialize(&p->Level);
+        QBoolean.Serialize(&p->IsActive, serializer);
         EntityRef.Serialize(&p->Ref, serializer);
         FP.Serialize(&p->Speed, serializer);
+        serializer.Stream.Serialize(&p->Guid);
         FPVector3.Serialize(&p->TargetPosition, serializer);
         Quantum.FightingHero.Serialize(&p->Owner, serializer);
         Quantum.FightingHero.Serialize(&p->Target, serializer);
@@ -934,7 +953,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerLink : Quantum.IComponent {
-    public const Int32 SIZE = 52;
+    public const Int32 SIZE = 56;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(0)]
     public PlayerRef Ref;
@@ -978,7 +997,7 @@ namespace Quantum {
     }
   }
   public unsafe partial interface ISignalOnReloadShop : ISignal {
-    void OnReloadShop(Frame f, PlayerLink* playerLink, Int32 cost);
+    void OnReloadShop(Frame f, PlayerLink* playerLink);
   }
   public unsafe partial interface ISignalOnUpgradeShop : ISignal {
     void OnUpgradeShop(Frame f, PlayerLink* playerLink);
@@ -1130,12 +1149,12 @@ namespace Quantum {
       Physics3D.Init(_globals->PhysicsState3D.MapStaticCollidersState.TrackedMap);
     }
     public unsafe partial struct FrameSignals {
-      public void OnReloadShop(PlayerLink* playerLink, Int32 cost) {
+      public void OnReloadShop(PlayerLink* playerLink) {
         var array = _f._ISignalOnReloadShopSystems;
         for (Int32 i = 0; i < array.Length; ++i) {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
-            s.OnReloadShop(_f, playerLink, cost);
+            s.OnReloadShop(_f, playerLink);
           }
         }
       }

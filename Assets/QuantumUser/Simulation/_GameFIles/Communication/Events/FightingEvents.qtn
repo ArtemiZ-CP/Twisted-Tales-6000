@@ -16,14 +16,15 @@ event HeroManaChanged
     FP MaxMana;
 }
 
-event GetProjectiles
+event DisplayStats
 {
     player_ref Player1;
     player_ref Player2;
 }
 
-event DisplayStats
+event SetActiveEntity
 {
-    player_ref Player1;
-    player_ref Player2;
+    player_ref PlayerRef;
+    entity_ref Entity;
+    bool IsActive;
 }

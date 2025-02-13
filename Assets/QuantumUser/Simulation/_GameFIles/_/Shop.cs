@@ -7,6 +7,13 @@ namespace Quantum.Game
 {
     public unsafe class Shop
     {
+        public static void SetRollCost(Frame f, PlayerLink* playerLink, bool freeRoll)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+            playerLink->Info.Shop.RollCost = freeRoll ? 0 : gameConfig.ShopRollCost;
+            Events.SetShopRollCost(f, *playerLink);
+        }
+
         public static void SetFreezeShop(Frame f, bool isLocked)
         {
             foreach (PlayerLink player in Player.GetAllPlayerLinks(f))
@@ -18,7 +25,7 @@ namespace Quantum.Game
         public static void SetFreezeShop(Frame f, PlayerLink* playerLink, bool isLocked)
         {
             playerLink->Info.Shop.IsLocked = isLocked;
-            Events.FreezeShop(f, *playerLink);
+            Events.SetFreezeShop(f, *playerLink);
         }
 
         public static void ReloadOnEndRound(Frame f)

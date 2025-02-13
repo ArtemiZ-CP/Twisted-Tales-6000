@@ -23,3 +23,8 @@ event ShowCoinsReward
     int RoundResultCoins;
     int StreakCoins;
 }
+
+event DisplayRoundNumber
+{
+    int RoundNumber;
+}

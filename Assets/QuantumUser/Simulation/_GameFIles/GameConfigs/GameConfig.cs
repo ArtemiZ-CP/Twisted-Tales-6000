@@ -40,6 +40,7 @@ namespace Quantum.Game
         public ShopUpdrageSettings[] ShopUpdrageSettings;
         public int ShopSize = 8;
         public int ShopUpgrageCost = 5;
+        public int ShopRollCost = 2;
         public bool ReloadOnUpgrade = false;
         [Header("Inventory settings")]
         public int InventorySize = 8;

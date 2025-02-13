@@ -103,7 +103,7 @@ namespace Quantum.Game
             f.FreeList(board->HeroesID2);
             board->HeroesID2 = default;
 
-            ClearProjectiles(f, board->HeroProjectiles);
+            ClearProjectiles(f, *board);
             f.FreeList(board->HeroProjectiles);
             board->HeroProjectiles = default;
 
@@ -132,15 +132,16 @@ namespace Quantum.Game
             }
         }
 
-        private void ClearProjectiles(Frame f, QListPtr<HeroProjectile> projectilesPtr)
+        private void ClearProjectiles(Frame f, Board board)
         {
-            if (projectilesPtr == null) return;
+            if (board.HeroProjectiles == null) return;
 
-            QList<HeroProjectile> projectiles = f.ResolveList(projectilesPtr);
+            QList<HeroProjectile> projectiles = f.ResolveList(board.HeroProjectiles);
 
             for (int i = 0; i < projectiles.Count; i++)
             {
-                f.Destroy(projectiles[i].Ref);
+                HeroProjectile heroProjectile = projectiles[i];
+                Events.DisactiveEntity(f, board, heroProjectile.Ref);
             }
         }
 
@@ -207,7 +208,7 @@ namespace Quantum.Game
             Board* board = GetBoardPointer(f, boardEntity);
 
             board->Ref = boardEntity;
-            
+
             board->FightingHeroesMap = f.AllocateList<FightingHero>(GameConfig.BoardSize * GameConfig.BoardSize);
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
 

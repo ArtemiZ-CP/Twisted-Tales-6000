@@ -30,3 +30,9 @@ event FreezeShop
     player_ref PlayerRef;
     bool Freezed;
 }
+
+event SetRollCost
+{
+    player_ref PlayerRef;
+    int Cost;
+}

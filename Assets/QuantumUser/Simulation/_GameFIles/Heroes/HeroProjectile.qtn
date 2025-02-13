@@ -1,6 +1,7 @@
 component HeroProjectile
 {
     entity_ref Ref;
+    long Guid;
     FightingHero Owner;
     FightingHero Target;
     FPVector3 TargetPosition;
@@ -8,4 +9,5 @@ component HeroProjectile
     int DamageType;
     int Level;
     int AttackType;
+    bool IsActive;
 }

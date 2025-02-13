@@ -66,6 +66,7 @@ namespace Quantum.Game
             Events.GetBoardHeroes(f);
             Events.GetInventoryHeroes(f);
             Shop.SetFreezeShop(f, isLocked: false);
+            Events.DisplayRoundNumber(f);
         }
 
         private void ProcessRound(Frame f)
@@ -198,7 +199,7 @@ namespace Quantum.Game
                 QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
                 int player1StarsCount = heroes.Where(hero => hero.TeamNumber == GameplayConstants.Team1 && hero.IsAlive)
-                                            .Sum(hero => hero.Hero.Level);
+                                            .Sum(hero => hero.Hero.Level + 1);
                 int player2StarsCount = heroes.Where(hero => hero.TeamNumber == GameplayConstants.Team2 && hero.IsAlive)
                                             .Sum(hero => hero.Hero.Level + 1);
 
@@ -229,6 +230,7 @@ namespace Quantum.Game
                 }
                 else if (isEnemyWin)
                 {
+                    Shop.SetRollCost(f, playerLink, freeRoll: true);
                     playerLink->Info.Health -= damage;
                     roundResult = -1;
                 }

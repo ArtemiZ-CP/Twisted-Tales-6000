@@ -21,6 +21,7 @@ struct PlayerShop
     int Level;
     int XP;
     bool IsLocked;
+    int RollCost;
 }
 
 struct PlayerInventory

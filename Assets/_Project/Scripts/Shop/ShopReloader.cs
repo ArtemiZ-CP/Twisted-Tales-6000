@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 namespace Quantum.Game
@@ -6,10 +7,12 @@ namespace Quantum.Game
     {
         [SerializeField] private PlayerShop _shop;
         [SerializeField] private UnityEngine.UI.Button _button;
+        [SerializeField] private TMP_Text _rollCostText;
 
         private void Awake()
         {
             QuantumEvent.Subscribe<EventGetShopHeroes>(listener: this, handler: ReloadShop);
+            QuantumEvent.Subscribe<EventSetRollCost>(listener: this, handler: SetRollCost);
         }
 
         private void OnEnable()
@@ -20,6 +23,14 @@ namespace Quantum.Game
         private void OnDisable()
         {
             _button.onClick.RemoveListener(SendReloadShopCommand);
+        }
+
+        private void SetRollCost(EventSetRollCost eventSetRollCost)
+        {
+            if (QuantumConnection.IsPlayerMe(eventSetRollCost.PlayerRef))
+            {
+                _rollCostText.text = $"{eventSetRollCost.Cost} Coins";
+            }
         }
 
         private void SendReloadShopCommand()

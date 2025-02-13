@@ -159,6 +159,7 @@ namespace Quantum.Prototypes.Unity {
   [System.SerializableAttribute()]
   public unsafe partial class HeroProjectilePrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.HeroProjectilePrototype> {
     public Quantum.QuantumEntityPrototype Ref;
+    public Int64 Guid;
     public Quantum.Prototypes.Unity.FightingHeroPrototype Owner;
     public Quantum.Prototypes.Unity.FightingHeroPrototype Target;
     public FPVector3 TargetPosition;
@@ -166,10 +167,12 @@ namespace Quantum.Prototypes.Unity {
     public Int32 DamageType;
     public Int32 Level;
     public Int32 AttackType;
+    public QBoolean IsActive;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.HeroProjectilePrototype prototype);
     public override Quantum.Prototypes.HeroProjectilePrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.HeroProjectilePrototype();
       converter.Convert(this.Ref, out result.Ref);
+      converter.Convert(this.Guid, out result.Guid);
       converter.Convert(this.Owner, out result.Owner);
       converter.Convert(this.Target, out result.Target);
       converter.Convert(this.TargetPosition, out result.TargetPosition);
@@ -177,6 +180,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.DamageType, out result.DamageType);
       converter.Convert(this.Level, out result.Level);
       converter.Convert(this.AttackType, out result.AttackType);
+      converter.Convert(this.IsActive, out result.IsActive);
       ConvertUser(converter, ref result);
       return result;
     }

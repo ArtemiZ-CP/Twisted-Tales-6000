@@ -7,13 +7,21 @@ namespace Quantum.Game
     {
         [SerializeField] private QuantumEntityViewUpdater _quantumEntityViewUpdater;
         [SerializeField] private Board _board;
+        [SerializeField] private GameObject _board0;
+        [SerializeField] private GameObject _board180;
         [SerializeField] private Transform _cameraParent;
+        [SerializeField] private Material _skyboxMaterial;
 
         private void Awake()
         {
             QuantumEvent.Subscribe<EventStartRound>(listener: this, handler: StartRound);
             QuantumEvent.Subscribe<EventEndRound>(listener: this, handler: EndRound);
-            QuantumEvent.Subscribe<EventGetProjectiles>(listener: this, handler: GetProjectiles);
+            QuantumEvent.Subscribe<EventSetActiveEntity>(listener: this, handler: SetActiveEntity);
+        }
+
+        private void Start()
+        {
+            _skyboxMaterial.SetFloat("_Rotation", 0);
         }
 
         private void StartRound(EventStartRound eventStartRound)
@@ -22,10 +30,14 @@ namespace Quantum.Game
 
             if (QuantumConnection.IsPlayerMe(eventStartRound.Player1))
             {
+                _board0.SetActive(true);
+                _board180.SetActive(false);
                 rotation = Quaternion.Euler(0, 0, 0);
             }
             else if (QuantumConnection.IsPlayerMe(eventStartRound.Player2))
             {
+                _board0.SetActive(false);
+                _board180.SetActive(true);
                 rotation = Quaternion.Euler(0, 180, 0);
             }
             else
@@ -34,28 +46,25 @@ namespace Quantum.Game
             }
 
             _cameraParent.rotation = rotation;
-            _board.transform.rotation = rotation;
-            
+            _skyboxMaterial.SetFloat("_Rotation", rotation.eulerAngles.y);
+
             ActiveSimulationBoard(eventStartRound.Heroes);
         }
 
         private void EndRound(EventEndRound eventEndRound)
         {
+            _board0.SetActive(true);
+            _board180.SetActive(false);
             _cameraParent.rotation = Quaternion.Euler(0, 0, 0);
-            _board.transform.rotation = Quaternion.Euler(0, 0, 0);
             _board.SetActiveHeroes(true);
         }
 
-        private void GetProjectiles(EventGetProjectiles eventGetProjectiles)
+        private void SetActiveEntity(EventSetActiveEntity eventSetActiveEntity)
         {
-            if (QuantumConnection.IsPlayerMe(eventGetProjectiles.Player1) ||
-                QuantumConnection.IsPlayerMe(eventGetProjectiles.Player2))
+            if (QuantumConnection.IsPlayerMe(eventSetActiveEntity.PlayerRef))
             {
-                foreach (EntityLevelData projectileData in eventGetProjectiles.ProjectileList)
-                {
-                    SetActiveEntity(projectileData.Ref, true);
-                    SetLevelMesh(projectileData);
-                }
+                SetActiveEntity(eventSetActiveEntity.Entity, eventSetActiveEntity.IsActive);
+                SetLevelMesh(eventSetActiveEntity.EntityLevelData);
             }
         }
 
@@ -83,13 +92,18 @@ namespace Quantum.Game
             }
         }
 
-        private void SetLevelMesh(EntityLevelData hero)
+        private void SetLevelMesh(EntityLevelData entityLevelData)
         {
-            QuantumEntityView quantumEntityView = _quantumEntityViewUpdater.GetView(hero.Ref);
+            if (entityLevelData.Ref == default)
+            {
+                return;
+            }
+
+            QuantumEntityView quantumEntityView = _quantumEntityViewUpdater.GetView(entityLevelData.Ref);
 
             if (quantumEntityView != null)
             {
-                quantumEntityView.gameObject.GetComponentInChildren<HeroMesh>().SetMesh(hero.Level, hero.ID);
+                quantumEntityView.gameObject.GetComponentInChildren<HeroMesh>().SetMesh(entityLevelData.Level, entityLevelData.ID);
             }
         }
     }

@@ -6,12 +6,12 @@ using System.Linq;
 namespace Quantum.Game
 {
     [Preserve]
-    public unsafe class PlayerInitializationSystem : SystemSignalsOnly, ISignalOnPlayerAdded, ISignalOnPlayerRemoved
+    public unsafe class PlayerInitializationSystem : SystemSignalsOnly, ISignalOnPlayerAdded
     {
         public override void OnInit(Frame f)
         {
-            f.Global->RngSession = new Photon.Deterministic.RNGSession(1);
             f.Global->IsGameStarted = false;
+            f.Global->ProjectilesPool = f.AllocateList<HeroProjectile>();
         }
 
         public void OnPlayerAdded(Frame f, PlayerRef player, bool firstTime)
@@ -36,11 +36,6 @@ namespace Quantum.Game
             }
         }
 
-        public void OnPlayerRemoved(Frame f, PlayerRef player)
-        {
-
-        }
-
         private void InitializeNewPlayer(Frame f, PlayerRef player)
         {
             RuntimePlayer data = f.GetPlayerData(player);
@@ -57,6 +52,7 @@ namespace Quantum.Game
                     {
                         HeroesID = f.AllocateList<int>(gameConfig.ShopSize),
                         IsLocked = false,
+                        RollCost = 0
                     },
                     Inventory = new()
                     {
@@ -81,7 +77,7 @@ namespace Quantum.Game
 
             f.Add(playerEntity, playerLink);
 
-            f.Signals.OnReloadShop(Player.GetPlayerPointer(f, playerEntity), cost: 0);
+            f.Signals.OnReloadShop(Player.GetPlayerPointer(f, playerEntity));
 
             ReinitializePlayer(f, player);
         }
@@ -94,13 +90,15 @@ namespace Quantum.Game
             int shopUpgradeCost = gameConfig.ShopUpdrageSettings[shopLevel].Cost;
 
             Events.GetCurrentPlayers(f);
-            Events.ChangeCoins(f, player);
-            Events.GetShopHeroes(f, player);
+            Events.ChangeCoins(f, playerLink);
+            Events.GetShopHeroes(f, playerLink);
             Events.GetBoardHeroes(f, playerLink);
             Events.GetInventoryHeroes(f, playerLink);
             HeroMovingSystem.ShowHeroesOnBoardCount(f, playerLink);
             Shop.SendShopUpgradeInfo(f, playerLink);
-            Events.FreezeShop(f, playerLink);
+            Events.SetFreezeShop(f, playerLink);
+            Events.SetShopRollCost(f, playerLink);
+            Events.DisplayRoundNumber(f);
 
             if (f.Global->IsBuyPhase == false)
             {
@@ -110,8 +108,12 @@ namespace Quantum.Game
                 IEnumerable<EntityLevelData> heroDataList = heroes.Select(hero => new EntityLevelData { Ref = hero.Hero.Ref, Level = hero.Hero.Level, ID = hero.Hero.ID });
                 f.Events.StartRound(f, board.Player1.Ref, board.Player2.Ref, heroDataList);
 
-                IEnumerable<EntityLevelData> projectilesData = f.ResolveList(board.HeroProjectiles).Select(p => new EntityLevelData { Ref = p.Ref, Level = p.Level });
-                f.Events.GetProjectiles(f, board.Player1.Ref, board.Player2.Ref, projectilesData);
+                QList<HeroProjectile> heroProjectiles = f.ResolveList(board.HeroProjectiles);
+
+                foreach (HeroProjectile projectile in heroProjectiles)
+                {
+                    Events.ActiveEntity(f, board, projectile.Ref, new EntityLevelData() { Ref = projectile.Ref, Level = projectile.Level });
+                }
             }
         }
 

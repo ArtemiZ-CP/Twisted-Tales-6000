@@ -192,6 +192,7 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.HeroProjectile))]
   public unsafe class HeroProjectilePrototype : ComponentPrototype<Quantum.HeroProjectile> {
     public MapEntityId Ref;
+    public Int64 Guid;
     public Quantum.Prototypes.FightingHeroPrototype Owner;
     public Quantum.Prototypes.FightingHeroPrototype Target;
     public FPVector3 TargetPosition;
@@ -199,6 +200,7 @@ namespace Quantum.Prototypes {
     public Int32 DamageType;
     public Int32 Level;
     public Int32 AttackType;
+    public QBoolean IsActive;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.HeroProjectile component = default;
         Materialize((Frame)f, ref component, in context);
@@ -206,6 +208,7 @@ namespace Quantum.Prototypes {
     }
     public void Materialize(Frame frame, ref Quantum.HeroProjectile result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.FindMapEntity(this.Ref, in context, out result.Ref);
+        result.Guid = this.Guid;
         this.Owner.Materialize(frame, ref result.Owner, in context);
         this.Target.Materialize(frame, ref result.Target, in context);
         result.TargetPosition = this.TargetPosition;
@@ -213,6 +216,7 @@ namespace Quantum.Prototypes {
         result.DamageType = this.DamageType;
         result.Level = this.Level;
         result.AttackType = this.AttackType;
+        result.IsActive = this.IsActive;
     }
   }
   [System.SerializableAttribute()]
@@ -351,6 +355,7 @@ namespace Quantum.Prototypes {
     public Int32 Level;
     public Int32 XP;
     public QBoolean IsLocked;
+    public Int32 RollCost;
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerShop result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.PlayerShop result, in PrototypeMaterializationContext context = default) {
         if (this.HeroesID.Length == 0) {
@@ -366,6 +371,7 @@ namespace Quantum.Prototypes {
         result.Level = this.Level;
         result.XP = this.XP;
         result.IsLocked = this.IsLocked;
+        result.RollCost = this.RollCost;
         MaterializeUser(frame, ref result, in context);
     }
   }

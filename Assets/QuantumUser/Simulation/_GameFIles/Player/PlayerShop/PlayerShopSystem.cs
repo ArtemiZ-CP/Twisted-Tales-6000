@@ -51,11 +51,12 @@ namespace Quantum.Game
             Shop.SetFreezeShop(f, playerLink, playerLink->Info.Shop.IsLocked == false);
         }
 
-        public void OnReloadShop(Frame f, PlayerLink* playerLink, int cost)
+        public void OnReloadShop(Frame f, PlayerLink* playerLink)
         {
-            if (Player.TryRemoveCoins(f, playerLink, cost))
+            if (Player.TryRemoveCoins(f, playerLink, playerLink->Info.Shop.RollCost))
             {
                 Shop.Reload(f, playerLink);
+                Shop.SetRollCost(f, playerLink, freeRoll: false);
             }
         }
 
