@@ -279,6 +279,8 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerInfo))]
   public unsafe partial class PlayerInfoPrototype : StructPrototype {
+    [MaxStringByteCount(62, "Unicode")]
+    public string Nickname;
     public Quantum.Prototypes.PlayerShopPrototype Shop;
     public Quantum.Prototypes.PlayerInventoryPrototype Inventory;
     public Quantum.Prototypes.PlayerBoardPrototype Board;
@@ -286,8 +288,10 @@ namespace Quantum.Prototypes {
     public Int32 Health;
     public Int32 Streak;
     public Int32 StreakType;
+    public QBoolean Bot;
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerInfo result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.PlayerInfo result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.AssignQString(this.Nickname, 64, in context, out result.Nickname);
         this.Shop.Materialize(frame, ref result.Shop, in context);
         this.Inventory.Materialize(frame, ref result.Inventory, in context);
         this.Board.Materialize(frame, ref result.Board, in context);
@@ -295,6 +299,7 @@ namespace Quantum.Prototypes {
         result.Health = this.Health;
         result.Streak = this.Streak;
         result.StreakType = this.StreakType;
+        result.Bot = this.Bot;
         MaterializeUser(frame, ref result, in context);
     }
   }

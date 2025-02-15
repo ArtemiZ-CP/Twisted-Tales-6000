@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Photon.Deterministic;
 using Quantum.Collections;
 
 namespace Quantum.Game
@@ -56,19 +57,57 @@ namespace Quantum.Game
             for (int i = 0; i < gameConfig.ShopSize; i++)
             {
                 HeroRare heroRare = GetHeroRare(f, playerLink->Info.Shop.Level);
-                int heroID = GetRandomHero(f, playerLink, heroRare);
-
-                if (heroID < 0)
-                {
-                    list[i] = gameConfig.GetRandomHero(f, heroRare);
-                }
-                else
-                {
-                    list[i] = GetRandomHero(f, playerLink, heroRare);
-                }
+                int heroID = GetRandomHeroWeighted(f, playerLink, heroRare);
+                list[i] = heroID;
             }
 
             f.Events.GetShopHeroes(f, playerLink->Ref, list);
+        }
+
+        private static int GetRandomHeroWeighted(Frame f, PlayerLink* playerLink, HeroRare heroRare)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+            List<(int heroId, float weight)> availableHeroes = new();
+            
+            for (int i = 0; i < gameConfig.HeroInfos.Length; i++)
+            {
+                HeroInfo heroInfo = f.FindAsset(gameConfig.HeroInfos[i]);
+                
+                if (heroInfo.Rare == heroRare)
+                {
+                    int heroMaxCount = gameConfig.HeroShopSettings[(int)heroInfo.Rare].MaxCount;
+                    int currentCount = GetCountHeroInGame(f, i);
+                    int remainingCount = heroMaxCount - currentCount;
+                    
+                    if (remainingCount > 0 && GetHeroCountByPlayer(f, *playerLink, i) < GetHeroCount(f, gameConfig.MaxLevel - 1))
+                    {
+                        float weight = (float)remainingCount / heroMaxCount;
+                        availableHeroes.Add((i, weight));
+                    }
+                }
+            }
+
+            if (availableHeroes.Count == 0)
+            {
+                return gameConfig.GetRandomHero(f, heroRare);
+            }
+
+            float totalWeight = availableHeroes.Sum(h => h.weight);
+            float randomValue = f.RNG->Next().AsFloat * totalWeight;
+            
+            float currentWeight = 0;
+            
+            foreach (var (heroId, weight) in availableHeroes)
+            {
+                currentWeight += weight;
+                
+                if (randomValue <= currentWeight)
+                {
+                    return heroId;
+                }
+            }
+
+            return availableHeroes[0].heroId;
         }
 
         public static bool TryUpgradeShop(Frame f, PlayerLink* playerLink)

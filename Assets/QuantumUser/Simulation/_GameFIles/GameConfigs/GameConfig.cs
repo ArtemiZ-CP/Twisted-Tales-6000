@@ -11,6 +11,7 @@ namespace Quantum.Game
 
         [Header("Player")]
         public int PlayerHealth = 100;
+        public int MaxPlayers = 8;
         [Header("Coins settings")]
         public int CoinsPerWin = 1;
         public int CoinsPerLose = 0;
@@ -55,6 +56,8 @@ namespace Quantum.Game
         public int StartFightingPhaseDelay = 1;
         public int EndFightingPhaseDelay = 1;
         public int PVPStreak = 3;
+        [Header("Bot")]
+        public AssetRef<EntityPrototype> BotPrototype;
 
         public GameConfig()
         {

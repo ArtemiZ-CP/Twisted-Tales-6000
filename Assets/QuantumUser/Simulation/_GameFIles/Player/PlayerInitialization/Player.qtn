@@ -6,6 +6,7 @@ component PlayerLink
 
 struct PlayerInfo
 {
+    QString<64> Nickname;
     PlayerShop Shop;
     PlayerInventory Inventory;
     PlayerBoard Board;
@@ -13,6 +14,7 @@ struct PlayerInfo
     int Health;
     int Streak;
     int StreakType;
+    bool Bot;
 }
 
 struct PlayerShop

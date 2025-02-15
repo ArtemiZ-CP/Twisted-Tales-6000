@@ -57,6 +57,6 @@ public class PlayersDisplay : MonoBehaviour
 
     private string GetPlayerText(Color textColor, PlayerLink player)
     {
-        return $"<color=#{ColorUtility.ToHtmlStringRGB(textColor)}>Player: {player.Ref._index} HP: {player.Info.Health}</color>\n\n";
+        return $"<color=#{ColorUtility.ToHtmlStringRGB(textColor)}>{player.Info.Nickname}: {player.Info.Health} HP</color>\n\n";
     }
 }

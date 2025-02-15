@@ -400,6 +400,72 @@ namespace Quantum {
     }
   }
   [StructLayout(LayoutKind.Explicit)]
+  [System.SerializableAttribute()]
+  public unsafe partial struct QString64 : IQString, System.IEquatable<QString64> {
+    public const Int32 SIZE = 64;
+    public const Int32 ALIGNMENT = 4;
+    [FieldOffset(0)]
+    public UInt16 ByteCount;
+    [FieldOffset(2)]
+    [FixedBufferDynamicLength("ByteCount")]
+    public fixed Byte Bytes[62];
+    public const int MaxByteCount = 62;
+    public QString64(String str) {
+      QString.ConstructFrom(str, MaxByteCount, out this);
+    }
+    public int Length {
+      get {
+        return QString.GetLength(ref this);
+      }
+    }
+    public override System.String ToString() {
+      return QString.GetString(ref this);
+    }
+    public static Boolean CanHold(String str) {
+      return QString.CanHold(str, MaxByteCount);
+    }
+    Int32 IQString.CompareOrdinal(byte* bytes, UInt16 byteCount) {
+      return QString.CompareOrdinal(ref this, bytes, byteCount);
+    }
+    public Int32 CompareOrdinal(String str) {
+      return QString.CompareOrdinal(ref this, str);
+    }
+    public static implicit operator QString64(String str) {
+      return new QString64(str);
+    }
+    public static implicit operator String(QString64 str) {
+      return str.ToString();
+    }
+    public override Boolean Equals(Object obj) {
+      return QString.AreEqual(ref this, obj);
+    }
+    public Boolean Equals(QString64 str) {
+      return QString.CompareOrdinal(ref this, str.Bytes, str.ByteCount) == 0;
+    }
+    public Boolean Equals<T>(ref T str)
+      where T : unmanaged, IQString {
+      return QString.CompareOrdinal(ref this, ref str) == 0;
+    }
+    public Int32 CompareOrdinal<T>(ref T str)
+      where T : unmanaged, IQString {
+      return QString.CompareOrdinal(ref this, ref str);
+    }
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 13649;
+        hash = hash * 31 + ByteCount.GetHashCode();
+        fixed (Byte* p = Bytes) hash = hash * 31 + HashCodeUtils.GetArrayHashCode(p, this.ByteCount);
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (QString64*)ptr;
+        serializer.Stream.Serialize(&p->ByteCount);
+        Assert.Always(p->ByteCount <= 62, p->ByteCount);
+        serializer.Stream.SerializeBuffer(&p->Bytes[0], p->ByteCount);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct FightingHero {
     public const Int32 SIZE = 216;
     public const Int32 ALIGNMENT = 8;
@@ -608,13 +674,15 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerInfo {
-    public const Int32 SIZE = 52;
+    public const Int32 SIZE = 120;
     public const Int32 ALIGNMENT = 4;
-    [FieldOffset(32)]
+    [FieldOffset(56)]
+    public QString64 Nickname;
+    [FieldOffset(36)]
     public PlayerShop Shop;
-    [FieldOffset(24)]
+    [FieldOffset(28)]
     public PlayerInventory Inventory;
-    [FieldOffset(16)]
+    [FieldOffset(20)]
     public PlayerBoard Board;
     [FieldOffset(0)]
     public Int32 Coins;
@@ -624,9 +692,12 @@ namespace Quantum {
     public Int32 Streak;
     [FieldOffset(12)]
     public Int32 StreakType;
+    [FieldOffset(16)]
+    public QBoolean Bot;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 13049;
+        hash = hash * 31 + Nickname.GetHashCode();
         hash = hash * 31 + Shop.GetHashCode();
         hash = hash * 31 + Inventory.GetHashCode();
         hash = hash * 31 + Board.GetHashCode();
@@ -634,6 +705,7 @@ namespace Quantum {
         hash = hash * 31 + Health.GetHashCode();
         hash = hash * 31 + Streak.GetHashCode();
         hash = hash * 31 + StreakType.GetHashCode();
+        hash = hash * 31 + Bot.GetHashCode();
         return hash;
       }
     }
@@ -648,9 +720,11 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->Health);
         serializer.Stream.Serialize(&p->Streak);
         serializer.Stream.Serialize(&p->StreakType);
+        QBoolean.Serialize(&p->Bot, serializer);
         Quantum.PlayerBoard.Serialize(&p->Board, serializer);
         Quantum.PlayerInventory.Serialize(&p->Inventory, serializer);
         Quantum.PlayerShop.Serialize(&p->Shop, serializer);
+        Quantum.QString64.Serialize(&p->Nickname, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -829,13 +903,13 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Board : Quantum.IComponent {
-    public const Int32 SIZE = 136;
+    public const Int32 SIZE = 272;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(16)]
     public EntityRef Ref;
     [FieldOffset(24)]
     public PlayerLink Player1;
-    [FieldOffset(80)]
+    [FieldOffset(148)]
     public PlayerLink Player2;
     [FieldOffset(4)]
     public QListPtr<HeroEntity> HeroesID1;
@@ -953,7 +1027,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerLink : Quantum.IComponent {
-    public const Int32 SIZE = 56;
+    public const Int32 SIZE = 124;
     public const Int32 ALIGNMENT = 4;
     [FieldOffset(0)]
     public PlayerRef Ref;
@@ -1366,6 +1440,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.PlayerShop), Quantum.PlayerShop.SIZE);
       typeRegistry.Register(typeof(Ptr), Ptr.SIZE);
       typeRegistry.Register(typeof(QBoolean), QBoolean.SIZE);
+      typeRegistry.Register(typeof(Quantum.QString64), Quantum.QString64.SIZE);
       typeRegistry.Register(typeof(Quantum.Ptr), Quantum.Ptr.SIZE);
       typeRegistry.Register(typeof(QueryOptions), 2);
       typeRegistry.Register(typeof(RNGSession), RNGSession.SIZE);
@@ -1395,6 +1470,7 @@ namespace Quantum {
       FramePrinter.EnsureNotStripped();
       FramePrinter.EnsurePrimitiveNotStripped<CallbackFlags>();
       FramePrinter.EnsurePrimitiveNotStripped<Quantum.InputButtons>();
+      FramePrinter.EnsurePrimitiveNotStripped<Quantum.QString64>();
       FramePrinter.EnsurePrimitiveNotStripped<QueryOptions>();
     }
   }

@@ -17,6 +17,7 @@ MonoBehaviour:
     Guid:
       Value: 481284669698677807
   PlayerHealth: 100
+  MaxPlayers: 8
   CoinsPerWin: 1
   CoinsPerLose: 0
   CoinsPerRound: 0300000003000000040000000400000005000000
@@ -242,6 +243,7 @@ MonoBehaviour:
       Chance: 35
   ShopSize: 8
   ShopUpgrageCost: 5
+  ShopRollCost: 2
   ReloadOnUpgrade: 0
   InventorySize: 8
   RoundInfos:
@@ -306,3 +308,6 @@ MonoBehaviour:
   StartFightingPhaseDelay: 1
   EndFightingPhaseDelay: 3
   PVPStreak: 1
+  BotPrototype:
+    Id:
+      Value: 1330744238128820147

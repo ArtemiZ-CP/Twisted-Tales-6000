@@ -18,7 +18,7 @@ namespace Quantum.Game
         {
             if (firstTime == false)
             {
-                ReinitializePlayer(f, player);
+                ReinitializeEntity(f, player);
 
                 return;
             }
@@ -32,22 +32,61 @@ namespace Quantum.Game
 
             if (Player.GetAllPlayers(f).Count == f.SessionConfig.PlayerCount)
             {
+                int botsCount = f.FindAsset(f.RuntimeConfig.GameConfig).MaxPlayers - f.SessionConfig.PlayerCount;
+                InitializeBots(f, botsCount);
                 f.Global->IsGameStarted = true;
+                Events.GetCurrentPlayers(f);
             }
+            
+            ReinitializeEntity(f, player);
         }
 
         private void InitializeNewPlayer(Frame f, PlayerRef player)
         {
+            EntityRef playerEntity = SpawnPlayer(f, player, out string playerName);
+            InitializeEntity(f, player, playerEntity, playerName, bot: false);
+        }
+
+        private EntityRef SpawnPlayer(Frame f, PlayerRef player, out string playerName)
+        {
             RuntimePlayer data = f.GetPlayerData(player);
-            EntityPrototype entityPrototypeAsset = f.FindAsset(data.PlayerAvatar);
+            playerName = data.PlayerNickname;
+
+            return f.Create(data.PlayerAvatar);
+        }
+
+        private void InitializeBots(Frame f, int botsCount)
+        {
+            for (int i = 0; i < botsCount; i++)
+            {
+                InitializeBot(f, i);
+            }
+        }
+
+        private void InitializeBot(Frame f, int index)
+        {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            EntityRef playerEntity = f.Create(entityPrototypeAsset);
+            EntityRef botEntity = f.Create(gameConfig.BotPrototype);
+            PlayerRef playerRef = new()
+            {
+                _index = index + 1000
+            };
+
+            Log.Debug(botEntity);
+
+            InitializeEntity(f, playerRef, botEntity, $"Bot{index}", bot: true);
+        }
+
+        private void InitializeEntity(Frame f, PlayerRef playerRef, EntityRef entityRef, string name, bool bot)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
             PlayerLink playerLink = new()
             {
-                Ref = player,
+                Ref = playerRef,
                 Info = new()
                 {
+                    Nickname = name,
                     Shop = new()
                     {
                         HeroesID = f.AllocateList<int>(gameConfig.ShopSize),
@@ -65,7 +104,8 @@ namespace Quantum.Game
                         HeroesLevel = f.AllocateList<int>(GameConfig.BoardSize * GameConfig.BoardSize / 2)
                     },
                     Coins = gameConfig.CoinsPerRound[0],
-                    Health = gameConfig.PlayerHealth
+                    Health = gameConfig.PlayerHealth,
+                    Bot = bot
                 }
             };
 
@@ -75,19 +115,15 @@ namespace Quantum.Game
             FillList(f, playerLink.Info.Board.HeroesID, GameConfig.BoardSize * GameConfig.BoardSize / 2, -1);
             FillList(f, playerLink.Info.Board.HeroesLevel, GameConfig.BoardSize * GameConfig.BoardSize / 2, 0);
 
-            f.Add(playerEntity, playerLink);
+            f.Add(entityRef, playerLink);
 
-            f.Signals.OnReloadShop(Player.GetPlayerPointer(f, playerEntity));
-
-            ReinitializePlayer(f, player);
+            f.Signals.OnReloadShop(Player.GetPlayerPointer(f, entityRef));
         }
 
-        private void ReinitializePlayer(Frame f, PlayerRef player)
+        private void ReinitializeEntity(Frame f, PlayerRef player)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             PlayerLink playerLink = Player.GetPlayer(f, player);
-            int shopLevel = playerLink.Info.Shop.Level;
-            int shopUpgradeCost = gameConfig.ShopUpdrageSettings[shopLevel].Cost;
 
             Events.GetCurrentPlayers(f);
             Events.ChangeCoins(f, playerLink);
