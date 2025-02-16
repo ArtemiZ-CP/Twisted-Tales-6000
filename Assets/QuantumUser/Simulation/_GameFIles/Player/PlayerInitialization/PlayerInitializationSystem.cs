@@ -36,8 +36,9 @@ namespace Quantum.Game
                 InitializeBots(f, botsCount);
                 f.Global->IsGameStarted = true;
                 Events.GetCurrentPlayers(f);
+                f.Signals.BotStartRound();
             }
-            
+
             ReinitializeEntity(f, player);
         }
 

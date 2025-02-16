@@ -241,7 +241,7 @@ MonoBehaviour:
       Chance: 50
     - Rare: 4
       Chance: 35
-  ShopSize: 8
+  ShopSize: 6
   ShopUpgrageCost: 5
   ShopRollCost: 2
   ReloadOnUpgrade: 0

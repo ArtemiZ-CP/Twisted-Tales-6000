@@ -124,6 +124,17 @@ namespace Quantum.Game
         {
             return HeroShopSettings[(int)rare].SellCosts[level];
         }
+
+        public static void ArrayIndexToCords(int index, out int x, out int y)
+        {
+            x = index % BoardSize;
+            y = index / BoardSize;
+        }
+
+        public static void ArrayCordsToIndex(int x, int y, out int index)
+        {
+            index = y * BoardSize + x;
+        }
     }
 
     [Serializable]

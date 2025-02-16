@@ -90,7 +90,7 @@ MonoBehaviour:
     StartDisabled: 0
     Children: []
   - SystemType:
-      AssemblyQualifiedName: Quantum.Game.HeroProjectilesSystem, Quantum.Simulation
+      AssemblyQualifiedName: Quantum.Game.BotSystem, Quantum.Simulation
     SystemName: 
     StartDisabled: 0
     Children: []

@@ -67,6 +67,7 @@ namespace Quantum.Game
             Events.GetInventoryHeroes(f);
             Shop.SetFreezeShop(f, isLocked: false);
             Events.DisplayRoundNumber(f);
+            f.Signals.BotStartRound();
         }
 
         private void ProcessRound(Frame f)
