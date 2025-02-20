@@ -9,5 +9,5 @@ global
     bool IsDelayPassed;
     FP PhaseDelay;
     FP PhaseTime;
-    list<HeroProjectile> ProjectilesPool;
+    list<Board> Boards;
 }

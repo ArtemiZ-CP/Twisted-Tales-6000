@@ -6,7 +6,7 @@ using UnityEngine.Scripting;
 namespace Quantum.Game
 {
     [Preserve]
-    public unsafe class HeroProjectilesSystem : SystemMainThread, ISignalOnEndRound
+    public unsafe class HeroProjectilesSystem : SystemMainThread
     {
         public override void Update(Frame f)
         {
@@ -17,25 +17,6 @@ namespace Quantum.Game
             foreach (Board board in boards)
             {
                 ProcessProjectiles(f, board);
-            }
-        }
-
-        public void OnEndRound(Frame f)
-        {
-            QList<HeroProjectile> heroProjectiles = f.ResolveList(f.Global->ProjectilesPool);
-
-            for (int i = 0; i < heroProjectiles.Count; i++)
-            {
-                HeroProjectile projectile = heroProjectiles[i];
-                projectile.IsActive = false;
-                heroProjectiles[i] = projectile;
-
-                if (f.Exists(projectile.Target.Hero.Ref))
-                {
-                    Transform3D* targetTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Target.Hero.Ref);
-                    targetTransform->Position = FPVector3.MaxValue;
-                    targetTransform->Teleport(f, FPVector3.MaxValue);
-                }
             }
         }
 
@@ -52,53 +33,19 @@ namespace Quantum.Game
                 _ => gameConfig.GetHeroInfo(f, fighingHero.Hero.ID).ProjectilePrototype,
             };
 
-            QList<HeroProjectile> projectilePool = f.ResolveList(f.Global->ProjectilesPool);
-            HeroProjectile projectile = default;
-            int projectileIndex = -1;
-
-            for (int i = 0; i < projectilePool.Count; i++)
+            HeroProjectile projectile = new()
             {
-                HeroProjectile pooledProjectile = projectilePool[i];
-
-                if (pooledProjectile.IsActive == false &&
-                    pooledProjectile.Guid == f.FindAsset(projectilePrototype).Guid.Value)
-                {
-                    projectile = pooledProjectile;
-                    projectileIndex = i;
-                    break;
-                }
-            }
-
-            if (projectileIndex >= 0)
-            {
-                projectile.Target = targetHero;
-                projectile.Owner = fighingHero;
-                projectile.TargetPosition = f.Get<Transform3D>(targetHero.Hero.Ref).Position;
-                projectile.DamageType = (int)damageType;
-                projectile.Speed = fighingHero.Hero.ProjectileSpeed;
-                projectile.Level = fighingHero.Hero.Level;
-                projectile.AttackType = (int)attackType;
-                projectile.IsActive = true;
-                projectilePool[projectileIndex] = projectile;
-            }
-            else
-            {
-                projectile = new()
-                {
-                    Ref = f.Create(projectilePrototype),
-                    Guid = f.FindAsset(projectilePrototype).Guid.Value,
-                    Target = targetHero,
-                    Owner = fighingHero,
-                    TargetPosition = f.Get<Transform3D>(targetHero.Hero.Ref).Position,
-                    DamageType = (int)damageType,
-                    Speed = fighingHero.Hero.ProjectileSpeed,
-                    Level = fighingHero.Hero.Level,
-                    AttackType = (int)attackType,
-                    IsActive = true,
-                };
-
-                projectilePool.Add(projectile);
-            }
+                Ref = f.Create(projectilePrototype),
+                Guid = f.FindAsset(projectilePrototype).Guid.Value,
+                Target = targetHero,
+                Owner = fighingHero,
+                TargetPosition = f.Get<Transform3D>(targetHero.Hero.Ref).Position,
+                DamageType = (int)damageType,
+                Speed = fighingHero.Hero.ProjectileSpeed,
+                Level = fighingHero.Hero.Level,
+                AttackType = (int)attackType,
+                IsActive = true,
+            };
 
             Transform3D* projectileTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Ref);
             FPVector3 projectilePosition = f.Get<Transform3D>(fighingHero.Hero.Ref).Position;
@@ -143,21 +90,7 @@ namespace Quantum.Game
             if (projectileTransform->Position == projectile.TargetPosition)
             {
                 HeroAttack.DamageHero(f, projectile.Owner, projectile.Target, (HeroAttack.DamageType)projectile.DamageType, (HeroAttack.AttackType)projectile.AttackType);
-                Events.DisactiveEntity(f, board, projectile.Ref);
-
-                QList<HeroProjectile> projectilePool = f.ResolveList(f.Global->ProjectilesPool);
-
-                for (int i = 0; i < projectilePool.Count; i++)
-                {
-                    HeroProjectile pooledProjectile = projectilePool[i];
-
-                    if (pooledProjectile.Ref == projectile.Ref)
-                    {
-                        pooledProjectile.IsActive = false;
-                        projectilePool[i] = pooledProjectile;
-                        break;
-                    }
-                }
+                f.Destroy(projectile.Ref);
 
                 return true;
             }

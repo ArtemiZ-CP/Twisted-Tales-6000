@@ -1,6 +1,8 @@
 fileFormatVersion: 2
-guid: 23d8cfead09e64b1d980390e3c946304
-TextScriptImporter:
+guid: 8c30475b90706436eb8438b92dbe1f04
+labels:
+- QuantumAsset
+PrefabImporter:
   externalObjects: {}
   userData: 
   assetBundleName: 

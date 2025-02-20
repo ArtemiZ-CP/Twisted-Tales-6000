@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Quantum.Collections;
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -10,14 +11,19 @@ namespace Quantum.Game
     {
         public static List<Board> GetBoards(Frame f)
         {
-            List<Board> boardEntities = new();
+            QList<Board> boards = f.ResolveList(f.Global->Boards);
+
+            if (boards.Count != 0)
+            {
+                return boards.ToList();
+            }
 
             foreach (var board in f.GetComponentIterator<Board>())
             {
-                boardEntities.Add(board.Component);
+                boards.Add(board.Component);
             }
 
-            return boardEntities;
+            return boards.ToList();
         }
 
         public static Board GetBoard(Frame f, PlayerRef playerRef)
@@ -54,7 +60,7 @@ namespace Quantum.Game
 
         public static void DisactiveEntity(Frame f, EntityRef entity)
         {
-            GetGameObject(f, entity).SetActive(false);
+            GetGameObject(f, entity)?.SetActive(false);
         }
 
         public static GameObject GetGameObject(Frame f, EntityRef entity)
