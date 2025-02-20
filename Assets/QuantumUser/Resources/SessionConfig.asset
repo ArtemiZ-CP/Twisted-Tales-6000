@@ -17,7 +17,7 @@ MonoBehaviour:
     ChecksumCrossPlatformDeterminism: 0
     LockstepSimulation: 0
     InputDeltaCompression: 1
-    UpdateFPS: 120
+    UpdateFPS: 24
     ChecksumInterval: 60
     RollbackWindow: 60
     InputHardTolerance: 8

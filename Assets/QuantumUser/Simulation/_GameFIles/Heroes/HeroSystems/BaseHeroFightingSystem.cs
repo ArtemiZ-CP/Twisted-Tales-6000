@@ -3,18 +3,17 @@ using Quantum.Collections;
 using UnityEngine.Scripting;
 using System.Collections.Generic;
 using System;
+using Quantum.Game.Heroes;
 
 namespace Quantum.Game
 {
     [Preserve]
-    public unsafe class BaseHeroFightingSystem : SystemMainThreadGroup
+    public unsafe class BaseHeroFightingSystem : SystemMainThread
     {
-        public BaseHeroFightingSystem() : base(nameof(BaseHeroFightingSystem))
+        public override void Update(Frame f)
         {
-        }
-
-        public BaseHeroFightingSystem(string name, params SystemMainThread[] children) : base(name, children)
-        {
+            MeleeHeroSystem.Update(f);
+            RangedHeroSystem.Update(f);
         }
 
         public static void UpdateHeroes<T>(Frame f,
@@ -22,21 +21,20 @@ namespace Quantum.Game
         {
             if (f.Global->IsBuyPhase || f.Global->IsDelayPassed == false || f.Global->IsFighting == false) return;
 
-            List<FightingHero> heroesPtr = new();
+            List<(FightingHero, Board)> heroesPtr = new();
 
             if (TryGetHeroes<T>(f, ref heroesPtr))
             {
-                foreach (FightingHero fightingHero in heroesPtr)
+                foreach ((FightingHero fightingHero, Board board) in heroesPtr)
                 {
-                    UpdateHero(f, fightingHero, Attack, isHeroAttackWhileMooving);
+                    UpdateHero(f, fightingHero, board, Attack, isHeroAttackWhileMooving);
                 }
             }
         }
 
-        private static void UpdateHero(Frame f, FightingHero fightingHero,
+        private static void UpdateHero(Frame f, FightingHero fightingHero, Board board,
             Action<Frame, FightingHero, HeroAttack.DamageType, HeroAttack.AttackType> Attack, bool isHeroAttackWhileMooving)
         {
-            Board board = HeroBoard.GetBoard(f, fightingHero);
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             fightingHero = heroes[fightingHero.Index];
 
@@ -45,28 +43,32 @@ namespace Quantum.Game
                 return;
             }
 
-            HeroAttack.Update(f, fightingHero);
+            HeroAttack.Update(f, fightingHero, board);
 
             if (HeroBoard.IsHeroMoving(f, fightingHero))
             {
                 MoveHero(f, fightingHero, HeroBoard.GetHeroPosition(f, fightingHero));
 
-                if (isHeroAttackWhileMooving == false) return;
+                if (isHeroAttackWhileMooving == false)
+                {
+                    return;
+                }
             }
 
-            if (HeroBoard.TrySetTarget(f, fightingHero))
+            if (HeroBoard.TrySetTarget(f, fightingHero, board) == false)
             {
-                if (fightingHero.AttackTarget != default && f.Exists(fightingHero.AttackTarget))
-                {
-                    Hero.Rotate(f, fightingHero.Hero, f.Get<Transform3D>(fightingHero.AttackTarget).Position);
-                }
-
-                Attack(f, fightingHero, (HeroAttack.DamageType)fightingHero.Hero.AttackDamageType, HeroAttack.AttackType.Base);
                 return;
             }
+
+            if (fightingHero.AttackTarget != default && f.Exists(fightingHero.AttackTarget))
+            {
+                Hero.Rotate(f, fightingHero.Hero, f.Get<Transform3D>(fightingHero.AttackTarget).Position);
+            }
+
+            Attack(f, fightingHero, (HeroAttack.DamageType)fightingHero.Hero.AttackDamageType, HeroAttack.AttackType.Base);
         }
 
-        private static bool TryGetHeroes<T>(Frame f, ref List<FightingHero> heroes) where T : unmanaged, IComponent
+        private static bool TryGetHeroes<T>(Frame f, ref List<(FightingHero, Board)> heroes) where T : unmanaged, IComponent
         {
             List<Board> boards = BoardSystem.GetBoards(f);
 
@@ -83,7 +85,7 @@ namespace Quantum.Game
 
                     if (f.Unsafe.TryGetPointer(fightingHero.Hero.Ref, out T* _))
                     {
-                        heroes.Add(fightingHero);
+                        heroes.Add((fightingHero, board));
                     }
                 }
             }

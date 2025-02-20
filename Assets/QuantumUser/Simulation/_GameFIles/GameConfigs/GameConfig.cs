@@ -58,6 +58,8 @@ namespace Quantum.Game
         public int PVPStreak = 3;
         [Header("Bot")]
         public AssetRef<EntityPrototype> BotPrototype;
+        [Header("Base")]
+        public AssetRef<EntityPrototype> EmptyPrototype;
 
         public GameConfig()
         {

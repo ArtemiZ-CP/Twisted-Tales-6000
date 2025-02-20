@@ -102,9 +102,9 @@ namespace Quantum.Game
             }
         }
 
-        public static bool TrySetTarget(Frame f, FightingHero fightingHero)
+        public static bool TrySetTarget(Frame f, FightingHero fightingHero, Board board)
         {
-            FightingHero target = GetHeroTarget(f, fightingHero, out Vector2Int moveTargetPosition);
+            FightingHero target = GetHeroTarget(f, fightingHero, board, out Vector2Int moveTargetPosition);
 
             if (target.Hero.Ref == default)
             {
@@ -121,15 +121,15 @@ namespace Quantum.Game
             return false;
         }
 
-        public static FightingHero GetHeroTarget(Frame f, FightingHero fightingHero, out Vector2Int moveTargetPosition)
+        public static FightingHero GetHeroTarget(Frame f, FightingHero fightingHero, Board board, out Vector2Int moveTargetPosition)
         {
-            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, out FightingHero targetHero))
+            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero targetHero))
             {
                 moveTargetPosition = GetHeroCords(fightingHero);
                 return targetHero;
             }
 
-            FightingHero hero = HeroAttack.FindClosestTargetOutOfAttackRange(f, fightingHero, out moveTargetPosition, out bool inRange);
+            FightingHero hero = HeroAttack.FindClosestTargetOutOfAttackRange(f, fightingHero, board, out moveTargetPosition, out bool inRange);
 
             return hero;
         }
@@ -185,9 +185,9 @@ namespace Quantum.Game
             return closestHero;
         }
 
-        public static bool TryGetRandomTarget(Frame f, FightingHero fightingHero, out FightingHero target)
+        public static bool TryGetRandomTarget(Frame f, FightingHero fightingHero, Board board, out FightingHero target)
         {
-            List<FightingHero> targets = GetAllTargets(f, fightingHero);
+            List<FightingHero> targets = GetAllTargets(f, fightingHero, board);
 
             if (targets.Count == 0)
             {
@@ -199,9 +199,9 @@ namespace Quantum.Game
             return true;
         }
 
-        public static List<FightingHero> GetAllTargetsInRange(Frame f, FightingHero fightingHero)
+        public static List<FightingHero> GetAllTargetsInRange(Frame f, FightingHero fightingHero, Board board)
         {
-            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fightingHero).FightingHeroesMap);
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             List<Vector2Int> closeTiles = new();
             List<FightingHero> heroesList = new();
 
@@ -230,9 +230,9 @@ namespace Quantum.Game
             return heroesList;
         }
 
-        public static List<FightingHero> GetAllTargets(Frame f, FightingHero fightingHero)
+        public static List<FightingHero> GetAllTargets(Frame f, FightingHero fightingHero, Board board)
         {
-            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fightingHero).FightingHeroesMap);
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             List<FightingHero> heroesList = new();
 
             foreach (FightingHero target in heroes)

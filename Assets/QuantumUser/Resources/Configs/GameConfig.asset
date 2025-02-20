@@ -241,7 +241,7 @@ MonoBehaviour:
       Chance: 50
     - Rare: 4
       Chance: 35
-  ShopSize: 6
+  ShopSize: 5
   ShopUpgrageCost: 5
   ShopRollCost: 2
   ReloadOnUpgrade: 0
@@ -252,7 +252,7 @@ MonoBehaviour:
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffffffffffff0000000000000000ffffffffffffffffffffffff
+    - Cells: 0000000000000000000000000000000000000000000000000000000000000000
   - IsPVE: 0
     PVEBoard:
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
@@ -311,3 +311,6 @@ MonoBehaviour:
   BotPrototype:
     Id:
       Value: 1330744238128820147
+  EmptyPrototype:
+    Id:
+      Value: 1421899759397706412

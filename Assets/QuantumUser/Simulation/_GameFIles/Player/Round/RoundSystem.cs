@@ -67,6 +67,8 @@ namespace Quantum.Game
             Events.GetInventoryHeroes(f);
             Shop.SetFreezeShop(f, isLocked: false);
             Events.DisplayRoundNumber(f);
+            QList<Board> boards = f.ResolveList(f.Global->Boards);
+            boards.Clear();
             f.Signals.BotStartRound();
         }
 

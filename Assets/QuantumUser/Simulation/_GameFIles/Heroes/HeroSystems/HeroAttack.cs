@@ -46,9 +46,9 @@ namespace Quantum.Game
             return true;
         }
 
-        public static bool TryFindClosestTargetInAttackRange(Frame f, FightingHero fightingHero, out FightingHero targetHero)
+        public static bool TryFindClosestTargetInAttackRange(Frame f, FightingHero fightingHero, Board board, out FightingHero targetHero)
         {
-            List<FightingHero> heroesList = HeroBoard.GetAllTargetsInRange(f, fightingHero);
+            List<FightingHero> heroesList = HeroBoard.GetAllTargetsInRange(f, fightingHero, board);
 
             targetHero = HeroBoard.GetClosestTarget(f, heroesList, fightingHero);
 
@@ -60,9 +60,9 @@ namespace Quantum.Game
             return false;
         }
 
-        public static FightingHero FindClosestTargetOutOfAttackRange(Frame f, FightingHero fightingHero, out Vector2Int moveTargetPosition, out bool inRange)
+        public static FightingHero FindClosestTargetOutOfAttackRange(Frame f, FightingHero fightingHero, Board heroBoard, out Vector2Int moveTargetPosition, out bool inRange)
         {
-            List<FightingHero> heroesList = HeroBoard.GetAllTargets(f, fightingHero);
+            List<FightingHero> heroesList = HeroBoard.GetAllTargets(f, fightingHero, heroBoard);
 
             if (heroesList.Count == 0)
             {
@@ -116,9 +116,8 @@ namespace Quantum.Game
             return default;
         }
 
-        public static void Update(Frame f, FightingHero fightingHero)
+        public static void Update(Frame f, FightingHero fightingHero, Board board)
         {
-            Board board = HeroBoard.GetBoard(f, fightingHero);
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
             fightingHero = heroes[fightingHero.Index];
@@ -126,7 +125,7 @@ namespace Quantum.Game
             fightingHero.CurrentMana += fightingHero.Hero.ManaRegen * f.DeltaTime;
             heroes[fightingHero.Index] = fightingHero;
 
-            ProcessAbility(f, fightingHero);
+            ProcessAbility(f, fightingHero, board);
 
             f.Events.HeroHealthChanged(board.Player1.Ref, board.Player2.Ref, fightingHero.Hero.Ref, fightingHero.CurrentHealth, fightingHero.Hero.Health);
         }
@@ -154,16 +153,15 @@ namespace Quantum.Game
             ResetAttackTimer(f, fightingHero);
         }
 
-        public static void ProcessAbility(Frame f, FightingHero fightingHero)
+        public static void ProcessAbility(Frame f, FightingHero fightingHero, Board board)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             HeroInfo heroInfo = gameConfig.GetHeroInfo(f, fightingHero.Hero.ID);
-            Board board = HeroBoard.GetBoard(f, fightingHero);
 
             switch (heroInfo.AbilityType)
             {
                 case HeroAbilityType.RandomProjectileAttack:
-                    RandomProjectileManaAttack(f, fightingHero, (DamageType)fightingHero.Hero.AbilityDamageType);
+                    RandomProjectileManaAttack(f, fightingHero, board, (DamageType)fightingHero.Hero.AbilityDamageType);
                     break;
                 default:
                     return;
@@ -172,14 +170,14 @@ namespace Quantum.Game
             f.Events.HeroManaChanged(board.Player1.Ref, board.Player2.Ref, fightingHero.Hero.Ref, fightingHero.CurrentMana, fightingHero.Hero.MaxMana);
         }
 
-        public static void RandomProjectileManaAttack(Frame f, FightingHero fightingHero, DamageType damageType)
+        public static void RandomProjectileManaAttack(Frame f, FightingHero fightingHero, Board board, DamageType damageType)
         {
             if (IsAbleToManaAttack(fightingHero) == false)
             {
                 return;
             }
 
-            if (HeroBoard.TryGetRandomTarget(f, fightingHero, out FightingHero targetHero) == false)
+            if (HeroBoard.TryGetRandomTarget(f, fightingHero, board, out FightingHero targetHero) == false)
             {
                 return;
             }

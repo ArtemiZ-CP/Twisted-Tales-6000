@@ -11,7 +11,6 @@ namespace Quantum.Game
         public override void OnInit(Frame f)
         {
             f.Global->IsGameStarted = false;
-            f.Global->ProjectilesPool = f.AllocateList<HeroProjectile>();
         }
 
         public void OnPlayerAdded(Frame f, PlayerRef player, bool firstTime)
@@ -34,6 +33,7 @@ namespace Quantum.Game
             {
                 int botsCount = f.FindAsset(f.RuntimeConfig.GameConfig).MaxPlayers - f.SessionConfig.PlayerCount;
                 InitializeBots(f, botsCount);
+                f.Global->Boards = f.AllocateList<Board>();
                 f.Global->IsGameStarted = true;
                 Events.GetCurrentPlayers(f);
                 f.Signals.BotStartRound();
@@ -72,8 +72,6 @@ namespace Quantum.Game
             {
                 _index = index + 1000
             };
-
-            Log.Debug(botEntity);
 
             InitializeEntity(f, playerRef, botEntity, $"Bot{index}", bot: true);
         }

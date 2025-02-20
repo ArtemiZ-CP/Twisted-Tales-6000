@@ -838,7 +838,7 @@ namespace Quantum {
     [FieldOffset(624)]
     public FP PhaseTime;
     [FieldOffset(612)]
-    public QListPtr<HeroProjectile> ProjectilesPool;
+    public QListPtr<Board> Boards;
     public FixedArray<Input> input {
       get {
         fixed (byte* p = _input_) { return new FixedArray<Input>(p, 4, 6); }
@@ -868,12 +868,12 @@ namespace Quantum {
         hash = hash * 31 + IsDelayPassed.GetHashCode();
         hash = hash * 31 + PhaseDelay.GetHashCode();
         hash = hash * 31 + PhaseTime.GetHashCode();
-        hash = hash * 31 + ProjectilesPool.GetHashCode();
+        hash = hash * 31 + Boards.GetHashCode();
         return hash;
       }
     }
     partial void ClearPointersPartial(FrameBase f, EntityRef entity) {
-      ProjectilesPool = default;
+      Boards = default;
     }
     static partial void SerializeCodeGen(void* ptr, FrameSerializer serializer) {
         var p = (_globals_*)ptr;
@@ -896,7 +896,7 @@ namespace Quantum {
         QBoolean.Serialize(&p->IsFighting, serializer);
         QBoolean.Serialize(&p->IsGameStarted, serializer);
         QBoolean.Serialize(&p->IsPVPRound, serializer);
-        QList.Serialize(&p->ProjectilesPool, serializer, Statics.SerializeHeroProjectile);
+        QList.Serialize(&p->Boards, serializer, Statics.SerializeBoard);
         FP.Serialize(&p->PhaseDelay, serializer);
         FP.Serialize(&p->PhaseTime, serializer);
     }
@@ -1370,12 +1370,14 @@ namespace Quantum {
     public static FrameSerializer.Delegate SerializeHeroProjectile;
     public static FrameSerializer.Delegate SerializeHeroEntity;
     public static FrameSerializer.Delegate SerializeInt32;
+    public static FrameSerializer.Delegate SerializeBoard;
     public static FrameSerializer.Delegate SerializeInput;
     static partial void InitStaticDelegatesGen() {
       SerializeFightingHero = Quantum.FightingHero.Serialize;
       SerializeHeroProjectile = Quantum.HeroProjectile.Serialize;
       SerializeHeroEntity = Quantum.HeroEntity.Serialize;
       SerializeInt32 = (v, s) => {{ s.Stream.Serialize((Int32*)v); }};
+      SerializeBoard = Quantum.Board.Serialize;
       SerializeInput = Quantum.Input.Serialize;
     }
     static partial void RegisterSimulationTypesGen(TypeRegistry typeRegistry) {

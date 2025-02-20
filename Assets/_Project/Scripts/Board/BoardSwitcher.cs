@@ -103,7 +103,7 @@ namespace Quantum.Game
 
             if (quantumEntityView != null)
             {
-                quantumEntityView.gameObject.GetComponentInChildren<HeroMesh>().SetMesh(entityLevelData.Level, entityLevelData.ID);
+                quantumEntityView.gameObject.GetComponentInChildren<HeroMesh>()?.SetMesh(entityLevelData.Level, entityLevelData.ID);
             }
         }
     }

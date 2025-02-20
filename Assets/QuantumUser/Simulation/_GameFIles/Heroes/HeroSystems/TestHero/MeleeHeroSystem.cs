@@ -3,9 +3,9 @@ using UnityEngine.Scripting;
 namespace Quantum.Game.Heroes
 {
     [Preserve]
-    public unsafe class MeleeHeroSystem : SystemMainThread
+    public unsafe static class MeleeHeroSystem
     {
-        public override void Update(Frame f)
+        public static void Update(Frame f)
         {
             BaseHeroFightingSystem.UpdateHeroes<MeleeHero>(f, HeroAttack.InstantAttack, false);
         }
