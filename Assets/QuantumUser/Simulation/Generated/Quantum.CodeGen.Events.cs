@@ -188,6 +188,7 @@ namespace Quantum {
         return ev;
       }
       public EventGetShopHeroes GetShopHeroes(PlayerRef PlayerRef) {
+        if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventGetShopHeroes>(EventGetShopHeroes.ID);
         ev.PlayerRef = PlayerRef;
         _f.AddEvent(ev);
@@ -629,7 +630,7 @@ namespace Quantum {
         base(id, flags) {
     }
     public EventGetShopHeroes() : 
-        base(15, EventFlags.Server|EventFlags.Client) {
+        base(15, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
     }
     public new QuantumGame Game {
       get {

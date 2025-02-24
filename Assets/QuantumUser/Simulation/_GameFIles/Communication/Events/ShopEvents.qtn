@@ -1,4 +1,4 @@
-event GetShopHeroes
+synced event GetShopHeroes
 {
     player_ref PlayerRef;
 }

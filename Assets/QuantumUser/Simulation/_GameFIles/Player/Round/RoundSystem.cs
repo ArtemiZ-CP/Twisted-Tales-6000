@@ -55,6 +55,10 @@ namespace Quantum.Game
         private void EndRound(Frame f)
         {
             Shop.ReloadOnEndRound(f);
+            Shop.ReloadOnEndRound(f);
+            Shop.ReloadOnEndRound(f);
+            Shop.ReloadOnEndRound(f);
+            Shop.ReloadOnEndRound(f);
             f.Global->IsBuyPhase = true;
             f.Global->PhaseNumber++;
             f.Global->PVPStreak = 0;

@@ -14,6 +14,12 @@ namespace Quantum
             public readonly EventGetShopHeroes GetShopHeroes(Frame f, PlayerRef playerRef, QList<int> HeroIDList)
             {
                 var ev = f.Events.GetShopHeroes(playerRef);
+
+                if (ev == null)
+                {
+                    return null;
+                }
+
                 ev.HeroIDList = HeroIDList;
                 return ev;
             }

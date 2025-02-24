@@ -1,10 +1,13 @@
 using UnityEngine;
 using UnityEngine.Rendering;
+using System.Collections;
 
 namespace Quantum.Game
 {
     public class HeroObject : MonoBehaviour
     {
+        private const float BoardMoveSpeed = 20f;
+
         private HeroState _heroState = HeroState.None;
         private PlayerInventorySlot _playerInventorySlot;
         private ShopItemSlot _shopItemSlot;
@@ -13,6 +16,9 @@ namespace Quantum.Game
         private int _level = 0;
         private MeshRenderer[] _meshRenderers;
         private Transform _heroTransform;
+        private Coroutine _moveCoroutine;
+        private Vector3 _targetPosition;
+        private bool _isUI;
 
         public HeroState State => _heroState;
         public PlayerInventorySlot PlayerInventorySlot => _playerInventorySlot;
@@ -34,6 +40,7 @@ namespace Quantum.Game
             _shopItemSlot = shopItemSlot;
             _boardTile = default;
             _id = heroId;
+            _isUI = IsUI;
             SpawnHero();
         }
 
@@ -43,6 +50,7 @@ namespace Quantum.Game
             _playerInventorySlot = playerInventorySlot;
             _boardTile = default;
             _id = heroId;
+            _isUI = IsUI;
             SpawnHero();
         }
 
@@ -52,13 +60,36 @@ namespace Quantum.Game
             _boardTile = boardTile;
             _playerInventorySlot = null;
             _id = heroId;
+            _isUI = IsUI;
             SpawnHero();
+        }
+
+        public void SetHeroScale(bool isUI, bool moveInstantly = false)
+        {
+            transform.localScale = GameSettings.GetSize(isUI) * Vector3.one;
+
+            if (_isUI != isUI || moveInstantly)
+            {
+                if (_moveCoroutine != null)
+                {
+                    StopCoroutine(_moveCoroutine);
+                }
+
+                transform.position = _targetPosition;
+            }
+
+            _isUI = isUI;
         }
 
         public void SetBaseTransform()
         {
-            transform.position = GetBasePosition();
+            Move(GetBasePosition());
             SetRotation(_heroState == HeroState.Inventory || _heroState == HeroState.Shop);
+        }
+
+        public void Move(Vector3 targetPos)
+        {
+            Move(targetPos, BoardMoveSpeed * GameSettings.GetSize(_isUI));
         }
 
         public void SellHero()
@@ -113,6 +144,37 @@ namespace Quantum.Game
             }
         }
 
+        private void Move(Vector3 targetPos, float speed)
+        {
+            if (_moveCoroutine != null)
+            {
+                StopCoroutine(_moveCoroutine);
+            }
+
+            _targetPosition = targetPos;
+
+            if (gameObject.activeInHierarchy)
+            {
+                // transform.position = targetPos;
+                _moveCoroutine = StartCoroutine(MoveToPositionCoroutine(targetPos, speed));
+            }
+            else
+            {
+                transform.position = targetPos;
+            }
+        }
+
+        private IEnumerator MoveToPositionCoroutine(Vector3 targetPos, float speed)
+        {
+            while (Vector3.Distance(transform.position, targetPos) > 0.01f)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
+                yield return null;
+            }
+
+            transform.position = targetPos;
+        }
+
         private void SpawnHero()
         {
             ClearHero();
@@ -130,7 +192,8 @@ namespace Quantum.Game
             mesh.transform.localScale = GameSettings.GetSize(isUIPosition) * Vector3.one;
             mesh.transform.rotation = GameSettings.GetRotation(isUIPosition);
             mesh.transform.SetParent(transform);
-            mesh.transform.position = GetBasePosition();
+            _targetPosition = GetBasePosition();
+            mesh.transform.position = _targetPosition;
             _heroTransform = mesh.transform;
             _meshRenderers = mesh.GetComponentsInChildren<MeshRenderer>();
             SetActiveShadows(isUIPosition == false);

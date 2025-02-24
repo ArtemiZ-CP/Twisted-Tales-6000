@@ -365,28 +365,28 @@ namespace Quantum.Game
 
             if (hero != null)
             {
-                _newHeroPlace.transform.position = _selectedHero.GetBasePosition();
+                _newHeroPlace.Move(_selectedHero.GetBasePosition());
                 SetupHero(_newHeroPlace, _selectedHero.IsUI, _selectedHero.IsUI);
             }
 
-            _selectedHero.transform.position = position;
+            _selectedHero.Move(position);
             SetupHero(_selectedHero, isUIScale, isUIRotation);
         }
 
-        private void SetBaseHeroSize(HeroObject hero)
+        private void SetBaseHeroSize(HeroObject hero, bool moveInstantly = false)
         {
-            bool isUI = hero.State == HeroState.Inventory || hero.State == HeroState.Shop;
-            SetupHero(hero, isUIScale: isUI, isUIRotation: isUI);
+            bool isUI = hero.IsUI;
+            SetupHero(hero, isUIScale: isUI, isUIRotation: isUI, moveInstantly);
         }
 
-        private void SetupHero(HeroObject hero, bool isUIScale, bool isUIRotation)
+        private void SetupHero(HeroObject hero, bool isUIScale, bool isUIRotation, bool moveInstantly = false)
         {
             hero.SetActiveShadows(isUIScale == false);
 
             Transform parent = hero.transform.parent;
             hero.transform.SetParent(null);
 
-            hero.transform.localScale = GameSettings.GetSize(isUIScale) * Vector3.one;
+            hero.SetHeroScale(isUIScale, moveInstantly);
             hero.SetRotation(isUIRotation);
 
             hero.transform.SetParent(parent);
@@ -407,13 +407,13 @@ namespace Quantum.Game
             if (_selectedHero != null)
             {
                 _selectedHero.SetBaseTransform();
-                SetBaseHeroSize(_selectedHero);
+                SetBaseHeroSize(_selectedHero, moveInstantly: true);
             }
 
             if (_newHeroPlace != null)
             {
                 _newHeroPlace.SetBaseTransform();
-                SetBaseHeroSize(_newHeroPlace);
+                SetBaseHeroSize(_newHeroPlace, moveInstantly: true);
             }
 
             if (_selectedHero == null || _newHeroPlace == null)

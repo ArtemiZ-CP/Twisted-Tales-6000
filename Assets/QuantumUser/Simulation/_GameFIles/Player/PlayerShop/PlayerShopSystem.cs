@@ -44,6 +44,7 @@ namespace Quantum.Game
             }
 
             f.Signals.TryUpgradeHero(playerLink);
+            Events.GetInventoryHeroes(f, playerLink->Ref);
         }
 
         public void ChangeFreezeShop(Frame f, PlayerLink* playerLink)
