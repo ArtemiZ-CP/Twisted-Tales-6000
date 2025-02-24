@@ -252,7 +252,7 @@ MonoBehaviour:
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: 0000000000000000000000000000000000000000000000000000000000000000
+    - Cells: ffffffffffffffffffffffff0000000000000000ffffffffffffffffffffffff
   - IsPVE: 0
     PVEBoard:
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff

@@ -21,42 +21,42 @@ namespace Quantum.Game
 
         private void Start()
         {
-            _skyboxMaterial.SetFloat("_Rotation", 0);
+            SetRotation(true);
         }
 
         private void StartRound(EventStartRound eventStartRound)
         {
-            Quaternion rotation;
-
             if (QuantumConnection.IsPlayerMe(eventStartRound.Player1))
             {
-                _board0.SetActive(true);
-                _board180.SetActive(false);
-                rotation = Quaternion.Euler(0, 0, 0);
+                SetRotation(true);
             }
             else if (QuantumConnection.IsPlayerMe(eventStartRound.Player2))
             {
-                _board0.SetActive(false);
-                _board180.SetActive(true);
-                rotation = Quaternion.Euler(0, 180, 0);
+                SetRotation(false);
             }
             else
             {
                 return;
             }
 
-            _cameraParent.rotation = rotation;
-            _skyboxMaterial.SetFloat("_Rotation", rotation.eulerAngles.y);
-
             ActiveSimulationBoard(eventStartRound.Heroes);
         }
 
         private void EndRound(EventEndRound eventEndRound)
         {
-            _board0.SetActive(true);
-            _board180.SetActive(false);
-            _cameraParent.rotation = Quaternion.Euler(0, 0, 0);
+            SetRotation(true);
             _board.SetActiveHeroes(true);
+        }
+
+        private void SetRotation(bool zero)
+        {
+            _board0.SetActive(zero);
+            _board180.SetActive(zero == false);
+
+            float rotation = zero ? 0 : 180;
+
+            _cameraParent.rotation = Quaternion.Euler(0, rotation, 0); ;
+            _skyboxMaterial.SetFloat("_Rotation", rotation);
         }
 
         private void SetActiveEntity(EventSetActiveEntity eventSetActiveEntity)

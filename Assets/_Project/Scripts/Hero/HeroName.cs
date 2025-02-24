@@ -21,7 +21,8 @@ namespace Quantum.Game
 
         public static string GetHeroName(int id, int level)
         {
-            string name = $"{QuantumConnection.GetHeroInfo(id).Name}";
+            string name = $"{id}";
+            // string name = $"{QuantumConnection.GetHeroInfo(id).Name}";
 
             if (level != 0)
             {

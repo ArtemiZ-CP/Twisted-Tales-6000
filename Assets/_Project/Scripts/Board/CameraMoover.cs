@@ -19,9 +19,8 @@ public class CameraMoover : MonoBehaviour
     private void RotateAroundTarget(float scrollDelta)
     {
         float rotation = scrollDelta * _rotationSpeed * Time.deltaTime;
-        transform.RotateAround(_targetTransform.position, Vector3.right, rotation);
-        Vector3 currentRotation = transform.rotation.eulerAngles;
+        Vector3 currentRotation = transform.localRotation.eulerAngles + new Vector3(rotation, 0, 0);
         currentRotation.x = Mathf.Clamp(currentRotation.x, _minRotationAngle, _maxRotationAngle);
-        transform.rotation = Quaternion.Euler(currentRotation);
+        transform.localRotation = Quaternion.Euler(currentRotation);
     }
 }
