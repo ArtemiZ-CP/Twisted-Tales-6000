@@ -10,7 +10,7 @@ namespace Quantum.Game
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             HeroInfo heroInfo = gameConfig.GetHeroInfo(f, heroID);
-            return heroInfo.GetCost(f);
+            return heroInfo.GetBuyCost(f);
         }
 
         public static void SetNewBoardPosision(QList<FightingHero> heroes, FightingHero fightingHero, int heroNewIndex)

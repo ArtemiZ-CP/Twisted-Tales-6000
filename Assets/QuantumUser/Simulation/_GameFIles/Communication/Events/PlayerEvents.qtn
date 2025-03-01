@@ -7,3 +7,9 @@ event MoveHero
     player_ref PlayerRef;
     bool IsMoved;
 }
+
+event GetFightingHero
+{
+    player_ref PlayerRef;
+    FightingHero FightingHero;
+}

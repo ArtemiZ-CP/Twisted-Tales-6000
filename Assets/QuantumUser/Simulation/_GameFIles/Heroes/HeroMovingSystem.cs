@@ -104,7 +104,7 @@ namespace Quantum.Game
                     return;
                 }
 
-                if (Player.TryRemoveCoins(f, playerLink, heroInfo.GetCost(f)) == false)
+                if (Player.TryRemoveCoins(f, playerLink, heroInfo.GetBuyCost(f)) == false)
                 {
                     _f.Events.MoveHero(_playerLink->Ref, IsMoved: false);
                     return;
@@ -114,14 +114,14 @@ namespace Quantum.Game
                 {
                     if (FromSToI(positionFromX, positionToX) == false)
                     {
-                        Player.AddCoins(f, playerLink, heroInfo.GetCost(f));
+                        Player.AddCoins(f, playerLink, heroInfo.GetBuyCost(f));
                     }
                 }
                 else if (HeroToState == HeroState.Board)
                 {
                     if (FromSToB(positionFromX, boardToIndex) == false)
                     {
-                        Player.AddCoins(f, playerLink, heroInfo.GetCost(f));
+                        Player.AddCoins(f, playerLink, heroInfo.GetBuyCost(f));
                     }
                 }
 

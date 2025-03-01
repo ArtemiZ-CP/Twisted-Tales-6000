@@ -75,7 +75,7 @@ MonoBehaviour:
   ManaTakeDamageRegen:
     RawValue: 3277
   HeroMoveSpeed:
-    RawValue: 131072
+    RawValue: 196608
   HeroRotationSpeed:
     RawValue: 19660800
   HeroDefenseRatio:
@@ -252,55 +252,19 @@ MonoBehaviour:
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffffffffffff0000000000000000ffffffffffffffffffffffff
-  - IsPVE: 0
-    PVEBoard:
-    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffffffffffff0400000004000000ffffffffffffffffffffffff
-    - Cells: ffffffffffffffff04000000ffffffffffffffff04000000ffffffffffffffff
-    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffff00000000ffffffffffffffffffffffffffffffff
   - IsPVE: 1
     PVEBoard:
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffff01000000ffffffffffffffff01000000ffffffffffffffff
-    - Cells: ffffffffffffffffffffffff0000000000000000ffffffffffffffffffffffff
-  - IsPVE: 0
-    PVEBoard:
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffff01000000ffffffffffffffff01000000ffffffffffffffff
     - Cells: ffffffffffffffffffffffff0000000000000000ffffffffffffffffffffffff
   - IsPVE: 1
     PVEBoard:
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffffffffffff02000000ffffffffffffffffffffffffffffffff
+    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
     - Cells: ffffffffffffffff01000000010000000100000001000000ffffffffffffffff
-  - IsPVE: 0
-    PVEBoard:
-    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffffffffffff02000000ffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffff01000000010000000100000001000000ffffffffffffffff
-  - IsPVE: 1
-    PVEBoard:
-    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffff03000000030000000300000003000000ffffffffffffffff
-  - IsPVE: 0
-    PVEBoard:
-    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffff03000000030000000300000003000000ffffffffffffffff
-  - IsPVE: 1
-    PVEBoard:
-    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-    - Cells: ffffffffffffffff04000000ffffffffffffffff04000000ffffffffffffffff
-    - Cells: ffffffffffffffff04000000040000000400000004000000ffffffffffffffff
   XPByRound: 1
   TileSize: 1.25
   BuyPhaseTime: 30

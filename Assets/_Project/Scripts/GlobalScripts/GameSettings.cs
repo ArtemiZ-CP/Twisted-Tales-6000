@@ -23,12 +23,12 @@ namespace Quantum.Game
             }
         }
 
-        public static float GetSize(bool isUIPosition)
+        public static float GetHeroSize(bool isUIPosition)
         {
             return isUIPosition ? _instance._uiSize : _instance._boardSize;
         }
 
-        public static Quaternion GetRotation(bool isUIPosition)
+        public static Quaternion GetHeroRotation(bool isUIPosition)
         {
             Quaternion uiRotation = _instance._playerInventory.transform.rotation * Quaternion.Euler(0, 180, 0);
 

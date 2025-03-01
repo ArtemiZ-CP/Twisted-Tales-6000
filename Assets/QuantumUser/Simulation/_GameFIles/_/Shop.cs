@@ -16,9 +16,9 @@ namespace Quantum.Game
 
         public static void SetFreezeShop(Frame f, bool isLocked)
         {
-            foreach (PlayerLink player in Player.GetAllPlayerLinks(f))
+            foreach (EntityRef player in Player.GetAllPlayersEntity(f))
             {
-                SetFreezeShop(f, &player, isLocked);
+                SetFreezeShop(f, Player.GetPlayerPointer(f, player), isLocked);
             }
         }
 
@@ -60,6 +60,7 @@ namespace Quantum.Game
                 list[i] = heroID;
             }
 
+            SetFreezeShop(f, playerLink, false);
             f.Events.GetShopHeroes(f, playerLink->Ref, list);
         }
 
@@ -67,46 +68,56 @@ namespace Quantum.Game
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             List<(int heroId, float weight)> availableHeroes = new();
-            
+            List<(int heroId, float weight)> availableHeroesWithRare = new();
+
             for (int i = 0; i < gameConfig.HeroInfos.Length; i++)
             {
                 HeroInfo heroInfo = f.FindAsset(gameConfig.HeroInfos[i]);
-                
-                if (heroInfo.Rare == heroRare)
+
+                int heroMaxCount = gameConfig.HeroShopSettings[(int)heroInfo.Rare].MaxCount;
+                int currentCount = GetCountHeroInGame(f, i);
+                int remainingCount = heroMaxCount - currentCount;
+
+                if (remainingCount > 0 && GetHeroCountByPlayer(f, *playerLink, i) < GetHeroCount(f, gameConfig.MaxLevel - 1))
                 {
-                    int heroMaxCount = gameConfig.HeroShopSettings[(int)heroInfo.Rare].MaxCount;
-                    int currentCount = GetCountHeroInGame(f, i);
-                    int remainingCount = heroMaxCount - currentCount;
-                    
-                    if (remainingCount > 0 && GetHeroCountByPlayer(f, *playerLink, i) < GetHeroCount(f, gameConfig.MaxLevel - 1))
+                    float weight = (float)remainingCount / heroMaxCount;
+                    availableHeroes.Add((i, weight));
+
+                    if (heroInfo.Rare == heroRare)
                     {
-                        float weight = (float)remainingCount / heroMaxCount;
-                        availableHeroes.Add((i, weight));
+                        availableHeroesWithRare.Add((i, weight));
                     }
                 }
             }
 
-            if (availableHeroes.Count == 0)
+            if (availableHeroesWithRare.Count == 0)
             {
-                return gameConfig.GetRandomHero(f, heroRare);
+                if (availableHeroes.Count == 0)
+                {
+                    return gameConfig.GetRandomHero(f, heroRare);
+                }
+                else
+                {
+                    availableHeroesWithRare = availableHeroes;
+                }
             }
 
-            float totalWeight = availableHeroes.Sum(h => h.weight);
+            float totalWeight = availableHeroesWithRare.Sum(h => h.weight);
             float randomValue = f.RNG->Next().AsFloat * totalWeight;
-            
+
             float currentWeight = 0;
-            
-            foreach (var (heroId, weight) in availableHeroes)
+
+            foreach (var (heroId, weight) in availableHeroesWithRare)
             {
                 currentWeight += weight;
-                
+
                 if (randomValue <= currentWeight)
                 {
                     return heroId;
                 }
             }
 
-            return availableHeroes[0].heroId;
+            return availableHeroesWithRare[0].heroId;
         }
 
         public static bool TryUpgradeShop(Frame f, PlayerLink* playerLink)

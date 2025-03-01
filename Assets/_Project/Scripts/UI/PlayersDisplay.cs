@@ -35,7 +35,6 @@ public class PlayersDisplay : MonoBehaviour
                 _playersText.text += GetPlayerText(Color.white, player);
             }
         }
-
     }
 
     private bool IsPlayerMyEnemy(List<Quantum.Board> boards, PlayerLink enemy)

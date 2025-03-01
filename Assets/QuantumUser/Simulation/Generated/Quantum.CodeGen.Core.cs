@@ -1112,6 +1112,9 @@ namespace Quantum {
   public unsafe partial interface ISignalTryUpgradeHero : ISignal {
     void TryUpgradeHero(Frame f, PlayerLink* playerLink);
   }
+  public unsafe partial interface ISignalGetHeroInfo : ISignal {
+    void GetHeroInfo(Frame f, PlayerLink* playerLink, EntityRef entityRef);
+  }
   public unsafe partial interface ISignalBotStartRound : ISignal {
     void BotStartRound(Frame f);
   }
@@ -1132,6 +1135,7 @@ namespace Quantum {
     private ISignalSellHero[] _ISignalSellHeroSystems;
     private ISignalChangeFreezeShop[] _ISignalChangeFreezeShopSystems;
     private ISignalTryUpgradeHero[] _ISignalTryUpgradeHeroSystems;
+    private ISignalGetHeroInfo[] _ISignalGetHeroInfoSystems;
     private ISignalBotStartRound[] _ISignalBotStartRoundSystems;
     partial void AllocGen() {
       _globals = (_globals_*)Context.Allocator.AllocAndClear(sizeof(_globals_));
@@ -1158,6 +1162,7 @@ namespace Quantum {
       _ISignalSellHeroSystems = BuildSignalsArray<ISignalSellHero>();
       _ISignalChangeFreezeShopSystems = BuildSignalsArray<ISignalChangeFreezeShop>();
       _ISignalTryUpgradeHeroSystems = BuildSignalsArray<ISignalTryUpgradeHero>();
+      _ISignalGetHeroInfoSystems = BuildSignalsArray<ISignalGetHeroInfo>();
       _ISignalBotStartRoundSystems = BuildSignalsArray<ISignalBotStartRound>();
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
@@ -1351,6 +1356,15 @@ namespace Quantum {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
             s.TryUpgradeHero(_f, playerLink);
+          }
+        }
+      }
+      public void GetHeroInfo(PlayerLink* playerLink, EntityRef entityRef) {
+        var array = _f._ISignalGetHeroInfoSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.GetHeroInfo(_f, playerLink, entityRef);
           }
         }
       }

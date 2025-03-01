@@ -73,6 +73,20 @@ namespace Quantum.Game
             return new Vector2Int(-1, -1);
         }
 
+        public bool TryGetCursorPosition(out Vector3 position)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
+
+            if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, _boardLayerMask))
+            {
+                position = hit.point;
+                return true;
+            }
+
+            position = Vector3.zero;
+            return false;
+        }
+
         private void LoadBoard(EventGetBoardHeroes eventGetBoardHeroes)
         {
             if (QuantumConnection.IsPlayerMe(eventGetBoardHeroes.PlayerRef))
@@ -112,20 +126,6 @@ namespace Quantum.Game
                     _tiles[x, y] = new Tile(position, _boardHeroPrefab, _heroesParent);
                 }
             }
-        }
-
-        private bool TryGetCursorPosition(out Vector3 position)
-        {
-            Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
-
-            if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, _boardLayerMask))
-            {
-                position = hit.point;
-                return true;
-            }
-
-            position = Vector3.zero;
-            return false;
         }
 
         private Tile GetClosestTile(Vector3 position)
@@ -171,7 +171,7 @@ namespace Quantum.Game
             {
                 _position = position;
                 _hero = Instantiate(heroPrefab, _position, Quaternion.identity, parent);
-                _hero.transform.localScale = GameSettings.GetSize(isUIPosition: false) * Vector3.one;
+                _hero.transform.localScale = GameSettings.GetHeroSize(isUIPosition: false) * Vector3.one;
                 _hero.SetHeroState(this, heroId: -1);
             }
 

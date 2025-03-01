@@ -15,6 +15,12 @@ namespace Quantum
             public readonly EventGetBoardHeroes GetBoardHeroes(Frame f, PlayerRef playerRef, QList<int> HeroIDList, QList<int> HeroLevelList)
             {
                 var ev = f.Events.GetBoardHeroes(playerRef);
+
+                if (ev == null)
+                {
+                    return null;
+                }
+
                 ev.HeroIDList = HeroIDList;
                 ev.HeroLevelList = HeroLevelList;
                 return ev;

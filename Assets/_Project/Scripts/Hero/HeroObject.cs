@@ -66,7 +66,7 @@ namespace Quantum.Game
 
         public void SetHeroScale(bool isUI, bool moveInstantly = false)
         {
-            transform.localScale = GameSettings.GetSize(isUI) * Vector3.one;
+            transform.localScale = GameSettings.GetHeroSize(isUI) * Vector3.one;
 
             if (_isUI != isUI || moveInstantly)
             {
@@ -89,7 +89,7 @@ namespace Quantum.Game
 
         public void Move(Vector3 targetPos)
         {
-            Move(targetPos, BoardMoveSpeed * GameSettings.GetSize(_isUI));
+            Move(targetPos, BoardMoveSpeed * GameSettings.GetHeroSize(_isUI));
         }
 
         public void SellHero()
@@ -140,7 +140,7 @@ namespace Quantum.Game
         {
             if (_heroTransform != null)
             {
-                _heroTransform.rotation = GameSettings.GetRotation(isUIPosition);
+                _heroTransform.rotation = GameSettings.GetHeroRotation(isUIPosition);
             }
         }
 
@@ -189,8 +189,8 @@ namespace Quantum.Game
             HeroMesh mesh = Instantiate(heroInfos.HeroPrefab);
             mesh.SetMesh(_level, _id);
             bool isUIPosition = _heroState == HeroState.Inventory || _heroState == HeroState.Shop;
-            mesh.transform.localScale = GameSettings.GetSize(isUIPosition) * Vector3.one;
-            mesh.transform.rotation = GameSettings.GetRotation(isUIPosition);
+            mesh.transform.localScale = GameSettings.GetHeroSize(isUIPosition) * Vector3.one;
+            mesh.transform.rotation = GameSettings.GetHeroRotation(isUIPosition);
             mesh.transform.SetParent(transform);
             _targetPosition = GetBasePosition();
             mesh.transform.position = _targetPosition;

@@ -11,14 +11,18 @@ namespace Quantum.Game
         [SerializeField] private PlayerInventory _playerInventory;
         [SerializeField] private PlayerShop _playerShop;
         [SerializeField] private Board _playerBoard;
-        [SerializeField] private RectTransform _sellArea;
 
         private Camera _camera;
+        private EntityRef _selectedHeroRef;
         private HeroObject _selectedHero;
         private HeroObject _newHeroPlace;
-        private Vector3 _dragOffset;
         private bool _isCommandSended = false;
         private bool _isRoundStarted = false;
+        private bool _isMoved = false;
+
+        public bool IsRoundStarted => _isRoundStarted;
+        public EntityRef SelectedHeroRef => _selectedHeroRef;
+        public event System.Action<HeroObject> ClickedOnHero;
 
         private void Awake()
         {
@@ -39,12 +43,30 @@ namespace Quantum.Game
                 return;
             }
 
+            if (UnityEngine.Input.GetMouseButtonUp(0))
+            {
+                _selectedHeroRef = default;
+            }
+
+            if (_isRoundStarted && UnityEngine.Input.GetMouseButtonUp(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
+
+                if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue))
+                {
+                    if (hit.collider.gameObject.TryGetComponent(out QuantumEntityView entityView))
+                    {
+                        _selectedHeroRef = entityView.EntityRef;
+                    }
+                }
+            }
+
             if (UnityEngine.Input.GetMouseButtonDown(0))
             {
                 TryGetHero();
             }
 
-            if (UnityEngine.Input.GetMouseButtonUp(0) && _selectedHero != null)
+            if (UnityEngine.Input.GetMouseButtonUp(0))
             {
                 EndMoveHero();
             }
@@ -63,6 +85,51 @@ namespace Quantum.Game
             }
         }
 
+        public bool TrySellHero(HeroObject heroToSell)
+        {
+            int HeroPositionX = -1;
+            int HeroPositionY = -1;
+
+            if (heroToSell.State == HeroState.Inventory)
+            {
+                HeroPositionX = _playerInventory.GetSlotIndex(heroToSell.PlayerInventorySlot);
+            }
+            else if (heroToSell.State == HeroState.Shop)
+            {
+                return false;
+            }
+            else if (heroToSell.State == HeroState.Board)
+            {
+                Vector2Int tileIndex = _playerBoard.GetTileIndex(heroToSell.BoardTile);
+                HeroPositionX = tileIndex.x;
+                HeroPositionY = tileIndex.y;
+            }
+
+            if (QuantumConnection.IsAbleToConnectQuantum())
+            {
+                CommandSellHero commandSellHero = new()
+                {
+                    HeroState = (int)heroToSell.State,
+                    HeroPositionX = HeroPositionX,
+                    HeroPositionY = HeroPositionY,
+                };
+
+                QuantumRunner.DefaultGame.SendCommand(commandSellHero);
+            }
+            else
+            {
+                return false;
+            }
+
+            heroToSell.SellHero();
+            heroToSell.SetBaseTransform();
+            SetBaseHeroSize(heroToSell);
+            _selectedHero = null;
+            _newHeroPlace = null;
+
+            return true;
+        }
+
         private void StartRound(EventStartRound eventStartRound)
         {
             _isRoundStarted = true;
@@ -71,7 +138,9 @@ namespace Quantum.Game
 
         private void EndRound(EventEndRound eventEndRound)
         {
+            EndMoveHero();
             _isRoundStarted = false;
+            _selectedHeroRef = default;
         }
 
         private bool TryGetHero()
@@ -82,7 +151,6 @@ namespace Quantum.Game
             {
                 if (hit.collider.gameObject.TryGetComponent(out _selectedHero) && _selectedHero.Id >= 0)
                 {
-                    _dragOffset = _selectedHero.transform.position - hit.point;
                     return true;
                 }
             }
@@ -112,11 +180,11 @@ namespace Quantum.Game
         {
             if (_selectedHero.State == HeroState.Inventory)
             {
-                MoveHeroFromInventory(cursorPoint, newObjectPosition + _dragOffset);
+                MoveHeroFromInventory(cursorPoint, newObjectPosition);
             }
             else if (_selectedHero.State == HeroState.Shop)
             {
-                MoveHeroFromShop(cursorPoint, newObjectPosition + _dragOffset);
+                MoveHeroFromShop(cursorPoint, newObjectPosition);
             }
             else if (_selectedHero.State == HeroState.Board)
             {
@@ -200,22 +268,18 @@ namespace Quantum.Game
 
         private void EndMoveHero()
         {
+            if (_isMoved == false)
+            {
+                ClickedOnHero?.Invoke(_selectedHero);
+            }
+
+            _isMoved = false;
+
             if (_selectedHero != null && _selectedHero.Id >= 0)
             {
                 if (_newHeroPlace != null && _selectedHero != _newHeroPlace)
                 {
                     SendMoveCommand();
-
-                    return;
-                }
-                else if (TrySellHero())
-                {
-                    _selectedHero.SellHero();
-                    _selectedHero.SetBaseTransform();
-                    SetBaseHeroSize(_selectedHero);
-                    _selectedHero = null;
-                    _newHeroPlace = null;
-
                     return;
                 }
             }
@@ -240,15 +304,6 @@ namespace Quantum.Game
             }
         }
 
-        private bool IsHeroInSellArea()
-        {
-            if (_selectedHero == null)
-            {
-                return false;
-            }
-
-            return RectTransformUtility.RectangleContainsScreenPoint(_sellArea, UnityEngine.Input.mousePosition, _camera);
-        }
 
         private void SendMoveCommand()
         {
@@ -307,50 +362,6 @@ namespace Quantum.Game
             {
                 SwitchHeroes(false);
             }
-        }
-
-        private bool TrySellHero()
-        {
-            if (IsHeroInSellArea() == false)
-            {
-                return false;
-            }
-
-            int HeroPositionX = -1;
-            int HeroPositionY = -1;
-
-            if (_selectedHero.State == HeroState.Inventory)
-            {
-                HeroPositionX = _playerInventory.GetSlotIndex(_selectedHero.PlayerInventorySlot);
-            }
-            else if (_selectedHero.State == HeroState.Shop)
-            {
-                return false;
-            }
-            else if (_selectedHero.State == HeroState.Board)
-            {
-                Vector2Int tileIndex = _playerBoard.GetTileIndex(_selectedHero.BoardTile);
-                HeroPositionX = tileIndex.x;
-                HeroPositionY = tileIndex.y;
-            }
-
-            if (QuantumConnection.IsAbleToConnectQuantum())
-            {
-                CommandSellHero commandSellHero = new()
-                {
-                    HeroState = (int)_selectedHero.State,
-                    HeroPositionX = HeroPositionX,
-                    HeroPositionY = HeroPositionY,
-                };
-
-                QuantumRunner.DefaultGame.SendCommand(commandSellHero);
-            }
-            else
-            {
-                return false;
-            }
-
-            return true;
         }
 
         private void SetNewHeroPlace(HeroObject hero, Vector3 position, bool isUIScale, bool isUIRotation)

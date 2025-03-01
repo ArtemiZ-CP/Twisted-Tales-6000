@@ -6,4 +6,9 @@ public static class PlayerInput
     {
         return Input.mouseScrollDelta.y;
     }
+
+    public static bool SwitchUI()
+    {
+        return Input.GetKeyDown(KeyCode.H);
+    }
 }

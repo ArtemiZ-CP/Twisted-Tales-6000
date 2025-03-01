@@ -56,9 +56,14 @@ namespace Quantum.Game
         public FP Mana;
         public FP StartMana;
 
-        public int GetCost(Frame frame)
+        public int GetBuyCost(Frame frame)
         {
             return frame.FindAsset(frame.RuntimeConfig.GameConfig).GetHeroBuyCost(Rare);
+        }
+
+        public int GetSellCost(Frame frame, int level)
+        {
+            return frame.FindAsset(frame.RuntimeConfig.GameConfig).GetHeroSellCost(Rare, level);
         }
     }
 }

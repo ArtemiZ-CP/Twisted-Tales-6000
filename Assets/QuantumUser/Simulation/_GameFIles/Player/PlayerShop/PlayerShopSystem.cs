@@ -25,7 +25,7 @@ namespace Quantum.Game
 
             if (TryGetHeroInventoryIndex(f, playerLink, out QList<int> heroesInPlayerInventory, out int inventoryIndex))
             {
-                if (Player.TryRemoveCoins(f, playerLink, heroInfo.GetCost(f)) == false)
+                if (Player.TryRemoveCoins(f, playerLink, heroInfo.GetBuyCost(f)) == false)
                 {
                     return;
                 }
@@ -140,7 +140,7 @@ namespace Quantum.Game
 
             if (HeroLevelProgression.GetHeroCount(f, playerLink, id, level) == gameConfig.HeroesCountToUpgrade - 1)
             {
-                if (Player.TryRemoveCoins(f, playerLink, heroInfo.GetCost(f)) == false)
+                if (Player.TryRemoveCoins(f, playerLink, heroInfo.GetBuyCost(f)) == false)
                 {
                     return false;
                 }

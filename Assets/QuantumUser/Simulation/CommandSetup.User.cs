@@ -14,6 +14,7 @@
             factories.Add(new Game.CommandUpgradeShop());
             factories.Add(new Game.CommandSellHero());
             factories.Add(new Game.CommandFreezeShop());
+            factories.Add(new Game.CommandGetHeroInfo());
         }
     }
 }
