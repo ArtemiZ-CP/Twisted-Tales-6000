@@ -11,6 +11,7 @@ namespace Quantum.Game
         private HeroState _heroState = HeroState.None;
         private PlayerInventorySlot _playerInventorySlot;
         private ShopItemSlot _shopItemSlot;
+        private HeroMesh _heroMesh;
         private Board.Tile _boardTile;
         private int _id = -1;
         private int _level = 0;
@@ -62,6 +63,11 @@ namespace Quantum.Game
             _id = heroId;
             _isUI = IsUI;
             SpawnHero();
+        }
+
+        public void SetActiveRange(bool isActive)
+        {
+            _heroMesh.SetActiveRange(isActive);
         }
 
         public void SetHeroScale(bool isUI, bool moveInstantly = false)
@@ -155,7 +161,6 @@ namespace Quantum.Game
 
             if (gameObject.activeInHierarchy)
             {
-                // transform.position = targetPos;
                 _moveCoroutine = StartCoroutine(MoveToPositionCoroutine(targetPos, speed));
             }
             else
@@ -184,18 +189,19 @@ namespace Quantum.Game
                 return;
             }
 
-            HeroInfo heroInfos = QuantumConnection.GetAssetsList(QuantumConnection.GameConfig.HeroInfos)[_id];
+            HeroInfo heroInfo = QuantumConnection.GetAssetsList(QuantumConnection.GameConfig.HeroInfos)[_id];
 
-            HeroMesh mesh = Instantiate(heroInfos.HeroPrefab);
-            mesh.SetMesh(_level, _id);
+            _heroMesh = Instantiate(heroInfo.HeroPrefab);
+            _heroMesh.SetMesh(_level, _id);
+            _heroMesh.SetRange(heroInfo.HeroStats[_level].Range);
             bool isUIPosition = _heroState == HeroState.Inventory || _heroState == HeroState.Shop;
-            mesh.transform.localScale = GameSettings.GetHeroSize(isUIPosition) * Vector3.one;
-            mesh.transform.rotation = GameSettings.GetHeroRotation(isUIPosition);
-            mesh.transform.SetParent(transform);
+            _heroMesh.transform.localScale = GameSettings.GetHeroSize(isUIPosition) * Vector3.one;
+            _heroMesh.transform.rotation = GameSettings.GetHeroRotation(isUIPosition);
+            _heroMesh.transform.SetParent(transform);
             _targetPosition = GetBasePosition();
-            mesh.transform.position = _targetPosition;
-            _heroTransform = mesh.transform;
-            _meshRenderers = mesh.GetComponentsInChildren<MeshRenderer>();
+            _heroMesh.transform.position = _targetPosition;
+            _heroTransform = _heroMesh.transform;
+            _meshRenderers = _heroMesh.GetComponentsInChildren<MeshRenderer>();
             SetActiveShadows(isUIPosition == false);
         }
 

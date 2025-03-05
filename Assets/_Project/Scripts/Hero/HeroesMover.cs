@@ -133,7 +133,7 @@ namespace Quantum.Game
         private void StartRound(EventStartRound eventStartRound)
         {
             _isRoundStarted = true;
-            ResetSelectedHeroes();
+            ResetHeroes();
         }
 
         private void EndRound(EventEndRound eventEndRound)
@@ -284,13 +284,14 @@ namespace Quantum.Game
                 }
             }
 
-            ResetSelectedHeroes();
+            ResetHeroes();
         }
 
-        private void ResetSelectedHeroes()
+        private void ResetHeroes()
         {
             if (_selectedHero != null)
             {
+                _selectedHero.SetActiveRange(false);
                 _selectedHero.SetBaseTransform();
                 SetBaseHeroSize(_selectedHero);
                 _selectedHero = null;
@@ -303,7 +304,6 @@ namespace Quantum.Game
                 _newHeroPlace = null;
             }
         }
-
 
         private void SendMoveCommand()
         {
@@ -382,6 +382,7 @@ namespace Quantum.Game
 
             _selectedHero.Move(position);
             SetupHero(_selectedHero, isUIScale, isUIRotation);
+            _selectedHero.SetActiveRange(isUIScale == false);
         }
 
         private void SetBaseHeroSize(HeroObject hero, bool moveInstantly = false)

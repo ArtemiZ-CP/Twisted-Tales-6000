@@ -6,7 +6,13 @@ namespace Quantum.Game
     public class HeroName : MonoBehaviour
     {
         [SerializeField] private TMP_Text _heroNameText;
-        [SerializeField] private HeroMesh _heroMesh;
+        
+        private HeroMesh _heroMesh;
+
+        private void Awake()
+        {
+            _heroMesh = FindComponentInParents<HeroMesh>();
+        }
 
         private void OnEnable()
         {
@@ -34,6 +40,23 @@ namespace Quantum.Game
         private void SetHeroName(int id, int level)
         {
             _heroNameText.text = GetHeroName(id, level);
+        }
+
+        private T FindComponentInParents<T>() where T : Component
+        {
+            Transform parent = transform.parent;
+
+            while (parent != null)
+            {
+                if (parent.TryGetComponent<T>(out var component))
+                {
+                    return component;
+                }
+
+                parent = parent.parent;
+            }
+
+            return null;
         }
     }
 }
