@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Photon.Deterministic;
@@ -43,6 +44,34 @@ namespace Quantum.Game
                 return false;
             }
 
+            return true;
+        }
+
+        public static bool TryFindClosestTarget(Frame f, FightingHero fightingHero, Board board, out FightingHero targetHero)
+        {
+            List<FightingHero> heroesList = HeroBoard.GetAllTargets(f, fightingHero, board);
+
+            targetHero = HeroBoard.GetClosestTarget(f, heroesList, fightingHero);
+
+            if (targetHero.Hero.Ref != default)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool TryGetRandomTarget(Frame f, FightingHero fightingHero, Board board, out FightingHero target)
+        {
+            List<FightingHero> targets = HeroBoard.GetAllTargets(f, fightingHero, board);
+
+            if (targets.Count == 0)
+            {
+                target = default;
+                return false;
+            }
+
+            target = targets[f.RNG->Next(0, targets.Count)];
             return true;
         }
 
@@ -126,18 +155,25 @@ namespace Quantum.Game
             heroes[fightingHero.Index] = fightingHero;
 
             ProcessAbility(f, fightingHero, board);
+            HeroEffects.ApplyEffects(f, fightingHero, board);
 
+            fightingHero = heroes[fightingHero.Index];
             f.Events.HeroHealthChanged(board.Player1.Ref, board.Player2.Ref, fightingHero.Hero.Ref, fightingHero.CurrentHealth, fightingHero.Hero.Health);
         }
 
         public static void InstantAttack(Frame f, FightingHero fightingHero, DamageType damageType, AttackType attackType)
+        {
+            InstantAttack(f, fightingHero, new HeroEffects.Effect(), damageType, attackType);
+        }
+
+        public static void InstantAttack(Frame f, FightingHero fightingHero, HeroEffects.Effect effect, DamageType damageType, AttackType attackType)
         {
             if (IsAbleToAttack(f, fightingHero, out FightingHero targetHero) == false)
             {
                 return;
             }
 
-            DamageHero(f, fightingHero, targetHero, damageType, attackType);
+            DamageHero(f, fightingHero, targetHero, fightingHero.Hero.AttackDamage, effect, damageType, attackType);
             ResetAttackTimer(f, fightingHero);
         }
 
@@ -148,44 +184,39 @@ namespace Quantum.Game
                 return;
             }
 
-            HeroProjectilesSystem.SpawnProjectile(f, fightingHero, targetHero, targetHero.Hero.AttackDamage,
-                damageType, attackType);
+            ProjectileAttack(f, fightingHero, targetHero, damageType, attackType);
+        }
+
+        public static void ProjectileAttack(Frame f, FightingHero fightingHero, FightingHero targetHero, DamageType damageType, AttackType attackType)
+        {
+            ProjectileAttack(f, fightingHero, targetHero, targetHero.Hero.AttackDamage, damageType, attackType);
+        }
+
+        public static void ProjectileAttack(Frame f, FightingHero fightingHero, FightingHero targetHero, FP damage, DamageType damageType, AttackType attackType)
+        {
+            ProjectileAttack(f, fightingHero, targetHero, damage, new HeroEffects.Effect(), damageType, attackType);
+        }
+
+        public static void ProjectileAttack(Frame f, FightingHero fightingHero, FightingHero targetHero, FP damage, HeroEffects.Effect effect, DamageType damageType, AttackType attackType)
+        {
+            HeroProjectilesSystem.SpawnProjectile(f, fightingHero, targetHero, damage,
+                effect, damageType, attackType);
             ResetAttackTimer(f, fightingHero);
         }
 
         public static void ProcessAbility(Frame f, FightingHero fightingHero, Board board)
         {
-            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            HeroInfo heroInfo = gameConfig.GetHeroInfo(f, fightingHero.Hero.ID);
-
-            switch (heroInfo.AbilityType)
+            if (HeroAbility.TryGetAbility(f, fightingHero, out Func<Frame, FightingHero, Board, bool> ability) == false)
             {
-                case HeroAbilityType.RandomProjectileAttack:
-                    RandomProjectileManaAttack(f, fightingHero, board, (DamageType)fightingHero.Hero.AbilityDamageType);
-                    break;
-                default:
-                    return;
+                return;
+            }
+
+            if (fightingHero.CurrentMana >= fightingHero.Hero.MaxMana && ability(f, fightingHero, board))
+            {
+                ResetMana(f, fightingHero);
             }
 
             f.Events.HeroManaChanged(board.Player1.Ref, board.Player2.Ref, fightingHero.Hero.Ref, fightingHero.CurrentMana, fightingHero.Hero.MaxMana);
-        }
-
-        public static void RandomProjectileManaAttack(Frame f, FightingHero fightingHero, Board board, DamageType damageType)
-        {
-            if (IsAbleToManaAttack(fightingHero) == false)
-            {
-                return;
-            }
-
-            if (HeroBoard.TryGetRandomTarget(f, fightingHero, board, out FightingHero targetHero) == false)
-            {
-                return;
-            }
-
-            HeroProjectilesSystem.SpawnProjectile(f, fightingHero, targetHero, targetHero.Hero.AbilityDamage,
-                damageType, AttackType.Ability);
-
-            ResetMana(f, fightingHero);
         }
 
         public static void ResetAttackTimer(Frame f, FightingHero fightingHero)
@@ -204,7 +235,7 @@ namespace Quantum.Game
             heroes[fightingHero.Index] = fightingHero;
         }
 
-        public static void DamageHero(Frame f, FightingHero fightingHero, FightingHero targetHero, DamageType damageType, AttackType attackType)
+        public static void DamageHero(Frame f, FightingHero fightingHero, FightingHero targetHero, FP damage, HeroEffects.Effect effect, DamageType damageType, AttackType attackType)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             Board board = HeroBoard.GetBoard(f, fightingHero);
@@ -217,8 +248,6 @@ namespace Quantum.Game
             fightingHero = heroes[fightingHeroIndex];
             targetHero = heroes[targetHeroIndex];
 
-            FP damage = fightingHero.Hero.AttackDamage;
-
             if (targetHeroIndex < 0)
             {
                 return;
@@ -228,7 +257,7 @@ namespace Quantum.Game
             {
                 DamageType.Physical => damage * (gameConfig.HeroDefenseRatio / (gameConfig.HeroDefenseRatio + targetHero.Hero.Defense)),
                 DamageType.Magical => damage * (gameConfig.HeroDefenseRatio / (gameConfig.HeroDefenseRatio + targetHero.Hero.MagicDefense)),
-                _ => throw new System.ArgumentException("Invalid damage type", nameof(damageType)),
+                _ => throw new ArgumentException("Invalid damage type", nameof(damageType)),
             };
 
             if (targetHero.CurrentHealth <= 0)
@@ -249,13 +278,73 @@ namespace Quantum.Game
                 }
             }
 
-            if (gameConfig.AddManaWithPetsentage)
+            if (attackType == AttackType.Ability)
             {
-                fightingHero.CurrentMana += damage * gameConfig.ManaDealDamageRegen;
+                fightingHero.DealedAbilityDamage += damage;
             }
             else
             {
-                fightingHero.CurrentMana += gameConfig.ManaDealDamageRegen;
+                if (gameConfig.AddManaWithPetsentage)
+                {
+                    fightingHero.CurrentMana += damage * gameConfig.ManaDealDamageRegen;
+                }
+                else
+                {
+                    fightingHero.CurrentMana += gameConfig.ManaDealDamageRegen;
+                }
+                
+                fightingHero.DealedBaseDamage += damage;
+            }
+
+            targetHero.TakenDamage += damage;
+
+            if (effect != null && effect.Type != HeroEffects.EffectType.None)
+            {
+                QList<EffectQnt> effects = f.ResolveList(targetHero.Effects);
+                effects.Add(new EffectQnt()
+                {
+                    OwnerIndex = fightingHero.Index,
+                    EffectIndex = (int)effect.Type,
+                    EffectValue = effect.Value,
+                    EffectDuration = effect.Duration
+                });
+            }
+
+            heroes[fightingHeroIndex] = fightingHero;
+            heroes[targetHeroIndex] = targetHero;
+
+            StatsDisplayer.UpdateStats(f, board);
+        }
+
+        public static void DamageHero(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, DamageType damageType, AttackType attackType)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+
+            int fightingHeroIndex = fightingHero.Index;
+            int targetHeroIndex = targetHero.Index;
+
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+
+            fightingHero = heroes[fightingHeroIndex];
+            targetHero = heroes[targetHeroIndex];
+
+            if (targetHeroIndex < 0)
+            {
+                return;
+            }
+
+            targetHero.CurrentHealth -= damageType switch
+            {
+                DamageType.Physical => damage * (gameConfig.HeroDefenseRatio / (gameConfig.HeroDefenseRatio + targetHero.Hero.Defense)),
+                DamageType.Magical => damage * (gameConfig.HeroDefenseRatio / (gameConfig.HeroDefenseRatio + targetHero.Hero.MagicDefense)),
+                _ => throw new ArgumentException("Invalid damage type", nameof(damageType)),
+            };
+
+            if (targetHero.CurrentHealth <= 0)
+            {
+                f.Destroy(targetHero.Hero.Ref);
+                targetHero.IsAlive = false;
+                targetHero.Hero.Ref = default;
             }
 
             if (attackType == AttackType.Ability)

@@ -11,6 +11,7 @@ namespace Quantum.Game
         [SerializeField] private PlayerInventory _playerInventory;
         [SerializeField] private PlayerShop _playerShop;
         [SerializeField] private Board _playerBoard;
+        [SerializeField] private HeroRangeDisplay _heroRangeDisplay;
 
         private Camera _camera;
         private EntityRef _selectedHeroRef;
@@ -41,6 +42,11 @@ namespace Quantum.Game
             if (_isCommandSended)
             {
                 return;
+            }
+
+            if (_selectedHero != null)
+            {
+                _heroRangeDisplay.gameObject.transform.position = _selectedHero.transform.position;
             }
 
             if (UnityEngine.Input.GetMouseButtonUp(0))
@@ -268,6 +274,8 @@ namespace Quantum.Game
 
         private void EndMoveHero()
         {
+            _heroRangeDisplay.SetActive(false);
+
             if (_isMoved == false)
             {
                 ClickedOnHero?.Invoke(_selectedHero);
@@ -291,7 +299,6 @@ namespace Quantum.Game
         {
             if (_selectedHero != null)
             {
-                _selectedHero.SetActiveRange(false);
                 _selectedHero.SetBaseTransform();
                 SetBaseHeroSize(_selectedHero);
                 _selectedHero = null;
@@ -382,7 +389,8 @@ namespace Quantum.Game
 
             _selectedHero.Move(position);
             SetupHero(_selectedHero, isUIScale, isUIRotation);
-            _selectedHero.SetActiveRange(isUIScale == false);
+            _heroRangeDisplay.SetActive(isUIScale == false);
+            _heroRangeDisplay.Setup(_selectedHero.Range);
         }
 
         private void SetBaseHeroSize(HeroObject hero, bool moveInstantly = false)

@@ -1,0 +1,7 @@
+struct EffectQnt
+{
+    int OwnerIndex;
+    int EffectIndex;
+    FP EffectValue;
+    FP EffectDuration;
+}

@@ -100,7 +100,8 @@ namespace Quantum.Game
                     Board = new()
                     {
                         HeroesID = f.AllocateList<int>(GameConfig.BoardSize * GameConfig.BoardSize / 2),
-                        HeroesLevel = f.AllocateList<int>(GameConfig.BoardSize * GameConfig.BoardSize / 2)
+                        HeroesLevel = f.AllocateList<int>(GameConfig.BoardSize * GameConfig.BoardSize / 2),
+                        Abilities = f.AllocateList<SelectedHeroAbility>()
                     },
                     Coins = gameConfig.CoinsPerRound[0],
                     Health = gameConfig.PlayerHealth,

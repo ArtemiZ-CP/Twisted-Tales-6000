@@ -19,6 +19,7 @@ namespace Quantum.Game
         private Transform _heroTransform;
         private Coroutine _moveCoroutine;
         private Vector3 _targetPosition;
+        private int _range;
         private bool _isUI;
 
         public HeroState State => _heroState;
@@ -27,6 +28,7 @@ namespace Quantum.Game
         public Board.Tile BoardTile => _boardTile;
         public int Id => _id;
         public int Level => _level;
+        public int Range => _range;
         public bool IsUI => _heroState == HeroState.Inventory || _heroState == HeroState.Shop;
 
         public void SetLevel(int level)
@@ -63,11 +65,6 @@ namespace Quantum.Game
             _id = heroId;
             _isUI = IsUI;
             SpawnHero();
-        }
-
-        public void SetActiveRange(bool isActive)
-        {
-            _heroMesh.SetActiveRange(isActive);
         }
 
         public void SetHeroScale(bool isUI, bool moveInstantly = false)
@@ -193,7 +190,7 @@ namespace Quantum.Game
 
             _heroMesh = Instantiate(heroInfo.HeroPrefab);
             _heroMesh.SetMesh(_level, _id);
-            _heroMesh.SetRange(heroInfo.HeroStats[_level].Range);
+            _range = heroInfo.HeroStats[_level].Range;
             bool isUIPosition = _heroState == HeroState.Inventory || _heroState == HeroState.Shop;
             _heroMesh.transform.localScale = GameSettings.GetHeroSize(isUIPosition) * Vector3.one;
             _heroMesh.transform.rotation = GameSettings.GetHeroRotation(isUIPosition);

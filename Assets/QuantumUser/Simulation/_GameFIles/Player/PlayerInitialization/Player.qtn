@@ -36,4 +36,12 @@ struct PlayerBoard
 {
     list<Int32> HeroesID;
     list<Int32> HeroesLevel;
+    list<SelectedHeroAbility> Abilities;
+}
+
+struct SelectedHeroAbility
+{
+    int HeroID;
+    int SecondAbilityIndex;
+    int ThirdAbilityIndex;
 }

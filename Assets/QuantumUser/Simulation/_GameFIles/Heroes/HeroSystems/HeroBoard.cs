@@ -185,20 +185,6 @@ namespace Quantum.Game
             return closestHero;
         }
 
-        public static bool TryGetRandomTarget(Frame f, FightingHero fightingHero, Board board, out FightingHero target)
-        {
-            List<FightingHero> targets = GetAllTargets(f, fightingHero, board);
-
-            if (targets.Count == 0)
-            {
-                target = default;
-                return false;
-            }
-
-            target = targets[f.RNG->Next(0, targets.Count)];
-            return true;
-        }
-
         public static List<FightingHero> GetAllTargetsInRange(Frame f, FightingHero fightingHero, Board board)
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);

@@ -21,7 +21,7 @@ namespace Quantum.Game
         }
 
         public static void SpawnProjectile(Frame f, FightingHero fighingHero, FightingHero targetHero, FP damage,
-            HeroAttack.DamageType damageType, HeroAttack.AttackType attackType)
+            HeroEffects.Effect effect, HeroAttack.DamageType damageType, HeroAttack.AttackType attackType)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             Board board = HeroBoard.GetBoard(f, fighingHero);
@@ -33,18 +33,28 @@ namespace Quantum.Game
                 _ => gameConfig.GetHeroInfo(f, fighingHero.Hero.ID).ProjectilePrototype,
             };
 
+            EffectQnt effectQnt = new()
+            {
+                OwnerIndex = effect.OwnerIndex,
+                EffectIndex = (int)effect.Type,
+                EffectValue = effect.Value,
+                EffectDuration = effect.Duration
+            };
+
             HeroProjectile projectile = new()
             {
                 Ref = f.Create(projectilePrototype),
                 Guid = f.FindAsset(projectilePrototype).Guid.Value,
                 Target = targetHero,
                 Owner = fighingHero,
+                Damage = damage,
                 TargetPosition = f.Get<Transform3D>(targetHero.Hero.Ref).Position,
                 DamageType = (int)damageType,
                 Speed = fighingHero.Hero.ProjectileSpeed,
                 Level = fighingHero.Hero.Level,
                 AttackType = (int)attackType,
                 IsActive = true,
+                Effect = effectQnt
             };
 
             Transform3D* projectileTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Ref);
@@ -89,7 +99,8 @@ namespace Quantum.Game
 
             if (projectileTransform->Position == projectile.TargetPosition)
             {
-                HeroAttack.DamageHero(f, projectile.Owner, projectile.Target, (HeroAttack.DamageType)projectile.DamageType, (HeroAttack.AttackType)projectile.AttackType);
+                HeroAttack.DamageHero(f, projectile.Owner, projectile.Target, projectile.Damage, new HeroEffects.Effect(projectile.Effect), 
+                    (HeroAttack.DamageType)projectile.DamageType, (HeroAttack.AttackType)projectile.AttackType);
                 f.Destroy(projectile.Ref);
 
                 return true;

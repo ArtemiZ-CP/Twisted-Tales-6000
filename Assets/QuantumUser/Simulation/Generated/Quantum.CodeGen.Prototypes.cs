@@ -115,11 +115,29 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.EffectQnt))]
+  public unsafe partial class EffectQntPrototype : StructPrototype {
+    public Int32 OwnerIndex;
+    public Int32 EffectIndex;
+    public FP EffectValue;
+    public FP EffectDuration;
+    partial void MaterializeUser(Frame frame, ref Quantum.EffectQnt result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.EffectQnt result, in PrototypeMaterializationContext context = default) {
+        result.OwnerIndex = this.OwnerIndex;
+        result.EffectIndex = this.EffectIndex;
+        result.EffectValue = this.EffectValue;
+        result.EffectDuration = this.EffectDuration;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.FightingHero))]
   public unsafe class FightingHeroPrototype : StructPrototype {
     public Quantum.Prototypes.HeroEntityPrototype Hero;
     public Int32 Index;
     public Int32 BoardIndex;
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.EffectQntPrototype[] Effects = {};
     public FP CurrentHealth;
     public FP CurrentMana;
     public MapEntityId AttackTarget;
@@ -135,6 +153,16 @@ namespace Quantum.Prototypes {
         this.Hero.Materialize(frame, ref result.Hero, in context);
         result.Index = this.Index;
         result.BoardIndex = this.BoardIndex;
+        if (this.Effects.Length == 0) {
+          result.Effects = default;
+        } else {
+          var list = frame.AllocateList(out result.Effects, this.Effects.Length);
+          for (int i = 0; i < this.Effects.Length; ++i) {
+            Quantum.EffectQnt tmp = default;
+            this.Effects[i].Materialize(frame, ref tmp, in context);
+            list.Add(tmp);
+          }
+        }
         result.CurrentHealth = this.CurrentHealth;
         result.CurrentMana = this.CurrentMana;
         PrototypeValidator.FindMapEntity(this.AttackTarget, in context, out result.AttackTarget);
@@ -151,6 +179,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.HeroEntity))]
   public unsafe class HeroEntityPrototype : StructPrototype {
+    public PlayerRef Player;
     public MapEntityId Ref;
     public Int32 ID;
     public Int32 Level;
@@ -161,14 +190,13 @@ namespace Quantum.Prototypes {
     public FP Defense;
     public FP MagicDefense;
     public FP AttackDamage;
-    public FP AbilityDamage;
     public FP AttackSpeed;
     public FP ProjectileSpeed;
     public Int32 Range;
     public FP RangePercentage;
     public Int32 AttackDamageType;
-    public Int32 AbilityDamageType;
     public void Materialize(Frame frame, ref Quantum.HeroEntity result, in PrototypeMaterializationContext context = default) {
+        result.Player = this.Player;
         PrototypeValidator.FindMapEntity(this.Ref, in context, out result.Ref);
         result.ID = this.ID;
         result.Level = this.Level;
@@ -179,13 +207,11 @@ namespace Quantum.Prototypes {
         result.Defense = this.Defense;
         result.MagicDefense = this.MagicDefense;
         result.AttackDamage = this.AttackDamage;
-        result.AbilityDamage = this.AbilityDamage;
         result.AttackSpeed = this.AttackSpeed;
         result.ProjectileSpeed = this.ProjectileSpeed;
         result.Range = this.Range;
         result.RangePercentage = this.RangePercentage;
         result.AttackDamageType = this.AttackDamageType;
-        result.AbilityDamageType = this.AbilityDamageType;
     }
   }
   [System.SerializableAttribute()]
@@ -195,12 +221,14 @@ namespace Quantum.Prototypes {
     public Int64 Guid;
     public Quantum.Prototypes.FightingHeroPrototype Owner;
     public Quantum.Prototypes.FightingHeroPrototype Target;
+    public FP Damage;
     public FPVector3 TargetPosition;
     public FP Speed;
     public Int32 DamageType;
     public Int32 Level;
     public Int32 AttackType;
     public QBoolean IsActive;
+    public Quantum.Prototypes.EffectQntPrototype Effect;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.HeroProjectile component = default;
         Materialize((Frame)f, ref component, in context);
@@ -211,12 +239,14 @@ namespace Quantum.Prototypes {
         result.Guid = this.Guid;
         this.Owner.Materialize(frame, ref result.Owner, in context);
         this.Target.Materialize(frame, ref result.Target, in context);
+        result.Damage = this.Damage;
         result.TargetPosition = this.TargetPosition;
         result.Speed = this.Speed;
         result.DamageType = this.DamageType;
         result.Level = this.Level;
         result.AttackType = this.AttackType;
         result.IsActive = this.IsActive;
+        this.Effect.Materialize(frame, ref result.Effect, in context);
     }
   }
   [System.SerializableAttribute()]
@@ -251,6 +281,8 @@ namespace Quantum.Prototypes {
     public Int32[] HeroesID = {};
     [DynamicCollectionAttribute()]
     public Int32[] HeroesLevel = {};
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.SelectedHeroAbilityPrototype[] Abilities = {};
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerBoard result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.PlayerBoard result, in PrototypeMaterializationContext context = default) {
         if (this.HeroesID.Length == 0) {
@@ -270,6 +302,16 @@ namespace Quantum.Prototypes {
           for (int i = 0; i < this.HeroesLevel.Length; ++i) {
             Int32 tmp = default;
             tmp = this.HeroesLevel[i];
+            list.Add(tmp);
+          }
+        }
+        if (this.Abilities.Length == 0) {
+          result.Abilities = default;
+        } else {
+          var list = frame.AllocateList(out result.Abilities, this.Abilities.Length);
+          for (int i = 0; i < this.Abilities.Length; ++i) {
+            Quantum.SelectedHeroAbility tmp = default;
+            this.Abilities[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
         }
@@ -392,6 +434,20 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.RangedHero result, in PrototypeMaterializationContext context = default) {
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.SelectedHeroAbility))]
+  public unsafe partial class SelectedHeroAbilityPrototype : StructPrototype {
+    public Int32 HeroID;
+    public Int32 SecondAbilityIndex;
+    public Int32 ThirdAbilityIndex;
+    partial void MaterializeUser(Frame frame, ref Quantum.SelectedHeroAbility result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.SelectedHeroAbility result, in PrototypeMaterializationContext context = default) {
+        result.HeroID = this.HeroID;
+        result.SecondAbilityIndex = this.SecondAbilityIndex;
+        result.ThirdAbilityIndex = this.ThirdAbilityIndex;
         MaterializeUser(frame, ref result, in context);
     }
   }

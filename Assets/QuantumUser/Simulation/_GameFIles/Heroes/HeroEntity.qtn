@@ -1,5 +1,6 @@
 struct HeroEntity
 {
+    player_ref Player;
     entity_ref Ref;
     Int32 ID;
     Int32 Level;
@@ -12,11 +13,9 @@ struct HeroEntity
     FP Defense;
     FP MagicDefense;
     FP AttackDamage;
-    FP AbilityDamage;
     FP AttackSpeed;
     FP ProjectileSpeed;
     int Range;
     FP RangePercentage;
     int AttackDamageType;
-    int AbilityDamageType;
 }

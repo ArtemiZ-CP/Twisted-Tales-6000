@@ -22,7 +22,7 @@ namespace Quantum.Game
             heroes[heroNewIndex] = fightingHero;
         }
 
-        public static void Spawn(Frame f, QList<HeroEntity> heroes, int heroIndex, bool first)
+        public static void Spawn(Frame f, QList<HeroEntity> heroes, PlayerRef playerRef, int heroIndex, bool first)
         {
             HeroEntity hero = heroes[heroIndex];
 
@@ -32,6 +32,7 @@ namespace Quantum.Game
             HeroInfo heroInfo = gameConfig.GetHeroInfo(f, hero.ID);
             EntityRef heroEntity = f.Create(heroInfo.HeroPrototype);
             hero.Ref = heroEntity;
+            hero.Player = playerRef;
             heroes[heroIndex] = hero;
 
             switch (heroInfo.HeroType)
@@ -132,7 +133,6 @@ namespace Quantum.Game
             hero.Hero.MaxMana = heroInfo.Mana;
             hero.CurrentMana = heroInfo.StartMana;
             hero.Hero.AttackDamageType = (int)heroInfo.AttackDamageType;
-            hero.Hero.AbilityDamageType = (int)heroInfo.AbilityDamageType;
 
             HeroLevelStats heroLevelStats = heroInfo.HeroStats[hero.Hero.Level];
             hero.Hero.Health = heroLevelStats.Health;
@@ -140,7 +140,6 @@ namespace Quantum.Game
             hero.Hero.Defense = heroLevelStats.Defense;
             hero.Hero.MagicDefense = heroLevelStats.MagicDefense;
             hero.Hero.AttackDamage = heroLevelStats.AttackDamage;
-            hero.Hero.AbilityDamage = heroLevelStats.AbilityDamage;
             hero.Hero.AttackSpeed = heroLevelStats.AttackSpeed;
             hero.Hero.ProjectileSpeed = heroLevelStats.ProjectileSpeed;
             hero.Hero.Range = heroLevelStats.Range;

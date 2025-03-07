@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: B SnowWhiteInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/SnowWhite/B SnowWhiteInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/[2] SnowWhite/B SnowWhiteInfo
     Guid:
       Value: 503196197881011723
   HeroPrefab: {fileID: -5379929345563415316, guid: 87cdb2ede9f0240dea39843a56cd6e67, type: 3}
@@ -29,7 +29,6 @@ MonoBehaviour:
   Name: Snow White
   Rare: 0
   HeroType: 0
-  AbilityType: 1
   HeroStats:
   - Health:
       RawValue: 36044800
@@ -39,8 +38,6 @@ MonoBehaviour:
       RawValue: 983040
     AttackDamage:
       RawValue: 3276800
-    AbilityDamage:
-      RawValue: 9830400
     AttackSpeed:
       RawValue: 45875
     ProjectileSpeed:
@@ -54,8 +51,6 @@ MonoBehaviour:
       RawValue: 983040
     AttackDamage:
       RawValue: 4915200
-    AbilityDamage:
-      RawValue: 14745600
     AttackSpeed:
       RawValue: 45875
     ProjectileSpeed:
@@ -69,8 +64,6 @@ MonoBehaviour:
       RawValue: 983040
     AttackDamage:
       RawValue: 7405568
-    AbilityDamage:
-      RawValue: 22216704
     AttackSpeed:
       RawValue: 45875
     ProjectileSpeed:

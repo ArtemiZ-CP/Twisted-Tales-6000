@@ -19,12 +19,6 @@ namespace Quantum.Game
         Melee
     }
 
-    public enum HeroAbilityType
-    {
-        None,
-        RandomProjectileAttack,
-    }
-
     [Serializable]
     public struct HeroLevelStats
     {
@@ -32,7 +26,6 @@ namespace Quantum.Game
         public FP Defense;
         public FP MagicDefense;
         public FP AttackDamage;
-        public FP AbilityDamage;
         public FP AttackSpeed;
         public FP ProjectileSpeed;
         public int Range;
@@ -48,11 +41,9 @@ namespace Quantum.Game
         public string Name;
         public HeroRare Rare;
         public HeroType HeroType;
-        public HeroAbilityType AbilityType;
         [Header("Stats")]
         public HeroLevelStats[] HeroStats;
         public HeroAttack.DamageType AttackDamageType;
-        public HeroAttack.DamageType AbilityDamageType;
         public FP Mana;
         public FP StartMana;
 

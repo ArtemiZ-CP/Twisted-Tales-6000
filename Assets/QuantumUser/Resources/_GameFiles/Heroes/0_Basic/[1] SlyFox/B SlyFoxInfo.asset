@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: B SlyFoxInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/SlyFox/B SlyFoxInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/[1] SlyFox/B SlyFoxInfo
     Guid:
       Value: 359663575108472497
   HeroPrefab: {fileID: -5379929345563415316, guid: df396b8258daa4bc49077010302d06db, type: 3}
@@ -29,7 +29,6 @@ MonoBehaviour:
   Name: Sly Fox
   Rare: 0
   HeroType: 1
-  AbilityType: 1
   HeroStats:
   - Health:
       RawValue: 42598400
@@ -39,8 +38,6 @@ MonoBehaviour:
       RawValue: 1638400
     AttackDamage:
       RawValue: 3604480
-    AbilityDamage:
-      RawValue: 10813440
     AttackSpeed:
       RawValue: 42598
     ProjectileSpeed:
@@ -54,8 +51,6 @@ MonoBehaviour:
       RawValue: 1638400
     AttackDamage:
       RawValue: 5439488
-    AbilityDamage:
-      RawValue: 16318464
     AttackSpeed:
       RawValue: 42598
     ProjectileSpeed:
@@ -69,8 +64,6 @@ MonoBehaviour:
       RawValue: 1638400
     AttackDamage:
       RawValue: 6815744
-    AbilityDamage:
-      RawValue: 20447232
     AttackSpeed:
       RawValue: 42598
     ProjectileSpeed:

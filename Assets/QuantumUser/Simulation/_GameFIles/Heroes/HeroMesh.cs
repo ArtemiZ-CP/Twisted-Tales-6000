@@ -6,7 +6,6 @@ namespace Quantum.Game
     public class HeroMesh : MonoBehaviour
     {
         [SerializeField] private GameObject[] _meshes;
-        [SerializeField] private HeroRangeDisplay _heroRangeDisplay;
 
         public Action<int, int> OnSetHero;
 
@@ -33,16 +32,6 @@ namespace Quantum.Game
             }
 
             _meshes[level].SetActive(true);
-        }
-
-        public void SetRange(int range)
-        {
-            _heroRangeDisplay.Setup(range);
-        }
-
-        public void SetActiveRange(bool isActive)
-        {
-            _heroRangeDisplay.SetActive(isActive);
         }
     }
 }

@@ -4,10 +4,12 @@ component HeroProjectile
     long Guid;
     FightingHero Owner;
     FightingHero Target;
+    FP Damage;
     FPVector3 TargetPosition;
     FP Speed;
     int DamageType;
     int Level;
     int AttackType;
     bool IsActive;
+    EffectQnt Effect;
 }

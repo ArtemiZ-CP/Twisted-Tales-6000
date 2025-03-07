@@ -113,6 +113,7 @@ namespace Quantum.Game
             f.FreeList(board->HeroProjectiles);
             board->HeroProjectiles = default;
 
+            ClearFightingHeroes(f, board->FightingHeroesMap);
             f.FreeList(board->FightingHeroesMap);
             board->FightingHeroesMap = default;
 
@@ -151,6 +152,19 @@ namespace Quantum.Game
             }
         }
 
+        private void ClearFightingHeroes(Frame f, QListPtr<FightingHero> FightingHeroes)
+        {
+            if (FightingHeroes == null) return;
+
+            QList<FightingHero> heroes = f.ResolveList(FightingHeroes);
+
+            for (int i = 0; i < heroes.Count; i++)
+            {
+                FightingHero fightingHero = heroes[i];
+                f.FreeList(fightingHero.Effects);
+            }
+        }
+
         private EntityRef SpawnBoard(Frame f, PlayerLink* player1, PlayerLink* player2, bool main)
         {
             EntityRef boardEntity = SpawnBoard(f);
@@ -184,12 +198,12 @@ namespace Quantum.Game
 
             for (int i = 0; i < heroes1.Count; i++)
             {
-                Hero.Spawn(f, heroes1, i, first: true);
+                Hero.Spawn(f, heroes1, board->Player1.Ref, i, first: true);
             }
 
             for (int i = 0; i < heroes2.Count; i++)
             {
-                Hero.Spawn(f, heroes2, i, first: false);
+                Hero.Spawn(f, heroes2, board->Player1.Ref, i, first: false);
             }
         }
 

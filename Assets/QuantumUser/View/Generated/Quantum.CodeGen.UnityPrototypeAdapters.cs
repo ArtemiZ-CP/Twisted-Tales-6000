@@ -81,6 +81,8 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.Prototypes.Unity.HeroEntityPrototype Hero;
     public Int32 Index;
     public Int32 BoardIndex;
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.EffectQntPrototype[] Effects = {};
     public FP CurrentHealth;
     public FP CurrentMana;
     public Quantum.QuantumEntityPrototype AttackTarget;
@@ -98,6 +100,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.Hero, out result.Hero);
       converter.Convert(this.Index, out result.Index);
       converter.Convert(this.BoardIndex, out result.BoardIndex);
+      converter.Convert(this.Effects, out result.Effects);
       converter.Convert(this.CurrentHealth, out result.CurrentHealth);
       converter.Convert(this.CurrentMana, out result.CurrentMana);
       converter.Convert(this.AttackTarget, out result.AttackTarget);
@@ -115,6 +118,7 @@ namespace Quantum.Prototypes.Unity {
   }
   [System.SerializableAttribute()]
   public unsafe partial class HeroEntityPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.HeroEntityPrototype> {
+    public PlayerRef Player;
     public Quantum.QuantumEntityPrototype Ref;
     public Int32 ID;
     public Int32 Level;
@@ -125,16 +129,15 @@ namespace Quantum.Prototypes.Unity {
     public FP Defense;
     public FP MagicDefense;
     public FP AttackDamage;
-    public FP AbilityDamage;
     public FP AttackSpeed;
     public FP ProjectileSpeed;
     public Int32 Range;
     public FP RangePercentage;
     public Int32 AttackDamageType;
-    public Int32 AbilityDamageType;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.HeroEntityPrototype prototype);
     public override Quantum.Prototypes.HeroEntityPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.HeroEntityPrototype();
+      converter.Convert(this.Player, out result.Player);
       converter.Convert(this.Ref, out result.Ref);
       converter.Convert(this.ID, out result.ID);
       converter.Convert(this.Level, out result.Level);
@@ -145,13 +148,11 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.Defense, out result.Defense);
       converter.Convert(this.MagicDefense, out result.MagicDefense);
       converter.Convert(this.AttackDamage, out result.AttackDamage);
-      converter.Convert(this.AbilityDamage, out result.AbilityDamage);
       converter.Convert(this.AttackSpeed, out result.AttackSpeed);
       converter.Convert(this.ProjectileSpeed, out result.ProjectileSpeed);
       converter.Convert(this.Range, out result.Range);
       converter.Convert(this.RangePercentage, out result.RangePercentage);
       converter.Convert(this.AttackDamageType, out result.AttackDamageType);
-      converter.Convert(this.AbilityDamageType, out result.AbilityDamageType);
       ConvertUser(converter, ref result);
       return result;
     }
@@ -162,12 +163,14 @@ namespace Quantum.Prototypes.Unity {
     public Int64 Guid;
     public Quantum.Prototypes.Unity.FightingHeroPrototype Owner;
     public Quantum.Prototypes.Unity.FightingHeroPrototype Target;
+    public FP Damage;
     public FPVector3 TargetPosition;
     public FP Speed;
     public Int32 DamageType;
     public Int32 Level;
     public Int32 AttackType;
     public QBoolean IsActive;
+    public Quantum.Prototypes.EffectQntPrototype Effect;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.HeroProjectilePrototype prototype);
     public override Quantum.Prototypes.HeroProjectilePrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.HeroProjectilePrototype();
@@ -175,12 +178,14 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.Guid, out result.Guid);
       converter.Convert(this.Owner, out result.Owner);
       converter.Convert(this.Target, out result.Target);
+      converter.Convert(this.Damage, out result.Damage);
       converter.Convert(this.TargetPosition, out result.TargetPosition);
       converter.Convert(this.Speed, out result.Speed);
       converter.Convert(this.DamageType, out result.DamageType);
       converter.Convert(this.Level, out result.Level);
       converter.Convert(this.AttackType, out result.AttackType);
       converter.Convert(this.IsActive, out result.IsActive);
+      converter.Convert(this.Effect, out result.Effect);
       ConvertUser(converter, ref result);
       return result;
     }

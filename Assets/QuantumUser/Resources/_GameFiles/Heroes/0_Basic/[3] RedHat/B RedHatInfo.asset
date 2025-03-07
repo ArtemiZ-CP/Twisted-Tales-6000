@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: B RedHatInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/RedHat/B RedHatInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/[3] RedHat/B RedHatInfo
     Guid:
       Value: 532186031317670239
   HeroPrefab: {fileID: -5379929345563415316, guid: 00fc591b71d454103a881bd5ccf44881, type: 3}
@@ -29,7 +29,6 @@ MonoBehaviour:
   Name: Red Hat
   Rare: 0
   HeroType: 0
-  AbilityType: 1
   HeroStats:
   - Health:
       RawValue: 39321600
@@ -39,8 +38,6 @@ MonoBehaviour:
       RawValue: 1310720
     AttackDamage:
       RawValue: 2949120
-    AbilityDamage:
-      RawValue: 8847360
     AttackSpeed:
       RawValue: 49152
     ProjectileSpeed:
@@ -54,8 +51,6 @@ MonoBehaviour:
       RawValue: 1310720
     AttackDamage:
       RawValue: 4456448
-    AbilityDamage:
-      RawValue: 13369344
     AttackSpeed:
       RawValue: 49152
     ProjectileSpeed:
@@ -69,15 +64,12 @@ MonoBehaviour:
       RawValue: 1310720
     AttackDamage:
       RawValue: 6619136
-    AbilityDamage:
-      RawValue: 19857408
     AttackSpeed:
       RawValue: 49152
     ProjectileSpeed:
       RawValue: 327680
     Range: 4
   AttackDamageType: 0
-  AbilityDamageType: 1
   Mana:
     RawValue: 2621440
   StartMana:

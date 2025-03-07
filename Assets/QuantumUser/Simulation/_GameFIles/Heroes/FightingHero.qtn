@@ -3,6 +3,7 @@ struct FightingHero
     HeroEntity Hero;
     int Index;
     int BoardIndex;
+    list<EffectQnt> Effects;
     
     // Fighing stats
     FP CurrentHealth;
