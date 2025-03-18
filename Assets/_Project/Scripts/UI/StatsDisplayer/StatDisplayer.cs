@@ -54,7 +54,7 @@ namespace Quantum.Game
             
             foreach (FightingHero hero in fightingHeroes)
             {
-                AddText($"{HeroName.GetHeroName(hero.Hero.ID, hero.Hero.Level)}: {statSelector(hero)}");
+                AddText($"{HeroName.GetHeroName(hero.Hero.ID, hero.Hero.Level)}: {statSelector(hero).AsFloat:#.##}");
             }
         }
 

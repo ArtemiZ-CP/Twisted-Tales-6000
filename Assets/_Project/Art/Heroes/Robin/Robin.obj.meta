@@ -8,12 +8,12 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: RobinMat
-    second: {fileID: 2100000, guid: 5ea4bc49d83be40e28b7e92b76abc14e, type: 2}
+    second: {fileID: 2100000, guid: 771b880766059405281f3702392838fa, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Robin_BirdMat
-    second: {fileID: 2100000, guid: 9fdbcd4cd677f45e3954645662c1998e, type: 2}
+    second: {fileID: 2100000, guid: ff8310d65702242bb84d196127dc9b9b, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

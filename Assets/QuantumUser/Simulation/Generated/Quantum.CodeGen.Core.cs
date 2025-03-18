@@ -1021,21 +1021,21 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HeroProjectile : Quantum.IComponent {
-    public const Int32 SIZE = 528;
+    public const Int32 SIZE = 512;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(16)]
-    public EntityRef Ref;
-    [FieldOffset(40)]
-    public Int64 Guid;
-    [FieldOffset(96)]
-    public FightingHero Owner;
-    [FieldOffset(312)]
-    public FightingHero Target;
     [FieldOffset(24)]
-    public FP Damage;
-    [FieldOffset(72)]
-    public FPVector3 TargetPosition;
+    public EntityRef Ref;
+    [FieldOffset(48)]
+    public Int64 Guid;
+    [FieldOffset(80)]
+    public FightingHero Owner;
+    [FieldOffset(296)]
+    public FightingHero Target;
     [FieldOffset(32)]
+    public FP Damage;
+    [FieldOffset(56)]
+    public FPVector3 TargetPosition;
+    [FieldOffset(40)]
     public FP Speed;
     [FieldOffset(4)]
     public Int32 DamageType;
@@ -1045,8 +1045,8 @@ namespace Quantum {
     public Int32 AttackType;
     [FieldOffset(12)]
     public QBoolean IsActive;
-    [FieldOffset(48)]
-    public EffectQnt Effect;
+    [FieldOffset(16)]
+    public QListPtr<EffectQnt> Effects;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10301;
@@ -1061,13 +1061,14 @@ namespace Quantum {
         hash = hash * 31 + Level.GetHashCode();
         hash = hash * 31 + AttackType.GetHashCode();
         hash = hash * 31 + IsActive.GetHashCode();
-        hash = hash * 31 + Effect.GetHashCode();
+        hash = hash * 31 + Effects.GetHashCode();
         return hash;
       }
     }
     public void ClearPointers(FrameBase f, EntityRef entity) {
       Owner.ClearPointers(f, entity);
       Target.ClearPointers(f, entity);
+      Effects = default;
     }
     public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
       var p = (Quantum.HeroProjectile*)ptr;
@@ -1079,11 +1080,11 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->DamageType);
         serializer.Stream.Serialize(&p->Level);
         QBoolean.Serialize(&p->IsActive, serializer);
+        QList.Serialize(&p->Effects, serializer, Statics.SerializeEffectQnt);
         EntityRef.Serialize(&p->Ref, serializer);
         FP.Serialize(&p->Damage, serializer);
         FP.Serialize(&p->Speed, serializer);
         serializer.Stream.Serialize(&p->Guid);
-        Quantum.EffectQnt.Serialize(&p->Effect, serializer);
         FPVector3.Serialize(&p->TargetPosition, serializer);
         Quantum.FightingHero.Serialize(&p->Owner, serializer);
         Quantum.FightingHero.Serialize(&p->Target, serializer);

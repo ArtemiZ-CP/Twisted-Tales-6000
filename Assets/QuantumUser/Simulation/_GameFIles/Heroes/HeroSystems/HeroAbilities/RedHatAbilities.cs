@@ -16,7 +16,8 @@ namespace Quantum.Game
 
             if (secondHeroAbilityIndex < 0)
             {
-                return TryCast_0(f, fightingHero, board);
+                return TryCast_0_0(f, fightingHero, board);
+                // return TryCast(f, fightingHero, board);
             }
             else if (thirdHeroAbilityIndex < 0)
             {
@@ -26,14 +27,39 @@ namespace Quantum.Game
                 }
                 else if (secondHeroAbilityIndex == 1)
                 {
-
+                    return TryCast_1(f, fightingHero, board);
                 }
 
                 return false;
             }
             else
             {
-                // Third level ability
+                if (secondHeroAbilityIndex == 0)
+                {
+                    if (thirdHeroAbilityIndex == 0)
+                    {
+                        return TryCast_0_0(f, fightingHero, board);
+                    }
+                    else if (thirdHeroAbilityIndex == 1)
+                    {
+                    }
+                    else if (thirdHeroAbilityIndex == 2)
+                    {
+                    }
+                }
+                else if (secondHeroAbilityIndex == 1)
+                {
+                    if (thirdHeroAbilityIndex == 0)
+                    {
+                    }
+                    else if (thirdHeroAbilityIndex == 1)
+                    {
+                    }
+                    else if (thirdHeroAbilityIndex == 2)
+                    {
+                    }
+                }
+
                 return false;
             }
         }
@@ -64,6 +90,57 @@ namespace Quantum.Game
                 };
 
                 HeroAbility.ProjectileAttack(f, fightingHero, target, damage, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool TryCast_1(Frame f, FightingHero fightingHero, Board board)
+        {
+            if (HeroAttack.TryFindClosestTarget(f, fightingHero, board, out FightingHero target))
+            {
+                FP damage = 120;
+                HeroEffects.Effect effect = new()
+                {
+                    OwnerIndex = fightingHero.Index,
+                    Type = HeroEffects.EffectType.Curse,
+                    Value = FP._0_75,
+                    Duration = 3
+                };
+
+                HeroAbility.ProjectileAttack(f, fightingHero, target, damage, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                return true;
+            }
+
+            return false;
+        }
+
+
+        private static bool TryCast_0_0(Frame f, FightingHero fightingHero, Board board)
+        {
+            if (HeroAttack.TryFindClosestTarget(f, fightingHero, board, out FightingHero target))
+            {
+                FP damage = 160;
+                HeroEffects.Effect effect1 = new()
+                {
+                    OwnerIndex = fightingHero.Index,
+                    Type = HeroEffects.EffectType.Bleeding,
+                    Value = (FP)75 / 3,
+                    Duration = 3
+                };
+
+                HeroEffects.Effect effectw = new()
+                {
+                    OwnerIndex = fightingHero.Index,
+                    Type = HeroEffects.EffectType.IncteaseTakingDamage,
+                    Value = FP._1_20,
+                    Duration = 3
+                };
+
+                HeroEffects.Effect[] effects = new HeroEffects.Effect[] { effect1, effectw };
+
+                HeroAbility.ProjectileAttack(f, fightingHero, target, damage, effects, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                 return true;
             }
 

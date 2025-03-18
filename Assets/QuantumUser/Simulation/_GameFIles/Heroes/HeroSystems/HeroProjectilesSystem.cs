@@ -21,7 +21,7 @@ namespace Quantum.Game
         }
 
         public static void SpawnProjectile(Frame f, FightingHero fighingHero, FightingHero targetHero, FP damage,
-            HeroEffects.Effect effect, HeroAttack.DamageType damageType, HeroAttack.AttackType attackType)
+            HeroEffects.Effect[] effects, HeroAttack.DamageType damageType, HeroAttack.AttackType attackType)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             Board board = HeroBoard.GetBoard(f, fighingHero);
@@ -33,13 +33,20 @@ namespace Quantum.Game
                 _ => gameConfig.GetHeroInfo(f, fighingHero.Hero.ID).ProjectilePrototype,
             };
 
-            EffectQnt effectQnt = new()
+            QList<EffectQnt> effectsList = f.AllocateList<EffectQnt>(effects.Length);
+
+            foreach (HeroEffects.Effect effect in effects)
             {
-                OwnerIndex = effect.OwnerIndex,
-                EffectIndex = (int)effect.Type,
-                EffectValue = effect.Value,
-                EffectDuration = effect.Duration
-            };
+                EffectQnt effectQnt = new()
+                {
+                    OwnerIndex = effect.OwnerIndex,
+                    EffectIndex = (int)effect.Type,
+                    EffectValue = effect.Value,
+                    EffectDuration = effect.Duration
+                };
+
+                effectsList.Add(effectQnt);
+            }
 
             HeroProjectile projectile = new()
             {
@@ -54,8 +61,9 @@ namespace Quantum.Game
                 Level = fighingHero.Hero.Level,
                 AttackType = (int)attackType,
                 IsActive = true,
-                Effect = effectQnt
+                Effects = effectsList,
             };
+
 
             Transform3D* projectileTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Ref);
             FPVector3 projectilePosition = f.Get<Transform3D>(fighingHero.Hero.Ref).Position;
@@ -99,7 +107,7 @@ namespace Quantum.Game
 
             if (projectileTransform->Position == projectile.TargetPosition)
             {
-                HeroAttack.DamageHero(f, projectile.Owner, projectile.Target, projectile.Damage, new HeroEffects.Effect(projectile.Effect), 
+                HeroAttack.DamageHero(f, projectile.Owner, projectile.Target, projectile.Damage, f.ResolveList(projectile.Effects),
                     (HeroAttack.DamageType)projectile.DamageType, (HeroAttack.AttackType)projectile.AttackType);
                 f.Destroy(projectile.Ref);
 

@@ -11,5 +11,5 @@ component HeroProjectile
     int Level;
     int AttackType;
     bool IsActive;
-    EffectQnt Effect;
+    list<EffectQnt> Effects;
 }

@@ -1,7 +1,16 @@
+using Quantum.Collections;
+
 namespace Quantum.Game
 {
     public static unsafe class Events
     {
+        public static void ChangeHeroHealth(Frame f, FightingHero fightingHero, Board board)
+        {
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+            fightingHero = heroes[fightingHero.Index];
+            f.Events.HeroHealthChanged(board.Player1.Ref, board.Player2.Ref, fightingHero.Hero.Ref, fightingHero.CurrentHealth, fightingHero.Hero.Health);
+        }
+
         public static void DisplayRoundNumber(Frame f)
         {
             f.Events.DisplayRoundNumber(f.Global->PhaseNumber);

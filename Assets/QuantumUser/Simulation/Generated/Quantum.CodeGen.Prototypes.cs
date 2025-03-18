@@ -228,7 +228,8 @@ namespace Quantum.Prototypes {
     public Int32 Level;
     public Int32 AttackType;
     public QBoolean IsActive;
-    public Quantum.Prototypes.EffectQntPrototype Effect;
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.EffectQntPrototype[] Effects = {};
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.HeroProjectile component = default;
         Materialize((Frame)f, ref component, in context);
@@ -246,7 +247,16 @@ namespace Quantum.Prototypes {
         result.Level = this.Level;
         result.AttackType = this.AttackType;
         result.IsActive = this.IsActive;
-        this.Effect.Materialize(frame, ref result.Effect, in context);
+        if (this.Effects.Length == 0) {
+          result.Effects = default;
+        } else {
+          var list = frame.AllocateList(out result.Effects, this.Effects.Length);
+          for (int i = 0; i < this.Effects.Length; ++i) {
+            Quantum.EffectQnt tmp = default;
+            this.Effects[i].Materialize(frame, ref tmp, in context);
+            list.Add(tmp);
+          }
+        }
     }
   }
   [System.SerializableAttribute()]

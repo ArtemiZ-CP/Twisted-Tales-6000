@@ -170,7 +170,8 @@ namespace Quantum.Prototypes.Unity {
     public Int32 Level;
     public Int32 AttackType;
     public QBoolean IsActive;
-    public Quantum.Prototypes.EffectQntPrototype Effect;
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.EffectQntPrototype[] Effects = {};
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.HeroProjectilePrototype prototype);
     public override Quantum.Prototypes.HeroProjectilePrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.HeroProjectilePrototype();
@@ -185,7 +186,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.Level, out result.Level);
       converter.Convert(this.AttackType, out result.AttackType);
       converter.Convert(this.IsActive, out result.IsActive);
-      converter.Convert(this.Effect, out result.Effect);
+      converter.Convert(this.Effects, out result.Effects);
       ConvertUser(converter, ref result);
       return result;
     }

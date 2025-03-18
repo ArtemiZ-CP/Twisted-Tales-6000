@@ -46,7 +46,12 @@ namespace Quantum.Game
 
         public static void ProjectileAttack(Frame f, FightingHero fightingHero, FightingHero targetHero, FP damage, HeroEffects.Effect effect, DamageType damageType, AttackType attackType)
         {
-            HeroProjectilesSystem.SpawnProjectile(f, fightingHero, targetHero, damage, effect, damageType, attackType);
+            HeroProjectilesSystem.SpawnProjectile(f, fightingHero, targetHero, damage, new[] { effect }, damageType, attackType);
+        }
+
+        public static void ProjectileAttack(Frame f, FightingHero fightingHero, FightingHero targetHero, FP damage, HeroEffects.Effect[] effects, DamageType damageType, AttackType attackType)
+        {
+            HeroProjectilesSystem.SpawnProjectile(f, fightingHero, targetHero, damage, effects, damageType, attackType);
         }
 
         private static SelectedHeroAbility GetSelectedHeroAbility(Frame f, PlayerLink* playerLink, int heroID, out int index)

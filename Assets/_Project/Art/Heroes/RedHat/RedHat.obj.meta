@@ -8,17 +8,17 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: RedHatMat
-    second: {fileID: 2100000, guid: ee1cc64844e7b4d66b2786a1abfcf998, type: 2}
+    second: {fileID: 2100000, guid: 1ee926b96dbc64f09a03a82294707114, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: RedHat_CloakMat
-    second: {fileID: 2100000, guid: 1ab612b1302ac4f79ab1dda5f75a378f, type: 2}
+    second: {fileID: 2100000, guid: cacc706643e61496787a13d83de9057d, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: RedHat_WeaponMat
-    second: {fileID: 2100000, guid: 302fa4e71168e4b119ef000b673f7d65, type: 2}
+    second: {fileID: 2100000, guid: 3430cbea3d0f44857bc792f6c48e4d36, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

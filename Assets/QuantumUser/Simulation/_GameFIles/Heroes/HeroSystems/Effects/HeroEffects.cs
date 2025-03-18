@@ -8,7 +8,9 @@ namespace Quantum.Game
         public enum EffectType
         {
             None,
-            Bleeding
+            Bleeding,
+            Curse,
+            IncteaseTakingDamage,
         }
 
         public class Effect
@@ -32,7 +34,7 @@ namespace Quantum.Game
             }
         }
 
-        public static void ApplyEffects(Frame f, FightingHero target, Board board)
+        public static void ProcessEffects(Frame f, FightingHero target, Board board)
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             target = heroes[target.Index];
@@ -49,19 +51,16 @@ namespace Quantum.Game
                 EffectQnt effectQnt = effects[i];
                 FightingHero ownerHero = heroes[effectQnt.OwnerIndex];
 
-                Log.Debug($"{ownerHero.Hero.ID} {ownerHero.Index}");
-
                 FP damage = effectQnt.EffectDuration < f.DeltaTime ? effectQnt.EffectValue * effectQnt.EffectDuration : effectQnt.EffectValue * f.DeltaTime;
 
                 switch ((EffectType)effectQnt.EffectIndex)
                 {
                     case EffectType.Bleeding:
-                        HeroAttack.DamageHero(f, ownerHero, board, target, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                        effectQnt.EffectDuration -= f.DeltaTime;
+                        HeroAttack.DamageHeroByEffect(f, ownerHero, board, target, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         break;
                 }
 
-                target = heroes[target.Index];
+                effectQnt.EffectDuration -= f.DeltaTime;
 
                 if (effectQnt.EffectDuration <= 0)
                 {
