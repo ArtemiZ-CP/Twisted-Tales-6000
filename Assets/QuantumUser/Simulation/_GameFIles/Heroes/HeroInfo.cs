@@ -38,7 +38,7 @@ namespace Quantum.Game
         public AssetRef<EntityPrototype> ProjectilePrototype;
         public AssetRef<EntityPrototype> AbilityProjectilePrototype;
         [Header("Hero Info")]
-        public string Name;
+        public HeroNameEnum Name;
         public HeroRare Rare;
         public HeroType HeroType;
         [Header("Stats")]

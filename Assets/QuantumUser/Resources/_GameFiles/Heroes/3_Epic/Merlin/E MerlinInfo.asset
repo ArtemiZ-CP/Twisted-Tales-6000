@@ -26,10 +26,9 @@ MonoBehaviour:
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Merlin
+  Name: 15
   Rare: 3
   HeroType: 0
-  AbilityType: 1
   HeroStats:
   - Health:
       RawValue: 55705600
@@ -39,8 +38,6 @@ MonoBehaviour:
       RawValue: 2621440
     AttackDamage:
       RawValue: 3932160
-    AbilityDamage:
-      RawValue: 11796480
     AttackSpeed:
       RawValue: 45875
     ProjectileSpeed:
@@ -54,8 +51,6 @@ MonoBehaviour:
       RawValue: 2621440
     AttackDamage:
       RawValue: 5898240
-    AbilityDamage:
-      RawValue: 17694720
     AttackSpeed:
       RawValue: 45875
     ProjectileSpeed:
@@ -69,15 +64,12 @@ MonoBehaviour:
       RawValue: 2621440
     AttackDamage:
       RawValue: 8847360
-    AbilityDamage:
-      RawValue: 26542080
     AttackSpeed:
       RawValue: 45875
     ProjectileSpeed:
       RawValue: 327680
     Range: 4
   AttackDamageType: 0
-  AbilityDamageType: 1
   Mana:
     RawValue: 6553600
   StartMana:

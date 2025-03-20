@@ -9,16 +9,25 @@ namespace Quantum.Game
         {
             None,
             Bleeding,
-            Curse,
-            IncteaseTakingDamage,
+            IncreaseReloadTime,
+            IncreaseTakingDamage,
+            ReduceCurrentMana,
+            Blast,
+        }
+
+        public enum GlobalEffectType
+        {
+            None,
+            PoisonArea,
         }
 
         public class Effect
         {
-            public int OwnerIndex;
-            public EffectType Type;
-            public FP Value;
-            public FP Duration;
+            public EntityRef Owner;
+            public EffectType Type = EffectType.None;
+            public FP Value = 0;
+            public FP Duration = 0;
+            public int Size = 0;
 
             public Effect()
             {
@@ -27,10 +36,70 @@ namespace Quantum.Game
 
             public Effect(EffectQnt effectQnt)
             {
-                OwnerIndex = effectQnt.OwnerIndex;
-                Type = (EffectType)effectQnt.EffectIndex;
-                Value = effectQnt.EffectValue;
-                Duration = effectQnt.EffectDuration;
+                Owner = effectQnt.Owner;
+                Type = (EffectType)effectQnt.Index;
+                Value = effectQnt.Value;
+                Duration = effectQnt.Duration;
+                Size = effectQnt.Size;
+            }
+        }
+
+        public class GlobalEffect
+        {
+            public int Center;
+            public EntityRef Owner;
+            public GlobalEffectType Type;
+            public FP Value;
+            public FP Duration;
+            public int Size;
+
+            public GlobalEffect()
+            {
+                Type = GlobalEffectType.None;
+            }
+
+            public GlobalEffect(GlobalEffectQnt effectQnt)
+            {
+                Center = effectQnt.Center;
+                Owner = effectQnt.Owner;
+                Type = (GlobalEffectType)effectQnt.Index;
+                Value = effectQnt.Value;
+                Duration = effectQnt.Duration;
+                Size = effectQnt.Size;
+            }
+        }
+
+        public static void ProcessGlobalEffects(Frame f, Board board)
+        {
+            QList<GlobalEffectQnt> globalEffects = f.ResolveList(board.GlobalEffects);
+
+            if (globalEffects.Count > 0)
+            {
+                Log.Debug($"Processing {globalEffects.Count} global effects");
+            }
+
+            for (int i = 0; i < globalEffects.Count; i++)
+            {
+                GlobalEffectQnt globalEffect = globalEffects[i];
+
+                switch ((GlobalEffectType)globalEffect.Index)
+                {
+                    case GlobalEffectType.PoisonArea:
+                        ProcessPoisonArea(f, globalEffect, board);
+                        break;
+                }
+
+                globalEffect.Duration -= f.DeltaTime;
+
+                if (globalEffect.Duration <= 0)
+                {
+                    globalEffects.RemoveAt(i);
+                    i--;
+                }
+                else
+                {
+                    globalEffects[i] = globalEffect;
+                }
             }
         }
 
@@ -49,20 +118,26 @@ namespace Quantum.Game
             for (int i = 0; i < effects.Count; i++)
             {
                 EffectQnt effectQnt = effects[i];
-                FightingHero ownerHero = heroes[effectQnt.OwnerIndex];
+                FightingHero ownerHero = HeroBoard.GetFightingHero(f, effects[i].Owner, board);
 
-                FP damage = effectQnt.EffectDuration < f.DeltaTime ? effectQnt.EffectValue * effectQnt.EffectDuration : effectQnt.EffectValue * f.DeltaTime;
+                FP damage = effectQnt.Duration < f.DeltaTime ? effectQnt.Value * effectQnt.Duration : effectQnt.Value * f.DeltaTime;
 
-                switch ((EffectType)effectQnt.EffectIndex)
+                switch ((EffectType)effectQnt.Index)
                 {
                     case EffectType.Bleeding:
-                        HeroAttack.DamageHeroByEffect(f, ownerHero, board, target, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                        HeroAttack.DamageHeroWithDOT(f, ownerHero, board, target, damage, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                        break;
+                    case EffectType.ReduceCurrentMana:
+                        ReduceCurrentMana(f, target, board, effectQnt.Value);
+                        break;
+                    case EffectType.Blast:
+                        HeroAttack.DamageHeroByBlastWithoutApplyingEffects(f, ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         break;
                 }
 
-                effectQnt.EffectDuration -= f.DeltaTime;
+                effectQnt.Duration -= f.DeltaTime;
 
-                if (effectQnt.EffectDuration <= 0)
+                if (effectQnt.Duration <= 0)
                 {
                     effects.RemoveAt(i);
                     i--;
@@ -72,6 +147,32 @@ namespace Quantum.Game
                     effects[i] = effectQnt;
                 }
             }
+        }
+
+        private static void ProcessPoisonArea(Frame f, GlobalEffectQnt globalEffectQnt, Board board)
+        {
+            FightingHero ownerHero = HeroBoard.GetFightingHero(f, globalEffectQnt.Owner, board);
+            var targets = HeroBoard.GetAllTargetsInRange(f, globalEffectQnt.Center, ownerHero.TeamNumber, board, globalEffectQnt.Size, includeSelf: true);
+
+            for (int i = 0; i < targets.Count; i++)
+            {
+                if (targets[i].IsAlive == false)
+                {
+                    continue;
+                }
+
+                FP damage = globalEffectQnt.Duration < f.DeltaTime ? globalEffectQnt.Value * globalEffectQnt.Duration : globalEffectQnt.Value * f.DeltaTime;
+                HeroAttack.DamageHeroWithDOT(f, ownerHero, board, targets[i], damage, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+            }
+        }
+
+        private static void ReduceCurrentMana(Frame f, FightingHero target, Board board, FP value)
+        {
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+            target = heroes[target.Index];
+            target.CurrentMana -= value;
+            heroes[target.Index] = target;
+            f.Events.HeroManaChanged(board.Player1.Ref, board.Player2.Ref, target.Hero.Ref, target.CurrentMana, target.Hero.MaxMana);
         }
     }
 }

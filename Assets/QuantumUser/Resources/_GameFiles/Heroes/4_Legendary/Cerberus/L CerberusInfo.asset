@@ -26,10 +26,9 @@ MonoBehaviour:
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Cerberus
+  Name: 18
   Rare: 4
   HeroType: 1
-  AbilityType: 0
   HeroStats:
   - Health:
       RawValue: 78643200
@@ -39,8 +38,6 @@ MonoBehaviour:
       RawValue: 2949120
     AttackDamage:
       RawValue: 6553600
-    AbilityDamage:
-      RawValue: 19660800
     AttackSpeed:
       RawValue: 36045
     ProjectileSpeed:
@@ -54,8 +51,6 @@ MonoBehaviour:
       RawValue: 2949120
     AttackDamage:
       RawValue: 9830400
-    AbilityDamage:
-      RawValue: 29491200
     AttackSpeed:
       RawValue: 36045
     ProjectileSpeed:
@@ -69,15 +64,12 @@ MonoBehaviour:
       RawValue: 2949120
     AttackDamage:
       RawValue: 14745600
-    AbilityDamage:
-      RawValue: 44236800
     AttackSpeed:
       RawValue: 36045
     ProjectileSpeed:
       RawValue: 0
     Range: 1
   AttackDamageType: 0
-  AbilityDamageType: 1
   Mana:
     RawValue: 5898240
   StartMana:

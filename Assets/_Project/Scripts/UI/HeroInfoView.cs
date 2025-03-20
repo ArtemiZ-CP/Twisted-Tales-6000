@@ -114,7 +114,7 @@ public class HeroInfoView : MonoBehaviour
     {
         HeroLevelStats heroStats = heroInfo.HeroStats[level];
 
-        _heroName.text = heroInfo.Name;
+        _heroName.text = heroInfo.Name.ToString();
 
         string stars = "";
 

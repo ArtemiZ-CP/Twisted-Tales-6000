@@ -26,7 +26,7 @@ MonoBehaviour:
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Snow White
+  Name: 2
   Rare: 0
   HeroType: 0
   HeroStats:
@@ -70,7 +70,6 @@ MonoBehaviour:
       RawValue: 327680
     Range: 4
   AttackDamageType: 0
-  AbilityDamageType: 1
   Mana:
     RawValue: 3276800
   StartMana:

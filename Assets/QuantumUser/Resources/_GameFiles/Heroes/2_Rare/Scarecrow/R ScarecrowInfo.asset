@@ -26,10 +26,9 @@ MonoBehaviour:
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Scarecrow
+  Name: 12
   Rare: 2
   HeroType: 0
-  AbilityType: 1
   HeroStats:
   - Health:
       RawValue: 45875200
@@ -39,8 +38,6 @@ MonoBehaviour:
       RawValue: 1638400
     AttackDamage:
       RawValue: 3604480
-    AbilityDamage:
-      RawValue: 10813440
     AttackSpeed:
       RawValue: 45875
     ProjectileSpeed:
@@ -54,8 +51,6 @@ MonoBehaviour:
       RawValue: 1638400
     AttackDamage:
       RawValue: 5439488
-    AbilityDamage:
-      RawValue: 16318464
     AttackSpeed:
       RawValue: 45875
     ProjectileSpeed:
@@ -69,15 +64,12 @@ MonoBehaviour:
       RawValue: 1638400
     AttackDamage:
       RawValue: 8126464
-    AbilityDamage:
-      RawValue: 24379392
     AttackSpeed:
       RawValue: 45875
     ProjectileSpeed:
       RawValue: 327680
     Range: 2
   AttackDamageType: 0
-  AbilityDamageType: 1
   Mana:
     RawValue: 3932160
   StartMana:

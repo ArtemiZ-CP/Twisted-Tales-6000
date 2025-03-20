@@ -308,6 +308,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: SlyFox
       objectReference: {fileID: 0}
+    - target: {fileID: 3085436854343020914, guid: 18532b5b9c3d64a869c272e9ccc9bbc6, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8165593281023629544, guid: 18532b5b9c3d64a869c272e9ccc9bbc6, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -26,10 +26,9 @@ MonoBehaviour:
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Tin Man
+  Name: 16
   Rare: 3
   HeroType: 1
-  AbilityType: 1
   HeroStats:
   - Health:
       RawValue: 62259200
@@ -39,8 +38,6 @@ MonoBehaviour:
       RawValue: 2293760
     AttackDamage:
       RawValue: 5570560
-    AbilityDamage:
-      RawValue: 16711680
     AttackSpeed:
       RawValue: 42598
     ProjectileSpeed:
@@ -54,8 +51,6 @@ MonoBehaviour:
       RawValue: 2293760
     AttackDamage:
       RawValue: 8388608
-    AbilityDamage:
-      RawValue: 25165824
     AttackSpeed:
       RawValue: 42598
     ProjectileSpeed:
@@ -69,15 +64,12 @@ MonoBehaviour:
       RawValue: 2293760
     AttackDamage:
       RawValue: 12517376
-    AbilityDamage:
-      RawValue: 37552128
     AttackSpeed:
       RawValue: 42598
     ProjectileSpeed:
       RawValue: 327680
     Range: 1
   AttackDamageType: 0
-  AbilityDamageType: 1
   Mana:
     RawValue: 4587520
   StartMana:

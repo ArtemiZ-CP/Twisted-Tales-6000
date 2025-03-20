@@ -62,6 +62,8 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.Prototypes.Unity.FightingHeroPrototype[] FightingHeroesMap = {};
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.Unity.HeroProjectilePrototype[] HeroProjectiles = {};
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.Unity.GlobalEffectQntPrototype[] GlobalEffects = {};
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.BoardPrototype prototype);
     public override Quantum.Prototypes.BoardPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.BoardPrototype();
@@ -72,6 +74,26 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.HeroesID2, out result.HeroesID2);
       converter.Convert(this.FightingHeroesMap, out result.FightingHeroesMap);
       converter.Convert(this.HeroProjectiles, out result.HeroProjectiles);
+      converter.Convert(this.GlobalEffects, out result.GlobalEffects);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
+  public unsafe partial class EffectQntPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.EffectQntPrototype> {
+    public Quantum.QuantumEntityPrototype Owner;
+    public Int32 Index;
+    public FP Value;
+    public FP Duration;
+    public Int32 Size;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.EffectQntPrototype prototype);
+    public override Quantum.Prototypes.EffectQntPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.EffectQntPrototype();
+      converter.Convert(this.Owner, out result.Owner);
+      converter.Convert(this.Index, out result.Index);
+      converter.Convert(this.Value, out result.Value);
+      converter.Convert(this.Duration, out result.Duration);
+      converter.Convert(this.Size, out result.Size);
       ConvertUser(converter, ref result);
       return result;
     }
@@ -82,7 +104,7 @@ namespace Quantum.Prototypes.Unity {
     public Int32 Index;
     public Int32 BoardIndex;
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.EffectQntPrototype[] Effects = {};
+    public Quantum.Prototypes.Unity.EffectQntPrototype[] Effects = {};
     public FP CurrentHealth;
     public FP CurrentMana;
     public Quantum.QuantumEntityPrototype AttackTarget;
@@ -112,6 +134,27 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.DealedBaseDamage, out result.DealedBaseDamage);
       converter.Convert(this.DealedAbilityDamage, out result.DealedAbilityDamage);
       converter.Convert(this.TakenDamage, out result.TakenDamage);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
+  public unsafe partial class GlobalEffectQntPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.GlobalEffectQntPrototype> {
+    public Int32 Center;
+    public Quantum.QuantumEntityPrototype Owner;
+    public Int32 Index;
+    public FP Value;
+    public FP Duration;
+    public Int32 Size;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.GlobalEffectQntPrototype prototype);
+    public override Quantum.Prototypes.GlobalEffectQntPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.GlobalEffectQntPrototype();
+      converter.Convert(this.Center, out result.Center);
+      converter.Convert(this.Owner, out result.Owner);
+      converter.Convert(this.Index, out result.Index);
+      converter.Convert(this.Value, out result.Value);
+      converter.Convert(this.Duration, out result.Duration);
+      converter.Convert(this.Size, out result.Size);
       ConvertUser(converter, ref result);
       return result;
     }
@@ -161,8 +204,8 @@ namespace Quantum.Prototypes.Unity {
   public unsafe partial class HeroProjectilePrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.HeroProjectilePrototype> {
     public Quantum.QuantumEntityPrototype Ref;
     public Int64 Guid;
-    public Quantum.Prototypes.Unity.FightingHeroPrototype Owner;
-    public Quantum.Prototypes.Unity.FightingHeroPrototype Target;
+    public Quantum.QuantumEntityPrototype Owner;
+    public Quantum.QuantumEntityPrototype Target;
     public FP Damage;
     public FPVector3 TargetPosition;
     public FP Speed;
@@ -171,7 +214,9 @@ namespace Quantum.Prototypes.Unity {
     public Int32 AttackType;
     public QBoolean IsActive;
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.EffectQntPrototype[] Effects = {};
+    public Quantum.Prototypes.Unity.EffectQntPrototype[] Effects = {};
+    [DynamicCollectionAttribute()]
+    public Quantum.Prototypes.Unity.GlobalEffectQntPrototype[] GlobalEffects = {};
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.HeroProjectilePrototype prototype);
     public override Quantum.Prototypes.HeroProjectilePrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.HeroProjectilePrototype();
@@ -187,6 +232,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.AttackType, out result.AttackType);
       converter.Convert(this.IsActive, out result.IsActive);
       converter.Convert(this.Effects, out result.Effects);
+      converter.Convert(this.GlobalEffects, out result.GlobalEffects);
       ConvertUser(converter, ref result);
       return result;
     }

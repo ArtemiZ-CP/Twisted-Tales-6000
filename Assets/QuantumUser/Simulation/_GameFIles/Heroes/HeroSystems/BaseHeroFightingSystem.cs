@@ -14,6 +14,13 @@ namespace Quantum.Game
         {
             MeleeHeroSystem.Update(f);
             RangedHeroSystem.Update(f);
+
+            List<Board> boards = BoardSystem.GetBoards(f);
+
+            foreach (Board board in boards)
+            {
+                HeroEffects.ProcessGlobalEffects(f, board);
+            }
         }
 
         public static void UpdateHeroes<T>(Frame f,
@@ -38,12 +45,17 @@ namespace Quantum.Game
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             fightingHero = heroes[fightingHero.Index];
 
-            if (fightingHero.Hero.Ref == default || fightingHero.IsAlive == false)
+            if (fightingHero.Hero.Ref == default || fightingHero.IsAlive == false || f.Exists(fightingHero.Hero.Ref) == false)
             {
                 return;
             }
 
             HeroAttack.Update(f, fightingHero, board);
+
+            if (f.Exists(fightingHero.Hero.Ref) == false)
+            {
+                return;
+            }
 
             if (HeroBoard.IsHeroMoving(f, fightingHero))
             {

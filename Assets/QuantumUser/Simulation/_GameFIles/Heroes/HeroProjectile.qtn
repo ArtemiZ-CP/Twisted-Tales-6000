@@ -2,8 +2,8 @@ component HeroProjectile
 {
     entity_ref Ref;
     long Guid;
-    FightingHero Owner;
-    FightingHero Target;
+    entity_ref Owner;
+    entity_ref Target;
     FP Damage;
     FPVector3 TargetPosition;
     FP Speed;
@@ -12,4 +12,5 @@ component HeroProjectile
     int AttackType;
     bool IsActive;
     list<EffectQnt> Effects;
+    list<GlobalEffectQnt> GlobalEffects;
 }

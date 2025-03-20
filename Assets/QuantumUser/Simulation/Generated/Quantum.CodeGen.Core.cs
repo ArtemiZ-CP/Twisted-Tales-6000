@@ -467,32 +467,36 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct EffectQnt {
-    public const Int32 SIZE = 24;
+    public const Int32 SIZE = 32;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(4)]
-    public Int32 OwnerIndex;
-    [FieldOffset(0)]
-    public Int32 EffectIndex;
-    [FieldOffset(16)]
-    public FP EffectValue;
     [FieldOffset(8)]
-    public FP EffectDuration;
+    public EntityRef Owner;
+    [FieldOffset(0)]
+    public Int32 Index;
+    [FieldOffset(24)]
+    public FP Value;
+    [FieldOffset(16)]
+    public FP Duration;
+    [FieldOffset(4)]
+    public Int32 Size;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 15331;
-        hash = hash * 31 + OwnerIndex.GetHashCode();
-        hash = hash * 31 + EffectIndex.GetHashCode();
-        hash = hash * 31 + EffectValue.GetHashCode();
-        hash = hash * 31 + EffectDuration.GetHashCode();
+        hash = hash * 31 + Owner.GetHashCode();
+        hash = hash * 31 + Index.GetHashCode();
+        hash = hash * 31 + Value.GetHashCode();
+        hash = hash * 31 + Duration.GetHashCode();
+        hash = hash * 31 + Size.GetHashCode();
         return hash;
       }
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (EffectQnt*)ptr;
-        serializer.Stream.Serialize(&p->EffectIndex);
-        serializer.Stream.Serialize(&p->OwnerIndex);
-        FP.Serialize(&p->EffectDuration, serializer);
-        FP.Serialize(&p->EffectValue, serializer);
+        serializer.Stream.Serialize(&p->Index);
+        serializer.Stream.Serialize(&p->Size);
+        EntityRef.Serialize(&p->Owner, serializer);
+        FP.Serialize(&p->Duration, serializer);
+        FP.Serialize(&p->Value, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -570,6 +574,44 @@ namespace Quantum {
         FP.Serialize(&p->DealedBaseDamage, serializer);
         FP.Serialize(&p->TakenDamage, serializer);
         Quantum.HeroEntity.Serialize(&p->Hero, serializer);
+    }
+  }
+  [StructLayout(LayoutKind.Explicit)]
+  public unsafe partial struct GlobalEffectQnt {
+    public const Int32 SIZE = 40;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(0)]
+    public Int32 Center;
+    [FieldOffset(16)]
+    public EntityRef Owner;
+    [FieldOffset(4)]
+    public Int32 Index;
+    [FieldOffset(32)]
+    public FP Value;
+    [FieldOffset(24)]
+    public FP Duration;
+    [FieldOffset(8)]
+    public Int32 Size;
+    public override Int32 GetHashCode() {
+      unchecked { 
+        var hash = 20341;
+        hash = hash * 31 + Center.GetHashCode();
+        hash = hash * 31 + Owner.GetHashCode();
+        hash = hash * 31 + Index.GetHashCode();
+        hash = hash * 31 + Value.GetHashCode();
+        hash = hash * 31 + Duration.GetHashCode();
+        hash = hash * 31 + Size.GetHashCode();
+        return hash;
+      }
+    }
+    public static void Serialize(void* ptr, FrameSerializer serializer) {
+        var p = (GlobalEffectQnt*)ptr;
+        serializer.Stream.Serialize(&p->Center);
+        serializer.Stream.Serialize(&p->Index);
+        serializer.Stream.Serialize(&p->Size);
+        EntityRef.Serialize(&p->Owner, serializer);
+        FP.Serialize(&p->Duration, serializer);
+        FP.Serialize(&p->Value, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -967,22 +1009,24 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Board : Quantum.IComponent {
-    public const Int32 SIZE = 280;
+    public const Int32 SIZE = 288;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(16)]
-    public EntityRef Ref;
     [FieldOffset(24)]
+    public EntityRef Ref;
+    [FieldOffset(32)]
     public PlayerLink Player1;
-    [FieldOffset(152)]
+    [FieldOffset(160)]
     public PlayerLink Player2;
-    [FieldOffset(4)]
-    public QListPtr<HeroEntity> HeroesID1;
     [FieldOffset(8)]
+    public QListPtr<HeroEntity> HeroesID1;
+    [FieldOffset(12)]
     public QListPtr<HeroEntity> HeroesID2;
     [FieldOffset(0)]
     public QListPtr<FightingHero> FightingHeroesMap;
-    [FieldOffset(12)]
+    [FieldOffset(16)]
     public QListPtr<HeroProjectile> HeroProjectiles;
+    [FieldOffset(4)]
+    public QListPtr<GlobalEffectQnt> GlobalEffects;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10831;
@@ -993,6 +1037,7 @@ namespace Quantum {
         hash = hash * 31 + HeroesID2.GetHashCode();
         hash = hash * 31 + FightingHeroesMap.GetHashCode();
         hash = hash * 31 + HeroProjectiles.GetHashCode();
+        hash = hash * 31 + GlobalEffects.GetHashCode();
         return hash;
       }
     }
@@ -1003,6 +1048,7 @@ namespace Quantum {
       HeroesID2 = default;
       FightingHeroesMap = default;
       HeroProjectiles = default;
+      GlobalEffects = default;
     }
     public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
       var p = (Quantum.Board*)ptr;
@@ -1011,6 +1057,7 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (Board*)ptr;
         QList.Serialize(&p->FightingHeroesMap, serializer, Statics.SerializeFightingHero);
+        QList.Serialize(&p->GlobalEffects, serializer, Statics.SerializeGlobalEffectQnt);
         QList.Serialize(&p->HeroesID1, serializer, Statics.SerializeHeroEntity);
         QList.Serialize(&p->HeroesID2, serializer, Statics.SerializeHeroEntity);
         QList.Serialize(&p->HeroProjectiles, serializer, Statics.SerializeHeroProjectile);
@@ -1021,21 +1068,21 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HeroProjectile : Quantum.IComponent {
-    public const Int32 SIZE = 512;
+    public const Int32 SIZE = 96;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(24)]
-    public EntityRef Ref;
-    [FieldOffset(48)]
-    public Int64 Guid;
-    [FieldOffset(80)]
-    public FightingHero Owner;
-    [FieldOffset(296)]
-    public FightingHero Target;
     [FieldOffset(32)]
-    public FP Damage;
-    [FieldOffset(56)]
-    public FPVector3 TargetPosition;
+    public EntityRef Ref;
+    [FieldOffset(64)]
+    public Int64 Guid;
+    [FieldOffset(24)]
+    public EntityRef Owner;
     [FieldOffset(40)]
+    public EntityRef Target;
+    [FieldOffset(48)]
+    public FP Damage;
+    [FieldOffset(72)]
+    public FPVector3 TargetPosition;
+    [FieldOffset(56)]
     public FP Speed;
     [FieldOffset(4)]
     public Int32 DamageType;
@@ -1047,6 +1094,8 @@ namespace Quantum {
     public QBoolean IsActive;
     [FieldOffset(16)]
     public QListPtr<EffectQnt> Effects;
+    [FieldOffset(20)]
+    public QListPtr<GlobalEffectQnt> GlobalEffects;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 10301;
@@ -1062,13 +1111,13 @@ namespace Quantum {
         hash = hash * 31 + AttackType.GetHashCode();
         hash = hash * 31 + IsActive.GetHashCode();
         hash = hash * 31 + Effects.GetHashCode();
+        hash = hash * 31 + GlobalEffects.GetHashCode();
         return hash;
       }
     }
     public void ClearPointers(FrameBase f, EntityRef entity) {
-      Owner.ClearPointers(f, entity);
-      Target.ClearPointers(f, entity);
       Effects = default;
+      GlobalEffects = default;
     }
     public static void OnRemoved(FrameBase frame, EntityRef entity, void* ptr) {
       var p = (Quantum.HeroProjectile*)ptr;
@@ -1081,13 +1130,14 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->Level);
         QBoolean.Serialize(&p->IsActive, serializer);
         QList.Serialize(&p->Effects, serializer, Statics.SerializeEffectQnt);
+        QList.Serialize(&p->GlobalEffects, serializer, Statics.SerializeGlobalEffectQnt);
+        EntityRef.Serialize(&p->Owner, serializer);
         EntityRef.Serialize(&p->Ref, serializer);
+        EntityRef.Serialize(&p->Target, serializer);
         FP.Serialize(&p->Damage, serializer);
         FP.Serialize(&p->Speed, serializer);
         serializer.Stream.Serialize(&p->Guid);
         FPVector3.Serialize(&p->TargetPosition, serializer);
-        Quantum.FightingHero.Serialize(&p->Owner, serializer);
-        Quantum.FightingHero.Serialize(&p->Target, serializer);
     }
   }
   [StructLayout(LayoutKind.Explicit)]
@@ -1462,6 +1512,7 @@ namespace Quantum {
   }
   public unsafe partial class Statics {
     public static FrameSerializer.Delegate SerializeFightingHero;
+    public static FrameSerializer.Delegate SerializeGlobalEffectQnt;
     public static FrameSerializer.Delegate SerializeHeroProjectile;
     public static FrameSerializer.Delegate SerializeHeroEntity;
     public static FrameSerializer.Delegate SerializeEffectQnt;
@@ -1471,6 +1522,7 @@ namespace Quantum {
     public static FrameSerializer.Delegate SerializeInput;
     static partial void InitStaticDelegatesGen() {
       SerializeFightingHero = Quantum.FightingHero.Serialize;
+      SerializeGlobalEffectQnt = Quantum.GlobalEffectQnt.Serialize;
       SerializeHeroProjectile = Quantum.HeroProjectile.Serialize;
       SerializeHeroEntity = Quantum.HeroEntity.Serialize;
       SerializeEffectQnt = Quantum.EffectQnt.Serialize;
@@ -1514,6 +1566,7 @@ namespace Quantum {
       typeRegistry.Register(typeof(Quantum.FightingHero), Quantum.FightingHero.SIZE);
       typeRegistry.Register(typeof(FrameMetaData), FrameMetaData.SIZE);
       typeRegistry.Register(typeof(FrameTimer), FrameTimer.SIZE);
+      typeRegistry.Register(typeof(Quantum.GlobalEffectQnt), Quantum.GlobalEffectQnt.SIZE);
       typeRegistry.Register(typeof(Quantum.HeroEntity), Quantum.HeroEntity.SIZE);
       typeRegistry.Register(typeof(Quantum.HeroProjectile), Quantum.HeroProjectile.SIZE);
       typeRegistry.Register(typeof(HingeJoint), HingeJoint.SIZE);

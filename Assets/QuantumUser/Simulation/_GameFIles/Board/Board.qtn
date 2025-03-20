@@ -9,4 +9,5 @@ component Board
     // Fighing phase only
     list<FightingHero> FightingHeroesMap;
     list<HeroProjectile> HeroProjectiles;
+    list<GlobalEffectQnt> GlobalEffects;
 }

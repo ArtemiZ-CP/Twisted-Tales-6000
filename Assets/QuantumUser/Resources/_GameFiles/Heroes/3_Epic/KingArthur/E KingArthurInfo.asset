@@ -26,10 +26,9 @@ MonoBehaviour:
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: King Arthur
+  Name: 14
   Rare: 3
   HeroType: 1
-  AbilityType: 1
   HeroStats:
   - Health:
       RawValue: 65536000
@@ -39,8 +38,6 @@ MonoBehaviour:
       RawValue: 2490368
     AttackDamage:
       RawValue: 5898240
-    AbilityDamage:
-      RawValue: 17694720
     AttackSpeed:
       RawValue: 39322
     ProjectileSpeed:
@@ -54,8 +51,6 @@ MonoBehaviour:
       RawValue: 2490368
     AttackDamage:
       RawValue: 8847360
-    AbilityDamage:
-      RawValue: 26542080
     AttackSpeed:
       RawValue: 39322
     ProjectileSpeed:
@@ -69,15 +64,12 @@ MonoBehaviour:
       RawValue: 2490368
     AttackDamage:
       RawValue: 13303808
-    AbilityDamage:
-      RawValue: 39911424
     AttackSpeed:
       RawValue: 39322
     ProjectileSpeed:
       RawValue: 327680
     Range: 1
   AttackDamageType: 0
-  AbilityDamageType: 1
   Mana:
     RawValue: 5242880
   StartMana:

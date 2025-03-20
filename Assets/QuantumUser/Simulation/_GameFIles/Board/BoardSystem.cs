@@ -117,6 +117,9 @@ namespace Quantum.Game
             f.FreeList(board->FightingHeroesMap);
             board->FightingHeroesMap = default;
 
+            f.FreeList(board->GlobalEffects);
+            board->GlobalEffects = default;
+
             f.Destroy(board->Ref);
         }
 
@@ -215,6 +218,7 @@ namespace Quantum.Game
 
             board->FightingHeroesMap = f.AllocateList<FightingHero>(GameConfig.BoardSize * GameConfig.BoardSize);
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
+            board->GlobalEffects = f.AllocateList<GlobalEffectQnt>();
 
             board->HeroesID1 = Hero.SetupHeroes(f, player1, board->HeroesID1);
             board->HeroesID2 = Hero.SetupHeroes(f, player2, board->HeroesID2);
@@ -231,6 +235,7 @@ namespace Quantum.Game
 
             board->FightingHeroesMap = f.AllocateList<FightingHero>(GameConfig.BoardSize * GameConfig.BoardSize);
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
+            board->GlobalEffects = f.AllocateList<GlobalEffectQnt>();
 
             board->HeroesID1 = Hero.SetupHeroes(f, player1, board->HeroesID1);
             board->HeroesID2 = Hero.SetupHeroes(f, roundInfo, board->HeroesID2);

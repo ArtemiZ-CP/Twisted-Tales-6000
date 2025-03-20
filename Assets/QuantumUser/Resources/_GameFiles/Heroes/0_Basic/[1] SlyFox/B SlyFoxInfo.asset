@@ -26,7 +26,7 @@ MonoBehaviour:
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Sly Fox
+  Name: 1
   Rare: 0
   HeroType: 1
   HeroStats:
@@ -70,7 +70,6 @@ MonoBehaviour:
       RawValue: 327680
     Range: 1
   AttackDamageType: 0
-  AbilityDamageType: 1
   Mana:
     RawValue: 3932160
   StartMana:

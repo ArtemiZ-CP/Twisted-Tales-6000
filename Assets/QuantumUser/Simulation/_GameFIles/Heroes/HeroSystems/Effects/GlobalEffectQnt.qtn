@@ -1,0 +1,9 @@
+struct GlobalEffectQnt
+{
+    int Center;
+    entity_ref Owner;
+    int Index;
+    FP Value;
+    FP Duration;
+    int Size;
+}

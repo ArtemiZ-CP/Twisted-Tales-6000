@@ -26,10 +26,9 @@ MonoBehaviour:
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Puss In Boots
+  Name: 11
   Rare: 2
   HeroType: 1
-  AbilityType: 1
   HeroStats:
   - Health:
       RawValue: 52428800
@@ -39,8 +38,6 @@ MonoBehaviour:
       RawValue: 1638400
     AttackDamage:
       RawValue: 4587520
-    AbilityDamage:
-      RawValue: 13762560
     AttackSpeed:
       RawValue: 49152
     ProjectileSpeed:
@@ -54,8 +51,6 @@ MonoBehaviour:
       RawValue: 1638400
     AttackDamage:
       RawValue: 6881280
-    AbilityDamage:
-      RawValue: 20643840
     AttackSpeed:
       RawValue: 49152
     ProjectileSpeed:
@@ -69,15 +64,12 @@ MonoBehaviour:
       RawValue: 1638400
     AttackDamage:
       RawValue: 10354688
-    AbilityDamage:
-      RawValue: 31064064
     AttackSpeed:
       RawValue: 49152
     ProjectileSpeed:
       RawValue: 327680
     Range: 1
   AttackDamageType: 0
-  AbilityDamageType: 1
   Mana:
     RawValue: 3276800
   StartMana:

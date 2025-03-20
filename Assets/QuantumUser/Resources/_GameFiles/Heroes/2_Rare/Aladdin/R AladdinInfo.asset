@@ -26,10 +26,9 @@ MonoBehaviour:
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: Aladdin
+  Name: 8
   Rare: 2
   HeroType: 1
-  AbilityType: 1
   HeroStats:
   - Health:
       RawValue: 55705600
@@ -39,8 +38,6 @@ MonoBehaviour:
       RawValue: 1835008
     AttackDamage:
       RawValue: 4915200
-    AbilityDamage:
-      RawValue: 14745600
     AttackSpeed:
       RawValue: 42598
     ProjectileSpeed:
@@ -54,8 +51,6 @@ MonoBehaviour:
       RawValue: 1835008
     AttackDamage:
       RawValue: 7405568
-    AbilityDamage:
-      RawValue: 22216704
     AttackSpeed:
       RawValue: 42598
     ProjectileSpeed:
@@ -69,15 +64,12 @@ MonoBehaviour:
       RawValue: 1835008
     AttackDamage:
       RawValue: 11075584
-    AbilityDamage:
-      RawValue: 33226752
     AttackSpeed:
       RawValue: 42598
     ProjectileSpeed:
       RawValue: 327680
     Range: 1
   AttackDamageType: 0
-  AbilityDamageType: 1
   Mana:
     RawValue: 3276800
   StartMana:
