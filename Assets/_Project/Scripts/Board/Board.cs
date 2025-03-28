@@ -137,7 +137,7 @@ namespace Quantum.Game
 
             foreach (Tile tile in _tiles)
             {
-                float distance = Vector3.Distance(tile.Position, localPosition);
+                float distance = tile.Position.SqrDistance(localPosition);
 
                 if (distance < closestDistance)
                 {

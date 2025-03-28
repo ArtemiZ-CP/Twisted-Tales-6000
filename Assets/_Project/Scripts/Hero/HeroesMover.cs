@@ -144,9 +144,9 @@ namespace Quantum.Game
 
         private void EndRound(EventEndRound eventEndRound)
         {
-            EndMoveHero();
             _isRoundStarted = false;
             _selectedHeroRef = default;
+            ResetHeroes();
         }
 
         private bool TryGetHero()
@@ -222,7 +222,7 @@ namespace Quantum.Game
 
         private void MoveHeroFromShop(Vector3 cursorPoint, Vector3 newObjectPosition)
         {
-            if (Vector3.Distance(cursorPoint, _selectedHero.GetSlotPosition()) < _moveDistanceToStartMove)
+            if (cursorPoint.IsEnoughClose(_selectedHero.GetSlotPosition(), _moveDistanceToStartMove))
             {
                 SetNewHeroPlace(null, _selectedHero.GetBasePosition(), isUIScale: true, isUIRotation: true);
                 return;

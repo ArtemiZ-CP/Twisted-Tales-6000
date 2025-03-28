@@ -188,7 +188,7 @@ namespace Quantum.Game
                 Transform3D* targetTransform = f.Unsafe.GetPointer<Transform3D>(target.Hero.Ref);
                 Transform3D* heroTransform = f.Unsafe.GetPointer<Transform3D>(hero.Hero.Ref);
 
-                FP distance = FPVector3.Distance(targetTransform->Position, heroTransform->Position);
+                FP distance = FPVector3.DistanceSquared(targetTransform->Position, heroTransform->Position);
 
                 if (distance < minDistance)
                 {
@@ -202,10 +202,15 @@ namespace Quantum.Game
 
         public static List<FightingHero> GetAllTargetsInRange(Frame f, FightingHero fightingHero, Board board)
         {
-            return GetAllTargetsInRange(f, fightingHero.Index, fightingHero.TeamNumber, board, fightingHero.Hero.Range);
+            return GetAllTeamHeroesInRange(f, fightingHero.Index, GetEnemyTeamNumber(fightingHero.TeamNumber), board, fightingHero.Hero.Range);
         }
 
-        public static List<FightingHero> GetAllTargetsInRange(Frame f, int center, int hisTeam, Board board, int range, bool includeSelf = false)
+        public static List<FightingHero> GetAllAliesInRange(Frame f, FightingHero fightingHero, Board board)
+        {
+            return GetAllTeamHeroesInRange(f, fightingHero.Index, fightingHero.TeamNumber, board, fightingHero.Hero.Range);
+        }
+
+        public static List<FightingHero> GetAllTeamHeroesInRange(Frame f, int center, int hisTeam, Board board, int range, bool includeSelf = false)
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             List<Vector2Int> closeTiles = new();
@@ -225,7 +230,7 @@ namespace Quantum.Game
                     continue;
                 }
 
-                if (hisTeam == heroes[index].TeamNumber || heroes[index].IsAlive == false)
+                if (hisTeam != heroes[index].TeamNumber || heroes[index].IsAlive == false)
                 {
                     continue;
                 }
@@ -235,30 +240,7 @@ namespace Quantum.Game
 
             return heroesList;
         }
-
-        public static List<FightingHero> GetAllAllies(Frame f, FightingHero fightingHero, Board board)
-        {
-            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
-            List<FightingHero> heroesList = new();
-
-            foreach (FightingHero target in heroes)
-            {
-                if (target.IsAlive == false)
-                {
-                    continue;
-                }
-
-                if (fightingHero.TeamNumber != target.TeamNumber || target.IsAlive == false)
-                {
-                    continue;
-                }
-
-                heroesList.Add(target);
-            }
-
-            return heroesList;
-        }
-
+        
         public static List<FightingHero> GetAllTargets(Frame f, FightingHero fightingHero, Board board)
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
@@ -280,6 +262,20 @@ namespace Quantum.Game
             }
 
             return heroesList;
+        }
+
+        public static int GetEnemyTeamNumber(int teamNumber)
+        {
+            if (teamNumber == GameplayConstants.Team1)
+            {
+                return GameplayConstants.Team2;
+            }
+            else if (teamNumber == GameplayConstants.Team2)
+            {
+                return GameplayConstants.Team1;
+            }
+
+            return -1;
         }
     }
 }

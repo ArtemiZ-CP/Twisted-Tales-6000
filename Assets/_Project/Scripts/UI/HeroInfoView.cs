@@ -13,6 +13,7 @@ public class HeroInfoView : MonoBehaviour
     [SerializeField] private TMP_Text _heroName;
     [SerializeField] private TMP_Text _heroStars;
     [SerializeField] private Slider _heroHealthBar;
+    [SerializeField] private TMP_Text _heroHealth;
     [SerializeField] private TMP_Text _heroDamage;
     [SerializeField] private TMP_Text _heroAttackSpeed;
     [SerializeField] private TMP_Text _heroDPS;
@@ -125,6 +126,7 @@ public class HeroInfoView : MonoBehaviour
 
         _heroStars.text = stars;
         _heroHealthBar.value = (float)(currentHealth / heroStats.Health);
+        _heroHealth.text = $"{currentHealth.ToString("0.##")}/{heroStats.Health.ToString("0.##")}";
         _heroDamage.text = heroStats.AttackDamage.ToString("0.##");
         _heroAttackSpeed.text = heroStats.AttackSpeed.ToString("0.##");
         _heroDPS.text = (heroStats.AttackDamage * heroStats.AttackSpeed).ToString("0.##");

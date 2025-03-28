@@ -6,8 +6,6 @@ namespace Quantum.Game
 {
     public class HeroObject : MonoBehaviour
     {
-        private const float BoardMoveSpeed = 20f;
-
         private HeroState _heroState = HeroState.None;
         private PlayerInventorySlot _playerInventorySlot;
         private ShopItemSlot _shopItemSlot;
@@ -90,11 +88,6 @@ namespace Quantum.Game
             SetRotation(_heroState == HeroState.Inventory || _heroState == HeroState.Shop);
         }
 
-        public void Move(Vector3 targetPos)
-        {
-            Move(targetPos, BoardMoveSpeed * GameSettings.GetHeroSize(_isUI));
-        }
-
         public void SellHero()
         {
             _id = -1;
@@ -147,7 +140,7 @@ namespace Quantum.Game
             }
         }
 
-        private void Move(Vector3 targetPos, float speed)
+        public void Move(Vector3 targetPos)
         {
             if (_moveCoroutine != null)
             {
@@ -155,24 +148,6 @@ namespace Quantum.Game
             }
 
             _targetPosition = targetPos;
-
-            if (gameObject.activeInHierarchy)
-            {
-                _moveCoroutine = StartCoroutine(MoveToPositionCoroutine(targetPos, speed));
-            }
-            else
-            {
-                transform.position = targetPos;
-            }
-        }
-
-        private IEnumerator MoveToPositionCoroutine(Vector3 targetPos, float speed)
-        {
-            while (Vector3.Distance(transform.position, targetPos) > 0.01f)
-            {
-                transform.position = Vector3.MoveTowards(transform.position, targetPos, speed * Time.deltaTime);
-                yield return null;
-            }
 
             transform.position = targetPos;
         }

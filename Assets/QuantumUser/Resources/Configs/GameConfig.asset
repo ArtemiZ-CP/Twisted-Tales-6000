@@ -267,7 +267,7 @@ MonoBehaviour:
     - Cells: ffffffffffffffff01000000010000000100000001000000ffffffffffffffff
   XPByRound: 1
   TileSize: 1.25
-  BuyPhaseTime: 30
+  BuyPhaseTime: 40
   FightPhaseTime: 120
   StartFightingPhaseDelay: 1
   EndFightingPhaseDelay: 3

@@ -1,0 +1,17 @@
+event DisplayPoisonEffect
+{
+    player_ref Player1;
+    player_ref Player2;
+    FPVector3 Position; 
+    int Range;
+    FP Duration;
+}
+
+event DisplayHealEffect
+{
+    player_ref Player1;
+    player_ref Player2;
+    FPVector3 Position; 
+    int Range;
+    FP Duration;
+}

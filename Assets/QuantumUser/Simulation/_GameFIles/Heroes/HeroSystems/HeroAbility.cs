@@ -46,18 +46,14 @@ namespace Quantum.Game
             HeroProjectilesSystem.SpawnProjectile(f, fightingHero, board, targetHero, damage, null, new[] { globalEffect }, damageType, attackType);
         }
 
+        public static void ProjectileAttack(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, HeroEffects.GlobalEffect[] globalEffects, DamageType damageType, AttackType attackType)
+        {
+            HeroProjectilesSystem.SpawnProjectile(f, fightingHero, board, targetHero, damage, null, globalEffects, damageType, attackType);
+        }
+
         public static void ProjectileAttack(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, HeroEffects.Effect[] effects, HeroEffects.GlobalEffect[] globalEffects, DamageType damageType, AttackType attackType)
         {
             HeroProjectilesSystem.SpawnProjectile(f, fightingHero, board, targetHero, damage, effects, globalEffects, damageType, attackType);
-        }
-
-        public static void HealAllAllies(Frame f, FightingHero fightingHero, Board board, FP amount)
-        {
-            var allies = HeroBoard.GetAllAllies(f, fightingHero, board);
-            foreach (var ally in allies)
-            {
-                HealHero(f, fightingHero, board, ally, amount, isAbleToOverHeal: false);
-            }
         }
 
         private static SelectedHeroAbility GetSelectedHeroAbility(Frame f, PlayerLink* playerLink, int heroID, out int index)

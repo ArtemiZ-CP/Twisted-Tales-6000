@@ -319,7 +319,7 @@ namespace Quantum.Game
             UpdateHeroesAndStats(f, board, heroes, fightingHero, targetHero);
         }
 
-        public static void DamageHeroWithDOT(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, HeroEffects.Effect[] effects, DamageType damageType, AttackType attackType)
+        public static void DamageHeroWithDOT(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, DamageType damageType, AttackType attackType)
         {
             if (GetUpdatedHeroes(f, board, ref fightingHero, ref targetHero, out QList<FightingHero> heroes) == false)
             {
@@ -331,6 +331,18 @@ namespace Quantum.Game
             UpdateHeroesAndStats(f, board, heroes, fightingHero, targetHero);
         }
 
+        public static void HealHeroWithDOT(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP healAmount, DamageType damageType, AttackType attackType)
+        {
+            if (GetUpdatedHeroes(f, board, ref fightingHero, ref targetHero, out QList<FightingHero> heroes) == false)
+            {
+                return;
+            }
+
+            ApplyHealToHero(f, ref targetHero, healAmount, isAbleToOverHeal: false);
+            UpdateDamageStats(ref fightingHero, ref targetHero, healAmount, attackType);
+            UpdateHeroesAndStats(f, board, heroes, fightingHero, targetHero);
+        }
+
         public static void DamageHeroByBlast(Frame f, FightingHero fightingHero, int centerIndex, Board board, FP damage, int size, DamageType damageType, AttackType attackType)
         {
             if (fightingHero.Hero.Ref == default)
@@ -338,7 +350,7 @@ namespace Quantum.Game
                 return;
             }
 
-            List<FightingHero> heroesList = HeroBoard.GetAllTargetsInRange(f, centerIndex, fightingHero.TeamNumber, board, size, includeSelf: true);
+            List<FightingHero> heroesList = HeroBoard.GetAllTeamHeroesInRange(f, centerIndex, HeroBoard.GetEnemyTeamNumber(fightingHero.TeamNumber), board, size, includeSelf: true);
 
             for (int i = 0; i < heroesList.Count; i++)
             {
@@ -360,7 +372,7 @@ namespace Quantum.Game
                 return;
             }
 
-            List<FightingHero> heroesList = HeroBoard.GetAllTargetsInRange(f, centerIndex, fightingHero.TeamNumber, board, size, includeSelf: true);
+            List<FightingHero> heroesList = HeroBoard.GetAllTeamHeroesInRange(f, centerIndex, HeroBoard.GetEnemyTeamNumber(fightingHero.TeamNumber), board, size, includeSelf: true);
 
             for (int i = 0; i < heroesList.Count; i++)
             {
@@ -371,7 +383,7 @@ namespace Quantum.Game
                     continue;
                 }
 
-                DamageHeroWithDOT(f, fightingHero, board, targetHero, damage, null, damageType, attackType);
+                DamageHeroWithDOT(f, fightingHero, board, targetHero, damage, damageType, attackType);
             }
         }
 
@@ -523,9 +535,10 @@ namespace Quantum.Game
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             FP tileSize = FP.FromFloat_UNSAFE(gameConfig.TileSize);
             Transform3D targetTransform = f.Get<Transform3D>(targetHero.Hero.Ref);
-            FP targetDistanceToCell = FPVector3.Distance(targetTransform.Position, HeroBoard.GetHeroPosition(f, targetHero));
+            FP targetDistanceToCellSqr = FPVector3.DistanceSquared(targetTransform.Position, HeroBoard.GetHeroPosition(f, targetHero));
+            FP range = fighingHero.Hero.RangePercentage * tileSize;
 
-            if (fighingHero.Hero.RangePercentage * tileSize < targetDistanceToCell)
+            if (range * range < targetDistanceToCellSqr)
             {
                 return false;
             }

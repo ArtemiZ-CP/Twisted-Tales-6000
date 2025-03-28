@@ -147,14 +147,8 @@ namespace Quantum.Game
                 FightingHero targetHero = HeroBoard.GetFightingHero(f, projectile.Target, board);
                 HeroAttack.DamageHero(f, ownerHero, targetHero, projectile.Damage, f.ResolveList(projectile.Effects),
                     (HeroAttack.DamageType)projectile.DamageType, (HeroAttack.AttackType)projectile.AttackType);
-                    
-                var globalEffects = f.ResolveList(board.GlobalEffects);
-                var projectileGlobalEffects = f.ResolveList(projectile.GlobalEffects);
 
-                foreach (var item in projectileGlobalEffects)
-                {
-                    globalEffects.Add(item);
-                }
+                HeroEffects.AddGlobalEffects(f, board, f.ResolveList(projectile.GlobalEffects));
 
                 f.FreeList(projectile.Effects);
                 projectile.Effects = default;

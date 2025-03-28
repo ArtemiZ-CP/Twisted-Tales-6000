@@ -36,10 +36,8 @@ namespace Quantum.Game
             if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
             {
                 FP damage = 80;
-                FP heal = 30;
-                HeroAbility.HealAllAllies(f, fightingHero, board, heal);
 
-                HeroEffects.GlobalEffect globalEffect = new()
+                HeroEffects.GlobalEffect poisonGlobalEffect = new()
                 {
                     Center = target.Index,
                     Owner = fightingHero.Hero.Ref,
@@ -49,7 +47,21 @@ namespace Quantum.Game
                     Size = 1
                 };
 
-                HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, globalEffect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                HeroEffects.GlobalEffect healGlobalEffect = new()
+                {
+                    Center = target.Index,
+                    Owner = fightingHero.Hero.Ref,
+                    Type = HeroEffects.GlobalEffectType.PoisonArea,
+                    Value = 30,
+                    Duration = 3,
+                    Size = 1
+                };
+
+                HeroEffects.GlobalEffect[] globalEffects = new HeroEffects.GlobalEffect[2];
+                globalEffects[0] = poisonGlobalEffect;
+                globalEffects[1] = healGlobalEffect;
+
+                HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, globalEffects, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                 return true;
             }
 
@@ -61,10 +73,8 @@ namespace Quantum.Game
             if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
             {
                 FP damage = 120;
-                FP heal = 45;
-                HeroAbility.HealAllAllies(f, fightingHero, board, heal);
 
-                HeroEffects.GlobalEffect globalEffect = new()
+                HeroEffects.GlobalEffect poisonGlobalEffect = new()
                 {
                     Center = target.Index,
                     Owner = fightingHero.Hero.Ref,
@@ -74,7 +84,21 @@ namespace Quantum.Game
                     Size = 1
                 };
 
-                HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, globalEffect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                HeroEffects.GlobalEffect healGlobalEffect = new()
+                {
+                    Center = target.Index,
+                    Owner = fightingHero.Hero.Ref,
+                    Type = HeroEffects.GlobalEffectType.PoisonArea,
+                    Value = 45,
+                    Duration = 3,
+                    Size = 1
+                };
+
+                HeroEffects.GlobalEffect[] globalEffects = new HeroEffects.GlobalEffect[2];
+                globalEffects[0] = poisonGlobalEffect;
+                globalEffects[1] = healGlobalEffect;
+
+                HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, globalEffects, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                 return true;
             }
 
@@ -86,10 +110,8 @@ namespace Quantum.Game
             if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
             {
                 FP damage = 180;
-                FP heal = 65;
-                HeroAbility.HealAllAllies(f, fightingHero, board, heal);
 
-                HeroEffects.GlobalEffect globalEffect = new()
+                HeroEffects.GlobalEffect poisonGlobalEffect = new()
                 {
                     Center = target.Index,
                     Owner = fightingHero.Hero.Ref,
@@ -99,7 +121,21 @@ namespace Quantum.Game
                     Size = 1
                 };
 
-                HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, globalEffect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                HeroEffects.GlobalEffect healGlobalEffect = new()
+                {
+                    Center = target.Index,
+                    Owner = fightingHero.Hero.Ref,
+                    Type = HeroEffects.GlobalEffectType.PoisonArea,
+                    Value = 65,
+                    Duration = 3,
+                    Size = 1
+                };
+
+                HeroEffects.GlobalEffect[] globalEffects = new HeroEffects.GlobalEffect[2];
+                globalEffects[0] = poisonGlobalEffect;
+                globalEffects[1] = healGlobalEffect;
+
+                HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, globalEffects, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                 return true;
             }
 

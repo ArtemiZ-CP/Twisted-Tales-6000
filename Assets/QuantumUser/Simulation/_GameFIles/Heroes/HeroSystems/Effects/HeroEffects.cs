@@ -1,5 +1,6 @@
 using Photon.Deterministic;
 using Quantum.Collections;
+using UnityEngine;
 
 namespace Quantum.Game
 {
@@ -19,6 +20,7 @@ namespace Quantum.Game
         {
             None,
             PoisonArea,
+            HealArea
         }
 
         public class Effect
@@ -69,6 +71,33 @@ namespace Quantum.Game
             }
         }
 
+        public static void AddGlobalEffects(Frame f, Board board, QList<GlobalEffectQnt> globalEffectQnts)
+        {
+            QList<GlobalEffectQnt> globalEffects = f.ResolveList(board.GlobalEffects);
+
+            foreach (GlobalEffectQnt globalEffect in globalEffectQnts)
+            {
+                globalEffects.Add(globalEffect);
+
+                if (HeroBoard.TryGetHeroCords(globalEffect.Center, out Vector2Int cords) == false)
+                {
+                    return;
+                }
+
+                FPVector3 position = HeroBoard.GetTilePosition(f, cords);
+
+                switch ((GlobalEffectType)globalEffect.Index)
+                {
+                    case GlobalEffectType.PoisonArea:
+                        f.Events.DisplayPoisonEffect(board.Player1.Ref, board.Player2.Ref, position, globalEffect.Size, globalEffect.Duration);
+                        break;
+                    case GlobalEffectType.HealArea:
+                        f.Events.DisplayHealEffect(board.Player1.Ref, board.Player2.Ref, position, globalEffect.Size, globalEffect.Duration);
+                        break;
+                }
+            }
+        }
+
         public static void ProcessGlobalEffects(Frame f, Board board)
         {
             QList<GlobalEffectQnt> globalEffects = f.ResolveList(board.GlobalEffects);
@@ -86,6 +115,9 @@ namespace Quantum.Game
                 {
                     case GlobalEffectType.PoisonArea:
                         ProcessPoisonArea(f, globalEffect, board);
+                        break;
+                    case GlobalEffectType.HealArea:
+                        ProcessHealArea(f, globalEffect, board);
                         break;
                 }
 
@@ -125,7 +157,7 @@ namespace Quantum.Game
                 switch ((EffectType)effectQnt.Index)
                 {
                     case EffectType.Bleeding:
-                        HeroAttack.DamageHeroWithDOT(f, ownerHero, board, target, damage, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                        HeroAttack.DamageHeroWithDOT(f, ownerHero, board, target, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         break;
                     case EffectType.ReduceCurrentMana:
                         ReduceCurrentMana(f, target, board, effectQnt.Value);
@@ -152,7 +184,7 @@ namespace Quantum.Game
         private static void ProcessPoisonArea(Frame f, GlobalEffectQnt globalEffectQnt, Board board)
         {
             FightingHero ownerHero = HeroBoard.GetFightingHero(f, globalEffectQnt.Owner, board);
-            var targets = HeroBoard.GetAllTargetsInRange(f, globalEffectQnt.Center, ownerHero.TeamNumber, board, globalEffectQnt.Size, includeSelf: true);
+            var targets = HeroBoard.GetAllTeamHeroesInRange(f, globalEffectQnt.Center, HeroBoard.GetEnemyTeamNumber(ownerHero.TeamNumber), board, globalEffectQnt.Size, includeSelf: true);
 
             for (int i = 0; i < targets.Count; i++)
             {
@@ -162,7 +194,24 @@ namespace Quantum.Game
                 }
 
                 FP damage = globalEffectQnt.Duration < f.DeltaTime ? globalEffectQnt.Value * globalEffectQnt.Duration : globalEffectQnt.Value * f.DeltaTime;
-                HeroAttack.DamageHeroWithDOT(f, ownerHero, board, targets[i], damage, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                HeroAttack.DamageHeroWithDOT(f, ownerHero, board, targets[i], damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+            }
+        }
+
+        private static void ProcessHealArea(Frame f, GlobalEffectQnt globalEffectQnt, Board board)
+        {
+            FightingHero ownerHero = HeroBoard.GetFightingHero(f, globalEffectQnt.Owner, board);
+            var targets = HeroBoard.GetAllTeamHeroesInRange(f, globalEffectQnt.Center, ownerHero.TeamNumber, board, globalEffectQnt.Size, includeSelf: true);
+
+            for (int i = 0; i < targets.Count; i++)
+            {
+                if (targets[i].IsAlive == false)
+                {
+                    continue;
+                }
+
+                FP damage = globalEffectQnt.Duration < f.DeltaTime ? globalEffectQnt.Value * globalEffectQnt.Duration : globalEffectQnt.Value * f.DeltaTime;
+                HeroAttack.HealHeroWithDOT(f, ownerHero, board, targets[i], damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
             }
         }
 

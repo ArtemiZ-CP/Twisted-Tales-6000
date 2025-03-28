@@ -17,14 +17,14 @@ MonoBehaviour:
     ChecksumCrossPlatformDeterminism: 0
     LockstepSimulation: 0
     InputDeltaCompression: 1
-    UpdateFPS: 60
-    ChecksumInterval: 60
+    UpdateFPS: 30
+    ChecksumInterval: 1
     RollbackWindow: 60
     InputHardTolerance: 8
     InputRedundancy: 3
     InputRepeatMaxDistance: 10
     SessionStartTimeout: 1
-    TimeCorrectionRate: 4
+    TimeCorrectionRate: 1
     MinTimeCorrectionFrames: 1
     MinOffsetCorrectionDiff: 1
     TimeScaleMin: 100

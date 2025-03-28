@@ -8,7 +8,7 @@ event MoveHero
     bool IsMoved;
 }
 
-event GetFightingHero
+synced event GetFightingHero
 {
     player_ref PlayerRef;
     FightingHero FightingHero;

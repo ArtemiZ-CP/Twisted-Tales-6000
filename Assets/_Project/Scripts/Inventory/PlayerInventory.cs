@@ -37,7 +37,7 @@ namespace Quantum.Game
 
             for (int i = 0; i < _inventorySlots.Length; i++)
             {
-                float distance = Vector3.Distance(cursorPoint, _inventorySlots[i].SlotPosition);
+                float distance = cursorPoint.SqrDistance(_inventorySlots[i].SlotPosition);
 
                 if (distance < closestDistance)
                 {
