@@ -12,6 +12,8 @@ namespace Quantum.Game
         [SerializeField] private PlayerShop _playerShop;
         [SerializeField] private Board _playerBoard;
         [SerializeField] private HeroRangeDisplay _heroRangeDisplay;
+        [SerializeField] private RectTransform _sellArea;
+        [SerializeField] private HeroInfoView _heroInfoView;
 
         private Camera _camera;
         private EntityRef _selectedHeroRef;
@@ -19,9 +21,9 @@ namespace Quantum.Game
         private HeroObject _newHeroPlace;
         private bool _isCommandSended = false;
         private bool _isRoundStarted = false;
-        private bool _isMoved = false;
 
         public bool IsRoundStarted => _isRoundStarted;
+        public bool IsHeroDragging => _selectedHero != null;
         public EntityRef SelectedHeroRef => _selectedHeroRef;
         public event System.Action<HeroObject> ClickedOnHero;
 
@@ -70,6 +72,7 @@ namespace Quantum.Game
             if (UnityEngine.Input.GetMouseButtonDown(0))
             {
                 TryGetHero();
+                ClickedOnHero?.Invoke(_selectedHero);
             }
 
             if (UnityEngine.Input.GetMouseButtonUp(0))
@@ -276,19 +279,20 @@ namespace Quantum.Game
         {
             _heroRangeDisplay.SetActive(false);
 
-            if (_isMoved == false)
-            {
-                ClickedOnHero?.Invoke(_selectedHero);
-            }
-
-            _isMoved = false;
-
             if (_selectedHero != null && _selectedHero.Id >= 0)
             {
                 if (_newHeroPlace != null && _selectedHero != _newHeroPlace)
                 {
                     SendMoveCommand();
                     return;
+                }
+
+                if (_heroInfoView.IsCursorInArea)
+                {
+                    if (TrySellHero(_selectedHero))
+                    {
+                        return;
+                    }
                 }
             }
 

@@ -67,8 +67,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Hero name
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c883c8426ac1d48138356448d3e7eed7, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: c883c8426ac1d48138356448d3e7eed7, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 74a6a8480bcc44ff2b2a68030d544064, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 74a6a8480bcc44ff2b2a68030d544064, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -210,4 +210,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _heroNameText: {fileID: 7295540857781005563}
-  _heroMesh: {fileID: 0}

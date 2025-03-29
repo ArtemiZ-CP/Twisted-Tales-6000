@@ -9,6 +9,7 @@ public class HeroInfoView : MonoBehaviour
 {
     [SerializeField] private HeroesMover _heroesMover;
     [SerializeField] private GameObject _heroInfoPanel;
+    [SerializeField] private GameObject _sellPanel;
     [Header("Hero Info")]
     [SerializeField] private TMP_Text _heroName;
     [SerializeField] private TMP_Text _heroStars;
@@ -18,14 +19,18 @@ public class HeroInfoView : MonoBehaviour
     [SerializeField] private TMP_Text _heroAttackSpeed;
     [SerializeField] private TMP_Text _heroDPS;
     [SerializeField] private TMP_Text _heroDefense;
-    [SerializeField] private TMP_Text _heroSellPrice;
+    [SerializeField] private TMP_Text[] _heroSellPrice;
     [SerializeField] private UnityEngine.UI.Button _sellButton;
 
     private HeroObject _selectedHero;
+    private bool _isCursorInArea;
+
+    public bool IsCursorInArea => _isCursorInArea;
 
     private void Awake()
     {
         _heroInfoPanel.SetActive(false);
+        _sellPanel.SetActive(false);
         QuantumEvent.Subscribe<EventGetFightingHero>(listener: this, handler: GetFightingHero);
     }
 
@@ -57,9 +62,27 @@ public class HeroInfoView : MonoBehaviour
         }
     }
 
+    public void PointerEnter()
+    {
+        _isCursorInArea = true;
+
+        if (_heroesMover.IsHeroDragging)
+        {
+            _sellPanel.SetActive(true);
+        }
+    }
+
+    public void PointerExit()
+    {
+        _isCursorInArea = false;
+        _sellPanel.SetActive(false);
+    }
+
     private void SellHero()
     {
         _heroesMover.TrySellHero(_selectedHero);
+        _heroInfoPanel.SetActive(false);
+        _sellPanel.SetActive(false);
     }
 
     private void GetFightingHero(EventGetFightingHero eventGetFightingHero)
@@ -76,11 +99,15 @@ public class HeroInfoView : MonoBehaviour
 
     private void SelectHero(HeroObject hero)
     {
-        if (_heroesMover.SelectedHeroRef != default)
+        if (_isCursorInArea)    
         {
             return;
         }
 
+        if (_heroesMover.SelectedHeroRef != default)
+        {
+            return;
+        }
 
         if (hero == null || hero.State == HeroState.Shop)
         {
@@ -131,6 +158,10 @@ public class HeroInfoView : MonoBehaviour
         _heroAttackSpeed.text = heroStats.AttackSpeed.ToString("0.##");
         _heroDPS.text = (heroStats.AttackDamage * heroStats.AttackSpeed).ToString("0.##");
         _heroDefense.text = heroStats.Defense.ToString("0.##");
-        _heroSellPrice.text = $"SELL\n{QuantumConnection.GameConfig.GetHeroSellCost(heroInfo.Rare, level):0.##} coins";
+
+        foreach (var tmpText in _heroSellPrice)
+        {
+            tmpText.text = $"SELL\n{QuantumConnection.GameConfig.GetHeroSellCost(heroInfo.Rare, level):0.##} coins";
+        }
     }
 }
