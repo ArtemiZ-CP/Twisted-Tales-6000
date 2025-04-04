@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
+  m_Name: E BabaYagaInfo
+  m_EditorClassIdentifier: 
+  Identifier:
+    Path: QuantumUser/Resources/_GameFiles/Heroes/3_Epic/BabaYaga/E BabaYagaInfo
+    Guid:
+      Value: 451262027935121510
+  HeroPrefab: {fileID: 5216602490358044327, guid: ef12ea852e75a4ea48fb41f0ccd2bdd2, type: 3}
+  HeroPrototype:
+    Id:
+      Value: 1360261742996428055
+  ProjectilePrototype:
+    Id:
+      Value: 1476018119604516482
+  AbilityProjectilePrototype:
+    Id:
+      Value: 1376884538976340079
+  Name: 17
+  Rare: 3
+  HeroType: 0
+  HeroStats:
+  - Health:
+      RawValue: 55705600
+    Defense:
+      RawValue: 1310720
+    MagicDefense:
+      RawValue: 2621440
+    AttackDamage:
+      RawValue: 3932160
+    AttackSpeed:
+      RawValue: 45875
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 3
+  - Health:
+      RawValue: 100270080
+    Defense:
+      RawValue: 1310720
+    MagicDefense:
+      RawValue: 2621440
+    AttackDamage:
+      RawValue: 5898240
+    AttackSpeed:
+      RawValue: 45875
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 3
+  - Health:
+      RawValue: 180486144
+    Defense:
+      RawValue: 1310720
+    MagicDefense:
+      RawValue: 2621440
+    AttackDamage:
+      RawValue: 8847360
+    AttackSpeed:
+      RawValue: 45875
+    ProjectileSpeed:
+      RawValue: 327680
+    Range: 3
+  AttackDamageType: 0
+  Mana:
+    RawValue: 5898240
+  StartMana:
+    RawValue: 0

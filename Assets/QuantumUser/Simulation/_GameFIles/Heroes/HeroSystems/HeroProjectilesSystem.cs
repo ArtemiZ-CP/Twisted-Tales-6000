@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Photon.Deterministic;
 using Quantum.Collections;
 using UnityEngine.Scripting;
@@ -12,7 +11,7 @@ namespace Quantum.Game
         {
             if (f.Global->IsBuyPhase || f.Global->IsDelayPassed == false) return;
 
-            List<Board> boards = BoardSystem.GetBoards(f);
+            QList<Board> boards = BoardSystem.GetBoards(f);
 
             foreach (Board board in boards)
             {
@@ -145,7 +144,7 @@ namespace Quantum.Game
             {
                 FightingHero ownerHero = HeroBoard.GetFightingHero(f, projectile.Owner, board);
                 FightingHero targetHero = HeroBoard.GetFightingHero(f, projectile.Target, board);
-                HeroAttack.DamageHero(f, ownerHero, targetHero, projectile.Damage, f.ResolveList(projectile.Effects),
+                HeroAttack.DamageHero(f, ownerHero, board, targetHero, projectile.Damage, f.ResolveList(projectile.Effects),
                     (HeroAttack.DamageType)projectile.DamageType, (HeroAttack.AttackType)projectile.AttackType);
 
                 HeroEffects.AddGlobalEffects(f, board, f.ResolveList(projectile.GlobalEffects));

@@ -16,44 +16,24 @@ namespace Quantum.Game
 
             if (heroLevel == 0)
             {
-                return TryCastLevel1(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 100, 50);
             }
             else if (heroLevel == 1)
             {
-                return TryCastLevel2(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 150, 75);
             }
             else if (heroLevel == 2)
             {
-                return TryCastLevel3(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 225, 110);
             }
 
             return false;
         }
 
-        private static bool TryCastLevel1(Frame f, FightingHero fightingHero, Board board)
+        private static bool TryCast(Frame f, FightingHero fightingHero, Board board, FP damage, FP heal)
         {
-            FP damage = 100;
-            FP heal = 50;
-            HeroAttack.HealHero(f, fightingHero, board, fightingHero, heal, isAbleToOverHeal: true);
-            HeroAttack.DamageHeroByBlast(f, fightingHero, fightingHero.Index, board, damage, fightingHero.Hero.Range, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-            return true;
-        }
-
-        private static bool TryCastLevel2(Frame f, FightingHero fightingHero, Board board)
-        {
-            FP damage = 150;
-            FP heal = 75;
-            HeroAttack.HealHero(f, fightingHero, board, fightingHero, heal, isAbleToOverHeal: true);
-            HeroAttack.DamageHeroByBlast(f, fightingHero, fightingHero.Index, board, damage, fightingHero.Hero.Range, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-            return true;
-        }
-
-        private static bool TryCastLevel3(Frame f, FightingHero fightingHero, Board board)
-        {
-            FP damage = 225;
-            FP heal = 110;
-            HeroAttack.HealHero(f, fightingHero, board, fightingHero, heal, isAbleToOverHeal: true);
-            HeroAttack.DamageHeroByBlast(f, fightingHero, fightingHero.Index, board, damage, fightingHero.Hero.Range, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+            HeroAttack.AddArmorToHero(f, fightingHero, board, fightingHero, heal);
+            HeroAttack.DamageHeroByBlast(f, fightingHero, fightingHero.Index, board, damage, fightingHero.Hero.Range, includeSelf: true, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
             return true;
         }
     }

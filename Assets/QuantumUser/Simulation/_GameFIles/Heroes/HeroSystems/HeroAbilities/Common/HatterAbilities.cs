@@ -1,6 +1,5 @@
 using Photon.Deterministic;
 using Quantum.Collections;
-using UnityEngine;
 
 namespace Quantum.Game
 {
@@ -17,32 +16,30 @@ namespace Quantum.Game
 
             if (heroLevel == 0)
             {
-                return TryCastLevel1(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 80, 20, 30);
             }
             else if (heroLevel == 1)
             {
-                return TryCastLevel2(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 120, 30, 45);
             }
             else if (heroLevel == 2)
             {
-                return TryCastLevel3(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 180, 45, 65);
             }
 
             return false;
         }
 
-        private static bool TryCastLevel1(Frame f, FightingHero fightingHero, Board board)
+        private static bool TryCast(Frame f, FightingHero fightingHero, Board board, FP damage, FP poisonDamage, FP healAmount)
         {
             if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
             {
-                FP damage = 80;
-
                 HeroEffects.GlobalEffect poisonGlobalEffect = new()
                 {
                     Center = target.Index,
                     Owner = fightingHero.Hero.Ref,
                     Type = HeroEffects.GlobalEffectType.PoisonArea,
-                    Value = 20,
+                    Value = poisonDamage,
                     Duration = 3,
                     Size = 1
                 };
@@ -52,81 +49,7 @@ namespace Quantum.Game
                     Center = target.Index,
                     Owner = fightingHero.Hero.Ref,
                     Type = HeroEffects.GlobalEffectType.PoisonArea,
-                    Value = 30,
-                    Duration = 3,
-                    Size = 1
-                };
-
-                HeroEffects.GlobalEffect[] globalEffects = new HeroEffects.GlobalEffect[2];
-                globalEffects[0] = poisonGlobalEffect;
-                globalEffects[1] = healGlobalEffect;
-
-                HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, globalEffects, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                return true;
-            }
-
-            return false;
-        }
-
-        private static bool TryCastLevel2(Frame f, FightingHero fightingHero, Board board)
-        {
-            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
-            {
-                FP damage = 120;
-
-                HeroEffects.GlobalEffect poisonGlobalEffect = new()
-                {
-                    Center = target.Index,
-                    Owner = fightingHero.Hero.Ref,
-                    Type = HeroEffects.GlobalEffectType.PoisonArea,
-                    Value = 30,
-                    Duration = 3,
-                    Size = 1
-                };
-
-                HeroEffects.GlobalEffect healGlobalEffect = new()
-                {
-                    Center = target.Index,
-                    Owner = fightingHero.Hero.Ref,
-                    Type = HeroEffects.GlobalEffectType.PoisonArea,
-                    Value = 45,
-                    Duration = 3,
-                    Size = 1
-                };
-
-                HeroEffects.GlobalEffect[] globalEffects = new HeroEffects.GlobalEffect[2];
-                globalEffects[0] = poisonGlobalEffect;
-                globalEffects[1] = healGlobalEffect;
-
-                HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, globalEffects, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                return true;
-            }
-
-            return false;
-        }
-
-        private static bool TryCastLevel3(Frame f, FightingHero fightingHero, Board board)
-        {
-            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
-            {
-                FP damage = 180;
-
-                HeroEffects.GlobalEffect poisonGlobalEffect = new()
-                {
-                    Center = target.Index,
-                    Owner = fightingHero.Hero.Ref,
-                    Type = HeroEffects.GlobalEffectType.PoisonArea,
-                    Value = 45,
-                    Duration = 3,
-                    Size = 1
-                };
-
-                HeroEffects.GlobalEffect healGlobalEffect = new()
-                {
-                    Center = target.Index,
-                    Owner = fightingHero.Hero.Ref,
-                    Type = HeroEffects.GlobalEffectType.PoisonArea,
-                    Value = 65,
+                    Value = healAmount,
                     Duration = 3,
                     Size = 1
                 };

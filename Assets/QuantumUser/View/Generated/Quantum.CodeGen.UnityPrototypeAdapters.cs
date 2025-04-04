@@ -106,6 +106,7 @@ namespace Quantum.Prototypes.Unity {
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.Unity.EffectQntPrototype[] Effects = {};
     public FP CurrentHealth;
+    public FP CurrentArmor;
     public FP CurrentMana;
     public Quantum.QuantumEntityPrototype AttackTarget;
     public Int32 TargetPositionX;
@@ -124,6 +125,7 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.BoardIndex, out result.BoardIndex);
       converter.Convert(this.Effects, out result.Effects);
       converter.Convert(this.CurrentHealth, out result.CurrentHealth);
+      converter.Convert(this.CurrentArmor, out result.CurrentArmor);
       converter.Convert(this.CurrentMana, out result.CurrentMana);
       converter.Convert(this.AttackTarget, out result.AttackTarget);
       converter.Convert(this.TargetPositionX, out result.TargetPositionX);

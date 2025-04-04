@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using Quantum;
+using Quantum.Collections;
 using Quantum.Game;
 using TMPro;
 using UnityEngine;
@@ -26,7 +26,7 @@ public class PlayersDisplay : MonoBehaviour
             {
                 _playersText.text += GetPlayerText(Color.green, player);
             }
-            else if (boards != null && boards.Count > 0 && IsPlayerMyEnemy(boards, player))
+            else if (boards.Count > 0 && IsPlayerMyEnemy(boards, player))
             {
                 _playersText.text += GetPlayerText(Color.red, player);
             }
@@ -37,7 +37,7 @@ public class PlayersDisplay : MonoBehaviour
         }
     }
 
-    private bool IsPlayerMyEnemy(List<Quantum.Board> boards, PlayerLink enemy)
+    private bool IsPlayerMyEnemy(QList<Quantum.Board> boards, PlayerLink enemy)
     {
         foreach (var board in boards)
         {

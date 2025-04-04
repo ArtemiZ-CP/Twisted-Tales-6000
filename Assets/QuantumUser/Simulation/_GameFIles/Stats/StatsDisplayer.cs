@@ -6,11 +6,12 @@ namespace Quantum.Game
     {
         public static void UpdateStats(Frame f)
         {
-            BoardSystem.GetBoards(f).ForEach(board =>
+            QList<Board> boards = BoardSystem.GetBoards(f);
+
+            foreach (Board board in boards)
             {
-                QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
-                f.Events.DisplayStats(f, board.Player1.Ref, board.Player2.Ref, heroes);
-            });
+                UpdateStats(f, board);
+            }
         }
 
         public static void UpdateStats(Frame f, Board board)

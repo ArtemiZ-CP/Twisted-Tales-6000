@@ -7,6 +7,7 @@ struct FightingHero
     
     // Fighing stats
     FP CurrentHealth;
+    FP CurrentArmor;
     FP CurrentMana;
     entity_ref AttackTarget;
     int TargetPositionX;

@@ -1,14 +1,30 @@
+using Photon.Deterministic;
 using Quantum.Collections;
 
 namespace Quantum.Game
 {
     public static unsafe class Events
     {
-        public static void ChangeHeroHealth(Frame f, FightingHero fightingHero, Board board)
+        public static void ChangeHeroStats(Frame f, FightingHero fightingHero, Board board)
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             fightingHero = heroes[fightingHero.Index];
-            f.Events.HeroHealthChanged(board.Player1.Ref, board.Player2.Ref, fightingHero.Hero.Ref, fightingHero.CurrentHealth, fightingHero.Hero.Health);
+            FP armor = fightingHero.CurrentArmor;
+
+            QList<EffectQnt> effectQnts = f.ResolveList(fightingHero.Effects);
+
+            for (int i = 0; i < effectQnts.Count; i++)
+            {
+                EffectQnt effectQnt = effectQnts[i];
+
+                if (effectQnt.Index == (int)HeroEffects.EffectType.TemporaryArmor)
+                {
+                    armor += effectQnt.Value;
+                }
+            }
+
+            f.Events.HeroHealthChanged(board.Player1.Ref, board.Player2.Ref, fightingHero.Hero.Ref, fightingHero.CurrentHealth, fightingHero.Hero.Health, armor);
+            f.Events.HeroManaChanged(board.Player1.Ref, board.Player2.Ref, fightingHero.Hero.Ref, fightingHero.CurrentMana, fightingHero.Hero.MaxMana);
         }
 
         public static void DisplayRoundNumber(Frame f)

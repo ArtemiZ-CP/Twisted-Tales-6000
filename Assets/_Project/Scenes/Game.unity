@@ -7591,12 +7591,12 @@ GameObject:
   - component: {fileID: 1523640567}
   - component: {fileID: 1523640566}
   m_Layer: 5
-  m_Name: SaleButton
+  m_Name: SaleArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1523640565
 RectTransform:
   m_ObjectHideFlags: 0

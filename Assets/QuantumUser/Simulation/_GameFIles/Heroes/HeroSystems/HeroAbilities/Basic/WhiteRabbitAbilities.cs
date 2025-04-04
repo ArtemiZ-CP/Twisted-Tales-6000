@@ -16,71 +16,29 @@ namespace Quantum.Game
 
             if (heroLevel == 0)
             {
-                return TryCastLevel1(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 60, 10);
             }
             else if (heroLevel == 1)
             {
-                return TryCastLevel2(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 90, 12);
             }
             else if (heroLevel == 2)
             {
-                return TryCastLevel3(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 135, 15);
             }
 
             return false;
         }
 
-        private static bool TryCastLevel1(Frame f, FightingHero fightingHero, Board board)
+        private static bool TryCast(Frame f, FightingHero fightingHero, Board board, FP damage, FP reduceManaAmount)
         {
             if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
             {
-                FP damage = 60;
                 HeroEffects.Effect effect = new()
                 {
                     Owner = fightingHero.Hero.Ref,
                     Type = HeroEffects.EffectType.ReduceCurrentMana,
-                    Value = 10,
-                    Duration = 0
-                };
-
-                HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                return true;
-            }
-
-            return false;
-        }
-
-        private static bool TryCastLevel2(Frame f, FightingHero fightingHero, Board board)
-        {
-            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
-            {
-                FP damage = 90;
-                HeroEffects.Effect effect = new()
-                {
-                    Owner = fightingHero.Hero.Ref,
-                    Type = HeroEffects.EffectType.ReduceCurrentMana,
-                    Value = 12,
-                    Duration = 0
-                };
-
-                HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                return true;
-            }
-
-            return false;
-        }
-
-        private static bool TryCastLevel3(Frame f, FightingHero fightingHero, Board board)
-        {
-            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
-            {
-                FP damage = 135;
-                HeroEffects.Effect effect = new()
-                {
-                    Owner = fightingHero.Hero.Ref,
-                    Type = HeroEffects.EffectType.ReduceCurrentMana,
-                    Value = 15,
-                    Duration = 0
+                    Value = reduceManaAmount,
                 };
 
                 HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);

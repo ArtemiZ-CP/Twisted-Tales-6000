@@ -114,6 +114,26 @@ namespace Quantum.Game
                     ability = HatterAbilities.TryCastAbility;
                     return true;
 
+                case HeroNameEnum.Alice:
+                    ability = AliceAbilities.TryCastAbility;
+                    return true;
+                case HeroNameEnum.Scarecrow:
+                    ability = ScarecrowAbilities.TryCastAbility;
+                    return true;
+                case HeroNameEnum.Aladdin:
+                    ability = AladdinAbilities.TryCastAbility;
+                    return true;
+                case HeroNameEnum.PussInBoots:
+                    ability = PussInBootsAbilities.TryCastAbility;
+                    return true;
+                case HeroNameEnum.Nutcracker:
+                    ability = NutcrackerAbilities.TryCastAbility;
+                    return true;
+
+                case HeroNameEnum.BabaYaga:
+                    ability = BabaYagaAbilities.TryCastAbility;
+                    return true;
+
                 default:
                     ability = default;
                     return false;

@@ -366,6 +366,18 @@ PrefabInstance:
       propertyPath: _quantumEntityView
       value: 
       objectReference: {fileID: 4938376406631923130}
+    - target: {fileID: 2768551934804307226, guid: c388d3f1985d84b41bb720ffe5794199, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2768551934804307226, guid: c388d3f1985d84b41bb720ffe5794199, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3506347931587950250, guid: c388d3f1985d84b41bb720ffe5794199, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3506347931587950250, guid: c388d3f1985d84b41bb720ffe5794199, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -381,6 +393,14 @@ PrefabInstance:
     - target: {fileID: 4927815604448391281, guid: c388d3f1985d84b41bb720ffe5794199, type: 3}
       propertyPath: m_PresetInfoIsWorld
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5175127962350201984, guid: c388d3f1985d84b41bb720ffe5794199, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5175127962350201984, guid: c388d3f1985d84b41bb720ffe5794199, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8003387199561976119, guid: c388d3f1985d84b41bb720ffe5794199, type: 3}
       propertyPath: m_Pivot.x

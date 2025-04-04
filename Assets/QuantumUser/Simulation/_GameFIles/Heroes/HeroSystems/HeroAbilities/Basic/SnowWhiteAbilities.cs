@@ -16,21 +16,21 @@ namespace Quantum.Game
 
             if (heroLevel == 0)
             {
-                return TryCastLevel1(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 100);
             }
             else if (heroLevel == 1)
             {
-                return TryCastLevel2(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 150);
             }
             else if (heroLevel == 2)
             {
-                return TryCastLevel3(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 225);
             }
 
             return false;
         }
 
-        private static bool TryCastLevel1(Frame f, FightingHero fightingHero, Board board)
+        private static bool TryCast(Frame f, FightingHero fightingHero, Board board, FP blastDamage)
         {
             if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
             {
@@ -39,47 +39,7 @@ namespace Quantum.Game
                 {
                     Owner = fightingHero.Hero.Ref,
                     Type = HeroEffects.EffectType.Blast,
-                    Value = 100,
-                    Size = 1,
-                };
-
-                HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                return true;
-            }
-
-            return false;
-        }
-
-        private static bool TryCastLevel2(Frame f, FightingHero fightingHero, Board board)
-        {
-            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
-            {
-                FP damage = 0;
-                HeroEffects.Effect effect = new()
-                {
-                    Owner = fightingHero.Hero.Ref,
-                    Type = HeroEffects.EffectType.Blast,
-                    Value = 150,
-                    Size = 1,
-                };
-
-                HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                return true;
-            }
-
-            return false;
-        }
-
-        private static bool TryCastLevel3(Frame f, FightingHero fightingHero, Board board)
-        {
-            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
-            {
-                FP damage = 0;
-                HeroEffects.Effect effect = new()
-                {
-                    Owner = fightingHero.Hero.Ref,
-                    Type = HeroEffects.EffectType.Blast,
-                    Value = 225,
+                    Value = blastDamage,
                     Size = 1,
                 };
 

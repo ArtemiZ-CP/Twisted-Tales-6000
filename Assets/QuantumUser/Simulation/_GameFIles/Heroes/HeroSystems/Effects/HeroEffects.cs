@@ -13,7 +13,12 @@ namespace Quantum.Game
             IncreaseReloadTime,
             IncreaseTakingDamage,
             ReduceCurrentMana,
+            ReduceDefense,
+            ReduceMagicDefense,
+            HorizontalBlast,
             Blast,
+            Stun,
+            TemporaryArmor,
         }
 
         public enum GlobalEffectType
@@ -135,10 +140,11 @@ namespace Quantum.Game
             }
         }
 
-        public static void ProcessEffects(Frame f, FightingHero target, Board board)
+        public static void ProcessEffects(Frame f, FightingHero target, Board board, out bool isStunned)
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             target = heroes[target.Index];
+            isStunned = false;
 
             if (f.Exists(target.Hero.Ref) == false || target.IsAlive == false)
             {
@@ -164,6 +170,9 @@ namespace Quantum.Game
                         break;
                     case EffectType.Blast:
                         HeroAttack.DamageHeroByBlastWithoutApplyingEffects(f, ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                        break;
+                    case EffectType.Stun:
+                        isStunned = true;
                         break;
                 }
 

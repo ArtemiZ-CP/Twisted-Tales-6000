@@ -16,49 +16,24 @@ namespace Quantum.Game
 
             if (heroLevel == 0)
             {
-                return TryCastLevel1(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 80);
             }
             else if (heroLevel == 1)
             {
-                return TryCastLevel2(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 120);
             }
             else if (heroLevel == 2)
             {
-                return TryCastLevel3(f, fightingHero, board);
+                return TryCast(f, fightingHero, board, 180);
             }
 
             return false;
         }
 
-        private static bool TryCastLevel1(Frame f, FightingHero fightingHero, Board board)
+        private static bool TryCast(Frame f, FightingHero fightingHero, Board board, FP damage)
         {
             if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
             {
-                FP damage = 80;
-                HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                return true;
-            }
-
-            return false;
-        }
-
-        private static bool TryCastLevel2(Frame f, FightingHero fightingHero, Board board)
-        {
-            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
-            {
-                FP damage = 120;
-                HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                return true;
-            }
-
-            return false;
-        }
-
-        private static bool TryCastLevel3(Frame f, FightingHero fightingHero, Board board)
-        {
-            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
-            {
-                FP damage = 180;
                 HeroAbility.ProjectileAttack(f, fightingHero, board, target, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                 return true;
             }

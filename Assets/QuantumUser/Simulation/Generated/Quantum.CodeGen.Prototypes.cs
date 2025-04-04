@@ -151,6 +151,7 @@ namespace Quantum.Prototypes {
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.EffectQntPrototype[] Effects = {};
     public FP CurrentHealth;
+    public FP CurrentArmor;
     public FP CurrentMana;
     public MapEntityId AttackTarget;
     public Int32 TargetPositionX;
@@ -176,6 +177,7 @@ namespace Quantum.Prototypes {
           }
         }
         result.CurrentHealth = this.CurrentHealth;
+        result.CurrentArmor = this.CurrentArmor;
         result.CurrentMana = this.CurrentMana;
         PrototypeValidator.FindMapEntity(this.AttackTarget, in context, out result.AttackTarget);
         result.TargetPositionX = this.TargetPositionX;

@@ -57,7 +57,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_VertexColorAlwaysGammaSpace: 0
+  m_VertexColorAlwaysGammaSpace: 1
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
@@ -125,6 +125,22 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2880034015146779425, guid: 02f00cb628d954fdd911ecd526fb0965, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2880034015146779425, guid: 02f00cb628d954fdd911ecd526fb0965, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2880034015146779425, guid: 02f00cb628d954fdd911ecd526fb0965, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2880034015146779425, guid: 02f00cb628d954fdd911ecd526fb0965, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3748386654160660076, guid: 02f00cb628d954fdd911ecd526fb0965, type: 3}
       propertyPath: m_Name
       value: HealthBar
@@ -159,7 +175,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7683836193634594739, guid: 02f00cb628d954fdd911ecd526fb0965, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0.5
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 7683836193634594739, guid: 02f00cb628d954fdd911ecd526fb0965, type: 3}
       propertyPath: m_LocalPosition.x
@@ -207,10 +223,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7683836193634594739, guid: 02f00cb628d954fdd911ecd526fb0965, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9209602198426127417, guid: 02f00cb628d954fdd911ecd526fb0965, type: 3}
-      propertyPath: m_VertexColorAlwaysGammaSpace
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -277,7 +289,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7683836193634594739, guid: cf2f5f8b10eb041a7894c3afd58b1471, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0.5
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 7683836193634594739, guid: cf2f5f8b10eb041a7894c3afd58b1471, type: 3}
       propertyPath: m_LocalPosition.x

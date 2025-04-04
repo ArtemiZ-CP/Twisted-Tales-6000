@@ -501,9 +501,9 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct FightingHero {
-    public const Int32 SIZE = 216;
+    public const Int32 SIZE = 224;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(88)]
+    [FieldOffset(96)]
     public HeroEntity Hero;
     [FieldOffset(4)]
     public Int32 Index;
@@ -511,9 +511,11 @@ namespace Quantum {
     public Int32 BoardIndex;
     [FieldOffset(24)]
     public QListPtr<EffectQnt> Effects;
-    [FieldOffset(48)]
-    public FP CurrentHealth;
     [FieldOffset(56)]
+    public FP CurrentHealth;
+    [FieldOffset(48)]
+    public FP CurrentArmor;
+    [FieldOffset(64)]
     public FP CurrentMana;
     [FieldOffset(32)]
     public EntityRef AttackTarget;
@@ -527,11 +529,11 @@ namespace Quantum {
     public QBoolean IsAlive;
     [FieldOffset(40)]
     public FP AttackTimer;
-    [FieldOffset(72)]
-    public FP DealedBaseDamage;
-    [FieldOffset(64)]
-    public FP DealedAbilityDamage;
     [FieldOffset(80)]
+    public FP DealedBaseDamage;
+    [FieldOffset(72)]
+    public FP DealedAbilityDamage;
+    [FieldOffset(88)]
     public FP TakenDamage;
     public override Int32 GetHashCode() {
       unchecked { 
@@ -541,6 +543,7 @@ namespace Quantum {
         hash = hash * 31 + BoardIndex.GetHashCode();
         hash = hash * 31 + Effects.GetHashCode();
         hash = hash * 31 + CurrentHealth.GetHashCode();
+        hash = hash * 31 + CurrentArmor.GetHashCode();
         hash = hash * 31 + CurrentMana.GetHashCode();
         hash = hash * 31 + AttackTarget.GetHashCode();
         hash = hash * 31 + TargetPositionX.GetHashCode();
@@ -568,6 +571,7 @@ namespace Quantum {
         QList.Serialize(&p->Effects, serializer, Statics.SerializeEffectQnt);
         EntityRef.Serialize(&p->AttackTarget, serializer);
         FP.Serialize(&p->AttackTimer, serializer);
+        FP.Serialize(&p->CurrentArmor, serializer);
         FP.Serialize(&p->CurrentHealth, serializer);
         FP.Serialize(&p->CurrentMana, serializer);
         FP.Serialize(&p->DealedAbilityDamage, serializer);

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Quantum.Collections;
 using UnityEngine.Scripting;
 
@@ -169,14 +168,16 @@ namespace Quantum.Game
                     }
                 }
 
-                foreach (int count in heroesCount)
+                for (int level = 0; level < heroesCount.Length; level++)
                 {
+                    int count = heroesCount[level];
+
                     if (count >= gameConfig.HeroesCountToUpgrade)
                     {
                         heroUpgradeInfos.Add(new HeroUpgradeInfo
                         {
                             HeroID = heroID,
-                            HeroLevel = heroesCount.ToList().IndexOf(count)
+                            HeroLevel = level
                         });
                     }
                 }

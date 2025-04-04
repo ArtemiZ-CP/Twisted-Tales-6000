@@ -9,8 +9,9 @@ public abstract class Bar : MonoBehaviour
 
     private QuantumEntityView _quantumEntityView;
     private QuantumEntityViewUpdater _quantumEntityViewUpdater;
+    private RectTransform _sliderRectTransform;
+    private float _maxX;
 
-    protected Slider Slider => _slider;
     protected QuantumEntityViewUpdater QuantumEntityViewUpdater
     {
         get
@@ -23,10 +24,12 @@ public abstract class Bar : MonoBehaviour
             return _quantumEntityViewUpdater;
         }
     }
-    
+
     protected virtual void Awake()
     {
         _quantumEntityView = FindFirstEntityViewInParents();
+        _sliderRectTransform = _slider.GetComponent<RectTransform>();
+        _maxX = _sliderRectTransform.rect.width;
     }
 
     protected virtual void OnEnable()
@@ -34,7 +37,7 @@ public abstract class Bar : MonoBehaviour
         _slider.gameObject.SetActive(false);
     }
 
-    protected void UpdateBar(EntityRef heroEntity, FP currentHealth, FP maxHealth)
+    protected void UpdateBar(EntityRef heroEntity, FP amount, FP maxAmount, float progress = 0)
     {
         if (QuantumEntityViewUpdater == null)
         {
@@ -45,9 +48,12 @@ public abstract class Bar : MonoBehaviour
 
         if (_quantumEntityView == quantumEntityView)
         {
-            Slider.gameObject.SetActive(true);
-            float health = (currentHealth / maxHealth).AsFloat;
-            Slider.value = health;
+            _slider.gameObject.SetActive(true);
+            _slider.value = (amount / maxAmount).AsFloat;
+            _sliderRectTransform.anchoredPosition = new Vector2(
+                Mathf.Lerp(0, _maxX, progress),
+                _sliderRectTransform.anchoredPosition.y
+            ); 
         }
     }
 
@@ -57,9 +63,7 @@ public abstract class Bar : MonoBehaviour
 
         while (parent != null)
         {
-            QuantumEntityView quantumEntityView = parent.GetComponent<QuantumEntityView>();
-
-            if (quantumEntityView != null)
+            if (parent.TryGetComponent<QuantumEntityView>(out var quantumEntityView))
             {
                 return quantumEntityView;
             }

@@ -12,10 +12,10 @@ namespace Quantum.Game
     {
         public override void Update(Frame f)
         {
-            MeleeHeroSystem.Update(f);
-            RangedHeroSystem.Update(f);
+            QList<Board> boards = BoardSystem.GetBoards(f);
 
-            List<Board> boards = BoardSystem.GetBoards(f);
+            MeleeHeroSystem.Update(f, boards);
+            RangedHeroSystem.Update(f, boards);
 
             foreach (Board board in boards)
             {
@@ -23,14 +23,14 @@ namespace Quantum.Game
             }
         }
 
-        public static void UpdateHeroes<T>(Frame f,
+        public static void UpdateHeroes<T>(Frame f, QList<Board> boards,
             Action<Frame, FightingHero, HeroAttack.DamageType, HeroAttack.AttackType> Attack, bool isHeroAttackWhileMooving) where T : unmanaged, IComponent
         {
             if (f.Global->IsBuyPhase || f.Global->IsDelayPassed == false || f.Global->IsFighting == false) return;
 
             List<(FightingHero, Board)> heroesPtr = new();
 
-            if (TryGetHeroes<T>(f, ref heroesPtr))
+            if (TryGetHeroes<T>(f, boards, ref heroesPtr))
             {
                 foreach ((FightingHero fightingHero, Board board) in heroesPtr)
                 {
@@ -50,7 +50,12 @@ namespace Quantum.Game
                 return;
             }
 
-            HeroAttack.Update(f, fightingHero, board);
+            HeroAttack.Update(f, fightingHero, board, out bool isStunned);
+
+            if (isStunned)
+            {
+                return;
+            }
 
             if (f.Exists(fightingHero.Hero.Ref) == false)
             {
@@ -80,10 +85,8 @@ namespace Quantum.Game
             Attack(f, fightingHero, (HeroAttack.DamageType)fightingHero.Hero.AttackDamageType, HeroAttack.AttackType.Base);
         }
 
-        private static bool TryGetHeroes<T>(Frame f, ref List<(FightingHero, Board)> heroes) where T : unmanaged, IComponent
+        private static bool TryGetHeroes<T>(Frame f, QList<Board> boards, ref List<(FightingHero, Board)> heroes) where T : unmanaged, IComponent
         {
-            List<Board> boards = BoardSystem.GetBoards(f);
-
             foreach (Board board in boards)
             {
                 QList<FightingHero> fightingHeroes = f.ResolveList(board.FightingHeroesMap);

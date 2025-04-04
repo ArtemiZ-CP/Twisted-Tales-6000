@@ -122,13 +122,14 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventHeroHealthChanged HeroHealthChanged(PlayerRef PlayerRef1, PlayerRef PlayerRef2, EntityRef HeroEntity, FP CurrentHealth, FP MaxHealth) {
+      public EventHeroHealthChanged HeroHealthChanged(PlayerRef PlayerRef1, PlayerRef PlayerRef2, EntityRef HeroEntity, FP CurrentHealth, FP MaxHealth, FP CurrentArmor) {
         var ev = _f.Context.AcquireEvent<EventHeroHealthChanged>(EventHeroHealthChanged.ID);
         ev.PlayerRef1 = PlayerRef1;
         ev.PlayerRef2 = PlayerRef2;
         ev.HeroEntity = HeroEntity;
         ev.CurrentHealth = CurrentHealth;
         ev.MaxHealth = MaxHealth;
+        ev.CurrentArmor = CurrentArmor;
         _f.AddEvent(ev);
         return ev;
       }
@@ -394,6 +395,7 @@ namespace Quantum {
     public EntityRef HeroEntity;
     public FP CurrentHealth;
     public FP MaxHealth;
+    public FP CurrentArmor;
     protected EventHeroHealthChanged(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -416,6 +418,7 @@ namespace Quantum {
         hash = hash * 31 + HeroEntity.GetHashCode();
         hash = hash * 31 + CurrentHealth.GetHashCode();
         hash = hash * 31 + MaxHealth.GetHashCode();
+        hash = hash * 31 + CurrentArmor.GetHashCode();
         return hash;
       }
     }

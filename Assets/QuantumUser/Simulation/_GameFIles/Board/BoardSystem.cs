@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using Quantum.Collections;
 using UnityEngine;
 using UnityEngine.Scripting;
@@ -9,13 +8,13 @@ namespace Quantum.Game
     [Preserve]
     public unsafe class BoardSystem : SystemSignalsOnly, ISignalMakeNewBoardPVP, ISignalMakeNewBoardPVE, ISignalClearBoards
     {
-        public static List<Board> GetBoards(Frame f)
+        public static QList<Board> GetBoards(Frame f)
         {
             QList<Board> boards = f.ResolveList(f.Global->Boards);
 
             if (boards.Count != 0)
             {
-                return boards.ToList();
+                return boards;
             }
 
             foreach (var board in f.GetComponentIterator<Board>())
@@ -23,7 +22,7 @@ namespace Quantum.Game
                 boards.Add(board.Component);
             }
 
-            return boards.ToList();
+            return boards;
         }
 
         public static Board GetBoard(Frame f, PlayerRef playerRef)

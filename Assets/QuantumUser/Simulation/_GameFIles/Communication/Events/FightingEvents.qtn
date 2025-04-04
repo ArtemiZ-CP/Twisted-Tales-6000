@@ -5,6 +5,7 @@ event HeroHealthChanged
     entity_ref HeroEntity;
     FP CurrentHealth;
     FP MaxHealth;
+    FP CurrentArmor;
 }
 
 event HeroManaChanged

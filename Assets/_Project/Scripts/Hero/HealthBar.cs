@@ -1,3 +1,4 @@
+using Photon.Deterministic;
 using Quantum;
 using Quantum.Game;
 
@@ -14,7 +15,10 @@ public class HealthBar : Bar
         if (QuantumConnection.IsPlayerMe(eventHeroHealthChanged.PlayerRef1) ||
             QuantumConnection.IsPlayerMe(eventHeroHealthChanged.PlayerRef2))
         {
-            UpdateBar(eventHeroHealthChanged.HeroEntity, eventHeroHealthChanged.CurrentHealth, eventHeroHealthChanged.MaxHealth);
+            FP armor = eventHeroHealthChanged.CurrentArmor;
+            FP maxHealth = eventHeroHealthChanged.MaxHealth + armor;
+            FP currentHealth = eventHeroHealthChanged.CurrentHealth;
+            UpdateBar(eventHeroHealthChanged.HeroEntity, currentHealth, maxHealth);
         }
     }
 }

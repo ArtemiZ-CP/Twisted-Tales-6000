@@ -1,7 +1,6 @@
-using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
 using TMPro;
+using Quantum.Collections;
 
 namespace Quantum.Game
 {
@@ -32,26 +31,34 @@ namespace Quantum.Game
             return -1;
         }
 
-        public void ReloadShop(IEnumerable<int> shopItemsID)
+        public void ReloadShop(QList<int> shopItemsID)
         {
             _shopPanel.SetActive(true);
-            SpawnShopItems(shopItemsID.Count());
+            SpawnShopItems(shopItemsID.Count);
 
-            for (int i = 0; i < shopItemsID.Count(); i++)
+            for (int i = 0; i < shopItemsID.Count; i++)
             {
-                if (shopItemsID.ElementAt(i) < 0)
+                int itemID = shopItemsID[i];
+
+                if (itemID < 0)
                 {
                     continue;
                 }
 
-                _shopItemSlots[i].SetShopItem(shopItemsID.ElementAt(i));
+                _shopItemSlots[i].SetShopItem(itemID);
             }
         }
 
         public void BuyHero(ShopItemSlot shopItemSlot)
         {
-            int index = _shopItemSlots.ToList().IndexOf(shopItemSlot);
-            _shopItemSlots[index].SetShopItem(heroId: -1);
+            for (int i = 0; i < _shopItemSlots.Length; i++)
+            {
+                if (_shopItemSlots[i] == shopItemSlot)
+                {
+                    _shopItemSlots[i].SetShopItem(heroId: -1);
+                    break;
+                }
+            }
         }
 
         private void ChangeCoins(EventChangeCoins eventChangeCoins)
@@ -112,9 +119,20 @@ namespace Quantum.Game
         {
             if (QuantumConnection.IsAbleToConnectQuantum())
             {
+                int shopIndex = -1;
+
+                for (int i = 0; i < _shopItemSlots.Length; i++)
+                {
+                    if (_shopItemSlots[i] == shopItem)
+                    {
+                        shopIndex = i;
+                        break;
+                    }
+                }
+
                 CommandBuyHero commandBuyHero = new()
                 {
-                    ShopIndex = _shopItemSlots.ToList().IndexOf(shopItem),
+                    ShopIndex = shopIndex,
                 };
 
                 QuantumRunner.DefaultGame.SendCommand(commandBuyHero);

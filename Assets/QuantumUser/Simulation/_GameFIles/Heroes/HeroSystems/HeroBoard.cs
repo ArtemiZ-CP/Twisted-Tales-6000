@@ -9,7 +9,7 @@ namespace Quantum.Game
     {
         public static Board GetBoard(Frame f, FightingHero fighingHero)
         {
-            List<Board> boards = BoardSystem.GetBoards(f);
+            QList<Board> boards = BoardSystem.GetBoards(f);
             return boards[fighingHero.BoardIndex];
         }
 
@@ -117,6 +117,36 @@ namespace Quantum.Game
             }
         }
 
+        public static void GetHorizontalCloseCords(int heroIndex, ref List<Vector2Int> closeTiles, int range = 1, bool includeSelf = false)
+        {
+            if (TryGetHeroCords(heroIndex, out Vector2Int cords) == false)
+            {
+                return;
+            }
+
+            for (int x = -range; x <= range; x++)
+            {
+                Vector2Int newCords = cords + new Vector2Int(x, 0);
+
+                if (includeSelf == false && newCords == cords)
+                {
+                    continue;
+                }
+
+                if (newCords.x < 0 || newCords.x >= GameConfig.BoardSize)
+                {
+                    continue;
+                }
+
+                if (newCords.y < 0 || newCords.y >= GameConfig.BoardSize)
+                {
+                    continue;
+                }
+
+                closeTiles.Add(newCords);
+            }
+        }
+
         public static bool TrySetTarget(Frame f, FightingHero fightingHero, Board board)
         {
             FightingHero target = GetHeroTarget(f, fightingHero, board, out Vector2Int moveTargetPosition);
@@ -128,11 +158,11 @@ namespace Quantum.Game
 
             if (moveTargetPosition == GetHeroCords(fightingHero))
             {
-                SetHeroTarget(f, fightingHero, target.Hero.Ref);
+                SetHeroTarget(f, fightingHero, board, target.Hero.Ref);
                 return true;
             }
 
-            SetHeroTarget(f, fightingHero, target.Hero.Ref, moveTargetPosition);
+            SetHeroTarget(f, fightingHero, board, target.Hero.Ref, moveTargetPosition);
             return false;
         }
 
@@ -144,18 +174,20 @@ namespace Quantum.Game
                 return targetHero;
             }
 
-            FightingHero hero = HeroAttack.FindClosestTargetOutOfAttackRange(f, fightingHero, board, out moveTargetPosition, out bool inRange);
-
+            FightingHero hero = HeroAttack.FindClosestTargetOutOfAttackRange(f, fightingHero, board, out moveTargetPosition, out _);
             return hero;
         }
 
-        public static void SetHeroTarget(Frame f, FightingHero fightingHero, EntityRef attackTarget, Vector2Int targetPosition)
+        public static void SetHeroTarget(Frame f, FightingHero fightingHero, Board board, EntityRef attackTarget, Vector2Int targetPosition)
         {
-            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fightingHero).FightingHeroesMap);
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
             if (TryConvertCordsToIndex(targetPosition, out int heroNewIndex))
             {
-                if (fightingHero.Index < 0 || heroes[heroNewIndex].Hero.Ref != default) return;
+                if (fightingHero.Index < 0 || heroes[heroNewIndex].Hero.Ref != default)
+                {
+                    return;
+                }
 
                 fightingHero.AttackTarget = attackTarget;
                 fightingHero.TargetPositionX = targetPosition.x;
@@ -164,9 +196,9 @@ namespace Quantum.Game
             }
         }
 
-        public static void SetHeroTarget(Frame f, FightingHero fighingHero, EntityRef attackTarget)
+        public static void SetHeroTarget(Frame f, FightingHero fighingHero, Board board, EntityRef attackTarget)
         {
-            QList<FightingHero> heroes = f.ResolveList(GetBoard(f, fighingHero).FightingHeroesMap);
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
             FightingHero fightingHero = heroes[fighingHero.Index];
             fightingHero.AttackTarget = attackTarget;
@@ -225,22 +257,57 @@ namespace Quantum.Game
                     continue;
                 }
 
-                if (heroes[index].IsAlive == false)
+                FightingHero hero = heroes[index];
+
+                if (hero.IsAlive == false)
                 {
                     continue;
                 }
 
-                if (hisTeam != heroes[index].TeamNumber || heroes[index].IsAlive == false)
+                if (hisTeam != hero.TeamNumber)
                 {
                     continue;
                 }
 
-                heroesList.Add(heroes[index]);
+                heroesList.Add(hero);
             }
 
             return heroesList;
         }
-        
+
+        public static List<FightingHero> GetAllTeamHeroesInHorizontalRange(Frame f, int center, int hisTeam, Board board, int range, bool includeSelf = false)
+        {
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+            List<Vector2Int> closeTiles = new();
+            List<FightingHero> heroesList = new();
+
+            GetHorizontalCloseCords(center, ref closeTiles, range, includeSelf);
+
+            foreach (var tile in closeTiles)
+            {
+                if (TryConvertCordsToIndex(tile, out int index) == false)
+                {
+                    continue;
+                }
+
+                FightingHero hero = heroes[index];
+
+                if (hero.IsAlive == false)
+                {
+                    continue;
+                }
+
+                if (hisTeam != hero.TeamNumber)
+                {
+                    continue;
+                }
+
+                heroesList.Add(hero);
+            }
+
+            return heroesList;
+        }
+
         public static List<FightingHero> GetAllTargets(Frame f, FightingHero fightingHero, Board board)
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
@@ -253,7 +320,7 @@ namespace Quantum.Game
                     continue;
                 }
 
-                if (fightingHero.TeamNumber == target.TeamNumber || target.IsAlive == false)
+                if (fightingHero.TeamNumber == target.TeamNumber)
                 {
                     continue;
                 }

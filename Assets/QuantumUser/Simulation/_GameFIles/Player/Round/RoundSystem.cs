@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
 using Quantum.Collections;
 using UnityEngine.Scripting;
 
@@ -39,7 +37,8 @@ namespace Quantum.Game
         {
             if (IsRoundStarted(f) == false || IsGameStarted(f) == false) return;
 
-            ProcessEndRound(f, finishAnyway: true);
+            QList<Board> boards = BoardSystem.GetBoards(f);
+            ProcessEndRound(f, boards, finishAnyway: true);
         }
 
         private void StartRound(Frame f)
@@ -54,30 +53,29 @@ namespace Quantum.Game
 
         private void EndRound(Frame f)
         {
-            Shop.ReloadOnEndRound(f);
-            Shop.ReloadOnEndRound(f);
-            Shop.ReloadOnEndRound(f);
-            Shop.ReloadOnEndRound(f);
-            Shop.ReloadOnEndRound(f);
             f.Global->IsBuyPhase = true;
             f.Global->PhaseNumber++;
             f.Global->PVPStreak = 0;
             f.Global->PhaseTime = 0;
             f.Signals.ClearBoards();
+            f.Signals.BotStartRound();
             f.Events.EndRound();
-            Shop.AddXP(f, f.FindAsset(f.RuntimeConfig.GameConfig).XPByRound);
             GetPlayersList(f);
+            Shop.ReloadOnEndRound(f);
+            Shop.AddXP(f, f.FindAsset(f.RuntimeConfig.GameConfig).XPByRound);
+            Shop.SetFreezeShop(f, isLocked: false);
             Events.GetBoardHeroes(f);
             Events.GetInventoryHeroes(f);
-            Shop.SetFreezeShop(f, isLocked: false);
             Events.DisplayRoundNumber(f);
+            
             QList<Board> boards = f.ResolveList(f.Global->Boards);
             boards.Clear();
-            f.Signals.BotStartRound();
         }
 
         private void ProcessRound(Frame f)
         {
+            QList<Board> boards = BoardSystem.GetBoards(f);
+
             if (f.Global->IsBuyPhase)
             {
                 ProcessBuyPhase(f);
@@ -86,11 +84,11 @@ namespace Quantum.Game
             {
                 if (f.Global->IsFighting)
                 {
-                    ProcessFightingPhase(f);
+                    ProcessFightingPhase(f, boards);
                 }
                 else
                 {
-                    ProcessEndRound(f);
+                    ProcessEndRound(f, boards);
                 }
             }
 
@@ -109,7 +107,7 @@ namespace Quantum.Game
             f.Events.GetRoundTime(f.Global->IsBuyPhase, IsPVPRound: false, gameConfig.BuyPhaseTime - f.Global->PhaseTime);
         }
 
-        private void ProcessFightingPhase(Frame f)
+        private void ProcessFightingPhase(Frame f, QList<Board> boards)
         {
             GameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
 
@@ -118,7 +116,7 @@ namespace Quantum.Game
                 f.Global->IsDelayPassed = true;
             }
 
-            if (IsAllBoardsFinishRound(f) || f.Global->PhaseTime > config.FightPhaseTime)
+            if (IsAllBoardsFinishRound(f, boards) || f.Global->PhaseTime > config.FightPhaseTime)
             {
                 f.Global->IsFighting = false;
                 f.Global->PhaseTime = 0;
@@ -127,13 +125,13 @@ namespace Quantum.Game
             f.Events.GetRoundTime(f.Global->IsBuyPhase, f.Global->IsPVPRound, config.FightPhaseTime - f.Global->PhaseTime);
         }
 
-        private void ProcessEndRound(Frame f, bool finishAnyway = false)
+        private void ProcessEndRound(Frame f, QList<Board> boards, bool finishAnyway = false)
         {
             GameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
 
             if (finishAnyway || f.Global->PhaseTime > config.EndFightingPhaseDelay)
             {
-                ProcessResults(f);
+                ProcessResults(f, boards);
 
                 RoundInfo roundInfo = config.GetRoundInfo(f.Global->PhaseNumber);
 
@@ -164,9 +162,8 @@ namespace Quantum.Game
             f.Events.GetRoundTime(f.Global->IsBuyPhase, f.Global->IsPVPRound, config.EndFightingPhaseDelay - f.Global->PhaseTime);
         }
 
-        private bool IsAllBoardsFinishRound(Frame f)
+        private bool IsAllBoardsFinishRound(Frame f, QList<Board> boards)
         {
-            List<Board> boards = BoardSystem.GetBoards(f);
             bool isAllBoardsFinish = true;
 
             foreach (Board board in boards)
@@ -184,8 +181,21 @@ namespace Quantum.Game
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
-            int player1Count = heroes.Count(hero => hero.TeamNumber == GameplayConstants.Team1 && hero.IsAlive);
-            int player2Count = heroes.Count(hero => hero.TeamNumber == GameplayConstants.Team2 && hero.IsAlive);
+            int player1Count = 0;
+            int player2Count = 0;
+            int count = heroes.Count;
+
+            for (int i = 0; i < count; i++)
+            {
+                FightingHero hero = heroes[i];
+                if (hero.IsAlive)
+                {
+                    if (hero.TeamNumber == GameplayConstants.Team1)
+                        player1Count++;
+                    else if (hero.TeamNumber == GameplayConstants.Team2)
+                        player2Count++;
+                }
+            }
 
             isPlayer1Win = player1Count > 0 && player2Count == 0;
             isPlayer2Win = player2Count > 0 && player1Count == 0;
@@ -195,20 +205,32 @@ namespace Quantum.Game
             return isPlayer1Win || isPlayer2Win || isDraw;
         }
 
-        private void ProcessResults(Frame f)
+        private void ProcessResults(Frame f, QList<Board> boards)
         {
-            List<Board> boards = BoardSystem.GetBoards(f);
-
-            var playersEntity = Player.GetAllPlayers(f);
-
             foreach (Board board in boards)
             {
                 QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
-                int player1StarsCount = heroes.Where(hero => hero.TeamNumber == GameplayConstants.Team1 && hero.IsAlive)
-                                            .Sum(hero => hero.Hero.Level + 1);
-                int player2StarsCount = heroes.Where(hero => hero.TeamNumber == GameplayConstants.Team2 && hero.IsAlive)
-                                            .Sum(hero => hero.Hero.Level + 1);
+                int player1StarsCount = 0;
+                int player2StarsCount = 0;
+                int count = heroes.Count;
+
+                for (int i = 0; i < count; i++)
+                {
+                    FightingHero hero = heroes[i];
+
+                    if (hero.IsAlive)
+                    {
+                        if (hero.TeamNumber == GameplayConstants.Team1)
+                        {
+                            player1StarsCount += hero.Hero.Level + 1;
+                        }
+                        else if (hero.TeamNumber == GameplayConstants.Team2)
+                        {
+                            player2StarsCount += hero.Hero.Level + 1;
+                        }
+                    }
+                }
 
                 bool isPlayer1Win = player1StarsCount > 0 && player2StarsCount == 0;
                 bool isPlayer2Win = player2StarsCount > 0 && player1StarsCount == 0;

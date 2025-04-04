@@ -137,6 +137,7 @@ namespace Quantum.Game
             HeroLevelStats heroLevelStats = heroInfo.HeroStats[hero.Hero.Level];
             hero.Hero.Health = heroLevelStats.Health;
             hero.CurrentHealth = heroLevelStats.Health;
+            hero.CurrentArmor = 0;
             hero.Hero.Defense = heroLevelStats.Defense;
             hero.Hero.MagicDefense = heroLevelStats.MagicDefense;
             hero.Hero.AttackDamage = heroLevelStats.AttackDamage;
