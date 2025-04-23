@@ -81,7 +81,7 @@ namespace Quantum.Game
             return newSelectedHeroAbility;
         }
 
-        public static bool TryCastAbility(Frame f, FightingHero fightingHero, out Func<Frame, FightingHero, Board, bool> ability)
+        public static bool TryGetAbility(Frame f, FightingHero fightingHero, out Func<Frame, FightingHero, Board, bool> tryCastAbility)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             HeroNameEnum heroName = gameConfig.GetHeroInfo(f, fightingHero.Hero.ID).Name;
@@ -89,53 +89,56 @@ namespace Quantum.Game
             switch (heroName)
             {
                 case HeroNameEnum.RedHat:
-                    ability = RedHatAbilities.TryCastAbility;
+                    tryCastAbility = RedHatAbilities.TryCastAbility;
                     return true;
                 case HeroNameEnum.WhiteRabbit:
-                    ability = WhiteRabbitAbilities.TryCastAbility;
+                    tryCastAbility = WhiteRabbitAbilities.TryCastAbility;
                     return true;
                 case HeroNameEnum.SlyFox:
-                    ability = SlyFoxAbilities.TryCastAbility;
+                    tryCastAbility = SlyFoxAbilities.TryCastAbility;
                     return true;
                 case HeroNameEnum.SnowWhite:
-                    ability = SnowWhiteAbilities.TryCastAbility;
+                    tryCastAbility = SnowWhiteAbilities.TryCastAbility;
                     return true;
 
                 case HeroNameEnum.RobinHood:
-                    ability = RobinHoodAbilities.TryCastAbility;
+                    tryCastAbility = RobinHoodAbilities.TryCastAbility;
                     return true;
                 case HeroNameEnum.Beast:
-                    ability = BeastAbilities.TryCastAbility;
+                    tryCastAbility = BeastAbilities.TryCastAbility;
                     return true;
                 case HeroNameEnum.Cinderella:
-                    ability = CinderellaAbilities.TryCastAbility;
+                    tryCastAbility = CinderellaAbilities.TryCastAbility;
                     return true;
                 case HeroNameEnum.Hatter:
-                    ability = HatterAbilities.TryCastAbility;
+                    tryCastAbility = HatterAbilities.TryCastAbility;
                     return true;
 
                 case HeroNameEnum.Alice:
-                    ability = AliceAbilities.TryCastAbility;
+                    tryCastAbility = AliceAbilities.TryCastAbility;
                     return true;
                 case HeroNameEnum.Scarecrow:
-                    ability = ScarecrowAbilities.TryCastAbility;
+                    tryCastAbility = ScarecrowAbilities.TryCastAbility;
                     return true;
                 case HeroNameEnum.Aladdin:
-                    ability = AladdinAbilities.TryCastAbility;
+                    tryCastAbility = AladdinAbilities.TryCastAbility;
                     return true;
                 case HeroNameEnum.PussInBoots:
-                    ability = PussInBootsAbilities.TryCastAbility;
+                    tryCastAbility = PussInBootsAbilities.TryCastAbility;
                     return true;
                 case HeroNameEnum.Nutcracker:
-                    ability = NutcrackerAbilities.TryCastAbility;
+                    tryCastAbility = NutcrackerAbilities.TryCastAbility;
                     return true;
 
                 case HeroNameEnum.BabaYaga:
-                    ability = BabaYagaAbilities.TryCastAbility;
+                    tryCastAbility = BabaYagaAbilities.TryCastAbility;
+                    return true;
+                case HeroNameEnum.CheshireCat:
+                    tryCastAbility = CheshireCatAbilities.TryCastAbility;
                     return true;
 
                 default:
-                    ability = default;
+                    tryCastAbility = default;
                     return false;
             }
         }

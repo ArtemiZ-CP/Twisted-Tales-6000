@@ -46,22 +46,6 @@ public class HeroInfoView : MonoBehaviour
         _sellButton.onClick.RemoveListener(SellHero);
     }
 
-    private void FixedUpdate()
-    {
-        if (_heroesMover.IsRoundStarted && _heroesMover.SelectedHeroRef != default)
-        {
-            if (QuantumConnection.IsAbleToConnectQuantum())
-            {
-                CommandGetHeroInfo commandGetHeroInfo = new()
-                {
-                    EntityRef = _heroesMover.SelectedHeroRef
-                };
-
-                QuantumRunner.DefaultGame.SendCommand(commandGetHeroInfo);
-            }
-        }
-    }
-
     public void PointerEnter()
     {
         _isCursorInArea = true;
@@ -87,46 +71,64 @@ public class HeroInfoView : MonoBehaviour
 
     private void GetFightingHero(EventGetFightingHero eventGetFightingHero)
     {
-        if (_heroesMover.SelectedHeroRef == default)
+        if (QuantumConnection.IsPlayerMe(eventGetFightingHero.PlayerRef))
         {
-            return;
+            DisplayMainStats(eventGetFightingHero.FightingHero);
+            _sellButton.gameObject.SetActive(false);
         }
-
-        DisplayMainStats(eventGetFightingHero.FightingHero);
-
-        _sellButton.gameObject.SetActive(false);
     }
 
     private void SelectHero(HeroObject hero)
     {
-        if (_isCursorInArea)    
+        if (_isCursorInArea)
         {
             return;
         }
 
-        if (_heroesMover.SelectedHeroRef != default)
+        if (_heroesMover.IsRoundStarted)
         {
-            return;
-        }
+            if (QuantumConnection.IsAbleToConnectQuantum())
+            {
+                CommandGetHeroInfo commandGetHeroInfo = new()
+                {
+                    EntityRef = _heroesMover.SelectedHeroRef
+                };
 
-        if (hero == null || hero.State == HeroState.Shop)
+                QuantumRunner.DefaultGame.SendCommand(commandGetHeroInfo);
+            }
+        }
+        else
         {
-            _selectedHero = null;
-            _heroInfoPanel.SetActive(false);
-            return;
+            if (_heroesMover.SelectedHeroRef != default)
+            {
+                return;
+            }
+
+            if (hero == null || hero.State == HeroState.Shop)
+            {
+                _selectedHero = null;
+                _heroInfoPanel.SetActive(false);
+                return;
+            }
+
+            _selectedHero = hero;
+            _heroInfoPanel.SetActive(true);
+            _sellButton.gameObject.SetActive(true);
+
+            int level = hero.Level;
+
+            DisplayMainStats(hero.Id, level);
         }
-
-        _selectedHero = hero;
-        _heroInfoPanel.SetActive(true);
-        _sellButton.gameObject.SetActive(true);
-
-        int level = hero.Level;
-
-        DisplayMainStats(hero.Id, level);
     }
 
     private void DisplayMainStats(FightingHero fightingHero)
     {
+        if (fightingHero.Hero.Ref == default)
+        {
+            _heroInfoPanel.SetActive(false);
+            return;
+        }
+
         _heroInfoPanel.SetActive(true);
         HeroInfo heroInfo = QuantumConnection.GetHeroInfo(fightingHero.Hero.ID);
         DisplayMainStats(heroInfo, fightingHero.Hero.Level, fightingHero.CurrentHealth);

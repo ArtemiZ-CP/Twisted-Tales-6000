@@ -56,7 +56,7 @@ namespace Quantum.Game
                 _selectedHeroRef = default;
             }
 
-            if (_isRoundStarted && UnityEngine.Input.GetMouseButtonUp(0))
+            if (_isRoundStarted && UnityEngine.Input.GetMouseButtonDown(0))
             {
                 Ray ray = Camera.main.ScreenPointToRay(UnityEngine.Input.mousePosition);
 

@@ -13,13 +13,26 @@ namespace Quantum.Game
             return heroInfo.GetBuyCost(f);
         }
 
-        public static void SetNewBoardPosision(QList<FightingHero> heroes, FightingHero fightingHero, int heroNewIndex)
+        public static bool TrySetNewBoardPosition(QList<FightingHero> heroes, ref FightingHero fightingHero,  Vector2Int targetPosition)
         {
-            FightingHero empty = heroes[heroNewIndex];
-            empty.Index = fightingHero.Index;
-            heroes[fightingHero.Index] = empty;
-            fightingHero.Index = heroNewIndex;
-            heroes[heroNewIndex] = fightingHero;
+            if (HeroBoard.TryConvertCordsToIndex(targetPosition, out int heroNewIndex))
+            {
+                if (fightingHero.Index < 0 || heroes[heroNewIndex].Hero.Ref != default)
+                {
+                    return false;
+                }
+
+                fightingHero.TargetPositionX = targetPosition.x;
+                fightingHero.TargetPositionY = targetPosition.y;
+                FightingHero empty = heroes[heroNewIndex];
+                empty.Index = fightingHero.Index;
+                heroes[fightingHero.Index] = empty;
+                fightingHero.Index = heroNewIndex;
+                heroes[heroNewIndex] = fightingHero;
+                return true;
+            }
+
+            return false;
         }
 
         public static void Spawn(Frame f, QList<HeroEntity> heroes, PlayerRef playerRef, int heroIndex, bool first)

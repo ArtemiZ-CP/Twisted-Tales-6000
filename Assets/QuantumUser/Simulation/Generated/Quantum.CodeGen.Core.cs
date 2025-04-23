@@ -467,14 +467,18 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct EffectQnt {
-    public const Int32 SIZE = 32;
+    public const Int32 SIZE = 48;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(8)]
     public EntityRef Owner;
     [FieldOffset(0)]
     public Int32 Index;
-    [FieldOffset(24)]
+    [FieldOffset(32)]
+    public FP MaxValue;
+    [FieldOffset(40)]
     public FP Value;
+    [FieldOffset(24)]
+    public FP MaxDuration;
     [FieldOffset(16)]
     public FP Duration;
     [FieldOffset(4)]
@@ -484,7 +488,9 @@ namespace Quantum {
         var hash = 15331;
         hash = hash * 31 + Owner.GetHashCode();
         hash = hash * 31 + Index.GetHashCode();
+        hash = hash * 31 + MaxValue.GetHashCode();
         hash = hash * 31 + Value.GetHashCode();
+        hash = hash * 31 + MaxDuration.GetHashCode();
         hash = hash * 31 + Duration.GetHashCode();
         hash = hash * 31 + Size.GetHashCode();
         return hash;
@@ -496,6 +502,8 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->Size);
         EntityRef.Serialize(&p->Owner, serializer);
         FP.Serialize(&p->Duration, serializer);
+        FP.Serialize(&p->MaxDuration, serializer);
+        FP.Serialize(&p->MaxValue, serializer);
         FP.Serialize(&p->Value, serializer);
     }
   }
@@ -758,15 +766,15 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerInfo {
-    public const Int32 SIZE = 124;
-    public const Int32 ALIGNMENT = 4;
-    [FieldOffset(60)]
+    public const Int32 SIZE = 136;
+    public const Int32 ALIGNMENT = 8;
+    [FieldOffset(72)]
     public QString64 Nickname;
-    [FieldOffset(40)]
+    [FieldOffset(52)]
     public PlayerShop Shop;
-    [FieldOffset(20)]
+    [FieldOffset(32)]
     public PlayerInventory Inventory;
-    [FieldOffset(28)]
+    [FieldOffset(40)]
     public PlayerBoard Board;
     [FieldOffset(0)]
     public Int32 Coins;
@@ -778,6 +786,8 @@ namespace Quantum {
     public Int32 StreakType;
     [FieldOffset(16)]
     public QBoolean Bot;
+    [FieldOffset(24)]
+    public EntityRef SpectatingHero;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 13049;
@@ -790,6 +800,7 @@ namespace Quantum {
         hash = hash * 31 + Streak.GetHashCode();
         hash = hash * 31 + StreakType.GetHashCode();
         hash = hash * 31 + Bot.GetHashCode();
+        hash = hash * 31 + SpectatingHero.GetHashCode();
         return hash;
       }
     }
@@ -805,6 +816,7 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->Streak);
         serializer.Stream.Serialize(&p->StreakType);
         QBoolean.Serialize(&p->Bot, serializer);
+        EntityRef.Serialize(&p->SpectatingHero, serializer);
         Quantum.PlayerInventory.Serialize(&p->Inventory, serializer);
         Quantum.PlayerBoard.Serialize(&p->Board, serializer);
         Quantum.PlayerShop.Serialize(&p->Shop, serializer);
@@ -1013,13 +1025,13 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Board : Quantum.IComponent {
-    public const Int32 SIZE = 288;
+    public const Int32 SIZE = 320;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
     public EntityRef Ref;
     [FieldOffset(32)]
     public PlayerLink Player1;
-    [FieldOffset(160)]
+    [FieldOffset(176)]
     public PlayerLink Player2;
     [FieldOffset(8)]
     public QListPtr<HeroEntity> HeroesID1;
@@ -1162,11 +1174,11 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerLink : Quantum.IComponent {
-    public const Int32 SIZE = 128;
-    public const Int32 ALIGNMENT = 4;
+    public const Int32 SIZE = 144;
+    public const Int32 ALIGNMENT = 8;
     [FieldOffset(0)]
     public PlayerRef Ref;
-    [FieldOffset(4)]
+    [FieldOffset(8)]
     public PlayerInfo Info;
     public override Int32 GetHashCode() {
       unchecked { 

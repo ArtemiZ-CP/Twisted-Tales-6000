@@ -10,6 +10,7 @@ namespace Quantum.Game
         {
             None,
             Bleeding,
+            TransferingBleeding,
             IncreaseReloadTime,
             IncreaseTakingDamage,
             ReduceCurrentMana,
@@ -19,6 +20,8 @@ namespace Quantum.Game
             Blast,
             Stun,
             TemporaryArmor,
+            Teleport,
+            ExtraBaseDamage,
         }
 
         public enum GlobalEffectType
@@ -32,7 +35,9 @@ namespace Quantum.Game
         {
             public EntityRef Owner;
             public EffectType Type = EffectType.None;
+            public FP MaxValue = 0;
             public FP Value = 0;
+            public FP MaxDuration = 0;
             public FP Duration = 0;
             public int Size = 0;
 
@@ -45,7 +50,9 @@ namespace Quantum.Game
             {
                 Owner = effectQnt.Owner;
                 Type = (EffectType)effectQnt.Index;
+                MaxValue = effectQnt.MaxValue;
                 Value = effectQnt.Value;
+                MaxDuration = effectQnt.MaxDuration;
                 Duration = effectQnt.Duration;
                 Size = effectQnt.Size;
             }
@@ -115,6 +122,7 @@ namespace Quantum.Game
             for (int i = 0; i < globalEffects.Count; i++)
             {
                 GlobalEffectQnt globalEffect = globalEffects[i];
+                globalEffect.Duration -= f.DeltaTime;
 
                 switch ((GlobalEffectType)globalEffect.Index)
                 {
@@ -125,8 +133,6 @@ namespace Quantum.Game
                         ProcessHealArea(f, globalEffect, board);
                         break;
                 }
-
-                globalEffect.Duration -= f.DeltaTime;
 
                 if (globalEffect.Duration <= 0)
                 {
@@ -140,7 +146,7 @@ namespace Quantum.Game
             }
         }
 
-        public static void ProcessEffects(Frame f, FightingHero target, Board board, out bool isStunned)
+        public static void ProcessEffects(Frame f, ref FightingHero target, Board board, out bool isStunned)
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             target = heroes[target.Index];
@@ -157,12 +163,14 @@ namespace Quantum.Game
             {
                 EffectQnt effectQnt = effects[i];
                 FightingHero ownerHero = HeroBoard.GetFightingHero(f, effects[i].Owner, board);
+                effectQnt.Duration -= f.DeltaTime;
 
                 FP damage = effectQnt.Duration < f.DeltaTime ? effectQnt.Value * effectQnt.Duration : effectQnt.Value * f.DeltaTime;
 
                 switch ((EffectType)effectQnt.Index)
                 {
                     case EffectType.Bleeding:
+                    case EffectType.TransferingBleeding:
                         HeroAttack.DamageHeroWithDOT(f, ownerHero, board, target, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         break;
                     case EffectType.ReduceCurrentMana:
@@ -174,9 +182,10 @@ namespace Quantum.Game
                     case EffectType.Stun:
                         isStunned = true;
                         break;
+                    case EffectType.Teleport:
+                        TeleportHero(f, ref target, effectQnt, board);
+                        break;
                 }
-
-                effectQnt.Duration -= f.DeltaTime;
 
                 if (effectQnt.Duration <= 0)
                 {
@@ -187,6 +196,37 @@ namespace Quantum.Game
                 {
                     effects[i] = effectQnt;
                 }
+            }
+        }
+
+        private static void TeleportHero(Frame f, ref FightingHero fightingHero, EffectQnt effectQnt, Board board)
+        {
+            if (effectQnt.Duration <= 0)
+            {
+                if (HeroBoard.TryGetCloseEmptyTileInRange(f, effectQnt.Size, board, 8, out Vector2Int newPosition, includeSelf: true) == false)
+                {
+                    return;
+                }
+
+                QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+
+                if (Hero.TrySetNewBoardPosition(heroes, ref fightingHero, newPosition) == false)
+                {
+                    return;
+                }
+
+                FPVector3 movePosition = HeroBoard.GetTilePosition(f, newPosition);
+                Transform3D* transform = f.Unsafe.GetPointer<Transform3D>(fightingHero.Hero.Ref);
+
+                if (HeroBoard.TrySetTarget(f, ref fightingHero, board))
+                {
+                    FightingHero targetHero = HeroBoard.GetFightingHero(f, fightingHero.AttackTarget, board);
+                    FPVector3 targetHeroPosition = HeroBoard.GetHeroPosition(f, targetHero);
+                    FPQuaternion rotation = FPQuaternion.LookRotation(targetHeroPosition - movePosition, FPVector3.Up);
+                    transform->Teleport(f, movePosition, rotation);
+                }
+
+                transform->Teleport(f, movePosition);
             }
         }
 

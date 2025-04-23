@@ -25,6 +25,19 @@ namespace Quantum.Game
             return boards;
         }
 
+        public static Board GetBoard(Frame f, PlayerRef playerRef,  QList<Board> boards)
+        {
+            for (int i = 0; i < boards.Count; i++)
+            {
+                if (boards[i].Player1.Ref == playerRef || boards[i].Player2.Ref == playerRef)
+                {
+                    return boards[i];
+                }
+            }
+
+            return default;
+        }
+
         public static Board GetBoard(Frame f, PlayerRef playerRef)
         {
             var boards = GetBoards(f);

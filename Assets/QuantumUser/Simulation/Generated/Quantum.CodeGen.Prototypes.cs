@@ -131,13 +131,17 @@ namespace Quantum.Prototypes {
   public unsafe class EffectQntPrototype : StructPrototype {
     public MapEntityId Owner;
     public Int32 Index;
+    public FP MaxValue;
     public FP Value;
+    public FP MaxDuration;
     public FP Duration;
     public Int32 Size;
     public void Materialize(Frame frame, ref Quantum.EffectQnt result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.FindMapEntity(this.Owner, in context, out result.Owner);
         result.Index = this.Index;
+        result.MaxValue = this.MaxValue;
         result.Value = this.Value;
+        result.MaxDuration = this.MaxDuration;
         result.Duration = this.Duration;
         result.Size = this.Size;
     }
@@ -374,7 +378,7 @@ namespace Quantum.Prototypes {
   }
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerInfo))]
-  public unsafe partial class PlayerInfoPrototype : StructPrototype {
+  public unsafe class PlayerInfoPrototype : StructPrototype {
     [MaxStringByteCount(62, "Unicode")]
     public string Nickname;
     public Quantum.Prototypes.PlayerShopPrototype Shop;
@@ -385,7 +389,7 @@ namespace Quantum.Prototypes {
     public Int32 Streak;
     public Int32 StreakType;
     public QBoolean Bot;
-    partial void MaterializeUser(Frame frame, ref Quantum.PlayerInfo result, in PrototypeMaterializationContext context);
+    public MapEntityId SpectatingHero;
     public void Materialize(Frame frame, ref Quantum.PlayerInfo result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.AssignQString(this.Nickname, 64, in context, out result.Nickname);
         this.Shop.Materialize(frame, ref result.Shop, in context);
@@ -396,7 +400,7 @@ namespace Quantum.Prototypes {
         result.Streak = this.Streak;
         result.StreakType = this.StreakType;
         result.Bot = this.Bot;
-        MaterializeUser(frame, ref result, in context);
+        PrototypeValidator.FindMapEntity(this.SpectatingHero, in context, out result.SpectatingHero);
     }
   }
   [System.SerializableAttribute()]
@@ -433,10 +437,9 @@ namespace Quantum.Prototypes {
   }
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerLink))]
-  public unsafe partial class PlayerLinkPrototype : ComponentPrototype<Quantum.PlayerLink> {
+  public unsafe class PlayerLinkPrototype : ComponentPrototype<Quantum.PlayerLink> {
     public PlayerRef Ref;
     public Quantum.Prototypes.PlayerInfoPrototype Info;
-    partial void MaterializeUser(Frame frame, ref Quantum.PlayerLink result, in PrototypeMaterializationContext context);
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
         Quantum.PlayerLink component = default;
         Materialize((Frame)f, ref component, in context);
@@ -445,7 +448,6 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.PlayerLink result, in PrototypeMaterializationContext context = default) {
         result.Ref = this.Ref;
         this.Info.Materialize(frame, ref result.Info, in context);
-        MaterializeUser(frame, ref result, in context);
     }
   }
   [System.SerializableAttribute()]

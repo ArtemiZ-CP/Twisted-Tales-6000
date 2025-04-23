@@ -23,18 +23,24 @@ namespace Quantum.Game
 
         private void OnDisplayPoisonEffect(EventDisplayPoisonEffect ev)
         {
-            HeroRangeDisplay heroRangeDisplay = _poisonEffectPool.Get();
-            heroRangeDisplay.Setup(ev.Range);
-            heroRangeDisplay.transform.position = ev.Position.ToUnityVector3();
-            StartCoroutine(ReturnEffectToPool(_poisonEffectPool, (float)ev.Duration, heroRangeDisplay));
+            if (QuantumConnection.IsPlayerMe(ev.Player1) || QuantumConnection.IsPlayerMe(ev.Player2))
+            {
+                HeroRangeDisplay heroRangeDisplay = _poisonEffectPool.Get();
+                heroRangeDisplay.Setup(ev.Range);
+                heroRangeDisplay.transform.position = ev.Position.ToUnityVector3();
+                StartCoroutine(ReturnEffectToPool(_poisonEffectPool, (float)ev.Duration, heroRangeDisplay));
+            }
         }
 
         private void OnDisplayHealEffect(EventDisplayHealEffect ev)
         {
-            HeroRangeDisplay heroRangeDisplay = _healEffectPool.Get();
-            heroRangeDisplay.Setup(ev.Range);
-            heroRangeDisplay.transform.position = ev.Position.ToUnityVector3();
-            StartCoroutine(ReturnEffectToPool(_healEffectPool, (float)ev.Duration, heroRangeDisplay));
+            if (QuantumConnection.IsPlayerMe(ev.Player1) || QuantumConnection.IsPlayerMe(ev.Player2))
+            {
+                HeroRangeDisplay heroRangeDisplay = _healEffectPool.Get();
+                heroRangeDisplay.Setup(ev.Range);
+                heroRangeDisplay.transform.position = ev.Position.ToUnityVector3();
+                StartCoroutine(ReturnEffectToPool(_healEffectPool, (float)ev.Duration, heroRangeDisplay));
+            }
         }
 
         private IEnumerator ReturnEffectToPool(ObjectPool<HeroRangeDisplay> pool, float delay, HeroRangeDisplay effect)

@@ -44,7 +44,9 @@ namespace Quantum.Game
                     {
                         Owner = effect.Owner,
                         Index = (int)effect.Type,
+                        MaxValue = effect.MaxValue,
                         Value = effect.Value,
+                        MaxDuration = effect.MaxDuration,
                         Duration = effect.Duration,
                         Size = effect.Size,
                     };

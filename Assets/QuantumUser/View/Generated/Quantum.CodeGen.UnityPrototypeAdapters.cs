@@ -52,8 +52,8 @@ namespace Quantum.Prototypes.Unity {
   [System.SerializableAttribute()]
   public unsafe partial class BoardPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.BoardPrototype> {
     public Quantum.QuantumEntityPrototype Ref;
-    public Quantum.Prototypes.PlayerLinkPrototype Player1;
-    public Quantum.Prototypes.PlayerLinkPrototype Player2;
+    public Quantum.Prototypes.Unity.PlayerLinkPrototype Player1;
+    public Quantum.Prototypes.Unity.PlayerLinkPrototype Player2;
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.Unity.HeroEntityPrototype[] HeroesID1 = {};
     [DynamicCollectionAttribute()]
@@ -83,7 +83,9 @@ namespace Quantum.Prototypes.Unity {
   public unsafe partial class EffectQntPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.EffectQntPrototype> {
     public Quantum.QuantumEntityPrototype Owner;
     public Int32 Index;
+    public FP MaxValue;
     public FP Value;
+    public FP MaxDuration;
     public FP Duration;
     public Int32 Size;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.EffectQntPrototype prototype);
@@ -91,7 +93,9 @@ namespace Quantum.Prototypes.Unity {
       var result = new Quantum.Prototypes.EffectQntPrototype();
       converter.Convert(this.Owner, out result.Owner);
       converter.Convert(this.Index, out result.Index);
+      converter.Convert(this.MaxValue, out result.MaxValue);
       converter.Convert(this.Value, out result.Value);
+      converter.Convert(this.MaxDuration, out result.MaxDuration);
       converter.Convert(this.Duration, out result.Duration);
       converter.Convert(this.Size, out result.Size);
       ConvertUser(converter, ref result);
@@ -235,6 +239,49 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.IsActive, out result.IsActive);
       converter.Convert(this.Effects, out result.Effects);
       converter.Convert(this.GlobalEffects, out result.GlobalEffects);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
+  public unsafe partial class PlayerInfoPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerInfoPrototype> {
+    [MaxStringByteCount(62, "Unicode")]
+    public string Nickname;
+    public Quantum.Prototypes.PlayerShopPrototype Shop;
+    public Quantum.Prototypes.PlayerInventoryPrototype Inventory;
+    public Quantum.Prototypes.PlayerBoardPrototype Board;
+    public Int32 Coins;
+    public Int32 Health;
+    public Int32 Streak;
+    public Int32 StreakType;
+    public QBoolean Bot;
+    public Quantum.QuantumEntityPrototype SpectatingHero;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerInfoPrototype prototype);
+    public override Quantum.Prototypes.PlayerInfoPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.PlayerInfoPrototype();
+      converter.Convert(this.Nickname, out result.Nickname);
+      converter.Convert(this.Shop, out result.Shop);
+      converter.Convert(this.Inventory, out result.Inventory);
+      converter.Convert(this.Board, out result.Board);
+      converter.Convert(this.Coins, out result.Coins);
+      converter.Convert(this.Health, out result.Health);
+      converter.Convert(this.Streak, out result.Streak);
+      converter.Convert(this.StreakType, out result.StreakType);
+      converter.Convert(this.Bot, out result.Bot);
+      converter.Convert(this.SpectatingHero, out result.SpectatingHero);
+      ConvertUser(converter, ref result);
+      return result;
+    }
+  }
+  [System.SerializableAttribute()]
+  public unsafe partial class PlayerLinkPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerLinkPrototype> {
+    public PlayerRef Ref;
+    public Quantum.Prototypes.Unity.PlayerInfoPrototype Info;
+    partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerLinkPrototype prototype);
+    public override Quantum.Prototypes.PlayerLinkPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
+      var result = new Quantum.Prototypes.PlayerLinkPrototype();
+      converter.Convert(this.Ref, out result.Ref);
+      converter.Convert(this.Info, out result.Info);
       ConvertUser(converter, ref result);
       return result;
     }

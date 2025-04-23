@@ -84,11 +84,13 @@ namespace Quantum.Game
             return index >= 0 && index < GameConfig.BoardSize * GameConfig.BoardSize;
         }
 
-        public static void GetCloseCords(int heroIndex, ref List<Vector2Int> closeTiles, int range = 1, bool includeSelf = false)
+        public static List<Vector2Int> GetCloseCords(int heroIndex, int range = 1, bool includeSelf = false)
         {
+            List<Vector2Int> closeTiles = new();
+
             if (TryGetHeroCords(heroIndex, out Vector2Int cords) == false)
             {
-                return;
+                return closeTiles;
             }
 
             for (int x = -range; x <= range; x++)
@@ -115,6 +117,8 @@ namespace Quantum.Game
                     closeTiles.Add(newCords);
                 }
             }
+
+            return closeTiles;
         }
 
         public static void GetHorizontalCloseCords(int heroIndex, ref List<Vector2Int> closeTiles, int range = 1, bool includeSelf = false)
@@ -147,7 +151,7 @@ namespace Quantum.Game
             }
         }
 
-        public static bool TrySetTarget(Frame f, FightingHero fightingHero, Board board)
+        public static bool TrySetTarget(Frame f, ref FightingHero fightingHero, Board board)
         {
             FightingHero target = GetHeroTarget(f, fightingHero, board, out Vector2Int moveTargetPosition);
 
@@ -162,7 +166,7 @@ namespace Quantum.Game
                 return true;
             }
 
-            SetHeroTarget(f, fightingHero, board, target.Hero.Ref, moveTargetPosition);
+            SetHeroTarget(f, ref fightingHero, board, target.Hero.Ref, moveTargetPosition);
             return false;
         }
 
@@ -178,21 +182,14 @@ namespace Quantum.Game
             return hero;
         }
 
-        public static void SetHeroTarget(Frame f, FightingHero fightingHero, Board board, EntityRef attackTarget, Vector2Int targetPosition)
+        public static void SetHeroTarget(Frame f, ref FightingHero fightingHero, Board board, EntityRef attackTarget, Vector2Int targetPosition)
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
-            if (TryConvertCordsToIndex(targetPosition, out int heroNewIndex))
+            if (Hero.TrySetNewBoardPosition(heroes, ref fightingHero, targetPosition))
             {
-                if (fightingHero.Index < 0 || heroes[heroNewIndex].Hero.Ref != default)
-                {
-                    return;
-                }
-
                 fightingHero.AttackTarget = attackTarget;
-                fightingHero.TargetPositionX = targetPosition.x;
-                fightingHero.TargetPositionY = targetPosition.y;
-                Hero.SetNewBoardPosision(heroes, fightingHero, heroNewIndex);
+                heroes[fightingHero.Index] = fightingHero;
             }
         }
 
@@ -245,10 +242,8 @@ namespace Quantum.Game
         public static List<FightingHero> GetAllTeamHeroesInRange(Frame f, int center, int hisTeam, Board board, int range, bool includeSelf = false)
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
-            List<Vector2Int> closeTiles = new();
+            List<Vector2Int> closeTiles = GetCloseCords(center, range, includeSelf);
             List<FightingHero> heroesList = new();
-
-            GetCloseCords(center, ref closeTiles, range, includeSelf);
 
             foreach (var tile in closeTiles)
             {
@@ -273,6 +268,44 @@ namespace Quantum.Game
             }
 
             return heroesList;
+        }
+
+        public static bool TryGetCloseEmptyTileInRange(Frame f, int center, Board board, int range, out Vector2Int emptyTile, bool includeSelf = false)
+        {
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+            List<Vector2Int> closeTiles = GetCloseCords(center, range, includeSelf);
+
+            if (TryConvertIndexToCords(center, out Vector2Int startTile) == false)
+            {
+                emptyTile = default;
+                return false;
+            }
+            
+            closeTiles.Sort((a, b) =>
+            {
+                FP distanceA = Mathf.Abs(a.x - startTile.x) + Mathf.Abs(a.y - startTile.y);
+                FP distanceB = Mathf.Abs(b.x - startTile.x) + Mathf.Abs(b.y - startTile.y);
+                return distanceA.CompareTo(distanceB);
+            });
+
+            foreach (Vector2Int tile in closeTiles)
+            {
+                if (TryConvertCordsToIndex(tile, out int index) == false)
+                {
+                    continue;
+                }
+
+                FightingHero hero = heroes[index];
+
+                if (hero.IsAlive == false)
+                {
+                    emptyTile = tile;
+                    return true;
+                }
+            }
+
+            emptyTile = default;
+            return false;
         }
 
         public static List<FightingHero> GetAllTeamHeroesInHorizontalRange(Frame f, int center, int hisTeam, Board board, int range, bool includeSelf = false)

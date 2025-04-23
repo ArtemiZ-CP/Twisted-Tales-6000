@@ -12,6 +12,11 @@ namespace Quantum.Game
     {
         public override void Update(Frame f)
         {
+            if (f.Global->IsBuyPhase)
+            {
+                return;
+            }
+
             QList<Board> boards = BoardSystem.GetBoards(f);
 
             MeleeHeroSystem.Update(f, boards);
@@ -20,6 +25,34 @@ namespace Quantum.Game
             foreach (Board board in boards)
             {
                 HeroEffects.ProcessGlobalEffects(f, board);
+            }
+
+            foreach ((EntityRef _, PlayerLink playerLink) in f.GetComponentIterator<PlayerLink>())
+            {
+                if (playerLink.Info.SpectatingHero == default)
+                {
+                    f.Events.GetFightingHero(playerLink.Ref, new FightingHero());
+                    continue;
+                }
+
+                Board board = BoardSystem.GetBoard(f, playerLink.Ref, boards);
+                QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+                bool isHeroFound = false;
+
+                foreach (FightingHero hero in heroes)
+                {
+                    if (hero.Hero.Ref == playerLink.Info.SpectatingHero)
+                    {
+                        isHeroFound = true;
+                        f.Events.GetFightingHero(playerLink.Ref, hero);
+                        break;
+                    }
+                }
+
+                if (isHeroFound == false)
+                {
+                    f.Events.GetFightingHero(playerLink.Ref, new FightingHero());
+                }
             }
         }
 
@@ -50,7 +83,7 @@ namespace Quantum.Game
                 return;
             }
 
-            HeroAttack.Update(f, fightingHero, board, out bool isStunned);
+            HeroAttack.Update(f, ref fightingHero, board, out bool isStunned);
 
             if (isStunned)
             {
@@ -72,7 +105,7 @@ namespace Quantum.Game
                 }
             }
 
-            if (HeroBoard.TrySetTarget(f, fightingHero, board) == false)
+            if (HeroBoard.TrySetTarget(f, ref fightingHero, board) == false)
             {
                 return;
             }

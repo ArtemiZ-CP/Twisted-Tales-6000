@@ -177,7 +177,6 @@ namespace Quantum {
         return ev;
       }
       public EventGetFightingHero GetFightingHero(PlayerRef PlayerRef, FightingHero FightingHero) {
-        if (_f.IsPredicted) return null;
         var ev = _f.Context.AcquireEvent<EventGetFightingHero>(EventGetFightingHero.ID);
         ev.PlayerRef = PlayerRef;
         ev.FightingHero = FightingHero;
@@ -595,7 +594,7 @@ namespace Quantum {
         base(id, flags) {
     }
     public EventGetFightingHero() : 
-        base(12, EventFlags.Server|EventFlags.Client|EventFlags.Synced) {
+        base(12, EventFlags.Server|EventFlags.Client) {
     }
     public new QuantumGame Game {
       get {
