@@ -245,9 +245,9 @@ namespace Quantum.Game
 
             foreach (EffectQnt effect in effects)
             {
-                if (effect.Index == (int)HeroEffects.EffectType.IncreaseReloadTime)
+                if (effect.Index == (int)HeroEffects.EffectType.ReduceAttackSpeed)
                 {
-                    reloadMultiplier *= effect.Value;
+                    reloadMultiplier *= 1 - effect.Value;
                 }
             }
 

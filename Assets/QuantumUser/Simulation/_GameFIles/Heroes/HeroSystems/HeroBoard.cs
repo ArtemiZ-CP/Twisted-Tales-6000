@@ -234,9 +234,9 @@ namespace Quantum.Game
             return GetAllTeamHeroesInRange(f, fightingHero.Index, GetEnemyTeamNumber(fightingHero.TeamNumber), board, fightingHero.Hero.Range);
         }
 
-        public static List<FightingHero> GetAllAliesInRange(Frame f, FightingHero fightingHero, Board board)
+        public static List<FightingHero> GetAllAliesInRange(Frame f, FightingHero fightingHero, Board board, bool includeSelf = false)
         {
-            return GetAllTeamHeroesInRange(f, fightingHero.Index, fightingHero.TeamNumber, board, fightingHero.Hero.Range);
+            return GetAllTeamHeroesInRange(f, fightingHero.Index, fightingHero.TeamNumber, board, fightingHero.Hero.Range, includeSelf);
         }
 
         public static List<FightingHero> GetAllTeamHeroesInRange(Frame f, int center, int hisTeam, Board board, int range, bool includeSelf = false)

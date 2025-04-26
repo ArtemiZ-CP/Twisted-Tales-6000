@@ -136,6 +136,12 @@ namespace Quantum.Game
                 case HeroNameEnum.CheshireCat:
                     tryCastAbility = CheshireCatAbilities.TryCastAbility;
                     return true;
+                case HeroNameEnum.TinMan:
+                    tryCastAbility = TinManAbilities.TryCastAbility;
+                    return true;
+                case HeroNameEnum.KingArthur:
+                    tryCastAbility = KingArthurAbilities.TryCastAbility;
+                    return true;
 
                 default:
                     tryCastAbility = default;

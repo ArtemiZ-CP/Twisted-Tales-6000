@@ -15,51 +15,38 @@ namespace Quantum.Game
             int secondHeroAbilityIndex = HeroAbility.GetSecondHeroAbilityIndex(f, playerLink, fightingHero.Hero.ID);
             int thirdHeroAbilityIndex = HeroAbility.GetThirdHeroAbilityIndex(f, playerLink, fightingHero.Hero.ID);
 
+            FP damage1;
+            FP armor2;
+            FP heal3;
+
             if (heroLevel == 0)
             {
-                return TryCastLevel1(f, fightingHero, board);
+                damage1 = 150;
+                armor2 = 100;
+                heal3 = 80;
             }
             else if (heroLevel == 1)
             {
-                return TryCastLevel2(f, fightingHero, board);
+                damage1 = 225;
+                armor2 = 150;
+                heal3 = 120;
             }
             else if (heroLevel == 2)
             {
-                return TryCastLevel3(f, fightingHero, board);
+                damage1 = 340;
+                armor2 = 225;
+                heal3 = 180;
+            }
+            else
+            {
+                return false;
             }
 
-            return false;
-        }
-
-        private static bool TryCastLevel1(Frame f, FightingHero fightingHero, Board board)
-        {
             return f.RNG->Next(0, 3) switch
             {
-                0 => TryCastV1(f, fightingHero, board, 150),
-                1 => TryCastV2(f, fightingHero, board, 100),
-                2 => TryCastV3(f, fightingHero, board, 80),
-                _ => false,
-            };
-        }
-
-        private static bool TryCastLevel2(Frame f, FightingHero fightingHero, Board board)
-        {
-            return f.RNG->Next(0, 3) switch
-            {
-                0 => TryCastV1(f, fightingHero, board, 225),
-                1 => TryCastV2(f, fightingHero, board, 150),
-                2 => TryCastV3(f, fightingHero, board, 120),
-                _ => false,
-            };
-        }
-
-        private static bool TryCastLevel3(Frame f, FightingHero fightingHero, Board board)
-        {
-            return f.RNG->Next(0, 3) switch
-            {
-                0 => TryCastV1(f, fightingHero, board, 340),
-                1 => TryCastV2(f, fightingHero, board, 225),
-                2 => TryCastV3(f, fightingHero, board, 180),
+                0 => TryCastV1(f, fightingHero, board, damage1),
+                1 => TryCastV2(f, fightingHero, board, armor2),
+                2 => TryCastV3(f, fightingHero, board, heal3),
                 _ => false,
             };
         }
@@ -83,7 +70,7 @@ namespace Quantum.Game
 
         private static bool TryCastV3(Frame f, FightingHero fightingHero, Board board, FP amount)
         {
-            List<FightingHero> alies = HeroBoard.GetAllAliesInRange(f, fightingHero, board);
+            List<FightingHero> alies = HeroBoard.GetAllAliesInRange(f, fightingHero, board, includeSelf: true);
 
             FightingHero alyWithMinHealth = default;
             FP minHealth = FP.MaxValue;

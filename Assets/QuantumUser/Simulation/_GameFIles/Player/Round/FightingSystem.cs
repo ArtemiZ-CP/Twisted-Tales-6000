@@ -96,7 +96,8 @@ namespace Quantum.Game
                     Index = i,
                     BoardIndex = boardIndex,
                     TeamNumber = GameplayConstants.Team1,
-                    Effects = f.AllocateList<EffectQnt>()
+                    Effects = f.AllocateList<EffectQnt>(),
+                    AbilityStage = 0,
                 };
 
                 fightingHeroesMap.Add(hero);
@@ -110,7 +111,8 @@ namespace Quantum.Game
                     Index = GameConfig.BoardSize * GameConfig.BoardSize / 2 + i,
                     BoardIndex = boardIndex,
                     TeamNumber = GameplayConstants.Team2,
-                    Effects = f.AllocateList<EffectQnt>()
+                    Effects = f.AllocateList<EffectQnt>(),
+                    AbilityStage = 0,
                 };
 
                 fightingHeroesMap.Add(hero);

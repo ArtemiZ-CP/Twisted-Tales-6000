@@ -11,9 +11,9 @@ namespace Quantum.Game
             None,
             Bleeding,
             TransferingBleeding,
-            IncreaseReloadTime,
             IncreaseTakingDamage,
             ReduceCurrentMana,
+            ReduceAttackSpeed,
             ReduceDefense,
             ReduceMagicDefense,
             HorizontalBlast,
@@ -113,11 +113,6 @@ namespace Quantum.Game
         public static void ProcessGlobalEffects(Frame f, Board board)
         {
             QList<GlobalEffectQnt> globalEffects = f.ResolveList(board.GlobalEffects);
-
-            if (globalEffects.Count > 0)
-            {
-                Log.Debug($"Processing {globalEffects.Count} global effects");
-            }
 
             for (int i = 0; i < globalEffects.Count; i++)
             {
@@ -266,6 +261,11 @@ namespace Quantum.Game
 
         private static void ReduceCurrentMana(Frame f, FightingHero target, Board board, FP value)
         {
+            if (target.AbilityStage > 0)
+            {
+                return;
+            }
+
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             target = heroes[target.Index];
             target.CurrentMana -= value;
