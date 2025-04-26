@@ -14,6 +14,7 @@ public class HeroInfoView : MonoBehaviour
     [SerializeField] private TMP_Text _heroName;
     [SerializeField] private TMP_Text _heroStars;
     [SerializeField] private Slider _heroHealthBar;
+    [SerializeField] private Slider _heroArmorBar;
     [SerializeField] private TMP_Text _heroHealth;
     [SerializeField] private TMP_Text _heroDamage;
     [SerializeField] private TMP_Text _heroAttackSpeed;
@@ -24,6 +25,8 @@ public class HeroInfoView : MonoBehaviour
 
     private HeroObject _selectedHero;
     private bool _isCursorInArea;
+    private RectTransform _healthRectTransform;
+    private RectTransform _armorRectTransform;
 
     public bool IsCursorInArea => _isCursorInArea;
 
@@ -31,6 +34,8 @@ public class HeroInfoView : MonoBehaviour
     {
         _heroInfoPanel.SetActive(false);
         _sellPanel.SetActive(false);
+        _healthRectTransform = _heroHealthBar.GetComponent<RectTransform>();
+        _armorRectTransform = _heroArmorBar.GetComponent<RectTransform>();
         QuantumEvent.Subscribe<EventGetFightingHero>(listener: this, handler: GetFightingHero);
     }
 
@@ -131,16 +136,20 @@ public class HeroInfoView : MonoBehaviour
 
         _heroInfoPanel.SetActive(true);
         HeroInfo heroInfo = QuantumConnection.GetHeroInfo(fightingHero.Hero.ID);
-        DisplayMainStats(heroInfo, fightingHero.Hero.Level, fightingHero.CurrentHealth);
+        FP armor = fightingHero.CurrentArmor;
+        FP maxHealth = fightingHero.Hero.Health + armor;
+        FP currentHealth = fightingHero.CurrentHealth;
+        DisplayMainStats(heroInfo, fightingHero.Hero.Level, armor, currentHealth, maxHealth);
     }
 
     private void DisplayMainStats(int id, int level)
     {
         HeroInfo heroInfo = QuantumConnection.GetHeroInfo(id);
-        DisplayMainStats(heroInfo, level, heroInfo.HeroStats[level].Health);
+        FP health = heroInfo.HeroStats[level].Health;
+        DisplayMainStats(heroInfo, level, armor: 0, health, health);
     }
 
-    private void DisplayMainStats(HeroInfo heroInfo, int level, FP currentHealth)
+    private void DisplayMainStats(HeroInfo heroInfo, int level, FP armor, FP currentHealth, FP maxHealth)
     {
         HeroLevelStats heroStats = heroInfo.HeroStats[level];
 
@@ -154,8 +163,9 @@ public class HeroInfoView : MonoBehaviour
         }
 
         _heroStars.text = stars;
-        _heroHealthBar.value = (float)(currentHealth / heroStats.Health);
-        _heroHealth.text = $"{currentHealth.ToString("0.##")}/{heroStats.Health.ToString("0.##")}";
+        UpdateBar(_heroHealthBar, _healthRectTransform, currentHealth, maxHealth);
+        UpdateBar(_heroArmorBar, _armorRectTransform, armor, maxHealth, (currentHealth / maxHealth).AsFloat);
+        _heroHealth.text = $"{(currentHealth + armor).ToString("0.##")}/{heroStats.Health.ToString("0.##")}";
         _heroDamage.text = heroStats.AttackDamage.ToString("0.##");
         _heroAttackSpeed.text = heroStats.AttackSpeed.ToString("0.##");
         _heroDPS.text = (heroStats.AttackDamage * heroStats.AttackSpeed).ToString("0.##");
@@ -165,5 +175,15 @@ public class HeroInfoView : MonoBehaviour
         {
             tmpText.text = $"SELL\n{QuantumConnection.GameConfig.GetHeroSellCost(heroInfo.Rare, level):0.##} coins";
         }
+    }
+
+    protected void UpdateBar(Slider slider, RectTransform rectTransform, FP amount, FP maxAmount, float progress = 0)
+    {
+        slider.gameObject.SetActive(true);
+        slider.value = (amount / maxAmount).AsFloat;
+        rectTransform.anchoredPosition = new Vector2(
+            Mathf.Lerp(0, rectTransform.rect.width, progress),
+            rectTransform.anchoredPosition.y
+        );
     }
 }
