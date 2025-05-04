@@ -509,41 +509,43 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct FightingHero {
-    public const Int32 SIZE = 224;
+    public const Int32 SIZE = 232;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(96)]
+    [FieldOffset(104)]
     public HeroEntity Hero;
-    [FieldOffset(8)]
+    [FieldOffset(12)]
     public Int32 Index;
     [FieldOffset(4)]
     public Int32 BoardIndex;
-    [FieldOffset(28)]
-    public QListPtr<EffectQnt> Effects;
-    [FieldOffset(56)]
-    public FP CurrentHealth;
-    [FieldOffset(48)]
-    public FP CurrentArmor;
-    [FieldOffset(64)]
-    public FP CurrentMana;
     [FieldOffset(32)]
-    public EntityRef AttackTarget;
-    [FieldOffset(12)]
-    public Int32 TargetPositionX;
-    [FieldOffset(16)]
-    public Int32 TargetPositionY;
-    [FieldOffset(20)]
-    public Int32 TeamNumber;
-    [FieldOffset(24)]
-    public QBoolean IsAlive;
+    public QListPtr<EffectQnt> Effects;
+    [FieldOffset(64)]
+    public FP CurrentHealth;
+    [FieldOffset(56)]
+    public FP CurrentArmor;
+    [FieldOffset(72)]
+    public FP CurrentMana;
     [FieldOffset(40)]
+    public EntityRef AttackTarget;
+    [FieldOffset(16)]
+    public Int32 TargetPositionX;
+    [FieldOffset(20)]
+    public Int32 TargetPositionY;
+    [FieldOffset(24)]
+    public Int32 TeamNumber;
+    [FieldOffset(28)]
+    public QBoolean IsAlive;
+    [FieldOffset(48)]
     public FP AttackTimer;
     [FieldOffset(0)]
     public Int32 AbilityStage;
-    [FieldOffset(80)]
-    public FP DealedBaseDamage;
-    [FieldOffset(72)]
-    public FP DealedAbilityDamage;
+    [FieldOffset(8)]
+    public Int32 ExtraLives;
     [FieldOffset(88)]
+    public FP DealedBaseDamage;
+    [FieldOffset(80)]
+    public FP DealedAbilityDamage;
+    [FieldOffset(96)]
     public FP TakenDamage;
     public override Int32 GetHashCode() {
       unchecked { 
@@ -562,6 +564,7 @@ namespace Quantum {
         hash = hash * 31 + IsAlive.GetHashCode();
         hash = hash * 31 + AttackTimer.GetHashCode();
         hash = hash * 31 + AbilityStage.GetHashCode();
+        hash = hash * 31 + ExtraLives.GetHashCode();
         hash = hash * 31 + DealedBaseDamage.GetHashCode();
         hash = hash * 31 + DealedAbilityDamage.GetHashCode();
         hash = hash * 31 + TakenDamage.GetHashCode();
@@ -575,6 +578,7 @@ namespace Quantum {
         var p = (FightingHero*)ptr;
         serializer.Stream.Serialize(&p->AbilityStage);
         serializer.Stream.Serialize(&p->BoardIndex);
+        serializer.Stream.Serialize(&p->ExtraLives);
         serializer.Stream.Serialize(&p->Index);
         serializer.Stream.Serialize(&p->TargetPositionX);
         serializer.Stream.Serialize(&p->TargetPositionY);

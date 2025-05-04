@@ -164,6 +164,7 @@ namespace Quantum.Prototypes {
     public QBoolean IsAlive;
     public FP AttackTimer;
     public Int32 AbilityStage;
+    public Int32 ExtraLives;
     public FP DealedBaseDamage;
     public FP DealedAbilityDamage;
     public FP TakenDamage;
@@ -191,6 +192,7 @@ namespace Quantum.Prototypes {
         result.IsAlive = this.IsAlive;
         result.AttackTimer = this.AttackTimer;
         result.AbilityStage = this.AbilityStage;
+        result.ExtraLives = this.ExtraLives;
         result.DealedBaseDamage = this.DealedBaseDamage;
         result.DealedAbilityDamage = this.DealedAbilityDamage;
         result.TakenDamage = this.TakenDamage;

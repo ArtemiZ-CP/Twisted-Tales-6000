@@ -13,7 +13,7 @@ namespace Quantum.Game
             TransferingBleeding,
             IncreaseTakingDamage,
             ReduceCurrentMana,
-            ReduceAttackSpeed,
+            IncreaseAttackSpeed,
             ReduceDefense,
             ReduceMagicDefense,
             HorizontalBlast,
@@ -22,6 +22,7 @@ namespace Quantum.Game
             TemporaryArmor,
             Teleport,
             ExtraBaseDamage,
+            FirebirdRebirth,
         }
 
         public enum GlobalEffectType
@@ -180,10 +181,37 @@ namespace Quantum.Game
                     case EffectType.Teleport:
                         TeleportHero(f, ref target, effectQnt, board);
                         break;
+                    case EffectType.FirebirdRebirth:
+                        ProcessFirebirdRebirth(f, target, board, damage);
+                        break;
                 }
 
                 if (effectQnt.Duration <= 0)
                 {
+                    if ((EffectType)effectQnt.Index == EffectType.FirebirdRebirth)
+                    {
+                        if (effectQnt.Size > 0)
+                        {
+                            target.CurrentHealth = target.Hero.Health / 2;
+                            HeroAttack.UpdateHero(f, target, board);
+
+                            Effect effect = new()
+                            {
+                                Owner = target.Hero.Ref,
+                                Type = EffectType.IncreaseAttackSpeed,
+                                Value = effectQnt.MaxValue,
+                                Duration = 4,
+                                Size = 0
+                            };
+
+                            HeroAttack.ApplyEffectToTarget(f, ref target, board, ref target, effect);
+                        }
+                        else
+                        {
+                            HeroAttack.DestroyHero(f, target, board);
+                        }
+                    }
+
                     effects.RemoveAt(i);
                     i--;
                 }
@@ -271,6 +299,16 @@ namespace Quantum.Game
             target.CurrentMana -= value;
             heroes[target.Index] = target;
             f.Events.HeroManaChanged(board.Player1.Ref, board.Player2.Ref, target.Hero.Ref, target.CurrentMana, target.Hero.MaxMana);
+        }
+
+        private static void ProcessFirebirdRebirth(Frame f, FightingHero target, Board board, FP value)
+        {
+            var heroes = HeroBoard.GetAllTargetsInRange(f, target, board);
+
+            foreach (var item in heroes)
+            {
+                HeroAttack.DamageHeroWithDOT(f, target, board, item, value, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+            }
         }
     }
 }

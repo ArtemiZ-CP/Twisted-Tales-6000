@@ -18,15 +18,15 @@ namespace Quantum.Game
 
             if (heroLevel == 0)
             {
-                return TryCast(f, fightingHero, board, 140, 20);
+                return TryCast(f, fightingHero, board, 140, 1 - FP._0_20);
             }
             else if (heroLevel == 1)
             {
-                return TryCast(f, fightingHero, board, 210, 25);
+                return TryCast(f, fightingHero, board, 210, 1 - FP._0_25);
             }
             else if (heroLevel == 2)
             {
-                return TryCast(f, fightingHero, board, 315, 30);
+                return TryCast(f, fightingHero, board, 315, 1 - FP._0_20 + FP._0_10);
             }
 
             return false;
@@ -43,7 +43,7 @@ namespace Quantum.Game
                 HeroEffects.Effect effect = new()
                 {
                     Owner = fightingHero.Hero.Ref,
-                    Type = HeroEffects.EffectType.ReduceAttackSpeed,
+                    Type = HeroEffects.EffectType.IncreaseAttackSpeed,
                     Duration = 3,
                     Value = reduceAttackSpeed,
                 };
@@ -51,7 +51,7 @@ namespace Quantum.Game
                 foreach (FightingHero hero in heroesList)
                 {
                     HeroAttack.DamageHero(f, fightingHero, board, hero, damage, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                    
+
                     Vector2Int heroCords = HeroBoard.GetHeroCords(hero);
                     Vector2Int newHeroCords = new(heroCords.x, heroCords.y + (fightingHeroCords.y <= heroCords.y ? 1 : -1));
 

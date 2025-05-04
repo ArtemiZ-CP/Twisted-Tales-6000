@@ -245,9 +245,9 @@ namespace Quantum.Game
 
             foreach (EffectQnt effect in effects)
             {
-                if (effect.Index == (int)HeroEffects.EffectType.ReduceAttackSpeed)
+                if (effect.Index == (int)HeroEffects.EffectType.IncreaseAttackSpeed)
                 {
-                    reloadMultiplier *= 1 - effect.Value;
+                    reloadMultiplier *= effect.Value;
                 }
             }
 
@@ -390,7 +390,7 @@ namespace Quantum.Game
 
             if (effects != null && effects.Length > 0)
             {
-                ApplyEffectsToTarget(f, fightingHero, board, ref targetHero, effects);
+                ApplyEffectsToTarget(f, ref fightingHero, board, ref targetHero, effects);
             }
 
             ApplyDamageToHero(f, ref targetHero, board, damage, damageType);
@@ -481,32 +481,23 @@ namespace Quantum.Game
             }
         }
 
-        public static void ApplyEffectToTarget(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, HeroEffects.Effect effects)
+        public static void ApplyEffectToTarget(Frame f, ref FightingHero fightingHero, Board board, ref FightingHero targetHero, HeroEffects.Effect effect)
         {
-            ApplyEffectsToTarget(f, fightingHero, board, ref targetHero, new HeroEffects.Effect[] { effects });
+            ApplyEffectsToTarget(f, ref fightingHero, board, ref targetHero, new HeroEffects.Effect[] { effect });
         }
 
-        public static void ApplyEffectsToTarget(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, HeroEffects.Effect[] effects)
+        public static void UpdateHero(Frame f, FightingHero fightingHero, Board board)
         {
-            GetUpdatedHeroes(f, board, ref fightingHero, ref targetHero, out QList<FightingHero> heroes);
-
-            if (effects != null && effects.Length > 0)
-            {
-                ApplyEffectsToTarget(f, fightingHero, board, ref targetHero, effects);
-            }
-
-            UpdateHeroesAndStats(f, board, heroes, fightingHero, targetHero);
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+            heroes[fightingHero.Index] = fightingHero;
         }
 
-        private static void GetUpdatedHeroes(Frame f, Board board, ref FightingHero fightingHero, ref FightingHero targetHero, out QList<FightingHero> heroes)
+        public static void GetUpdatedHeroes(Frame f, Board board, ref FightingHero fightingHero, ref FightingHero targetHero, out QList<FightingHero> heroes)
         {
-            int fightingHeroIndex = fightingHero.Index;
-            int targetHeroIndex = targetHero.Index;
-
             heroes = f.ResolveList(board.FightingHeroesMap);
 
-            fightingHero = heroes[fightingHeroIndex];
-            targetHero = heroes[targetHeroIndex];
+            fightingHero = heroes[fightingHero.Index];
+            targetHero = heroes[targetHero.Index];
         }
 
         private static void ApplyDamageToHero(Frame f, ref FightingHero targetHero, Board board, FP damage, DamageType damageType)
@@ -517,6 +508,7 @@ namespace Quantum.Game
             FP defense = targetHero.Hero.Defense;
             FP magicDefense = targetHero.Hero.MagicDefense;
             int transferingBleedingEffectIndex = -1;
+            bool isRebirthing = false;
 
             for (int i = 0; i < effectQnts.Count; i++)
             {
@@ -572,6 +564,10 @@ namespace Quantum.Game
                 {
                     transferingBleedingEffectIndex = i;
                 }
+                else if (effectQnt.Index == (int)HeroEffects.EffectType.FirebirdRebirth)
+                {
+                    isRebirthing = true;
+                }
 
                 effectQnts[i] = effectQnt;
             }
@@ -606,13 +602,87 @@ namespace Quantum.Game
                     {
                         FightingHero closestTarget = HeroBoard.GetClosestTarget(f, alies, targetHero);
                         FightingHero owner = HeroBoard.GetFightingHero(f, bleedEffect.Owner, board);
-                        ApplyEffectToTarget(f, owner, board, closestTarget, bleedEffect);
+                        ApplyEffectToTarget(f, ref owner, board, ref closestTarget, bleedEffect);
                     }
                 }
 
-                f.Destroy(targetHero.Hero.Ref);
-                targetHero.IsAlive = false;
-                targetHero.Hero.Ref = default;
+                ProcessDeathInFirebirdRebirthRange(f, ref targetHero, board);
+
+                if (targetHero.ExtraLives > 0 && targetHero.Hero.ID >= 0)
+                {
+                    HeroNameEnum heroName = gameConfig.GetHeroInfo(f, targetHero.Hero.ID).Name;
+
+                    if (heroName == HeroNameEnum.Firebird)
+                    {
+                        targetHero.ExtraLives--;
+                        targetHero.CurrentHealth = 0;
+                        int duration = 4;
+                        FP attackSpeedIncrease = targetHero.Hero.Level switch
+                        {
+                            0 => FP._0_20,
+                            1 => FP._0_25,
+                            2 => FP._0_25 + FP._0_10,
+                            _ => 0,
+                        };
+
+                        FP damageAbility = targetHero.Hero.Level switch
+                        {
+                            0 => 100,
+                            1 => 150,
+                            2 => 225,
+                            _ => 0,
+                        };
+
+                        ApplyEffectToTarget(f, ref targetHero, board, ref targetHero, new HeroEffects.Effect()
+                        {
+                            Type = HeroEffects.EffectType.FirebirdRebirth,
+                            MaxValue = attackSpeedIncrease,
+                            Value = damageAbility,
+                            Duration = duration,
+                            Size = 0,
+                        });
+                    }
+                }
+                else if (isRebirthing == false)
+                {
+                    f.Destroy(targetHero.Hero.Ref);
+                    targetHero.IsAlive = false;
+                    targetHero.Hero.Ref = default;
+                }
+            }
+        }
+
+        public static void DestroyHero(Frame f, FightingHero fightingHero, Board board)
+        {
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+            f.Destroy(fightingHero.Hero.Ref);
+            fightingHero.IsAlive = false;
+            fightingHero.Hero.Ref = default;
+            heroes[fightingHero.Index] = fightingHero;
+        }
+
+        private static void ProcessDeathInFirebirdRebirthRange(Frame f, ref FightingHero targetHero, Board board)
+        {
+            List<FightingHero> fightingHeroes = HeroBoard.GetAllTeamHeroesInRange(f, targetHero.Index, HeroBoard.GetEnemyTeamNumber(targetHero.TeamNumber), board, FirebirdAbilities.Range);
+
+            for (int i = 0; i < fightingHeroes.Count; i++)
+            {
+                FightingHero hero = fightingHeroes[i];
+                var effects = f.ResolveList(hero.Effects);
+
+                for (int j = 0; j < effects.Count; j++)
+                {
+                    EffectQnt effectQnt = effects[j];
+
+                    if (effectQnt.Index == (int)HeroEffects.EffectType.FirebirdRebirth)
+                    {
+                        effectQnt.Size++;
+                    }
+
+                    effects[j] = effectQnt;
+                }
+
+                fightingHeroes[i] = hero;
             }
         }
 
@@ -691,8 +761,10 @@ namespace Quantum.Game
             // targetHero.TakenHeal += amount;
         }
 
-        private static void ApplyEffectsToTarget(Frame f, FightingHero fightingHero, Board board, ref FightingHero targetHero, HeroEffects.Effect[] effects)
+        private static void ApplyEffectsToTarget(Frame f, ref FightingHero fightingHero, Board board, ref FightingHero targetHero, HeroEffects.Effect[] effects)
         {
+            GetUpdatedHeroes(f, board, ref fightingHero, ref targetHero, out QList<FightingHero> heroes);
+
             QList<EffectQnt> targetEffects = f.ResolveList(targetHero.Effects);
 
             for (int i = 0; i < effects.Length; i++)

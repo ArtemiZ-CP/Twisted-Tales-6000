@@ -81,8 +81,8 @@ namespace Quantum.Game
                         };
 
                         HeroAttack.ResetAttackTimer(f, ref fightingHero, board, AttackTimerDelayAfterTeleport);
-                        HeroAttack.ApplyEffectToTarget(f, fightingHero, board, fightingHero, teleportEffect);
-                        HeroAttack.ApplyEffectToTarget(f, fightingHero, board, fightingHero, extraBaseDamageEffect);
+                        HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref fightingHero, teleportEffect);
+                        HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref fightingHero, extraBaseDamageEffect);
 
                         HeroEffects.Effect effect = new()
                         {

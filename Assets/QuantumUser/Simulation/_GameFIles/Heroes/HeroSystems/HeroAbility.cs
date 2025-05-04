@@ -143,6 +143,10 @@ namespace Quantum.Game
                     tryCastAbility = KingArthurAbilities.TryCastAbility;
                     return true;
 
+                case HeroNameEnum.Firebird:
+                    tryCastAbility = FirebirdAbilities.TryCastAbility;
+                    return true;
+
                 default:
                     tryCastAbility = default;
                     return false;
