@@ -90,32 +90,16 @@ namespace Quantum.Game
 
             for (int i = 0; i < GameConfig.BoardSize * GameConfig.BoardSize / 2; i++)
             {
-                FightingHero hero = new()
-                {
-                    Hero = heroesID1[i],
-                    Index = i,
-                    BoardIndex = boardIndex,
-                    TeamNumber = GameplayConstants.Team1,
-                    Effects = f.AllocateList<EffectQnt>(),
-                    AbilityStage = 0,
-                };
-
-                fightingHeroesMap.Add(hero);
+                HeroEntity hero = heroesID1[i];
+                int index = i;
+                fightingHeroesMap.Add(SetupFightingHero(f, hero, boardIndex, index, GameplayConstants.Team1));
             }
 
             for (int i = 0; i < GameConfig.BoardSize * GameConfig.BoardSize / 2; i++)
             {
-                FightingHero hero = new()
-                {
-                    Hero = heroesID2[^(i + 1)],
-                    Index = GameConfig.BoardSize * GameConfig.BoardSize / 2 + i,
-                    BoardIndex = boardIndex,
-                    TeamNumber = GameplayConstants.Team2,
-                    Effects = f.AllocateList<EffectQnt>(),
-                    AbilityStage = 0,
-                };
-
-                fightingHeroesMap.Add(hero);
+                HeroEntity hero = heroesID2[^(i + 1)];
+                int index = GameConfig.BoardSize * GameConfig.BoardSize / 2 + i;
+                fightingHeroesMap.Add(SetupFightingHero(f, hero, boardIndex, index, GameplayConstants.Team2));
             }
 
             for (int i = 0; i < fightingHeroesMap.Count; i++)
@@ -125,6 +109,35 @@ namespace Quantum.Game
 
             List<EntityLevelData> heroDataList = fightingHeroesMap.Select(hero => new EntityLevelData { Ref = hero.Hero.Ref, Level = hero.Hero.Level, ID = hero.Hero.ID }).ToList();
             f.Events.StartRound(f, board->Player1.Ref, board->Player2.Ref, heroDataList);
+        }
+
+        private FightingHero SetupFightingHero(Frame f, HeroEntity hero, int boardIndex, int index, int teamNumber)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+            int extraLives = 0;
+
+            if (hero.ID >= 0)
+            {
+                HeroNameEnum heroName = gameConfig.GetHeroInfo(f, hero.ID).Name;
+
+                if (heroName == HeroNameEnum.Firebird)
+                {
+                    extraLives = 1;
+                }
+            }
+
+            FightingHero fightingHero = new()
+            {
+                Hero = hero,
+                Index = index,
+                BoardIndex = boardIndex,
+                TeamNumber = teamNumber,
+                Effects = f.AllocateList<EffectQnt>(),
+                AbilityStage = 0,
+                ExtraLives = extraLives,
+            };
+
+            return fightingHero;
         }
     }
 }

@@ -5,15 +5,25 @@ using UnityEngine.Scripting;
 namespace Quantum.Game
 {
     [Preserve]
-    public unsafe class HeroLevelProgression : SystemSignalsOnly, ISignalTryUpgradeHero
+    public unsafe class HeroLevelProgression : SystemSignalsOnly, ISignalTryUpgradeHero, ISignalOnEndRound
     {
+        public void OnEndRound(Frame f)
+        {
+            var playerLinks = Player.GetAllPlayersEntity(f);
+
+            for (int i = 0; i < playerLinks.Count; i++)
+            {
+                TryUpgradeHero(f, Player.GetPlayerPointer(f, playerLinks[i]));
+            }
+        }
+
         public void TryUpgradeHero(Frame f, PlayerLink* playerLink)
         {
             while (TryGetHeroesToUpgrade(f, playerLink, out List<HeroUpgradeInfo> heroUpgradeInfos))
             {
                 UpgradeHeroes(f, playerLink, heroUpgradeInfos);
             }
-            
+
             HeroMovingSystem.ShowHeroesOnBoardCount(f, *playerLink);
         }
 
@@ -35,11 +45,14 @@ namespace Quantum.Game
                 }
             }
 
-            for (int i = 0; i < heroesBoard.Count; i++)
+            if (f.Global->IsBuyPhase)
             {
-                if (heroesBoard[i] == heroID && heroesLevelBoard[i] == heroLevel)
+                for (int i = 0; i < heroesBoard.Count; i++)
                 {
-                    heroCount++;
+                    if (heroesBoard[i] == heroID && heroesLevelBoard[i] == heroLevel)
+                    {
+                        heroCount++;
+                    }
                 }
             }
 
@@ -160,11 +173,14 @@ namespace Quantum.Game
                     }
                 }
 
-                for (int i = 0; i < heroesBoard.Count; i++)
+                if (f.Global->IsBuyPhase)
                 {
-                    if (heroesBoard[i] == heroID)
+                    for (int i = 0; i < heroesBoard.Count; i++)
                     {
-                        heroesCount[heroesLevelBoard[i]]++;
+                        if (heroesBoard[i] == heroID)
+                        {
+                            heroesCount[heroesLevelBoard[i]]++;
+                        }
                     }
                 }
 

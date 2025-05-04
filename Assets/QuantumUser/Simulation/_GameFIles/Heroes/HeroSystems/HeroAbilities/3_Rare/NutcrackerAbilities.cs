@@ -66,7 +66,7 @@ namespace Quantum.Game
                 Duration = 3,
             };
 
-            HeroAttack.ApplyEffectToTarget(f, fightingHero, board, fightingHero, armorEffect);
+            HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref fightingHero, armorEffect);
 
             return true;
         }
