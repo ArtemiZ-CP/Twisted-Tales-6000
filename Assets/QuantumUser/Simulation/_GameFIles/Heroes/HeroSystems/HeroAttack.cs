@@ -202,7 +202,7 @@ namespace Quantum.Game
                 return;
             }
 
-            DamageHero(f, fightingHero, board, targetHero, fightingHero.Hero.AttackDamage, effects, damageType, attackType);
+            DamageHero(f, ref fightingHero, board, ref targetHero, fightingHero.Hero.AttackDamage, effects, damageType, attackType);
             ResetAttackTimer(f, ref fightingHero, board);
         }
 
@@ -304,7 +304,7 @@ namespace Quantum.Game
         public static void HealHero(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP amount)
         {
             GetUpdatedHeroes(f, board, ref fightingHero, ref targetHero, out QList<FightingHero> heroes);
-            amount = ApplyHealToHero(ref targetHero, amount);
+            amount = ApplyHealToHero(f, ref targetHero, amount);
             UpdateHealStats(ref fightingHero, ref targetHero, amount);
             UpdateHeroesAndStats(f, board, heroes, fightingHero, targetHero);
         }
@@ -312,7 +312,7 @@ namespace Quantum.Game
         public static void AddArmorToHero(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP amount)
         {
             GetUpdatedHeroes(f, board, ref fightingHero, ref targetHero, out QList<FightingHero> heroes);
-            AddArmorToHero(ref targetHero, amount);
+            AddArmorToHero(f, ref targetHero, amount);
             UpdateHealStats(ref fightingHero, ref targetHero, amount);
             UpdateHeroesAndStats(f, board, heroes, fightingHero, targetHero);
         }
@@ -321,7 +321,7 @@ namespace Quantum.Game
         {
             HeroEffects.Effect[] effects = new HeroEffects.Effect[0];
 
-            DamageHero(f, fightingHero, board, targetHero, damage, effects, damageType, attackType);
+            DamageHero(f, ref fightingHero, board, ref targetHero, damage, effects, damageType, attackType);
         }
 
         public static void DamageHero(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, HeroEffects.Effect effect, DamageType damageType, AttackType attackType)
@@ -329,7 +329,7 @@ namespace Quantum.Game
             HeroEffects.Effect[] effects = new HeroEffects.Effect[1];
             effects[0] = effect;
 
-            DamageHero(f, fightingHero, board, targetHero, damage, effects, damageType, attackType);
+            DamageHero(f, ref fightingHero, board, ref targetHero, damage, effects, damageType, attackType);
         }
 
         public static void DamageHero(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, QList<EffectQnt> effectsQnt, DamageType damageType, AttackType attackType)
@@ -347,10 +347,16 @@ namespace Quantum.Game
                 effects[i] = new HeroEffects.Effect(effectsQnt[i]);
             }
 
-            DamageHero(f, fightingHero, board, targetHero, damage, effects, damageType, attackType);
+            DamageHero(f, ref fightingHero, board, ref targetHero, damage, effects, damageType, attackType);
         }
 
-        public static void DamageHero(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, HeroEffects.Effect[] effects, DamageType damageType, AttackType attackType)
+        public static void DamageHero(Frame f, ref FightingHero fightingHero, Board board, ref FightingHero targetHero, FP damage, HeroEffects.Effect[] effects, DamageType damageType, AttackType attackType)
+        {
+            DamageHeroWithoutAddMana(f, ref fightingHero, board, ref targetHero, damage, effects, damageType, attackType);
+            UpdateManaAfterDamage(f, ref fightingHero, board, ref targetHero, damage, attackType);
+        }
+
+        public static void DamageHeroWithoutAddMana(Frame f, ref FightingHero fightingHero, Board board, ref FightingHero targetHero, FP damage, HeroEffects.Effect[] effects, DamageType damageType, AttackType attackType)
         {
             GetUpdatedHeroes(f, board, ref fightingHero, ref targetHero, out QList<FightingHero> heroes);
 
@@ -394,15 +400,6 @@ namespace Quantum.Game
             }
 
             ApplyDamageToHero(f, ref targetHero, board, damage, damageType);
-            UpdateManaAfterDamage(f, ref fightingHero, ref targetHero, damage, attackType);
-            UpdateDamageStats(ref fightingHero, ref targetHero, damage, attackType);
-            UpdateHeroesAndStats(f, board, heroes, fightingHero, targetHero);
-        }
-
-        public static void DamageHeroWithDOT(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, DamageType damageType, AttackType attackType)
-        {
-            GetUpdatedHeroes(f, board, ref fightingHero, ref targetHero, out QList<FightingHero> heroes);
-            ApplyDamageToHero(f, ref targetHero, board, damage, damageType);
             UpdateDamageStats(ref fightingHero, ref targetHero, damage, attackType);
             UpdateHeroesAndStats(f, board, heroes, fightingHero, targetHero);
         }
@@ -410,7 +407,7 @@ namespace Quantum.Game
         public static void HealHeroWithDOT(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP healAmount, DamageType damageType, AttackType attackType)
         {
             GetUpdatedHeroes(f, board, ref fightingHero, ref targetHero, out QList<FightingHero> heroes);
-            ApplyHealToHero(ref targetHero, healAmount);
+            ApplyHealToHero(f, ref targetHero, healAmount);
             UpdateDamageStats(ref fightingHero, ref targetHero, healAmount, attackType);
             UpdateHeroesAndStats(f, board, heroes, fightingHero, targetHero);
         }
@@ -459,14 +456,14 @@ namespace Quantum.Game
             }
         }
 
-        public static void DamageHeroByBlastWithoutApplyingEffects(Frame f, FightingHero fightingHero, int centerIndex, Board board, FP damage, int size, DamageType damageType, AttackType attackType)
+        public static void DamageHeroByBlastWithoutAddMana(Frame f, FightingHero fightingHero, int centerIndex, Board board, FP damage, int size, bool includeSelf, HeroEffects.Effect effect, DamageType damageType, AttackType attackType)
         {
             if (fightingHero.Hero.Ref == default)
             {
                 return;
             }
 
-            List<FightingHero> heroesList = HeroBoard.GetAllTeamHeroesInRange(f, centerIndex, HeroBoard.GetEnemyTeamNumber(fightingHero.TeamNumber), board, size, includeSelf: true);
+            List<FightingHero> heroesList = HeroBoard.GetAllTeamHeroesInRange(f, centerIndex, HeroBoard.GetEnemyTeamNumber(fightingHero.TeamNumber), board, size, includeSelf);
 
             for (int i = 0; i < heroesList.Count; i++)
             {
@@ -477,19 +474,13 @@ namespace Quantum.Game
                     continue;
                 }
 
-                DamageHeroWithDOT(f, fightingHero, board, targetHero, damage, damageType, attackType);
+                DamageHeroWithoutAddMana(f, ref fightingHero, board, ref targetHero, damage, new HeroEffects.Effect[] { effect }, damageType, attackType);
             }
         }
 
         public static void ApplyEffectToTarget(Frame f, ref FightingHero fightingHero, Board board, ref FightingHero targetHero, HeroEffects.Effect effect)
         {
             ApplyEffectsToTarget(f, ref fightingHero, board, ref targetHero, new HeroEffects.Effect[] { effect });
-        }
-
-        public static void UpdateHero(Frame f, FightingHero fightingHero, Board board)
-        {
-            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
-            heroes[fightingHero.Index] = fightingHero;
         }
 
         public static void GetUpdatedHeroes(Frame f, Board board, ref FightingHero fightingHero, ref FightingHero targetHero, out QList<FightingHero> heroes)
@@ -504,6 +495,7 @@ namespace Quantum.Game
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             QList<EffectQnt> effectQnts = f.ResolveList(targetHero.Effects);
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
             FP defense = targetHero.Hero.Defense;
             FP magicDefense = targetHero.Hero.MagicDefense;
@@ -587,6 +579,9 @@ namespace Quantum.Game
 
             if (targetHero.CurrentHealth <= 0)
             {
+                targetHero.CurrentHealth = 0;
+                ProcessDeathInFirebirdRebirthRange(f, ref targetHero, board, heroes);
+
                 if (transferingBleedingEffectIndex >= 0)
                 {
                     EffectQnt effectQnt = effectQnts[transferingBleedingEffectIndex];
@@ -606,16 +601,23 @@ namespace Quantum.Game
                     }
                 }
 
-                ProcessDeathInFirebirdRebirthRange(f, ref targetHero, board);
+                if (isRebirthing)
+                {
+                    heroes[targetHero.Index] = targetHero;
+                    return;
+                }
 
                 if (targetHero.ExtraLives > 0 && targetHero.Hero.ID >= 0)
                 {
+                    Log.Debug($"Firebird Rebirth: {targetHero.ExtraLives}");
                     HeroNameEnum heroName = gameConfig.GetHeroInfo(f, targetHero.Hero.ID).Name;
 
                     if (heroName == HeroNameEnum.Firebird)
                     {
                         targetHero.ExtraLives--;
                         targetHero.CurrentHealth = 0;
+                        heroes[targetHero.Index] = targetHero;
+
                         int duration = 4;
                         FP attackSpeedIncrease = targetHero.Hero.Level switch
                         {
@@ -643,13 +645,15 @@ namespace Quantum.Game
                         });
                     }
                 }
-                else if (isRebirthing == false)
+                else
                 {
                     f.Destroy(targetHero.Hero.Ref);
                     targetHero.IsAlive = false;
                     targetHero.Hero.Ref = default;
                 }
             }
+
+            heroes[targetHero.Index] = targetHero;
         }
 
         public static void DestroyHero(Frame f, FightingHero fightingHero, Board board)
@@ -661,14 +665,14 @@ namespace Quantum.Game
             heroes[fightingHero.Index] = fightingHero;
         }
 
-        private static void ProcessDeathInFirebirdRebirthRange(Frame f, ref FightingHero targetHero, Board board)
+        private static void ProcessDeathInFirebirdRebirthRange(Frame f, ref FightingHero targetHero, Board board, QList<FightingHero> heroes)
         {
             List<FightingHero> fightingHeroes = HeroBoard.GetAllTeamHeroesInRange(f, targetHero.Index, HeroBoard.GetEnemyTeamNumber(targetHero.TeamNumber), board, FirebirdAbilities.Range);
 
             for (int i = 0; i < fightingHeroes.Count; i++)
             {
                 FightingHero hero = fightingHeroes[i];
-                var effects = f.ResolveList(hero.Effects);
+                QList<EffectQnt> effects = f.ResolveList(hero.Effects);
 
                 for (int j = 0; j < effects.Count; j++)
                 {
@@ -681,16 +685,24 @@ namespace Quantum.Game
 
                     effects[j] = effectQnt;
                 }
-
-                fightingHeroes[i] = hero;
             }
         }
 
-        private static FP ApplyHealToHero(ref FightingHero targetHero, FP amount)
+        private static FP ApplyHealToHero(Frame f, ref FightingHero targetHero, FP amount)
         {
             if (targetHero.CurrentHealth <= 0)
             {
                 return 0;
+            }
+
+            var effects = f.ResolveList(targetHero.Effects);
+
+            foreach (var effect in effects)
+            {
+                if (effect.Index == (int)HeroEffects.EffectType.IncreaseHealAndArmor)
+                {
+                    amount *= effect.Value;
+                }
             }
 
             if (targetHero.Hero.Health - targetHero.CurrentHealth < amount)
@@ -702,18 +714,29 @@ namespace Quantum.Game
             return amount;
         }
 
-        private static void AddArmorToHero(ref FightingHero targetHero, FP amount)
+        private static void AddArmorToHero(Frame f, ref FightingHero targetHero, FP amount)
         {
             if (targetHero.CurrentHealth <= 0)
             {
                 return;
             }
 
+            var effects = f.ResolveList(targetHero.Effects);
+
+            foreach (var effect in effects)
+            {
+                if (effect.Index == (int)HeroEffects.EffectType.IncreaseHealAndArmor)
+                {
+                    amount *= effect.Value;
+                }
+            }
+
             targetHero.CurrentArmor += amount;
         }
 
-        private static void UpdateManaAfterDamage(Frame f, ref FightingHero fightingHero, ref FightingHero targetHero, FP damage, AttackType attackType)
+        private static void UpdateManaAfterDamage(Frame f, ref FightingHero fightingHero, Board board, ref FightingHero targetHero, FP damage, AttackType attackType)
         {
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
             if (targetHero.CurrentHealth > 0)
@@ -739,6 +762,8 @@ namespace Quantum.Game
                     fightingHero.CurrentMana += gameConfig.ManaDealDamageRegen;
                 }
             }
+
+            UpdateHeroesAndStats(f, board, heroes, fightingHero, targetHero);
         }
 
         private static void UpdateDamageStats(ref FightingHero fightingHero, ref FightingHero targetHero, FP damage, AttackType attackType)
@@ -771,7 +796,7 @@ namespace Quantum.Game
             {
                 HeroEffects.Effect effect = effects[i];
 
-                if (effect.Type == HeroEffects.EffectType.None)
+                if (effect == null || effect.Type == HeroEffects.EffectType.None)
                 {
                     continue;
                 }
@@ -792,6 +817,8 @@ namespace Quantum.Game
                     Size = effect.Size,
                 });
             }
+
+            heroes[targetHero.Index] = targetHero;
         }
 
         private static void UpdateHeroesAndStats(Frame f, Board board, QList<FightingHero> heroes, FightingHero fightingHero, FightingHero targetHero)
@@ -799,7 +826,7 @@ namespace Quantum.Game
             heroes[fightingHero.Index] = fightingHero;
             heroes[targetHero.Index] = targetHero;
 
-            StatsDisplayer.UpdateStats(f, board);
+            StatsDisplayer.UpdateStats(f, heroes, board);
         }
 
         private static bool TryFindAttackTarget(Frame f, FightingHero fighingHero, Board board, out FightingHero targetHero)

@@ -51,11 +51,6 @@ namespace Quantum.Game
             HeroProjectilesSystem.SpawnProjectile(f, fightingHero, board, targetHero, damage, null, globalEffects, damageType, attackType);
         }
 
-        public static void ProjectileAttack(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, HeroEffects.Effect[] effects, HeroEffects.GlobalEffect[] globalEffects, DamageType damageType, AttackType attackType)
-        {
-            HeroProjectilesSystem.SpawnProjectile(f, fightingHero, board, targetHero, damage, effects, globalEffects, damageType, attackType);
-        }
-
         private static SelectedHeroAbility GetSelectedHeroAbility(Frame f, PlayerLink* playerLink, int heroID, out int index)
         {
             QList<SelectedHeroAbility> abilities = f.ResolveList(playerLink->Info.Board.Abilities);

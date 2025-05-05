@@ -10,13 +10,13 @@ namespace Quantum.Game
 
             foreach (Board board in boards)
             {
-                UpdateStats(f, board);
+                QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+                UpdateStats(f, heroes, board);
             }
         }
 
-        public static void UpdateStats(Frame f, Board board)
+        public static void UpdateStats(Frame f, QList<FightingHero> heroes, Board board)
         {
-            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             f.Events.DisplayStats(f, board.Player1.Ref, board.Player2.Ref, heroes);
         }
     }

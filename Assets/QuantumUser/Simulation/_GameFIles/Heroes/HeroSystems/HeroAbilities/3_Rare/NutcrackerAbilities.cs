@@ -52,10 +52,12 @@ namespace Quantum.Game
             };
 
             HeroEffects.Effect[] effects = new HeroEffects.Effect[] { reduceEffect1, reduceEffect2 };
-            
-            foreach (FightingHero target in targets)
+
+            for (int i = 0; i < targets.Count; i++)
             {
-                HeroAttack.DamageHero(f, fightingHero, board, target, damage, effects, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                FightingHero target = targets[i];
+                HeroAttack.DamageHero(f, ref fightingHero, board, ref target, damage, effects, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                targets[i] = target;
             }
 
             HeroEffects.Effect armorEffect = new()

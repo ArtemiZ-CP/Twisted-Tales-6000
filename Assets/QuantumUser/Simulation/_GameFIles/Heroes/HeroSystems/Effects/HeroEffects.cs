@@ -13,12 +13,14 @@ namespace Quantum.Game
             TransferingBleeding,
             IncreaseTakingDamage,
             ReduceCurrentMana,
+            IncreaseHealAndArmor,
             IncreaseAttackSpeed,
             ReduceDefense,
             ReduceMagicDefense,
             HorizontalBlast,
             Blast,
             Stun,
+            BlastStun,
             TemporaryArmor,
             Teleport,
             ExtraBaseDamage,
@@ -167,33 +169,36 @@ namespace Quantum.Game
                 {
                     case EffectType.Bleeding:
                     case EffectType.TransferingBleeding:
-                        HeroAttack.DamageHeroWithDOT(f, ownerHero, board, target, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                        HeroAttack.DamageHeroWithoutAddMana(f, ref ownerHero, board, ref target, damage, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         break;
                     case EffectType.ReduceCurrentMana:
                         ReduceCurrentMana(f, target, board, effectQnt.Value);
                         break;
                     case EffectType.Blast:
-                        HeroAttack.DamageHeroByBlastWithoutApplyingEffects(f, ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                        HeroAttack.DamageHeroByBlastWithoutAddMana(f, ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, includeSelf: true, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         break;
                     case EffectType.Stun:
                         isStunned = true;
+                        break;
+                    case EffectType.BlastStun:
+                        BlastStun(f, ref ownerHero, board, ref target, effectQnt);
                         break;
                     case EffectType.Teleport:
                         TeleportHero(f, ref target, effectQnt, board);
                         break;
                     case EffectType.FirebirdRebirth:
-                        ProcessFirebirdRebirth(f, target, board, damage);
+                        effectQnt.Size = ProcessFirebirdRebirth(f, ref target, board, damage);
+                        isStunned = true;
                         break;
                 }
 
                 if (effectQnt.Duration <= 0)
                 {
-                    if ((EffectType)effectQnt.Index == EffectType.FirebirdRebirth)
+                    if (effectQnt.Index == (int)EffectType.FirebirdRebirth)
                     {
                         if (effectQnt.Size > 0)
                         {
                             target.CurrentHealth = target.Hero.Health / 2;
-                            HeroAttack.UpdateHero(f, target, board);
 
                             Effect effect = new()
                             {
@@ -203,6 +208,8 @@ namespace Quantum.Game
                                 Duration = 4,
                                 Size = 0
                             };
+
+                            heroes[target.Index] = target;
 
                             HeroAttack.ApplyEffectToTarget(f, ref target, board, ref target, effect);
                         }
@@ -220,6 +227,18 @@ namespace Quantum.Game
                     effects[i] = effectQnt;
                 }
             }
+        }
+
+        private static void BlastStun(Frame f, ref FightingHero ownerHero, Board board, ref FightingHero target, EffectQnt effectQnt)
+        {
+            Effect effect = new()
+            {
+                Owner = target.Hero.Ref,
+                Type = EffectType.Stun,
+                Duration = effectQnt.Duration,
+            };
+
+            HeroAttack.DamageHeroByBlastWithoutAddMana(f, ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, includeSelf: true, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
         }
 
         private static void TeleportHero(Frame f, ref FightingHero fightingHero, EffectQnt effectQnt, Board board)
@@ -265,8 +284,10 @@ namespace Quantum.Game
                     continue;
                 }
 
+                FightingHero targetHero = targets[i];
                 FP damage = globalEffectQnt.Duration < f.DeltaTime ? globalEffectQnt.Value * globalEffectQnt.Duration : globalEffectQnt.Value * f.DeltaTime;
-                HeroAttack.DamageHeroWithDOT(f, ownerHero, board, targets[i], damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                HeroAttack.DamageHeroWithoutAddMana(f, ref ownerHero, board, ref targetHero, damage, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                targets[i] = targetHero;
             }
         }
 
@@ -301,14 +322,27 @@ namespace Quantum.Game
             f.Events.HeroManaChanged(board.Player1.Ref, board.Player2.Ref, target.Hero.Ref, target.CurrentMana, target.Hero.MaxMana);
         }
 
-        private static void ProcessFirebirdRebirth(Frame f, FightingHero target, Board board, FP value)
+        private static int ProcessFirebirdRebirth(Frame f, ref FightingHero owner, Board board, FP value)
         {
-            var heroes = HeroBoard.GetAllTargetsInRange(f, target, board);
+            var heroesInRange = HeroBoard.GetAllTargetsInRange(f, owner, board);
 
-            foreach (var item in heroes)
+            for (int i = 0; i < heroesInRange.Count; i++)
             {
-                HeroAttack.DamageHeroWithDOT(f, target, board, item, value, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                FightingHero target = heroesInRange[i];
+                HeroAttack.DamageHeroWithoutAddMana(f, ref owner, board, ref target, value, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
             }
+
+            QList<EffectQnt> effects = f.ResolveList(owner.Effects);
+
+            foreach (EffectQnt effect in effects)
+            {
+                if (effect.Index == (int)EffectType.FirebirdRebirth)
+                {
+                    return effect.Size;
+                }
+            }
+
+            return 0;
         }
     }
 }
