@@ -603,13 +603,11 @@ namespace Quantum.Game
 
                 if (isRebirthing)
                 {
-                    heroes[targetHero.Index] = targetHero;
                     return;
                 }
 
                 if (targetHero.ExtraLives > 0 && targetHero.Hero.ID >= 0)
                 {
-                    Log.Debug($"Firebird Rebirth: {targetHero.ExtraLives}");
                     HeroNameEnum heroName = gameConfig.GetHeroInfo(f, targetHero.Hero.ID).Name;
 
                     if (heroName == HeroNameEnum.Firebird)
@@ -652,8 +650,6 @@ namespace Quantum.Game
                     targetHero.Hero.Ref = default;
                 }
             }
-
-            heroes[targetHero.Index] = targetHero;
         }
 
         public static void DestroyHero(Frame f, FightingHero fightingHero, Board board)

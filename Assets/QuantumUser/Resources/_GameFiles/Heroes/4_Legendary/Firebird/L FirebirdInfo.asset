@@ -73,4 +73,4 @@ MonoBehaviour:
   Mana:
     RawValue: 6553600
   StartMana:
-    RawValue: 3276800
+    RawValue: 0
