@@ -1,0 +1,154 @@
+using Photon.Deterministic;
+using Quantum.Collections;
+
+namespace Quantum.Game
+{
+    public static unsafe class CerberusAbilities
+    {
+        public static readonly FP FirstAbilityPercent = FP._0_50;
+        public static readonly FP SecondAbilityPercent = FP._0_20 + FP._0_10;
+
+        public static bool TryCastAbility(Frame f, FightingHero fightingHero, Board board)
+        {
+            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+            fightingHero = heroes[fightingHero.Index];
+            PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
+            int heroLevel = fightingHero.Hero.Level;
+            int secondHeroAbilityIndex = HeroAbility.GetSecondHeroAbilityIndex(f, playerLink, fightingHero.Hero.ID);
+            int thirdHeroAbilityIndex = HeroAbility.GetThirdHeroAbilityIndex(f, playerLink, fightingHero.Hero.ID);
+            FP hpPercent = fightingHero.CurrentHealth / fightingHero.Hero.Health;
+
+            if (hpPercent > FirstAbilityPercent)
+            {
+                FP damage = heroLevel switch
+                {
+                    0 => 300,
+                    1 => 450,
+                    2 => 675,
+                    _ => 0
+                };
+
+                FP armor = heroLevel switch
+                {
+                    0 => 250,
+                    1 => 375,
+                    2 => 525,
+                    _ => 0
+                };
+
+                return TryCastV1(f, fightingHero, board, damage, armor);
+            }
+            else if (hpPercent > SecondAbilityPercent)
+            {
+                FP damage = heroLevel switch
+                {
+                    0 => 400,
+                    1 => 600,
+                    2 => 900,
+                    _ => 0
+                };
+
+                FP reduceAttackSpeed = heroLevel switch
+                {
+                    0 => FP._0_10 + FP._0_05,
+                    1 => FP._0_10 * 2,
+                    2 => FP._0_25,
+                    _ => 0
+                };
+
+                return TryCastV2(f, fightingHero, board, damage, reduceAttackSpeed);
+            }
+            else
+            {
+                FP damage = heroLevel switch
+                {
+                    0 => 600,
+                    1 => 900,
+                    2 => 1350,
+                    _ => 0
+                };
+
+                FP healPercent = heroLevel switch
+                {
+                    0 => FP._0_10 * 2,
+                    1 => FP._0_20 + FP._0_10,
+                    2 => FP._0_50,
+                    _ => 0
+                };
+
+                FP increaseAttackSpeed = heroLevel switch
+                {
+                    0 => FP._0_25,
+                    1 => FP._0_25 + FP._0_10,
+                    2 => FP._0_50,
+                    _ => 0
+                };
+
+                return TryCastV3(f, fightingHero, board, damage, healPercent, increaseAttackSpeed);
+            }
+        }
+
+        private static bool TryCastV1(Frame f, FightingHero fightingHero, Board board, FP damage, FP armor)
+        {
+            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
+            {
+                HeroEffects.Effect effect = new()
+                {
+                    Owner = fightingHero.Hero.Ref,
+                    Type = HeroEffects.EffectType.TemporaryArmor,
+                    Value = armor,
+                    Duration = 3,
+                };
+
+                HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref fightingHero, effect);
+                HeroAttack.DamageHeroByBlast(f, fightingHero, target.Index, board, damage, fightingHero.Hero.Range, includeSelf: true, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool TryCastV2(Frame f, FightingHero fightingHero, Board board, FP damage, FP reduceAttackSpeed)
+        {
+            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
+            {
+                HeroEffects.Effect effect = new()
+                {
+                    Owner = fightingHero.Hero.Ref,
+                    Type = HeroEffects.EffectType.IncreaseAttackSpeed,
+                    Value = 1 - reduceAttackSpeed,
+                    Duration = 3,
+                };
+
+                HeroAttack.DamageHero(f, fightingHero, board, target, damage, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                return true;
+            }
+
+            return false;
+        }
+
+        private static bool TryCastV3(Frame f, FightingHero fightingHero, Board board, FP damage, FP healPercent, FP increaseAttackSpeed)
+        {
+            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
+            {
+                if (HeroAttack.DamageHero(f, fightingHero, board, target, damage, HeroAttack.DamageType.True, HeroAttack.AttackType.Ability))
+                {
+                    HeroEffects.Effect effect = new()
+                    {
+                        Owner = fightingHero.Hero.Ref,
+                        Type = HeroEffects.EffectType.IncreaseAttackSpeed,
+                        Value = increaseAttackSpeed,
+                        Duration = 4,
+                    };
+
+                    HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref target, effect);
+                    HeroAttack.HealHero(f, fightingHero, board, fightingHero, healPercent * fightingHero.Hero.Health);
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+    }
+}

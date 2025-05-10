@@ -57,7 +57,7 @@ namespace Quantum.Game
         }
 
         public static void UpdateHeroes<T>(Frame f, QList<Board> boards,
-            Action<Frame, FightingHero, HeroAttack.DamageType, HeroAttack.AttackType> Attack, bool isHeroAttackWhileMooving) where T : unmanaged, IComponent
+            Func<Frame, FightingHero, HeroAttack.DamageType, HeroAttack.AttackType, bool> Attack, bool isHeroAttackWhileMooving) where T : unmanaged, IComponent
         {
             if (f.Global->IsBuyPhase || f.Global->IsDelayPassed == false || f.Global->IsFighting == false) return;
 
@@ -73,7 +73,7 @@ namespace Quantum.Game
         }
 
         private static void UpdateHero(Frame f, FightingHero fightingHero, Board board,
-            Action<Frame, FightingHero, HeroAttack.DamageType, HeroAttack.AttackType> Attack, bool isHeroAttackWhileMooving)
+            Func<Frame, FightingHero, HeroAttack.DamageType, HeroAttack.AttackType, bool> Attack, bool isHeroAttackWhileMooving)
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             fightingHero = heroes[fightingHero.Index];
@@ -115,7 +115,23 @@ namespace Quantum.Game
                 Hero.Rotate(f, fightingHero.Hero, f.Get<Transform3D>(fightingHero.AttackTarget).Position);
             }
 
-            Attack(f, fightingHero, (HeroAttack.DamageType)fightingHero.Hero.AttackDamageType, HeroAttack.AttackType.Base);
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+            HeroNameEnum heroName = gameConfig.GetHeroInfo(f, fightingHero.Hero.ID).Name;
+
+            if (heroName == HeroNameEnum.Merlin)
+            {
+                if (MerlinAbilities.TryGetNewAttackAction(ref fightingHero, heroes, out var NewAttack))
+                {
+                    Attack = NewAttack;
+                }
+            }
+
+            if (Attack(f, fightingHero, (HeroAttack.DamageType)fightingHero.Hero.AttackDamageType, HeroAttack.AttackType.Base))
+            {
+                fightingHero = heroes[fightingHero.Index];
+                fightingHero.AttackStage++;
+                heroes[fightingHero.Index] = fightingHero;
+            }
         }
 
         private static bool TryGetHeroes<T>(Frame f, QList<Board> boards, ref List<(FightingHero, Board)> heroes) where T : unmanaged, IComponent

@@ -34,7 +34,7 @@ namespace Quantum.Game
         {
             if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
             {
-                FP damage = 0;
+                FP damage = blastDamage;
                 HeroEffects.Effect effect = new()
                 {
                     Owner = fightingHero.Hero.Ref,

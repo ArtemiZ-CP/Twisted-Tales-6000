@@ -141,6 +141,12 @@ namespace Quantum.Game
                 case HeroNameEnum.Firebird:
                     tryCastAbility = FirebirdAbilities.TryCastAbility;
                     return true;
+                case HeroNameEnum.Cerberus:
+                    tryCastAbility = CerberusAbilities.TryCastAbility;
+                    return true;
+                case HeroNameEnum.Merlin:
+                    tryCastAbility = MerlinAbilities.TryCastAbility;
+                    return true;
 
                 default:
                     tryCastAbility = default;

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Photon.Deterministic;
 using Quantum.Collections;
 
@@ -6,6 +7,62 @@ namespace Quantum.Game
     public static unsafe class FirebirdAbilities
     {
         public const int Range = 2;
+
+        public static void ProcessDeathInFirebirdRebirthRange(Frame f, ref FightingHero targetHero, Board board, QList<FightingHero> heroes)
+        {
+            List<FightingHero> fightingHeroes = HeroBoard.GetAllTeamHeroesInRange(f, targetHero.Index, HeroBoard.GetEnemyTeamNumber(targetHero.TeamNumber), board, FirebirdAbilities.Range);
+
+            for (int i = 0; i < fightingHeroes.Count; i++)
+            {
+                FightingHero hero = fightingHeroes[i];
+                QList<EffectQnt> effects = f.ResolveList(hero.Effects);
+
+                for (int j = 0; j < effects.Count; j++)
+                {
+                    EffectQnt effectQnt = effects[j];
+
+                    if (effectQnt.Index == (int)HeroEffects.EffectType.FirebirdRebirth)
+                    {
+                        effectQnt.Size++;
+                    }
+
+                    effects[j] = effectQnt;
+                }
+            }
+        }
+
+        public static void ProcessLoseLife(Frame f, ref FightingHero targetHero, Board board, QList<FightingHero> heroes)
+        {
+            targetHero.ExtraLives--;
+            targetHero.CurrentHealth = 0;
+            heroes[targetHero.Index] = targetHero;
+
+            int duration = 4;
+            FP attackSpeedIncrease = targetHero.Hero.Level switch
+            {
+                0 => FP._0_20,
+                1 => FP._0_25,
+                2 => FP._0_25 + FP._0_10,
+                _ => 0,
+            };
+
+            FP damageAbility = targetHero.Hero.Level switch
+            {
+                0 => 100,
+                1 => 150,
+                2 => 225,
+                _ => 0,
+            };
+
+            HeroAttack.ApplyEffectToTarget(f, ref targetHero, board, ref targetHero, new HeroEffects.Effect()
+            {
+                Type = HeroEffects.EffectType.FirebirdRebirth,
+                MaxValue = attackSpeedIncrease,
+                Value = damageAbility,
+                Duration = duration,
+                Size = 0,
+            });
+        }
 
         public static bool TryCastAbility(Frame f, FightingHero fightingHero, Board board)
         {

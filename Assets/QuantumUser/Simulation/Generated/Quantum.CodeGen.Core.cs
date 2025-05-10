@@ -513,11 +513,11 @@ namespace Quantum {
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(104)]
     public HeroEntity Hero;
-    [FieldOffset(12)]
+    [FieldOffset(16)]
     public Int32 Index;
-    [FieldOffset(4)]
+    [FieldOffset(8)]
     public Int32 BoardIndex;
-    [FieldOffset(32)]
+    [FieldOffset(36)]
     public QListPtr<EffectQnt> Effects;
     [FieldOffset(64)]
     public FP CurrentHealth;
@@ -527,19 +527,21 @@ namespace Quantum {
     public FP CurrentMana;
     [FieldOffset(40)]
     public EntityRef AttackTarget;
-    [FieldOffset(16)]
-    public Int32 TargetPositionX;
     [FieldOffset(20)]
-    public Int32 TargetPositionY;
+    public Int32 TargetPositionX;
     [FieldOffset(24)]
-    public Int32 TeamNumber;
+    public Int32 TargetPositionY;
     [FieldOffset(28)]
+    public Int32 TeamNumber;
+    [FieldOffset(32)]
     public QBoolean IsAlive;
     [FieldOffset(48)]
     public FP AttackTimer;
+    [FieldOffset(4)]
+    public Int32 AttackStage;
     [FieldOffset(0)]
     public Int32 AbilityStage;
-    [FieldOffset(8)]
+    [FieldOffset(12)]
     public Int32 ExtraLives;
     [FieldOffset(88)]
     public FP DealedBaseDamage;
@@ -563,6 +565,7 @@ namespace Quantum {
         hash = hash * 31 + TeamNumber.GetHashCode();
         hash = hash * 31 + IsAlive.GetHashCode();
         hash = hash * 31 + AttackTimer.GetHashCode();
+        hash = hash * 31 + AttackStage.GetHashCode();
         hash = hash * 31 + AbilityStage.GetHashCode();
         hash = hash * 31 + ExtraLives.GetHashCode();
         hash = hash * 31 + DealedBaseDamage.GetHashCode();
@@ -577,6 +580,7 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (FightingHero*)ptr;
         serializer.Stream.Serialize(&p->AbilityStage);
+        serializer.Stream.Serialize(&p->AttackStage);
         serializer.Stream.Serialize(&p->BoardIndex);
         serializer.Stream.Serialize(&p->ExtraLives);
         serializer.Stream.Serialize(&p->Index);

@@ -31,7 +31,7 @@ MonoBehaviour:
   HeroType: 0
   HeroStats:
   - Health:
-      RawValue: 55705600
+      RawValue: 5570560000
     Defense:
       RawValue: 1310720
     MagicDefense:
@@ -73,4 +73,4 @@ MonoBehaviour:
   Mana:
     RawValue: 6553600
   StartMana:
-    RawValue: 3276800
+    RawValue: 0

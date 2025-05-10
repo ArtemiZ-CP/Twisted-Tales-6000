@@ -133,6 +133,7 @@ namespace Quantum.Game
                 BoardIndex = boardIndex,
                 TeamNumber = teamNumber,
                 Effects = f.AllocateList<EffectQnt>(),
+                AttackStage = 0,
                 AbilityStage = 0,
                 ExtraLives = extraLives,
             };

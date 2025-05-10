@@ -25,6 +25,8 @@ namespace Quantum.Game
             Teleport,
             ExtraBaseDamage,
             FirebirdRebirth,
+            Silence,
+            BlastSilence,
         }
 
         public enum GlobalEffectType
@@ -144,11 +146,12 @@ namespace Quantum.Game
             }
         }
 
-        public static void ProcessEffects(Frame f, ref FightingHero target, Board board, out bool isStunned)
+        public static void ProcessEffects(Frame f, ref FightingHero target, Board board, out bool isStunned, out bool isSilenced)
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             target = heroes[target.Index];
             isStunned = false;
+            isSilenced = false;
 
             if (f.Exists(target.Hero.Ref) == false || target.IsAlive == false)
             {
@@ -175,10 +178,22 @@ namespace Quantum.Game
                         ReduceCurrentMana(f, target, board, effectQnt.Value);
                         break;
                     case EffectType.Blast:
-                        HeroAttack.DamageHeroByBlastWithoutAddMana(f, ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, includeSelf: true, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                        HeroAttack.DamageHeroByBlastWithoutAddMana(f, ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, includeSelf: false, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         break;
                     case EffectType.Stun:
                         isStunned = true;
+                        break;
+                    case EffectType.Silence:
+                        isSilenced = true;
+                        break;
+                    case EffectType.BlastSilence:
+                        Effect effect = new()
+                        {
+                            Owner = effectQnt.Owner,
+                            Type = EffectType.Silence,
+                            Duration = effectQnt.Duration
+                        };
+                        HeroAttack.DamageHeroByBlastWithoutAddMana(f, ownerHero, target.Index, board, 0, effectQnt.Size, includeSelf: true, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         break;
                     case EffectType.BlastStun:
                         BlastStun(f, ref ownerHero, board, ref target, effectQnt);

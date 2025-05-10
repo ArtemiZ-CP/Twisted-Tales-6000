@@ -71,21 +71,7 @@ namespace Quantum.Game
         private static bool TryCastV3(Frame f, FightingHero fightingHero, Board board, FP amount)
         {
             List<FightingHero> alies = HeroBoard.GetAllAliesInRange(f, fightingHero, board, includeSelf: true);
-
-            FightingHero alyWithMinHealth = default;
-            FP minHealth = FP.MaxValue;
-
-            foreach (FightingHero aly in alies)
-            {
-                FP health = aly.CurrentHealth;
-                
-                if (health < minHealth)
-                {
-                    minHealth = health;
-                    alyWithMinHealth = aly;
-                }
-            }
-
+            FightingHero alyWithMinHealth = HeroBoard.GetAliyWithMinHealth(alies);
             HeroAttack.HealHero(f, fightingHero, board, alyWithMinHealth, amount);
 
             return false;

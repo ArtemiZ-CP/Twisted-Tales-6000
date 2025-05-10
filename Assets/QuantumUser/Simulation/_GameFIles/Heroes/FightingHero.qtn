@@ -15,6 +15,7 @@ struct FightingHero
     int TeamNumber;
     bool IsAlive;
     FP AttackTimer;
+    int AttackStage;
     int AbilityStage;
     int ExtraLives;
 

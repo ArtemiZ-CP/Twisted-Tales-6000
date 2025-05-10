@@ -202,6 +202,25 @@ namespace Quantum.Game
             heroes[fighingHero.Index] = fightingHero;
         }
 
+        public static FightingHero GetAliyWithMinHealth(List<FightingHero> alies)
+        {
+            FightingHero alyWithMinHealth = default;
+            FP minHealth = FP.MaxValue;
+
+            foreach (FightingHero aly in alies)
+            {
+                FP health = aly.CurrentHealth;
+
+                if (health < minHealth)
+                {
+                    minHealth = health;
+                    alyWithMinHealth = aly;
+                }
+            }
+
+            return alyWithMinHealth;
+        }
+
         public static FightingHero GetClosestTarget(Frame f, List<FightingHero> heroes, FightingHero hero)
         {
             FP minDistance = FP.MaxValue;
@@ -280,7 +299,7 @@ namespace Quantum.Game
                 emptyTile = default;
                 return false;
             }
-            
+
             closeTiles.Sort((a, b) =>
             {
                 FP distanceA = Mathf.Abs(a.x - startTile.x) + Mathf.Abs(a.y - startTile.y);

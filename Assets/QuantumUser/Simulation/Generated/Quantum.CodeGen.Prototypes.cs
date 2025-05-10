@@ -163,6 +163,7 @@ namespace Quantum.Prototypes {
     public Int32 TeamNumber;
     public QBoolean IsAlive;
     public FP AttackTimer;
+    public Int32 AttackStage;
     public Int32 AbilityStage;
     public Int32 ExtraLives;
     public FP DealedBaseDamage;
@@ -191,6 +192,7 @@ namespace Quantum.Prototypes {
         result.TeamNumber = this.TeamNumber;
         result.IsAlive = this.IsAlive;
         result.AttackTimer = this.AttackTimer;
+        result.AttackStage = this.AttackStage;
         result.AbilityStage = this.AbilityStage;
         result.ExtraLives = this.ExtraLives;
         result.DealedBaseDamage = this.DealedBaseDamage;
