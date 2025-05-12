@@ -5,12 +5,14 @@ namespace Quantum.Game
 {
     public class HeroName : MonoBehaviour
     {
+        [SerializeField] private Canvas _canvas;
         [SerializeField] private TMP_Text _heroNameText;
         
         private HeroMesh _heroMesh;
 
         private void Awake()
         {
+            _canvas.worldCamera = Camera.main;
             _heroMesh = FindComponentInParents<HeroMesh>();
         }
 

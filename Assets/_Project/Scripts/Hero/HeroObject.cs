@@ -1,11 +1,13 @@
 using UnityEngine;
 using UnityEngine.Rendering;
-using System.Collections;
 
 namespace Quantum.Game
 {
     public class HeroObject : MonoBehaviour
     {
+        [SerializeField] private Collider _UICollider;
+        [SerializeField] private Collider _boardCollider;
+
         private HeroState _heroState = HeroState.None;
         private PlayerInventorySlot _playerInventorySlot;
         private ShopItemSlot _shopItemSlot;
@@ -155,6 +157,11 @@ namespace Quantum.Game
         private void SpawnHero()
         {
             ClearHero();
+            
+            bool isUIPosition = _heroState == HeroState.Inventory || _heroState == HeroState.Shop;
+
+            _UICollider.enabled = isUIPosition;
+            _boardCollider.enabled = isUIPosition == false;
 
             if (_id < 0)
             {
@@ -166,7 +173,6 @@ namespace Quantum.Game
             _heroMesh = Instantiate(heroInfo.HeroPrefab);
             _heroMesh.SetMesh(_level, _id);
             _range = heroInfo.HeroStats[_level].Range;
-            bool isUIPosition = _heroState == HeroState.Inventory || _heroState == HeroState.Shop;
             _heroMesh.transform.localScale = GameSettings.GetHeroSize(isUIPosition) * Vector3.one;
             _heroMesh.transform.rotation = GameSettings.GetHeroRotation(isUIPosition);
             _heroMesh.transform.SetParent(transform);

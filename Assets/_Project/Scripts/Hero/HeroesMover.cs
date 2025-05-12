@@ -25,7 +25,9 @@ namespace Quantum.Game
         public bool IsRoundStarted => _isRoundStarted;
         public bool IsHeroDragging => _selectedHero != null;
         public EntityRef SelectedHeroRef => _selectedHeroRef;
+
         public event System.Action<HeroObject> ClickedOnHero;
+        public event System.Action OnUpgradeHero;
 
         private void Awake()
         {
@@ -158,7 +160,12 @@ namespace Quantum.Game
 
             if (Physics.Raycast(ray, out RaycastHit hit, float.MaxValue, _heroLayerMask))
             {
-                if (hit.collider.gameObject.TryGetComponent(out _selectedHero) && _selectedHero.Id >= 0)
+                if (hit.collider.gameObject.TryGetComponent(out UpgradeButton upgradeButton))
+                {
+                    OnUpgradeHero?.Invoke();
+                    return false;
+                }
+                else if (hit.collider.gameObject.TryGetComponent(out _selectedHero) && _selectedHero.Id >= 0)
                 {
                     return true;
                 }

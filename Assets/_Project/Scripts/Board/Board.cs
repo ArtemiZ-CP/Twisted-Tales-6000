@@ -130,14 +130,12 @@ namespace Quantum.Game
 
         private Tile GetClosestTile(Vector3 position)
         {
-            Vector3 localPosition = transform.InverseTransformPoint(position);
-
             Tile closestTile = null;
             float closestDistance = float.MaxValue;
 
             foreach (Tile tile in _tiles)
             {
-                float distance = tile.Position.SqrDistance(localPosition);
+                float distance = tile.Position.SqrDistance(position);
 
                 if (distance < closestDistance)
                 {
