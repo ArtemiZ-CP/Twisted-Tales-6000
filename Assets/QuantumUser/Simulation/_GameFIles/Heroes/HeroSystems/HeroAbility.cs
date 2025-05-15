@@ -19,18 +19,6 @@ namespace Quantum.Game
             selectedHeroAbility.ThirdAbilityIndex = thirdAbilityIndex;
         }
 
-        public static int GetSecondHeroAbilityIndex(Frame f, PlayerLink* playerLink, int heroID)
-        {
-            SelectedHeroAbility selectedHeroAbility = GetSelectedHeroAbility(f, playerLink, heroID, out _);
-            return selectedHeroAbility.SecondAbilityIndex;
-        }
-
-        public static int GetThirdHeroAbilityIndex(Frame f, PlayerLink* playerLink, int heroID)
-        {
-            SelectedHeroAbility selectedHeroAbility = GetSelectedHeroAbility(f, playerLink, heroID, out _);
-            return selectedHeroAbility.ThirdAbilityIndex;
-        }
-
         public static void ProjectileAttack(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, DamageType damageType, AttackType attackType)
         {
             HeroProjectilesSystem.SpawnProjectile(f, fightingHero, board, targetHero, damage, null, null, damageType, attackType);
@@ -51,7 +39,7 @@ namespace Quantum.Game
             HeroProjectilesSystem.SpawnProjectile(f, fightingHero, board, targetHero, damage, null, globalEffects, damageType, attackType);
         }
 
-        private static SelectedHeroAbility GetSelectedHeroAbility(Frame f, PlayerLink* playerLink, int heroID, out int index)
+        public static SelectedHeroAbility GetSelectedHeroAbility(Frame f, PlayerLink* playerLink, int heroID, out int index)
         {
             QList<SelectedHeroAbility> abilities = f.ResolveList(playerLink->Info.Board.Abilities);
 

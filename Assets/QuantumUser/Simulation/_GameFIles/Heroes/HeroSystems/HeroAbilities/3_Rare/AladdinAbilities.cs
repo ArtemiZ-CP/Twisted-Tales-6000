@@ -12,26 +12,25 @@ namespace Quantum.Game
             fightingHero = heroes[fightingHero.Index];
             PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
             int heroLevel = fightingHero.Hero.Level;
-            int secondHeroAbilityIndex = HeroAbility.GetSecondHeroAbilityIndex(f, playerLink, fightingHero.Hero.ID);
-            int thirdHeroAbilityIndex = HeroAbility.GetThirdHeroAbilityIndex(f, playerLink, fightingHero.Hero.ID);
+            SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, playerLink, fightingHero.Hero.ID, out int _);
 
             FP damage1;
             FP armor2;
             FP heal3;
 
-            if (heroLevel == 0)
+            if (heroLevel == Hero.Level1)
             {
                 damage1 = 150;
                 armor2 = 100;
                 heal3 = 80;
             }
-            else if (heroLevel == 1)
+            else if (heroLevel == Hero.Level2)
             {
                 damage1 = 225;
                 armor2 = 150;
                 heal3 = 120;
             }
-            else if (heroLevel == 2)
+            else if (heroLevel == Hero.Level3)
             {
                 damage1 = 340;
                 armor2 = 225;

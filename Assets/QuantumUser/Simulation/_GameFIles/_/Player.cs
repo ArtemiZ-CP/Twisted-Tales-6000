@@ -65,7 +65,7 @@ namespace Quantum.Game
             return players;
         }
 
-        public static List<EntityRef> GetAllPlayersEntity(Frame f)
+        public static List<EntityRef> GetAllPlayerEntities(Frame f)
         {
             List<EntityRef> playersEntity = new();
 
@@ -91,7 +91,7 @@ namespace Quantum.Game
 
         public static void ResetCoins(Frame f)
         {
-            var players = GetAllPlayersEntity(f);
+            var players = GetAllPlayerEntities(f);
 
             foreach (var entity in players)
             {
@@ -112,7 +112,7 @@ namespace Quantum.Game
                 return;
             }
 
-            var players = GetAllPlayersEntity(f);
+            var players = GetAllPlayerEntities(f);
 
             foreach (var entity in players)
             {

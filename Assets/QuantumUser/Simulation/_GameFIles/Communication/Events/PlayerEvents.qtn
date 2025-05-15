@@ -13,3 +13,10 @@ event GetFightingHero
     player_ref PlayerRef;
     FightingHero FightingHero;
 }
+
+event LevelUpHero
+{
+    player_ref PlayerRef;
+    int HeroID;
+    int HeroLevel;
+}

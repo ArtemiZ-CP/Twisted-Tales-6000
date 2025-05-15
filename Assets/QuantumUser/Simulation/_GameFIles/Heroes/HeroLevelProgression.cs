@@ -5,15 +5,41 @@ using UnityEngine.Scripting;
 namespace Quantum.Game
 {
     [Preserve]
-    public unsafe class HeroLevelProgression : SystemSignalsOnly, ISignalTryUpgradeHero, ISignalOnEndRound
+    public unsafe class HeroLevelProgression : SystemSignalsOnly, ISignalTryUpgradeHero, ISignalOnStartRound, ISignalOnEndRound
     {
         public void OnEndRound(Frame f)
         {
-            var playerLinks = Player.GetAllPlayersEntity(f);
+            var playerEntity = Player.GetAllPlayerEntities(f);
+
+            for (int i = 0; i < playerEntity.Count; i++)
+            {
+                TryUpgradeHero(f, Player.GetPlayerPointer(f, playerEntity[i]));
+            }
+        }
+
+        public void OnStartRound(Frame f)
+        {
+            var playerLinks = Player.GetAllPlayerLinks(f);
 
             for (int i = 0; i < playerLinks.Count; i++)
             {
-                TryUpgradeHero(f, Player.GetPlayerPointer(f, playerLinks[i]));
+                PlayerLink playerLink = playerLinks[i];
+                QList<SelectedHeroAbility> abilities = f.ResolveList(playerLink.Info.Board.Abilities);
+
+                for (int j = 0; j < abilities.Count; j++)
+                {
+                    SelectedHeroAbility selectedHeroAbility = abilities[j];
+
+                    if (selectedHeroAbility.SecondAbilityIndex == 0)
+                    {
+                        f.Events.LevelUpHero(playerLink.Ref, selectedHeroAbility.HeroID, Hero.Level2);
+                    }
+
+                    if (selectedHeroAbility.ThirdAbilityIndex == 0)
+                    {
+                        f.Events.LevelUpHero(playerLink.Ref, selectedHeroAbility.HeroID, Hero.Level3);
+                    }
+                }
             }
         }
 
@@ -65,6 +91,7 @@ namespace Quantum.Game
             QList<int> heroesLevelInventory = f.ResolveList(playerLink->Info.Inventory.HeroesLevel);
             QList<int> heroesBoard = f.ResolveList(playerLink->Info.Board.HeroesID);
             QList<int> heroesLevelBoard = f.ResolveList(playerLink->Info.Board.HeroesLevel);
+            QList<SelectedHeroAbility> abilities = f.ResolveList(playerLink->Info.Board.Abilities);
 
             bool onBoard = false;
             int heroIndex = -1;
@@ -144,12 +171,27 @@ namespace Quantum.Game
                 heroesLevelInventory[heroIndex] = heroLevel + 1;
             }
 
+            SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, playerLink, heroID, out int index);
+
+            switch (heroLevel + 1)
+            {
+                case Hero.Level2:
+                    selectedHeroAbility.SecondAbilityIndex = 0;
+                    break;
+                case Hero.Level3:
+                    selectedHeroAbility.ThirdAbilityIndex = 0;
+                    break;
+            }
+
+            abilities[index] = selectedHeroAbility;
+
             f.Events.GetBoardHeroes(f, playerLink->Ref,
                 f.ResolveList(playerLink->Info.Board.HeroesID),
                 f.ResolveList(playerLink->Info.Board.HeroesLevel));
             f.Events.GetInventoryHeroes(f, playerLink->Ref,
                 f.ResolveList(playerLink->Info.Inventory.HeroesID),
                 f.ResolveList(playerLink->Info.Inventory.HeroesLevel));
+            f.Events.LevelUpHero(playerLink->Ref, heroID, heroLevel + 1);
         }
 
         private bool TryGetHeroesToUpgrade(Frame f, PlayerLink* playerLink, out List<HeroUpgradeInfo> heroUpgradeInfos)

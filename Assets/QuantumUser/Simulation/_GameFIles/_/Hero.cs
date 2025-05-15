@@ -6,6 +6,10 @@ namespace Quantum.Game
 {
     public unsafe class Hero
     {
+        public const int Level1 = 0;
+        public const int Level2 = 1;
+        public const int Level3 = 2;
+        
         public static int GetHeroCost(Frame f, int heroID)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
@@ -106,7 +110,7 @@ namespace Quantum.Game
                     HeroEntity hero = new()
                     {
                         ID = roundInfo.PVEBoard[i].Cells[^(j + 1)],
-                        Level = 0,
+                        Level = Hero.Level1,
                         DefaultPosition = HeroBoard.GetTilePosition(f, j, i),
                     };
 

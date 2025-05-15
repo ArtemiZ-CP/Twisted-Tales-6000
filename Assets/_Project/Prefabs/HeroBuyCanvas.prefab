@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8003387199561976119}
   - component: {fileID: 3189034830081039312}
+  - component: {fileID: 2124792522021783714}
   m_Layer: 5
   m_Name: HeroBuyCanvas
   m_TagString: Untagged
@@ -60,6 +61,19 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &2124792522021783714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1725715646452888207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b2ddbdd7d1744441a9ca5fae8608f1ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _upgradeButton: {fileID: 8186110838225860220}
 --- !u!1 &4177545253368904002
 GameObject:
   m_ObjectHideFlags: 0

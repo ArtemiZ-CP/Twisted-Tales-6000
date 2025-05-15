@@ -16,7 +16,7 @@ namespace Quantum.Game
 
         public static void SetFreezeShop(Frame f, bool isLocked)
         {
-            foreach (EntityRef player in Player.GetAllPlayersEntity(f))
+            foreach (EntityRef player in Player.GetAllPlayerEntities(f))
             {
                 SetFreezeShop(f, Player.GetPlayerPointer(f, player), isLocked);
             }
@@ -30,7 +30,7 @@ namespace Quantum.Game
 
         public static void ReloadOnEndRound(Frame f)
         {
-            var players = Player.GetAllPlayersEntity(f);
+            var players = Player.GetAllPlayerEntities(f);
 
             foreach (var entity in players)
             {
@@ -158,7 +158,7 @@ namespace Quantum.Game
 
         public static void AddXP(Frame f, int xp)
         {
-            List<EntityRef> playerEntities = Player.GetAllPlayersEntity(f);
+            List<EntityRef> playerEntities = Player.GetAllPlayerEntities(f);
 
             foreach (EntityRef playerEntitie in playerEntities)
             {

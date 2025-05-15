@@ -281,7 +281,7 @@ namespace Quantum.Game
                 Player.ResetCoins(f);
             }
 
-            var players = Player.GetAllPlayersEntity(f);
+            var players = Player.GetAllPlayerEntities(f);
 
             foreach (EntityRef player in players)
             {

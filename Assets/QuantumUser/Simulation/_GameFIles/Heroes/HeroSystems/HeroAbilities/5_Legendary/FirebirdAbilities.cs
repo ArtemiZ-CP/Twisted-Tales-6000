@@ -40,17 +40,17 @@ namespace Quantum.Game
             int duration = 4;
             FP attackSpeedIncrease = targetHero.Hero.Level switch
             {
-                0 => FP._0_20,
-                1 => FP._0_25,
-                2 => FP._0_25 + FP._0_10,
+                Hero.Level1 => FP._0_20,
+                Hero.Level2 => FP._0_25,
+                Hero.Level3 => FP._0_25 + FP._0_10,
                 _ => 0,
             };
 
             FP damageAbility = targetHero.Hero.Level switch
             {
-                0 => 100,
-                1 => 150,
-                2 => 225,
+                Hero.Level1 => 100,
+                Hero.Level2 => 150,
+                Hero.Level3 => 225,
                 _ => 0,
             };
 
@@ -70,22 +70,21 @@ namespace Quantum.Game
             fightingHero = heroes[fightingHero.Index];
             PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
             int heroLevel = fightingHero.Hero.Level;
-            int secondHeroAbilityIndex = HeroAbility.GetSecondHeroAbilityIndex(f, playerLink, fightingHero.Hero.ID);
-            int thirdHeroAbilityIndex = HeroAbility.GetThirdHeroAbilityIndex(f, playerLink, fightingHero.Hero.ID);
+            SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, playerLink, fightingHero.Hero.ID, out int _);
 
             FP damage = heroLevel switch
             {
-                0 => 350,
-                1 => 525,
-                2 => 800,
+                Hero.Level1 => 350,
+                Hero.Level2 => 525,
+                Hero.Level3 => 800,
                 _ => 0
             };
 
             FP reduceHealAndArmor = heroLevel switch
             {
-                0 => FP._0_20,
-                1 => FP._0_20 + FP._0_10,
-                2 => FP._0_20 * 2,
+                Hero.Level1 => FP._0_20,
+                Hero.Level2 => FP._0_20 + FP._0_10,
+                Hero.Level3 => FP._0_20 * 2,
                 _ => 0
             };
 

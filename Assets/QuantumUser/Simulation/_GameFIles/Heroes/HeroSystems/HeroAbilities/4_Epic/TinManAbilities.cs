@@ -11,8 +11,7 @@ namespace Quantum.Game
             fightingHero = heroes[fightingHero.Index];
             PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
             int heroLevel = fightingHero.Hero.Level;
-            int secondHeroAbilityIndex = HeroAbility.GetSecondHeroAbilityIndex(f, playerLink, fightingHero.Hero.ID);
-            int thirdHeroAbilityIndex = HeroAbility.GetThirdHeroAbilityIndex(f, playerLink, fightingHero.Hero.ID);
+            SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, playerLink, fightingHero.Hero.ID, out int _);
             int abilityStage = fightingHero.AbilityStage;
 
             FP damage1;
@@ -22,7 +21,7 @@ namespace Quantum.Game
             FP armor3;
             FP reloadTime = 1 / fightingHero.Hero.AttackSpeed;
 
-            if (heroLevel == 0)
+            if (heroLevel == Hero.Level1)
             {
                 damage1 = 60;
                 damage2 = 140;
@@ -30,7 +29,7 @@ namespace Quantum.Game
                 damage3 = 100;
                 armor3 = 150;
             }
-            else if (heroLevel == 1)
+            else if (heroLevel == Hero.Level2)
             {
                 damage1 = 90;
                 damage2 = 210;
@@ -38,7 +37,7 @@ namespace Quantum.Game
                 damage3 = 150;
                 armor3 = 225;
             }
-            else if (heroLevel == 2)
+            else if (heroLevel == Hero.Level3)
             {
                 damage1 = 135;
                 damage2 = 315;

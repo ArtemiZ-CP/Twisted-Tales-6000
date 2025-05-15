@@ -4,11 +4,13 @@ namespace Quantum.Game
 {
     public class HeroRangeDisplay : MonoBehaviour
     {
-        [SerializeField] private float _cellSize;
         [SerializeField] private RectTransform _rectTransform;
+
+        private float _cellSize;
 
         private void Awake()
         {
+            _cellSize = QuantumConnection.GameConfig.TileSize;
             SetActive(false);
         }
 
