@@ -27,7 +27,7 @@ namespace Quantum.Game
         public EntityRef SelectedHeroRef => _selectedHeroRef;
 
         public event System.Action<HeroObject> ClickedOnHero;
-        public event System.Action OnUpgradeHero;
+        public event System.Action<int, int> OnUpgradeHero;
 
         private void Awake()
         {
@@ -162,7 +162,7 @@ namespace Quantum.Game
             {
                 if (hit.collider.gameObject.TryGetComponent(out UpgradeButton upgradeButton))
                 {
-                    OnUpgradeHero?.Invoke();
+                    OnUpgradeHero?.Invoke(upgradeButton.ID, upgradeButton.Level);
                     return false;
                 }
                 else if (hit.collider.gameObject.TryGetComponent(out _selectedHero) && _selectedHero.Id >= 0)

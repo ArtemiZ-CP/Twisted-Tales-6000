@@ -255,15 +255,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: 1
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c883c8426ac1d48138356448d3e7eed7, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: c883c8426ac1d48138356448d3e7eed7, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -828,19 +828,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 148233630}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2056125495}
-        m_TargetAssemblyTypeName: UpgradeHeroDisplayer, Assembly-CSharp
-        m_MethodName: HidePanel
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &161500919
 GameObject:
   m_ObjectHideFlags: 0
@@ -2516,7 +2504,6 @@ GameObject:
   - component: {fileID: 417979744}
   - component: {fileID: 417979743}
   - component: {fileID: 417979742}
-  - component: {fileID: 417979741}
   m_Layer: 5
   m_Name: UICanvasOverlay
   m_TagString: Untagged
@@ -2524,18 +2511,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!210 &417979741
-SortingGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 417979740}
-  m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: -27
-  m_SortAtRoot: 0
 --- !u!114 &417979742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5317,6 +5292,7 @@ GameObject:
   - component: {fileID: 1057260569}
   - component: {fileID: 1057260570}
   - component: {fileID: 1057260571}
+  - component: {fileID: 1057260572}
   m_Layer: 0
   m_Name: GlobalScripts
   m_TagString: Untagged
@@ -5426,6 +5402,18 @@ MonoBehaviour:
   _uiElements:
   - {fileID: 829608770}
   - {fileID: 1530119975}
+--- !u!114 &1057260572
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1057260564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 414883d40ec1a4eb78b4ea8f7f2f9286, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1105283505
 GameObject:
   m_ObjectHideFlags: 0
@@ -7383,19 +7371,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1379155222}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2056125495}
-        m_TargetAssemblyTypeName: UpgradeHeroDisplayer, Assembly-CSharp
-        m_MethodName: HidePanel
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &1391352240
 GameObject:
   m_ObjectHideFlags: 0
@@ -9814,7 +9790,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2880034015146779425, guid: 02f00cb628d954fdd911ecd526fb0965, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -134.10857
       objectReference: {fileID: 0}
     - target: {fileID: 3748386654160660076, guid: 02f00cb628d954fdd911ecd526fb0965, type: 3}
       propertyPath: m_Name
@@ -11391,7 +11367,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.49019608}
+  m_Color: {r: 0.8867924, g: 0.8867924, b: 0.8867924, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -13548,6 +13524,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _panel: {fileID: 377624558}
   _heroesMover: {fileID: 1057260570}
+  _firstUpgradeButton: {fileID: 1379155224}
+  _secondUpgradeButton: {fileID: 148233632}
 --- !u!1 &2063406990
 GameObject:
   m_ObjectHideFlags: 0
@@ -14305,15 +14283,15 @@ MonoBehaviour:
       m_Calls: []
   m_text: 2
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: c883c8426ac1d48138356448d3e7eed7, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: c883c8426ac1d48138356448d3e7eed7, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4278190080
+  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -14870,7 +14848,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a388fdfa7304e4e81a83d754652f5dbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cellSize: 1.25
   _rectTransform: {fileID: 3204970468196306833}
 --- !u!224 &5578800520059371965 stripped
 RectTransform:

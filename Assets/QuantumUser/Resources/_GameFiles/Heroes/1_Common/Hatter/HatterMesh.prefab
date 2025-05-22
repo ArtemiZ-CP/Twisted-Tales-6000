@@ -232,9 +232,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -416589109054274801, guid: 501f4a0d6b2b1495e884551633b40074, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 501f4a0d6b2b1495e884551633b40074, type: 3}
       propertyPath: m_Name
       value: Hatter
+      objectReference: {fileID: 0}
+    - target: {fileID: 7729584548182392593, guid: 501f4a0d6b2b1495e884551633b40074, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

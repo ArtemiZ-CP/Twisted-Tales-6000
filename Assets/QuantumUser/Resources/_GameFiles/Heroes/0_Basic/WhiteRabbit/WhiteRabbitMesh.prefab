@@ -284,6 +284,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -2235405758656701908, guid: 4eb56da5dcff4416c9c37fa357d4a2cc, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 4eb56da5dcff4416c9c37fa357d4a2cc, type: 3}
       propertyPath: m_Name
       value: Bunny_LP_00+++
@@ -291,6 +295,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 4eb56da5dcff4416c9c37fa357d4a2cc, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1299061119933191625, guid: 4eb56da5dcff4416c9c37fa357d4a2cc, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -29,6 +29,11 @@ namespace Quantum.Game
 
         public static string GetHeroName(int id, int level)
         {
+            if (id < 0)
+            {
+                return string.Empty;
+            }
+
             string name = $"{QuantumConnection.GetHeroInfo(id).Name}";
 
             if (level != 0)

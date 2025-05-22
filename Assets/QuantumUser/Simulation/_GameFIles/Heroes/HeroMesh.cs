@@ -9,8 +9,8 @@ namespace Quantum.Game
 
         public Action<int, int> OnSetHero;
 
-        private int _id;
-        private int _level;
+        private int _id = -1;
+        private int _level = -1;
 
         public int ID => _id;
         public int Level => _level;

@@ -5,7 +5,7 @@ using UnityEngine.Scripting;
 namespace Quantum.Game
 {
     [Preserve]
-    public unsafe class HeroLevelProgression : SystemSignalsOnly, ISignalTryUpgradeHero, ISignalOnStartRound, ISignalOnEndRound
+    public unsafe class HeroLevelProgression : SystemSignalsOnly, ISignalTryUpgradeHero, ISignalOnStartRound, ISignalOnEndRound, ISignalLevelUpHero
     {
         public void OnEndRound(Frame f)
         {
@@ -32,13 +32,43 @@ namespace Quantum.Game
 
                     if (selectedHeroAbility.SecondAbilityIndex == 0)
                     {
-                        f.Events.LevelUpHero(playerLink.Ref, selectedHeroAbility.HeroID, Hero.Level2);
+                        f.Events.LevelUpHero(playerLink.Ref, selectedHeroAbility.HeroID, Hero.Level2, IsCompleted: false);
                     }
 
                     if (selectedHeroAbility.ThirdAbilityIndex == 0)
                     {
-                        f.Events.LevelUpHero(playerLink.Ref, selectedHeroAbility.HeroID, Hero.Level3);
+                        f.Events.LevelUpHero(playerLink.Ref, selectedHeroAbility.HeroID, Hero.Level3, IsCompleted: false);
                     }
+                }
+            }
+        }
+
+        public void LevelUpHero(Frame f, PlayerLink* playerLink, int heroID, int heroLevel, int upgradeLevel)
+        {
+            QList<SelectedHeroAbility> abilities = f.ResolveList(playerLink->Info.Board.Abilities);
+
+            for (int j = 0; j < abilities.Count; j++)
+            {
+                SelectedHeroAbility selectedHeroAbility = abilities[j];
+
+                if (selectedHeroAbility.HeroID == heroID)
+                {
+                    if (heroLevel == Hero.Level2 && selectedHeroAbility.SecondAbilityIndex == Hero.UpgradeOpened)
+                    {
+                        selectedHeroAbility.SecondAbilityIndex = upgradeLevel;
+                    }
+                    else if (heroLevel == Hero.Level3 && selectedHeroAbility.ThirdAbilityIndex == Hero.UpgradeOpened)
+                    {
+                        selectedHeroAbility.ThirdAbilityIndex = upgradeLevel;
+                    }
+                    else
+                    {
+                        return;
+                    }
+
+                    abilities[j] = selectedHeroAbility;
+                    f.Events.LevelUpHero(playerLink->Ref, heroID, heroLevel, IsCompleted: true);
+                    return;
                 }
             }
         }
@@ -95,6 +125,7 @@ namespace Quantum.Game
 
             bool onBoard = false;
             int heroIndex = -1;
+            int nextLevel = heroLevel + 1;
 
             for (int i = 0; i < heroesBoard.Count; i++)
             {
@@ -163,27 +194,28 @@ namespace Quantum.Game
             if (onBoard)
             {
                 heroesBoard[heroIndex] = heroID;
-                heroesLevelBoard[heroIndex] = heroLevel + 1;
+                heroesLevelBoard[heroIndex] = nextLevel;
             }
             else
             {
                 heroesInventory[heroIndex] = heroID;
-                heroesLevelInventory[heroIndex] = heroLevel + 1;
+                heroesLevelInventory[heroIndex] = nextLevel;
             }
 
             SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, playerLink, heroID, out int index);
 
-            switch (heroLevel + 1)
+            if (nextLevel == Hero.Level2 && selectedHeroAbility.SecondAbilityIndex == Hero.UpgradeClosed)
             {
-                case Hero.Level2:
-                    selectedHeroAbility.SecondAbilityIndex = 0;
-                    break;
-                case Hero.Level3:
-                    selectedHeroAbility.ThirdAbilityIndex = 0;
-                    break;
+                selectedHeroAbility.SecondAbilityIndex = Hero.UpgradeOpened;
+                abilities[index] = selectedHeroAbility;
+                f.Events.LevelUpHero(playerLink->Ref, heroID, nextLevel, IsCompleted: false);
             }
-
-            abilities[index] = selectedHeroAbility;
+            else if (nextLevel == Hero.Level3 && selectedHeroAbility.ThirdAbilityIndex == Hero.UpgradeClosed)
+            {
+                selectedHeroAbility.ThirdAbilityIndex = Hero.UpgradeOpened;
+                abilities[index] = selectedHeroAbility;
+                f.Events.LevelUpHero(playerLink->Ref, heroID, nextLevel, IsCompleted: false);
+            }
 
             f.Events.GetBoardHeroes(f, playerLink->Ref,
                 f.ResolveList(playerLink->Info.Board.HeroesID),
@@ -191,7 +223,6 @@ namespace Quantum.Game
             f.Events.GetInventoryHeroes(f, playerLink->Ref,
                 f.ResolveList(playerLink->Info.Inventory.HeroesID),
                 f.ResolveList(playerLink->Info.Inventory.HeroesLevel));
-            f.Events.LevelUpHero(playerLink->Ref, heroID, heroLevel + 1);
         }
 
         private bool TryGetHeroesToUpgrade(Frame f, PlayerLink* playerLink, out List<HeroUpgradeInfo> heroUpgradeInfos)

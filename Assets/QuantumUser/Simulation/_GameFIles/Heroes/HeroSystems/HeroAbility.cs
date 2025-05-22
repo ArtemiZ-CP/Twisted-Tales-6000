@@ -7,18 +7,6 @@ namespace Quantum.Game
 {
     public static unsafe class HeroAbility
     {
-        public static void SelectSecondHeroAbility(Frame f, PlayerLink* playerLink, int heroID, int secondAbilityIndex)
-        {
-            SelectedHeroAbility selectedHeroAbility = SetSecondHeroAbility(f, playerLink, heroID, secondAbilityIndex);
-            selectedHeroAbility.SecondAbilityIndex = secondAbilityIndex;
-        }
-
-        public static void SelectThirdHeroAbility(Frame f, PlayerLink* playerLink, int heroID, int thirdAbilityIndex)
-        {
-            SelectedHeroAbility selectedHeroAbility = SetThirdHeroAbility(f, playerLink, heroID, thirdAbilityIndex);
-            selectedHeroAbility.ThirdAbilityIndex = thirdAbilityIndex;
-        }
-
         public static void ProjectileAttack(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, DamageType damageType, AttackType attackType)
         {
             HeroProjectilesSystem.SpawnProjectile(f, fightingHero, board, targetHero, damage, null, null, damageType, attackType);
@@ -55,8 +43,8 @@ namespace Quantum.Game
             SelectedHeroAbility newSelectedHeroAbility = new()
             {
                 HeroID = heroID,
-                SecondAbilityIndex = -1,
-                ThirdAbilityIndex = -1
+                SecondAbilityIndex = Hero.UpgradeClosed,
+                ThirdAbilityIndex = Hero.UpgradeClosed
             };
 
             abilities.Add(newSelectedHeroAbility);
@@ -140,24 +128,6 @@ namespace Quantum.Game
                     tryCastAbility = default;
                     return false;
             }
-        }
-
-        private static SelectedHeroAbility SetSecondHeroAbility(Frame f, PlayerLink* playerLink, int heroID, int secondAbilityIndex)
-        {
-            SelectedHeroAbility selectedHeroAbility = GetSelectedHeroAbility(f, playerLink, heroID, out int index);
-            selectedHeroAbility.SecondAbilityIndex = secondAbilityIndex;
-            QList<SelectedHeroAbility> abilities = f.ResolveList(playerLink->Info.Board.Abilities);
-            abilities[index] = selectedHeroAbility;
-            return selectedHeroAbility;
-        }
-
-        private static SelectedHeroAbility SetThirdHeroAbility(Frame f, PlayerLink* playerLink, int heroID, int thirdAbilityIndex)
-        {
-            SelectedHeroAbility selectedHeroAbility = GetSelectedHeroAbility(f, playerLink, heroID, out int index);
-            selectedHeroAbility.ThirdAbilityIndex = thirdAbilityIndex;
-            QList<SelectedHeroAbility> abilities = f.ResolveList(playerLink->Info.Board.Abilities);
-            abilities[index] = selectedHeroAbility;
-            return selectedHeroAbility;
         }
     }
 }

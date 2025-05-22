@@ -1,44 +1,66 @@
-using System.Collections.Generic;
-using Quantum;
 using Quantum.Game;
 using UnityEngine;
 
 public class HeroUpgrade : MonoBehaviour
 {
-    private static readonly List<(int, int)> ActiveUpgrades = new();
-
     [SerializeField] private UpgradeButton _upgradeButton;
 
     private HeroMesh _heroMesh;
     private int _id = -1;
+    private int _level = -1;
 
     private void Awake()
     {
-        QuantumEvent.Subscribe<EventLevelUpHero>(listener: this, handler: ShowButton);
         FindHeroMesh();
     }
 
     private void OnEnable()
     {
-        _id = _heroMesh.ID;
-        
-        if (ActiveUpgrades.Contains((_id, _heroMesh.Level)))
+        if (_heroMesh.ID >= 0)
         {
-            _upgradeButton.ShowButton(_id, _heroMesh.Level);
+            SetHero(_heroMesh.ID, _heroMesh.Level);
+        }
+
+        _heroMesh.OnSetHero += SetHero;
+        HeroesUpgrade.OnAdd += ShowButton;
+        HeroesUpgrade.OnRemove += HideButton;
+    }
+
+    private void OnDisable()
+    {
+        _heroMesh.OnSetHero -= SetHero;
+        HeroesUpgrade.OnAdd -= ShowButton;
+        HeroesUpgrade.OnRemove -= HideButton;
+    }
+
+    private void SetHero(int id, int level)
+    {
+        _id = id;
+        _level = level;
+
+        if (HeroesUpgrade.ContainsUpgrade(id, level))
+        {
+            _upgradeButton.ShowButton(id, level);
+        }
+        else
+        {
+            _upgradeButton.HideButton();
         }
     }
 
-    private void ShowButton(EventLevelUpHero evt)
+    private void ShowButton(int id, int level)
     {
-        if (QuantumConnection.IsPlayerMe(evt.PlayerRef) == false)
+        if (id == _id && level == _level)
         {
-            return;
+            _upgradeButton.ShowButton(id, level);
         }
+    }
 
-        if (evt.HeroID == _id)
+    private void HideButton(int id, int level)
+    {
+        if (id == _id && level == _level)
         {
-            ActiveUpgrades.Add((evt.HeroID, evt.HeroLevel));
-            _upgradeButton.ShowButton(evt.HeroID, evt.HeroLevel);
+            _upgradeButton.HideButton();
         }
     }
 

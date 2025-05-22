@@ -9,6 +9,10 @@ namespace Quantum.Game
         public const int Level1 = 0;
         public const int Level2 = 1;
         public const int Level3 = 2;
+        public const int UpgradeClosed = -1;
+        public const int UpgradeOpened = 0;
+        public const int UpgradeLevel1 = 1;
+        public const int UpgradeLevel2 = 2;
         
         public static int GetHeroCost(Frame f, int heroID)
         {

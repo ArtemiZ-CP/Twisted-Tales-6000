@@ -40,6 +40,9 @@ namespace Quantum.Game
 
             var commandGetHeroInfo = command as CommandGetHeroInfo;
             commandGetHeroInfo?.Execute(f, player);
+
+            var commandUpgradeHero = command as CommandUpgradeHero;
+            commandUpgradeHero?.Execute(f, player);
         }
     }
 }

@@ -1277,6 +1277,9 @@ namespace Quantum {
   public unsafe partial interface ISignalBotStartRound : ISignal {
     void BotStartRound(Frame f);
   }
+  public unsafe partial interface ISignalLevelUpHero : ISignal {
+    void LevelUpHero(Frame f, PlayerLink* playerLink, Int32 heroID, Int32 level, Int32 upgradeLevel);
+  }
   public static unsafe partial class Constants {
   }
   public unsafe partial class Frame {
@@ -1296,6 +1299,7 @@ namespace Quantum {
     private ISignalTryUpgradeHero[] _ISignalTryUpgradeHeroSystems;
     private ISignalGetHeroInfo[] _ISignalGetHeroInfoSystems;
     private ISignalBotStartRound[] _ISignalBotStartRoundSystems;
+    private ISignalLevelUpHero[] _ISignalLevelUpHeroSystems;
     partial void AllocGen() {
       _globals = (_globals_*)Context.Allocator.AllocAndClear(sizeof(_globals_));
     }
@@ -1323,6 +1327,7 @@ namespace Quantum {
       _ISignalTryUpgradeHeroSystems = BuildSignalsArray<ISignalTryUpgradeHero>();
       _ISignalGetHeroInfoSystems = BuildSignalsArray<ISignalGetHeroInfo>();
       _ISignalBotStartRoundSystems = BuildSignalsArray<ISignalBotStartRound>();
+      _ISignalLevelUpHeroSystems = BuildSignalsArray<ISignalLevelUpHero>();
       _ComponentSignalsOnAdded = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       _ComponentSignalsOnRemoved = new ComponentReactiveCallbackInvoker[ComponentTypeId.Type.Length];
       BuildSignalsArrayOnComponentAdded<Quantum.Board>();
@@ -1533,6 +1538,15 @@ namespace Quantum {
           var s = array[i];
           if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
             s.BotStartRound(_f);
+          }
+        }
+      }
+      public void LevelUpHero(PlayerLink* playerLink, Int32 heroID, Int32 level, Int32 upgradeLevel) {
+        var array = _f._ISignalLevelUpHeroSystems;
+        for (Int32 i = 0; i < array.Length; ++i) {
+          var s = array[i];
+          if (_f.SystemIsEnabledInHierarchy((SystemBase)s)) {
+            s.LevelUpHero(_f, playerLink, heroID, level, upgradeLevel);
           }
         }
       }

@@ -14,3 +14,4 @@ signal ChangeFreezeShop(PlayerLink* playerLink);
 signal TryUpgradeHero(PlayerLink* playerLink);
 signal GetHeroInfo(PlayerLink* playerLink, EntityRef entityRef);
 signal BotStartRound();
+signal LevelUpHero(PlayerLink* playerLink, int heroID, int level, int upgradeLevel);

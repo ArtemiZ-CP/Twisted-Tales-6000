@@ -184,11 +184,12 @@ namespace Quantum {
         _f.AddEvent(ev);
         return ev;
       }
-      public EventLevelUpHero LevelUpHero(PlayerRef PlayerRef, Int32 HeroID, Int32 HeroLevel) {
+      public EventLevelUpHero LevelUpHero(PlayerRef PlayerRef, Int32 HeroID, Int32 HeroLevel, QBoolean IsCompleted) {
         var ev = _f.Context.AcquireEvent<EventLevelUpHero>(EventLevelUpHero.ID);
         ev.PlayerRef = PlayerRef;
         ev.HeroID = HeroID;
         ev.HeroLevel = HeroLevel;
+        ev.IsCompleted = IsCompleted;
         _f.AddEvent(ev);
         return ev;
       }
@@ -627,6 +628,7 @@ namespace Quantum {
     public PlayerRef PlayerRef;
     public Int32 HeroID;
     public Int32 HeroLevel;
+    public QBoolean IsCompleted;
     protected EventLevelUpHero(Int32 id, EventFlags flags) : 
         base(id, flags) {
     }
@@ -647,6 +649,7 @@ namespace Quantum {
         hash = hash * 31 + PlayerRef.GetHashCode();
         hash = hash * 31 + HeroID.GetHashCode();
         hash = hash * 31 + HeroLevel.GetHashCode();
+        hash = hash * 31 + IsCompleted.GetHashCode();
         return hash;
       }
     }
