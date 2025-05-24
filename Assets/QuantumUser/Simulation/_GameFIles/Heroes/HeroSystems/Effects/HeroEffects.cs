@@ -10,33 +10,33 @@ namespace Quantum.Game
         public enum EffectType
         {
             None,
-            Bleeding,
-            TransferingBleeding,
-            IncreaseTakingDamage,
-            ReduceCurrentMana,
-            IncreaseHealAndArmor,
-            IncreaseAttackSpeed,
-            ReduceDefense,
-            ReduceMagicDefense,
-            HorizontalBlast,
-            Blast,
-            Stun,
-            BlastStun,
-            TemporaryArmor,
-            Teleport,
-            ExtraBaseDamage,
+            Bleeding, // Owner, Type, Value, Duration
+            TransferingBleeding, // Owner, Type, Value, MaxDuration, Duration, Size
+            IncreaseTakingDamage, // Owner, Type, Value, Duration
+            ReduceCurrentMana, // Owner, Type, Value
+            IncreaseHealAndArmor, // Owner, Type, Value, Duration
+            IncreaseAttackSpeed, // Owner, Type, Value, Duration
+            ReduceDefense, // Owner, Type, Value, Duration
+            ReduceMagicDefense, // Owner, Type, Value, Duration
+            HorizontalBlast, // Owner, Type, Value, Size
+            Blast, // Owner, Type, Value, Size
+            Stun, // Owner, Type, Duration
+            BlastStun, // Owner, Type, Duration, Size
+            TemporaryArmor, // Owner, Type, Value, Duration
+            Teleport, // Owner, Type, Size (position to teleport), Duration (teleport delay)
+            ExtraBaseDamage, // Owner, Type, Value, Duration, Size
             FirebirdRebirth,
-            Silence,
-            BlastSilence,
-            Immortal,
+            Silence, // Owner, Type, Duration
+            BlastSilence, // Owner, Type, Duration, Size
+            Immortal, // Owner, Type, Duration
         }
 
         public enum GlobalEffectType
         {
             None,
-            PoisonArea,
-            HealArea,
-            TauntedArea,
+            PoisonArea, // Owner, Type, Value, Center, Duration, Size
+            HealArea, // Owner, Type, Value, Center, Duration, Size
+            TauntedArea, // Owner, Type, Duration, Size
         }
 
         public class Effect

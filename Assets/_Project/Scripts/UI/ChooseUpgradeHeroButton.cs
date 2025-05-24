@@ -46,24 +46,24 @@ public class ChooseUpgradeHeroButton : MonoBehaviour
     {
         if (level == Hero.Level2)
         {
-            if (chooseNumber == Hero.UpgradeLevel1)
+            if (chooseNumber == Hero.UpgradeVariant1)
             {
-                return "Upgrade to Level 3";
+                return "“Unmoving Rite” heals all allies in a radius for 150% of base damage, for 2 sec";
             }
-            else if (chooseNumber == Hero.UpgradeLevel2)
+            else if (chooseNumber == Hero.UpgradeVariant2)
             {
-                return "Upgrade to Level 4";
+                return "“Unmoving Rite” gives allies in the radius +20% to attack speed for 4 sec";
             }
         }
         else if (level == Hero.Level3)
         {
-            if (chooseNumber == Hero.UpgradeLevel1)
+            if (chooseNumber == Hero.UpgradeVariant1)
             {
-                return "Upgrade to Level 4";
+                return "Increases the radius of the ritual by 1 cell";
             }
-            else if (chooseNumber == Hero.UpgradeLevel2)
+            else if (chooseNumber == Hero.UpgradeVariant2)
             {
-                return "Upgrade to Level 5";
+                return "Reduces the ability's cooldown by 3 sec and increases its duration by 2 sec (for Taunt effects only)";
             }
         }
 

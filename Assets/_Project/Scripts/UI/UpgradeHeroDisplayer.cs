@@ -35,20 +35,20 @@ public class UpgradeHeroDisplayer : MonoBehaviour
     {
         _id = id;
         _level = level;
-        _firstUpgradeButton.Initialize(id, level, Hero.UpgradeLevel1);
-        _secondUpgradeButton.Initialize(id, level, Hero.UpgradeLevel2);
+        _firstUpgradeButton.Initialize(id, level, Hero.UpgradeVariant1);
+        _secondUpgradeButton.Initialize(id, level, Hero.UpgradeVariant2);
         _panel.SetActive(true);
     }
 
     private void SelectFirstUpgrade()
     {
-        Select(Hero.UpgradeLevel1);
+        Select(Hero.UpgradeVariant1);
         HidePanel();
     }
 
     private void SelectSecondUpgrade()
     {
-        Select(Hero.UpgradeLevel2);
+        Select(Hero.UpgradeVariant2);
         HidePanel();
     }
 

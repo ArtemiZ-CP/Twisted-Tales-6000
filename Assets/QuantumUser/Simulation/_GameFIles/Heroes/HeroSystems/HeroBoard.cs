@@ -174,7 +174,6 @@ namespace Quantum.Game
         {
             if (HeroEffects.TryProcessTauntEffect(f, fightingHero, board, out FightingHero tauntHero, out moveTargetPosition))
             {
-                Log.Debug($"Taunted hero: {tauntHero.Hero.Ref} from {fightingHero.Hero.Ref}");
                 return tauntHero;
             }
 

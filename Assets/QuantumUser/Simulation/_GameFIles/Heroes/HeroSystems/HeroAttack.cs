@@ -265,8 +265,8 @@ namespace Quantum.Game
 
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
-            if (HeroAbility.TryGetAbility(f, fightingHero, out FP reloadTime,
-                out Func<Frame, FightingHero, Board, QList<FightingHero>, bool> TryCastAbility,
+            if (HeroAbility.TryGetAbility(f, fightingHero,
+                out Func<Frame, FightingHero, Board, QList<FightingHero>, (bool, FP)> TryCastAbility,
                 out Action<Frame, FightingHero, Board, QList<FightingHero>> ProcessPassiveAbility) == false)
             {
                 return;
@@ -274,8 +274,15 @@ namespace Quantum.Game
 
             ProcessPassiveAbility(f, fightingHero, board, heroes);
 
-            if (fightingHero.CurrentMana >= fightingHero.Hero.MaxMana && TryCastAbility(f, fightingHero, board, heroes))
+            if (fightingHero.CurrentMana >= fightingHero.Hero.MaxMana)
             {
+                (bool casted, FP reloadTime) = TryCastAbility(f, fightingHero, board, heroes);
+
+                if (casted == false)
+                {
+                    return;
+                }
+                
                 fightingHero = HeroBoard.GetFightingHero(f, fightingHero.Hero.Ref, board);
                 ResetMana(f, fightingHero, board);
 

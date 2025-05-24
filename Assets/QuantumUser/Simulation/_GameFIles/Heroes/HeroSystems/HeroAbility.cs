@@ -52,8 +52,8 @@ namespace Quantum.Game
             return newSelectedHeroAbility;
         }
 
-        public static bool TryGetAbility(Frame f, FightingHero fightingHero, out FP reloadTime,
-            out Func<Frame, FightingHero, Board, QList<FightingHero>, bool> TryCastAbility,
+        public static bool TryGetAbility(Frame f, FightingHero fightingHero,
+            out Func<Frame, FightingHero, Board, QList<FightingHero>, (bool, FP)> TryCastAbility,
             out Action<Frame, FightingHero, Board, QList<FightingHero>> ProcessPassiveAbility)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
@@ -127,7 +127,6 @@ namespace Quantum.Game
                 case HeroNameEnum.TinMan:
                     TryCastAbility = TinManAbilities.TryCastAbility;
                     ProcessPassiveAbility = TinManAbilities.ProcessPassiveAbility;
-                    reloadTime = TinManAbilities.AbilityReloadTime;
                     return true;
                 // case HeroNameEnum.KingArthur:
                 //     TryCastAbility = KingArthurAbilities.TryCastAbility;
@@ -150,7 +149,6 @@ namespace Quantum.Game
                 default:
                     TryCastAbility = default;
                     ProcessPassiveAbility = default;
-                    reloadTime = default;
                     return false;
             }
         }
