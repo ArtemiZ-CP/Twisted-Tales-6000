@@ -509,23 +509,23 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct FightingHero {
-    public const Int32 SIZE = 232;
+    public const Int32 SIZE = 248;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(104)]
+    [FieldOffset(120)]
     public HeroEntity Hero;
     [FieldOffset(16)]
     public Int32 Index;
     [FieldOffset(8)]
     public Int32 BoardIndex;
-    [FieldOffset(36)]
-    public QListPtr<EffectQnt> Effects;
-    [FieldOffset(64)]
-    public FP CurrentHealth;
-    [FieldOffset(56)]
-    public FP CurrentArmor;
-    [FieldOffset(72)]
-    public FP CurrentMana;
     [FieldOffset(40)]
+    public QListPtr<EffectQnt> Effects;
+    [FieldOffset(80)]
+    public FP CurrentHealth;
+    [FieldOffset(72)]
+    public FP CurrentArmor;
+    [FieldOffset(88)]
+    public FP CurrentMana;
+    [FieldOffset(48)]
     public EntityRef AttackTarget;
     [FieldOffset(20)]
     public Int32 TargetPositionX;
@@ -535,19 +535,23 @@ namespace Quantum {
     public Int32 TeamNumber;
     [FieldOffset(32)]
     public QBoolean IsAlive;
-    [FieldOffset(48)]
+    [FieldOffset(64)]
     public FP AttackTimer;
+    [FieldOffset(56)]
+    public FP AbilityTimer;
     [FieldOffset(4)]
     public Int32 AttackStage;
     [FieldOffset(0)]
     public Int32 AbilityStage;
     [FieldOffset(12)]
     public Int32 ExtraLives;
-    [FieldOffset(88)]
+    [FieldOffset(36)]
+    public QBoolean IsPassiveAbilityActivated;
+    [FieldOffset(104)]
     public FP DealedBaseDamage;
-    [FieldOffset(80)]
-    public FP DealedAbilityDamage;
     [FieldOffset(96)]
+    public FP DealedAbilityDamage;
+    [FieldOffset(112)]
     public FP TakenDamage;
     public override Int32 GetHashCode() {
       unchecked { 
@@ -565,9 +569,11 @@ namespace Quantum {
         hash = hash * 31 + TeamNumber.GetHashCode();
         hash = hash * 31 + IsAlive.GetHashCode();
         hash = hash * 31 + AttackTimer.GetHashCode();
+        hash = hash * 31 + AbilityTimer.GetHashCode();
         hash = hash * 31 + AttackStage.GetHashCode();
         hash = hash * 31 + AbilityStage.GetHashCode();
         hash = hash * 31 + ExtraLives.GetHashCode();
+        hash = hash * 31 + IsPassiveAbilityActivated.GetHashCode();
         hash = hash * 31 + DealedBaseDamage.GetHashCode();
         hash = hash * 31 + DealedAbilityDamage.GetHashCode();
         hash = hash * 31 + TakenDamage.GetHashCode();
@@ -588,8 +594,10 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->TargetPositionY);
         serializer.Stream.Serialize(&p->TeamNumber);
         QBoolean.Serialize(&p->IsAlive, serializer);
+        QBoolean.Serialize(&p->IsPassiveAbilityActivated, serializer);
         QList.Serialize(&p->Effects, serializer, Statics.SerializeEffectQnt);
         EntityRef.Serialize(&p->AttackTarget, serializer);
+        FP.Serialize(&p->AbilityTimer, serializer);
         FP.Serialize(&p->AttackTimer, serializer);
         FP.Serialize(&p->CurrentArmor, serializer);
         FP.Serialize(&p->CurrentHealth, serializer);

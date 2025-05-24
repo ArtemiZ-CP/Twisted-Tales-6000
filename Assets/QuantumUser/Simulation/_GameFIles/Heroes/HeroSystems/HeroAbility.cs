@@ -52,80 +52,105 @@ namespace Quantum.Game
             return newSelectedHeroAbility;
         }
 
-        public static bool TryGetAbility(Frame f, FightingHero fightingHero, out Func<Frame, FightingHero, Board, bool> tryCastAbility)
+        public static bool TryGetAbility(Frame f, FightingHero fightingHero, out FP reloadTime,
+            out Func<Frame, FightingHero, Board, QList<FightingHero>, bool> TryCastAbility,
+            out Action<Frame, FightingHero, Board, QList<FightingHero>> ProcessPassiveAbility)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             HeroNameEnum heroName = gameConfig.GetHeroInfo(f, fightingHero.Hero.ID).Name;
 
             switch (heroName)
             {
-                case HeroNameEnum.RedHat:
-                    tryCastAbility = RedHatAbilities.TryCastAbility;
-                    return true;
-                case HeroNameEnum.WhiteRabbit:
-                    tryCastAbility = WhiteRabbitAbilities.TryCastAbility;
-                    return true;
-                case HeroNameEnum.SlyFox:
-                    tryCastAbility = SlyFoxAbilities.TryCastAbility;
-                    return true;
-                case HeroNameEnum.SnowWhite:
-                    tryCastAbility = SnowWhiteAbilities.TryCastAbility;
-                    return true;
+                // case HeroNameEnum.RedHat:
+                //     TryCastAbility = RedHatAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
+                // case HeroNameEnum.WhiteRabbit:
+                //     TryCastAbility = WhiteRabbitAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
+                // case HeroNameEnum.SlyFox:
+                //     TryCastAbility = SlyFoxAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
+                // case HeroNameEnum.SnowWhite:
+                //     TryCastAbility = SnowWhiteAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
 
-                case HeroNameEnum.RobinHood:
-                    tryCastAbility = RobinHoodAbilities.TryCastAbility;
-                    return true;
-                case HeroNameEnum.Beast:
-                    tryCastAbility = BeastAbilities.TryCastAbility;
-                    return true;
-                case HeroNameEnum.Cinderella:
-                    tryCastAbility = CinderellaAbilities.TryCastAbility;
-                    return true;
-                case HeroNameEnum.Hatter:
-                    tryCastAbility = HatterAbilities.TryCastAbility;
-                    return true;
+                // case HeroNameEnum.RobinHood:
+                //     TryCastAbility = RobinHoodAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
+                // case HeroNameEnum.Beast:
+                //     TryCastAbility = BeastAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
+                // case HeroNameEnum.Cinderella:
+                //     TryCastAbility = CinderellaAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
+                // case HeroNameEnum.Hatter:
+                //     TryCastAbility = HatterAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
 
-                case HeroNameEnum.Alice:
-                    tryCastAbility = AliceAbilities.TryCastAbility;
-                    return true;
-                case HeroNameEnum.Scarecrow:
-                    tryCastAbility = ScarecrowAbilities.TryCastAbility;
-                    return true;
-                case HeroNameEnum.Aladdin:
-                    tryCastAbility = AladdinAbilities.TryCastAbility;
-                    return true;
-                case HeroNameEnum.PussInBoots:
-                    tryCastAbility = PussInBootsAbilities.TryCastAbility;
-                    return true;
-                case HeroNameEnum.Nutcracker:
-                    tryCastAbility = NutcrackerAbilities.TryCastAbility;
-                    return true;
+                // case HeroNameEnum.Alice:
+                //     TryCastAbility = AliceAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
+                // case HeroNameEnum.Scarecrow:
+                //     TryCastAbility = ScarecrowAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
+                // case HeroNameEnum.Aladdin:
+                //     TryCastAbility = AladdinAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
+                // case HeroNameEnum.PussInBoots:
+                //     TryCastAbility = PussInBootsAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
+                // case HeroNameEnum.Nutcracker:
+                //     TryCastAbility = NutcrackerAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
 
-                case HeroNameEnum.BabaYaga:
-                    tryCastAbility = BabaYagaAbilities.TryCastAbility;
-                    return true;
-                case HeroNameEnum.CheshireCat:
-                    tryCastAbility = CheshireCatAbilities.TryCastAbility;
-                    return true;
+                // case HeroNameEnum.BabaYaga:
+                //     TryCastAbility = BabaYagaAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
+                // case HeroNameEnum.CheshireCat:
+                //     TryCastAbility = CheshireCatAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
                 case HeroNameEnum.TinMan:
-                    tryCastAbility = TinManAbilities.TryCastAbility;
+                    TryCastAbility = TinManAbilities.TryCastAbility;
+                    ProcessPassiveAbility = TinManAbilities.ProcessPassiveAbility;
+                    reloadTime = TinManAbilities.AbilityReloadTime;
                     return true;
-                case HeroNameEnum.KingArthur:
-                    tryCastAbility = KingArthurAbilities.TryCastAbility;
-                    return true;
+                // case HeroNameEnum.KingArthur:
+                //     TryCastAbility = KingArthurAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
 
-                case HeroNameEnum.Firebird:
-                    tryCastAbility = FirebirdAbilities.TryCastAbility;
-                    return true;
-                case HeroNameEnum.Cerberus:
-                    tryCastAbility = CerberusAbilities.TryCastAbility;
-                    return true;
-                case HeroNameEnum.Merlin:
-                    tryCastAbility = MerlinAbilities.TryCastAbility;
-                    return true;
+                // case HeroNameEnum.Firebird:
+                //     TryCastAbility = FirebirdAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
+                // case HeroNameEnum.Cerberus:
+                //     TryCastAbility = CerberusAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
+                // case HeroNameEnum.Merlin:
+                //     TryCastAbility = MerlinAbilities.TryCastAbility;
+                //     ProcessPassiveAbility = default;
+                //     return true;
 
                 default:
-                    tryCastAbility = default;
+                    TryCastAbility = default;
+                    ProcessPassiveAbility = default;
+                    reloadTime = default;
                     return false;
             }
         }

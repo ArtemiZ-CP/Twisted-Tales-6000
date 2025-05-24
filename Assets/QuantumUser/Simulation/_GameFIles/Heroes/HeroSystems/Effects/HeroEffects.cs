@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Photon.Deterministic;
 using Quantum.Collections;
 using UnityEngine;
@@ -27,13 +28,15 @@ namespace Quantum.Game
             FirebirdRebirth,
             Silence,
             BlastSilence,
+            Immortal,
         }
 
         public enum GlobalEffectType
         {
             None,
             PoisonArea,
-            HealArea
+            HealArea,
+            TauntedArea,
         }
 
         public class Effect
@@ -90,28 +93,48 @@ namespace Quantum.Game
 
         public static void AddGlobalEffects(Frame f, Board board, QList<GlobalEffectQnt> globalEffectQnts)
         {
-            QList<GlobalEffectQnt> globalEffects = f.ResolveList(board.GlobalEffects);
-
             foreach (GlobalEffectQnt globalEffect in globalEffectQnts)
             {
-                globalEffects.Add(globalEffect);
+                AddGlobalEffect(f, board, globalEffect);
+            }
+        }
 
-                if (HeroBoard.TryGetHeroCords(globalEffect.Center, out Vector2Int cords) == false)
-                {
-                    return;
-                }
+        public static void AddGlobalEffect(Frame f, Board board, GlobalEffect globalEffect)
+        {
+            GlobalEffectQnt globalEffectQnt = new()
+            {
+                Center = globalEffect.Center,
+                Owner = globalEffect.Owner,
+                Index = (int)globalEffect.Type,
+                Value = globalEffect.Value,
+                Duration = globalEffect.Duration,
+                Size = globalEffect.Size
+            };
 
-                FPVector3 position = HeroBoard.GetTilePosition(f, cords);
+            AddGlobalEffect(f, board, globalEffectQnt);
+        }
 
-                switch ((GlobalEffectType)globalEffect.Index)
-                {
-                    case GlobalEffectType.PoisonArea:
-                        f.Events.DisplayPoisonEffect(board.Player1.Ref, board.Player2.Ref, position, globalEffect.Size, globalEffect.Duration);
-                        break;
-                    case GlobalEffectType.HealArea:
-                        f.Events.DisplayHealEffect(board.Player1.Ref, board.Player2.Ref, position, globalEffect.Size, globalEffect.Duration);
-                        break;
-                }
+        public static void AddGlobalEffect(Frame f, Board board, GlobalEffectQnt globalEffect)
+        {
+            QList<GlobalEffectQnt> globalEffects = f.ResolveList(board.GlobalEffects);
+
+            globalEffects.Add(globalEffect);
+
+            if (HeroBoard.TryGetHeroCords(globalEffect.Center, out Vector2Int cords) == false)
+            {
+                return;
+            }
+
+            FPVector3 position = HeroBoard.GetTilePosition(f, cords);
+
+            switch ((GlobalEffectType)globalEffect.Index)
+            {
+                case GlobalEffectType.PoisonArea:
+                    f.Events.DisplayPoisonEffect(board.Player1.Ref, board.Player2.Ref, position, globalEffect.Size, globalEffect.Duration);
+                    break;
+                case GlobalEffectType.HealArea:
+                    f.Events.DisplayHealEffect(board.Player1.Ref, board.Player2.Ref, position, globalEffect.Size, globalEffect.Duration);
+                    break;
             }
         }
 
@@ -146,6 +169,55 @@ namespace Quantum.Game
             }
         }
 
+        public static bool TryProcessTauntEffect(Frame f, FightingHero fightingHero, Board board, out FightingHero tauntTarget, out Vector2Int moveTargetPosition)
+        {
+            QList<GlobalEffectQnt> globalEffects = f.ResolveList(board.GlobalEffects);
+
+            for (int i = 0; i < globalEffects.Count; i++)
+            {
+                GlobalEffectQnt globalEffectQnt = globalEffects[i];
+
+                if (globalEffectQnt.Index == (int)GlobalEffectType.TauntedArea)
+                {
+                    if (f.Exists(globalEffectQnt.Owner) == false)
+                    {
+                        continue;
+                    }
+
+                    tauntTarget = HeroBoard.GetFightingHero(f, globalEffectQnt.Owner, board);
+
+                    if (tauntTarget.TeamNumber == fightingHero.TeamNumber)
+                    {
+                        continue;
+                    }
+
+                    if (HeroBoard.IsHeroInRange(fightingHero, tauntTarget.Index, globalEffectQnt.Size))
+                    {
+                        int[,] boardMap = HeroBoard.GetBoardMap(f.ResolveList(board.FightingHeroesMap));
+
+                        if (PathFinder.TryFindPath(boardMap, HeroBoard.GetHeroCords(fightingHero),
+                            HeroBoard.GetHeroCords(tauntTarget), fightingHero.Hero.Range, out moveTargetPosition))
+                        {
+                            if (HeroBoard.IsHeroInRange(fightingHero, tauntTarget.Index, fightingHero.Hero.Range))
+                            {
+                                moveTargetPosition = HeroBoard.GetHeroCords(fightingHero);
+                            }
+
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+
+            tauntTarget = default;
+            moveTargetPosition = default;
+            return false;
+        }
+
         public static void ProcessEffects(Frame f, ref FightingHero target, Board board, out bool isStunned, out bool isSilenced)
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
@@ -172,7 +244,7 @@ namespace Quantum.Game
                 {
                     case EffectType.Bleeding:
                     case EffectType.TransferingBleeding:
-                        HeroAttack.DamageHeroWithoutAddMana(f, ref ownerHero, board, ref target, damage, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                        HeroAttack.DamageHeroWithoutAddMana(f, ref ownerHero, board, ref target, ref damage, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         break;
                     case EffectType.ReduceCurrentMana:
                         ReduceCurrentMana(f, target, board, effectQnt.Value);
@@ -226,7 +298,7 @@ namespace Quantum.Game
 
                             heroes[target.Index] = target;
 
-                            HeroAttack.ApplyEffectToTarget(f, ref target, board, ref target, effect);
+                            HeroAttack.ApplyEffectsToTarget(f, ref target, board, ref target, effect);
                         }
                         else
                         {
@@ -240,6 +312,28 @@ namespace Quantum.Game
                 else
                 {
                     effects[i] = effectQnt;
+                }
+            }
+        }
+
+        public static void ProcessTransferingBleedingEffect(Frame f, ref FightingHero targetHero, Board board, QList<EffectQnt> effectQnts, int transferingBleedingEffectIndex)
+        {
+            if (transferingBleedingEffectIndex >= 0)
+            {
+                EffectQnt effectQnt = effectQnts[transferingBleedingEffectIndex];
+
+                Effect bleedEffect = new(effectQnt)
+                {
+                    Duration = effectQnt.MaxDuration
+                };
+
+                List<FightingHero> alies = HeroBoard.GetAllTeamHeroesInRange(f, targetHero.Index, targetHero.TeamNumber, board, bleedEffect.Size);
+
+                if (alies.Count > 0)
+                {
+                    FightingHero closestTarget = HeroBoard.GetClosestTarget(f, alies, targetHero);
+                    FightingHero owner = HeroBoard.GetFightingHero(f, bleedEffect.Owner, board);
+                    HeroAttack.ApplyEffectsToTarget(f, ref owner, board, ref closestTarget, bleedEffect);
                 }
             }
         }
@@ -301,7 +395,7 @@ namespace Quantum.Game
 
                 FightingHero targetHero = targets[i];
                 FP damage = globalEffectQnt.Duration < f.DeltaTime ? globalEffectQnt.Value * globalEffectQnt.Duration : globalEffectQnt.Value * f.DeltaTime;
-                HeroAttack.DamageHeroWithoutAddMana(f, ref ownerHero, board, ref targetHero, damage, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                HeroAttack.DamageHeroWithoutAddMana(f, ref ownerHero, board, ref targetHero, ref damage, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                 targets[i] = targetHero;
             }
         }
@@ -337,14 +431,14 @@ namespace Quantum.Game
             f.Events.HeroManaChanged(board.Player1.Ref, board.Player2.Ref, target.Hero.Ref, target.CurrentMana, target.Hero.MaxMana);
         }
 
-        private static int ProcessFirebirdRebirth(Frame f, ref FightingHero owner, Board board, FP value)
+        private static int ProcessFirebirdRebirth(Frame f, ref FightingHero owner, Board board, FP damage)
         {
             var heroesInRange = HeroBoard.GetAllTargetsInRange(f, owner, board);
 
             for (int i = 0; i < heroesInRange.Count; i++)
             {
                 FightingHero target = heroesInRange[i];
-                HeroAttack.DamageHeroWithoutAddMana(f, ref owner, board, ref target, value, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                HeroAttack.DamageHeroWithoutAddMana(f, ref owner, board, ref target, ref damage, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
             }
 
             QList<EffectQnt> effects = f.ResolveList(owner.Effects);

@@ -154,7 +154,7 @@ namespace Quantum.Game
         public static bool TrySetTarget(Frame f, ref FightingHero fightingHero, Board board)
         {
             FightingHero target = GetHeroTarget(f, fightingHero, board, out Vector2Int moveTargetPosition);
-
+            
             if (target.Hero.Ref == default)
             {
                 return false;
@@ -172,13 +172,19 @@ namespace Quantum.Game
 
         public static FightingHero GetHeroTarget(Frame f, FightingHero fightingHero, Board board, out Vector2Int moveTargetPosition)
         {
+            if (HeroEffects.TryProcessTauntEffect(f, fightingHero, board, out FightingHero tauntHero, out moveTargetPosition))
+            {
+                Log.Debug($"Taunted hero: {tauntHero.Hero.Ref} from {fightingHero.Hero.Ref}");
+                return tauntHero;
+            }
+
             if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero targetHero))
             {
                 moveTargetPosition = GetHeroCords(fightingHero);
                 return targetHero;
             }
 
-            FightingHero hero = HeroAttack.FindClosestTargetOutOfAttackRange(f, fightingHero, board, out moveTargetPosition, out _);
+            FightingHero hero = HeroAttack.FindClosestTargetOutOfAttackRange(f, fightingHero, board, out moveTargetPosition);
             return hero;
         }
 
@@ -200,6 +206,36 @@ namespace Quantum.Game
             FightingHero fightingHero = heroes[fighingHero.Index];
             fightingHero.AttackTarget = attackTarget;
             heroes[fighingHero.Index] = fightingHero;
+            
+            if (attackTarget != default && f.Exists(attackTarget))
+            {
+                Hero.Rotate(f, fightingHero.Hero, f.Get<Transform3D>(attackTarget).Position);
+            }
+        }
+
+        public static int[,] GetBoardMap(QList<FightingHero> heroes)
+        {
+            int[,] board = new int[GameConfig.BoardSize, GameConfig.BoardSize];
+
+            for (int x = 0; x < GameConfig.BoardSize; x++)
+            {
+                for (int y = 0; y < GameConfig.BoardSize; y++)
+                {
+                    if (HeroBoard.TryConvertCordsToIndex(new Vector2Int(x, y), out int index))
+                    {
+                        int heroID = -1;
+
+                        if (heroes[index].IsAlive && heroes[index].Hero.Ref != default)
+                        {
+                            heroID = heroes[index].Hero.ID;
+                        }
+
+                        board[x, y] = heroID;
+                    }
+                }
+            }
+
+            return board;
         }
 
         public static FightingHero GetAliyWithMinHealth(List<FightingHero> alies)
@@ -246,6 +282,21 @@ namespace Quantum.Game
             }
 
             return closestHero;
+        }
+
+        public static bool IsHeroInRange(FightingHero fightingHero, int target, int range)
+        {
+            if (TryGetHeroCords(target, out Vector2Int targetCords) == false)
+            {
+                return false;
+            }
+
+            if (TryGetHeroCords(fightingHero.Index, out Vector2Int heroCords) == false)
+            {
+                return false;
+            }
+
+            return PathFinder.IsTargetPositionInRange(heroCords, targetCords, range);
         }
 
         public static List<FightingHero> GetAllTargetsInRange(Frame f, FightingHero fightingHero, Board board)

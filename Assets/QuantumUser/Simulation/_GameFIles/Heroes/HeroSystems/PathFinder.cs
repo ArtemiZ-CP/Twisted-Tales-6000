@@ -22,13 +22,12 @@ namespace Quantum.Game
             }
         }
 
-        public static bool TryFindPath(int[,] board, Vector2Int start, Vector2Int target, int heroRange, out Vector2Int nextPosition, out bool inRange)
+        public static bool TryFindPath(int[,] board, Vector2Int start, Vector2Int target, int heroRange, out Vector2Int nextPosition)
         {
             nextPosition = default;
 
             if (board == null || board.Length == 0)
             {
-                inRange = false;
                 return false;
             }
 
@@ -51,9 +50,9 @@ namespace Quantum.Game
                 {
                     Vector2Int predictedPosition = current.Position + new Vector2Int(_dx[i], _dy[i]);
 
-                    if (IsTargetPositionInRange(predictedPosition, target, heroRange))
+                    if (IsTargetPositionInRange(predictedPosition, target, heroRange - 1))
                     {
-                        nextPosition = ConstructPath(new Node(predictedPosition, current), out inRange);
+                        nextPosition = ConstructPath(new Node(predictedPosition, current));
                         return true;
                     }
 
@@ -67,16 +66,15 @@ namespace Quantum.Game
                 }
             }
 
-            inRange = false;
             return false;
         }
 
-        private static bool IsTargetPositionInRange(Vector2Int position, Vector2Int target, int range)
+        public static bool IsTargetPositionInRange(Vector2Int position, Vector2Int target, int range)
         {
-            return Mathf.Abs(target.x - position.x) < range && Mathf.Abs(target.y - position.y) < range;
+            return Mathf.Abs(target.x - position.x) <= range && Mathf.Abs(target.y - position.y) <= range;
         }
 
-        private static Vector2Int ConstructPath(Node node, out bool inRange)
+        private static Vector2Int ConstructPath(Node node)
         {
             List<Vector2Int> path = new();
 
@@ -84,15 +82,6 @@ namespace Quantum.Game
             {
                 path.Add(node.Position);
                 node = node.Parent;
-            }
-
-            if (path.Count < 2)
-            {
-                inRange = true;
-            }
-            else
-            {
-                inRange = false;
             }
 
             return path.Count > 1 ? path[^2] : path[^1];

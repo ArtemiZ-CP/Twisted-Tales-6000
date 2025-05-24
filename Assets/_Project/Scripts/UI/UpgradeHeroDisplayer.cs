@@ -6,8 +6,8 @@ public class UpgradeHeroDisplayer : MonoBehaviour
 {
     [SerializeField] private GameObject _panel;
     [SerializeField] private HeroesMover _heroesMover;
-    [SerializeField] private UnityEngine.UI.Button _firstUpgradeButton;
-    [SerializeField] private UnityEngine.UI.Button _secondUpgradeButton;
+    [SerializeField] private ChooseUpgradeHeroButton _firstUpgradeButton;
+    [SerializeField] private ChooseUpgradeHeroButton _secondUpgradeButton;
 
     private int _id = -1;
     private int _level = -1;
@@ -20,21 +20,23 @@ public class UpgradeHeroDisplayer : MonoBehaviour
     private void OnEnable()
     {
         _heroesMover.OnUpgradeHero += ShowPanel;
-        _firstUpgradeButton.onClick.AddListener(SelectFirstUpgrade);
-        _secondUpgradeButton.onClick.AddListener(SelectSecondUpgrade);
+        _firstUpgradeButton.OnClick += SelectFirstUpgrade;
+        _secondUpgradeButton.OnClick += SelectSecondUpgrade;
     }
 
     private void OnDisable()
     {
         _heroesMover.OnUpgradeHero -= ShowPanel;
-        _firstUpgradeButton.onClick.RemoveListener(SelectFirstUpgrade);
-        _secondUpgradeButton.onClick.RemoveListener(SelectSecondUpgrade);
+        _firstUpgradeButton.OnClick -= SelectFirstUpgrade;
+        _secondUpgradeButton.OnClick -= SelectSecondUpgrade;
     }
 
     private void ShowPanel(int id, int level)
     {
         _id = id;
         _level = level;
+        _firstUpgradeButton.Initialize(id, level, Hero.UpgradeLevel1);
+        _secondUpgradeButton.Initialize(id, level, Hero.UpgradeLevel2);
         _panel.SetActive(true);
     }
 

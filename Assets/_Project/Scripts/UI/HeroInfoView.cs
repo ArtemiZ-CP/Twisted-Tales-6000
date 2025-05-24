@@ -149,7 +149,7 @@ public class HeroInfoView : MonoBehaviour
         DisplayMainStats(heroInfo, level, armor: 0, health, health);
     }
 
-    private void DisplayMainStats(HeroInfo heroInfo, int level, FP armor, FP currentHealth, FP maxHealth)
+    private void DisplayMainStats(HeroInfo heroInfo, int level, FP armor, FP currentHealth, FP maxHealth, FightingHero fightingHero = default)
     {
         HeroLevelStats heroStats = heroInfo.HeroStats[level];
 
@@ -169,7 +169,7 @@ public class HeroInfoView : MonoBehaviour
         _heroDamage.text = heroStats.AttackDamage.ToString("0.##");
         _heroAttackSpeed.text = heroStats.AttackSpeed.ToString("0.##");
         _heroDPS.text = (heroStats.AttackDamage * heroStats.AttackSpeed).ToString("0.##");
-        _heroDefense.text = heroStats.Defense.ToString("0.##");
+        DisplayDefense(heroStats, fightingHero);
 
         foreach (var tmpText in _heroSellPrice)
         {
@@ -185,5 +185,22 @@ public class HeroInfoView : MonoBehaviour
             Mathf.Lerp(0, rectTransform.rect.width, progress),
             rectTransform.anchoredPosition.y
         );
+    }
+
+    private void DisplayDefense(HeroLevelStats heroStats, FightingHero fightingHero)
+    {
+        string heroDefenseText = heroStats.Defense.ToString("0.##");
+
+        if (fightingHero.Hero.Ref != default)
+        {
+            FP extraDefense = fightingHero.Hero.Defense - heroStats.Defense;
+
+            if (extraDefense != 0)
+            {
+                heroDefenseText += $" + ({extraDefense.ToString("0.##")})";
+            }
+        }
+
+        _heroDefense.text = heroDefenseText;
     }
 }

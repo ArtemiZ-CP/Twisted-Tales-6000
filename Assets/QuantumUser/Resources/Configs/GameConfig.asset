@@ -20,7 +20,7 @@ MonoBehaviour:
   MaxPlayers: 8
   CoinsPerWin: 1
   CoinsPerLose: 0
-  CoinsPerRound: 0300000003000000040000000400000005000000
+  CoinsPerRound: 0200000003000000040000000400000005000000
   ResetCoinsOnEndRound: 0
   WinStreakCoins: 0000000000000000010000000100000002000000020000000300000004000000
   ResetWinStreakOnEnd: 1
@@ -58,11 +58,11 @@ MonoBehaviour:
   - Id:
       Value: 300371410397466826
   - Id:
-      Value: 536054989330170122
-  - Id:
       Value: 441504537230468131
   - Id:
       Value: 451262027935121510
+  - Id:
+      Value: 536054989330170122
   - Id:
       Value: 371199533054399521
   - Id:
@@ -71,9 +71,9 @@ MonoBehaviour:
     RawValue: 0
   AddManaByPercentage: 1
   ManaDealDamageRegen:
-    RawValue: 655
+    RawValue: 6554
   ManaTakeDamageRegen:
-    RawValue: 655
+    RawValue: 6554
   HeroMoveSpeed:
     RawValue: 196608
   HeroRotationSpeed:
@@ -121,7 +121,7 @@ MonoBehaviour:
     - Rare: 2
       Chance: 0
     - Rare: 3
-      Chance: 0
+      Chance: 1000
     - Rare: 4
       Chance: 0
   - Cost: 1

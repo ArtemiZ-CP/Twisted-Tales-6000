@@ -8,24 +8,24 @@ namespace Quantum.Game
     {
         public static bool TryCastAbility(Frame f, FightingHero fightingHero, Board board)
         {
-            QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
-            fightingHero = heroes[fightingHero.Index];
-            PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
-            int heroLevel = fightingHero.Hero.Level;
-            SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, playerLink, fightingHero.Hero.ID, out int _);
+            // QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+            // fightingHero = heroes[fightingHero.Index];
+            // PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
+            // int heroLevel = fightingHero.Hero.Level;
+            // SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, playerLink, fightingHero.Hero.ID, out int _);
 
-            if (heroLevel == Hero.Level1)
-            {
-                return TryCast(f, fightingHero, board, 120, 5, 150);
-            }
-            else if (heroLevel == Hero.Level2)
-            {
-                return TryCast(f, fightingHero, board, 180, 8, 225);
-            }
-            else if (heroLevel == Hero.Level3)
-            {
-                return TryCast(f, fightingHero, board, 270, 12, 340);
-            }
+            // if (heroLevel == Hero.Level1)
+            // {
+            //     return TryCast(f, fightingHero, board, 120, 5, 150);
+            // }
+            // else if (heroLevel == Hero.Level2)
+            // {
+            //     return TryCast(f, fightingHero, board, 180, 8, 225);
+            // }
+            // else if (heroLevel == Hero.Level3)
+            // {
+            //     return TryCast(f, fightingHero, board, 270, 12, 340);
+            // }
 
             return false;
         }
@@ -67,7 +67,7 @@ namespace Quantum.Game
                 Duration = 3,
             };
 
-            HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref fightingHero, armorEffect);
+            HeroAttack.ApplyEffectsToTarget(f, ref fightingHero, board, ref fightingHero, armorEffect);
 
             return true;
         }

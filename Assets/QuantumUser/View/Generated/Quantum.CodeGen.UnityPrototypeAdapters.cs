@@ -118,9 +118,11 @@ namespace Quantum.Prototypes.Unity {
     public Int32 TeamNumber;
     public QBoolean IsAlive;
     public FP AttackTimer;
+    public FP AbilityTimer;
     public Int32 AttackStage;
     public Int32 AbilityStage;
     public Int32 ExtraLives;
+    public QBoolean IsPassiveAbilityActivated;
     public FP DealedBaseDamage;
     public FP DealedAbilityDamage;
     public FP TakenDamage;
@@ -140,9 +142,11 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.TeamNumber, out result.TeamNumber);
       converter.Convert(this.IsAlive, out result.IsAlive);
       converter.Convert(this.AttackTimer, out result.AttackTimer);
+      converter.Convert(this.AbilityTimer, out result.AbilityTimer);
       converter.Convert(this.AttackStage, out result.AttackStage);
       converter.Convert(this.AbilityStage, out result.AbilityStage);
       converter.Convert(this.ExtraLives, out result.ExtraLives);
+      converter.Convert(this.IsPassiveAbilityActivated, out result.IsPassiveAbilityActivated);
       converter.Convert(this.DealedBaseDamage, out result.DealedBaseDamage);
       converter.Convert(this.DealedAbilityDamage, out result.DealedAbilityDamage);
       converter.Convert(this.TakenDamage, out result.TakenDamage);

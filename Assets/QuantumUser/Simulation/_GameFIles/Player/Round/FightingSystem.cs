@@ -135,7 +135,10 @@ namespace Quantum.Game
                 Effects = f.AllocateList<EffectQnt>(),
                 AttackStage = 0,
                 AbilityStage = 0,
+                AttackTimer = 0,
+                AbilityTimer = 0,
                 ExtraLives = extraLives,
+                IsPassiveAbilityActivated = false,
             };
 
             return fightingHero;

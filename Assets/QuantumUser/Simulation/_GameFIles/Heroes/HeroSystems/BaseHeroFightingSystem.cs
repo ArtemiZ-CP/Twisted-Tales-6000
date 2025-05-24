@@ -115,17 +115,6 @@ namespace Quantum.Game
                 Hero.Rotate(f, fightingHero.Hero, f.Get<Transform3D>(fightingHero.AttackTarget).Position);
             }
 
-            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            HeroNameEnum heroName = gameConfig.GetHeroInfo(f, fightingHero.Hero.ID).Name;
-
-            if (heroName == HeroNameEnum.Merlin)
-            {
-                if (MerlinAbilities.TryGetNewAttackAction(ref fightingHero, heroes, out var NewAttack))
-                {
-                    Attack = NewAttack;
-                }
-            }
-
             if (Attack(f, fightingHero, (HeroAttack.DamageType)fightingHero.Hero.AttackDamageType, HeroAttack.AttackType.Base))
             {
                 fightingHero = heroes[fightingHero.Index];
