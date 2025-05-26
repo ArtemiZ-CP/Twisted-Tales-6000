@@ -101,51 +101,8 @@ namespace Quantum.Game
                     Duration = 3,
                 };
 
-                HeroAttack.ApplyEffectsToTarget(f, ref fightingHero, board, ref fightingHero, effect);
+                HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref fightingHero, effect);
                 HeroAttack.DamageHeroByBlast(f, fightingHero, target.Index, board, damage, fightingHero.Hero.Range, includeSelf: true, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                return true;
-            }
-
-            return false;
-        }
-
-        private static bool TryCastV2(Frame f, FightingHero fightingHero, Board board, FP damage, FP reduceAttackSpeed)
-        {
-            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
-            {
-                HeroEffects.Effect effect = new()
-                {
-                    Owner = fightingHero.Hero.Ref,
-                    Type = HeroEffects.EffectType.IncreaseAttackSpeed,
-                    Value = 1 - reduceAttackSpeed,
-                    Duration = 3,
-                };
-
-                HeroAttack.DamageHero(f, fightingHero, board, target, damage, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                return true;
-            }
-
-            return false;
-        }
-
-        private static bool TryCastV3(Frame f, FightingHero fightingHero, Board board, FP damage, FP healPercent, FP increaseAttackSpeed)
-        {
-            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
-            {
-                if (HeroAttack.DamageHero(f, fightingHero, board, target, damage, HeroAttack.DamageType.True, HeroAttack.AttackType.Ability))
-                {
-                    HeroEffects.Effect effect = new()
-                    {
-                        Owner = fightingHero.Hero.Ref,
-                        Type = HeroEffects.EffectType.IncreaseAttackSpeed,
-                        Value = increaseAttackSpeed,
-                        Duration = 4,
-                    };
-
-                    HeroAttack.ApplyEffectsToTarget(f, ref fightingHero, board, ref target, effect);
-                    HeroAttack.HealHero(f, fightingHero, board, fightingHero, healPercent * fightingHero.Hero.Health);
-                }
-
                 return true;
             }
 

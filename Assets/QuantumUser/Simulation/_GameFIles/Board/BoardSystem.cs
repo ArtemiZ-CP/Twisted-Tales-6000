@@ -113,13 +113,13 @@ namespace Quantum.Game
 
         private void ClearBoard(Frame f, Board* board)
         {
-            ClearHeroes(f, board->HeroesID1);
-            f.FreeList(board->HeroesID1);
-            board->HeroesID1 = default;
+            ClearHeroes(f, board->Heroes1);
+            f.FreeList(board->Heroes1);
+            board->Heroes1 = default;
 
-            ClearHeroes(f, board->HeroesID2);
-            f.FreeList(board->HeroesID2);
-            board->HeroesID2 = default;
+            ClearHeroes(f, board->Heroes2);
+            f.FreeList(board->Heroes2);
+            board->Heroes2 = default;
 
             ClearProjectiles(f, *board);
             f.FreeList(board->HeroProjectiles);
@@ -208,8 +208,8 @@ namespace Quantum.Game
 
         private void SpawnHeroes(Frame f, Board* board)
         {
-            QList<HeroEntity> heroes1 = f.ResolveList(board->HeroesID1);
-            QList<HeroEntity> heroes2 = f.ResolveList(board->HeroesID2);
+            QList<HeroEntity> heroes1 = f.ResolveList(board->Heroes1);
+            QList<HeroEntity> heroes2 = f.ResolveList(board->Heroes2);
 
             for (int i = 0; i < heroes1.Count; i++)
             {
@@ -232,8 +232,8 @@ namespace Quantum.Game
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
             board->GlobalEffects = f.AllocateList<GlobalEffectQnt>();
 
-            board->HeroesID1 = Hero.SetupHeroes(f, player1, board->HeroesID1);
-            board->HeroesID2 = Hero.SetupHeroes(f, player2, board->HeroesID2);
+            board->Heroes1 = Hero.SetupHeroes(f, player1);
+            board->Heroes2 = Hero.SetupHeroes(f, player2);
 
             board->Player1 = *player1;
             board->Player2 = main ? *player2 : default;
@@ -249,8 +249,8 @@ namespace Quantum.Game
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
             board->GlobalEffects = f.AllocateList<GlobalEffectQnt>();
 
-            board->HeroesID1 = Hero.SetupHeroes(f, player1, board->HeroesID1);
-            board->HeroesID2 = Hero.SetupHeroes(f, roundInfo, board->HeroesID2);
+            board->Heroes1 = Hero.SetupHeroes(f, player1);
+            board->Heroes2 = Hero.SetupHeroes(f, roundInfo);
 
             board->Player1 = *player1;
             board->Player2 = default;

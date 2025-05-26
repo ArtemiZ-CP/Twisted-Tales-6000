@@ -34,7 +34,7 @@ namespace Quantum.Game
                 return string.Empty;
             }
 
-            string name = $"{QuantumConnection.GetHeroInfo(id).Name}";
+            string name = $"{QuantumConnection.GetHeroInfo(id, out _).Name}";
 
             if (level != 0)
             {

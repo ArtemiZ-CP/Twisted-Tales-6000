@@ -51,31 +51,5 @@ namespace Quantum.Game
 
             return false;
         }
-
-        private static bool TryCastV1(Frame f, FightingHero fightingHero, Board board, FP damage)
-        {
-            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
-            {
-                HeroAttack.DamageHero(f, fightingHero, board, target, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                return true;
-            }
-
-            return false;
-        }
-
-        private static bool TryCastV2(Frame f, FightingHero fightingHero, Board board, FP amount)
-        {
-            HeroAttack.AddArmorToHero(f, fightingHero, board, fightingHero, amount);
-            return true;
-        }
-
-        private static bool TryCastV3(Frame f, FightingHero fightingHero, Board board, FP amount)
-        {
-            List<FightingHero> alies = HeroBoard.GetAllAliesInRange(f, fightingHero, board, includeSelf: true);
-            FightingHero alyWithMinHealth = HeroBoard.GetAliyWithMinHealth(alies);
-            HeroAttack.HealHero(f, fightingHero, board, alyWithMinHealth, amount);
-
-            return false;
-        }
     }
 }

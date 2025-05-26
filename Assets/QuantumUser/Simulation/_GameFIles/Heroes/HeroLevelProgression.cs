@@ -85,17 +85,15 @@ namespace Quantum.Game
 
         public static int GetHeroCount(Frame f, PlayerLink* playerLink, int heroID, int heroLevel)
         {
-            QList<int> heroesInventory = f.ResolveList(playerLink->Info.Inventory.HeroesID);
-            QList<int> heroesLevelInventory = f.ResolveList(playerLink->Info.Inventory.HeroesLevel);
-            QList<int> heroesBoard = f.ResolveList(playerLink->Info.Board.HeroesID);
-            QList<int> heroesLevelBoard = f.ResolveList(playerLink->Info.Board.HeroesLevel);
+            QList<HeroIdLevel> heroesInventory = f.ResolveList(playerLink->Info.Inventory.Heroes);
+            QList<HeroIdLevel> heroesBoard = f.ResolveList(playerLink->Info.Board.Heroes);
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
             int heroCount = 0;
 
             for (int i = 0; i < heroesInventory.Count; i++)
             {
-                if (heroesInventory[i] == heroID && heroesLevelInventory[i] == heroLevel)
+                if (heroesInventory[i].ID == heroID && heroesInventory[i].Level == heroLevel)
                 {
                     heroCount++;
                 }
@@ -105,7 +103,7 @@ namespace Quantum.Game
             {
                 for (int i = 0; i < heroesBoard.Count; i++)
                 {
-                    if (heroesBoard[i] == heroID && heroesLevelBoard[i] == heroLevel)
+                    if (heroesBoard[i].ID == heroID && heroesBoard[i].Level == heroLevel)
                     {
                         heroCount++;
                     }
@@ -117,10 +115,8 @@ namespace Quantum.Game
 
         public static void UpgradeHero(Frame f, PlayerLink* playerLink, int heroID, int heroLevel, int heroesCountToUpgrade)
         {
-            QList<int> heroesInventory = f.ResolveList(playerLink->Info.Inventory.HeroesID);
-            QList<int> heroesLevelInventory = f.ResolveList(playerLink->Info.Inventory.HeroesLevel);
-            QList<int> heroesBoard = f.ResolveList(playerLink->Info.Board.HeroesID);
-            QList<int> heroesLevelBoard = f.ResolveList(playerLink->Info.Board.HeroesLevel);
+            QList<HeroIdLevel> heroesInventory = f.ResolveList(playerLink->Info.Inventory.Heroes);
+            QList<HeroIdLevel> heroesBoard = f.ResolveList(playerLink->Info.Board.Heroes);
             QList<SelectedHeroAbility> abilities = f.ResolveList(playerLink->Info.Board.Abilities);
 
             bool onBoard = false;
@@ -129,7 +125,7 @@ namespace Quantum.Game
 
             for (int i = 0; i < heroesBoard.Count; i++)
             {
-                if (heroesBoard[i] == heroID && heroesLevelBoard[i] == heroLevel)
+                if (heroesBoard[i].ID == heroID && heroesBoard[i].Level == heroLevel)
                 {
                     onBoard = true;
                     heroIndex = i;
@@ -141,7 +137,7 @@ namespace Quantum.Game
             {
                 for (int i = 0; i < heroesInventory.Count; i++)
                 {
-                    if (heroesInventory[i] == heroID && heroesLevelInventory[i] == heroLevel)
+                    if (heroesInventory[i].ID == heroID && heroesInventory[i].Level == heroLevel)
                     {
                         heroIndex = i;
                         break;
@@ -158,10 +154,13 @@ namespace Quantum.Game
                     break;
                 }
 
-                if (heroesInventory[i] == heroID && heroesLevelInventory[i] == heroLevel)
+                HeroIdLevel heroIdLevel = heroesInventory[i];
+
+                if (heroIdLevel.ID == heroID && heroIdLevel.Level == heroLevel)
                 {
-                    heroesInventory[i] = -1;
-                    heroesLevelInventory[i] = 0;
+                    heroIdLevel.ID = -1;
+                    heroIdLevel.Level = 0;
+                    heroesInventory[i] = heroIdLevel;
                     heroesCount++;
 
                     if (heroesCount == heroesCountToUpgrade)
@@ -178,10 +177,13 @@ namespace Quantum.Game
                     break;
                 }
 
-                if (heroesBoard[i] == heroID && heroesLevelBoard[i] == heroLevel)
+                HeroIdLevel heroIdLevel = heroesBoard[i];
+
+                if (heroIdLevel.ID == heroID && heroIdLevel.Level == heroLevel)
                 {
-                    heroesBoard[i] = -1;
-                    heroesLevelBoard[i] = 0;
+                    heroIdLevel.ID = -1;
+                    heroIdLevel.Level = 0;
+                    heroesBoard[i] = heroIdLevel;
                     heroesCount++;
 
                     if (heroesCount == heroesCountToUpgrade)
@@ -193,16 +195,20 @@ namespace Quantum.Game
 
             if (onBoard)
             {
-                heroesBoard[heroIndex] = heroID;
-                heroesLevelBoard[heroIndex] = nextLevel;
+                HeroIdLevel heroIdLevel = heroesBoard[heroIndex];
+                heroIdLevel.ID = heroID;
+                heroIdLevel.Level = nextLevel;
+                heroesBoard[heroIndex] = heroIdLevel;
             }
             else
             {
-                heroesInventory[heroIndex] = heroID;
-                heroesLevelInventory[heroIndex] = nextLevel;
+                HeroIdLevel heroIdLevel = heroesInventory[heroIndex];
+                heroIdLevel.ID = heroID;
+                heroIdLevel.Level = nextLevel;
+                heroesInventory[heroIndex] = heroIdLevel;
             }
 
-            SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, playerLink, heroID, out int index);
+            SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, *playerLink, heroID, out int index);
 
             if (nextLevel == Hero.Level2 && selectedHeroAbility.SecondAbilityIndex == Hero.UpgradeClosed)
             {
@@ -217,20 +223,14 @@ namespace Quantum.Game
                 f.Events.LevelUpHero(playerLink->Ref, heroID, nextLevel, IsCompleted: false);
             }
 
-            f.Events.GetBoardHeroes(f, playerLink->Ref,
-                f.ResolveList(playerLink->Info.Board.HeroesID),
-                f.ResolveList(playerLink->Info.Board.HeroesLevel));
-            f.Events.GetInventoryHeroes(f, playerLink->Ref,
-                f.ResolveList(playerLink->Info.Inventory.HeroesID),
-                f.ResolveList(playerLink->Info.Inventory.HeroesLevel));
+            f.Events.GetBoardHeroes(f, playerLink->Ref, f.ResolveList(playerLink->Info.Board.Heroes));
+            f.Events.GetInventoryHeroes(f, playerLink->Ref, f.ResolveList(playerLink->Info.Inventory.Heroes));
         }
 
         private bool TryGetHeroesToUpgrade(Frame f, PlayerLink* playerLink, out List<HeroUpgradeInfo> heroUpgradeInfos)
         {
-            QList<int> heroesInventory = f.ResolveList(playerLink->Info.Inventory.HeroesID);
-            QList<int> heroesLevelInventory = f.ResolveList(playerLink->Info.Inventory.HeroesLevel);
-            QList<int> heroesBoard = f.ResolveList(playerLink->Info.Board.HeroesID);
-            QList<int> heroesLevelBoard = f.ResolveList(playerLink->Info.Board.HeroesLevel);
+            QList<HeroIdLevel> heroesInventory = f.ResolveList(playerLink->Info.Inventory.Heroes);
+            QList<HeroIdLevel> heroesBoard = f.ResolveList(playerLink->Info.Board.Heroes);
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             heroUpgradeInfos = new List<HeroUpgradeInfo>();
 
@@ -240,9 +240,9 @@ namespace Quantum.Game
 
                 for (int i = 0; i < heroesInventory.Count; i++)
                 {
-                    if (heroesInventory[i] == heroID)
+                    if (heroesInventory[i].ID == heroID)
                     {
-                        heroesCount[heroesLevelInventory[i]]++;
+                        heroesCount[heroesInventory[i].Level]++;
                     }
                 }
 
@@ -250,9 +250,9 @@ namespace Quantum.Game
                 {
                     for (int i = 0; i < heroesBoard.Count; i++)
                     {
-                        if (heroesBoard[i] == heroID)
+                        if (heroesBoard[i].ID == heroID)
                         {
-                            heroesCount[heroesLevelBoard[i]]++;
+                            heroesCount[heroesBoard[i].Level]++;
                         }
                     }
                 }

@@ -56,9 +56,9 @@ namespace Quantum.Prototypes {
     public Quantum.Prototypes.PlayerLinkPrototype Player1;
     public Quantum.Prototypes.PlayerLinkPrototype Player2;
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.HeroEntityPrototype[] HeroesID1 = {};
+    public Quantum.Prototypes.HeroEntityPrototype[] Heroes1 = {};
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.HeroEntityPrototype[] HeroesID2 = {};
+    public Quantum.Prototypes.HeroEntityPrototype[] Heroes2 = {};
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.FightingHeroPrototype[] FightingHeroesMap = {};
     [DynamicCollectionAttribute()]
@@ -74,23 +74,23 @@ namespace Quantum.Prototypes {
         PrototypeValidator.FindMapEntity(this.Ref, in context, out result.Ref);
         this.Player1.Materialize(frame, ref result.Player1, in context);
         this.Player2.Materialize(frame, ref result.Player2, in context);
-        if (this.HeroesID1.Length == 0) {
-          result.HeroesID1 = default;
+        if (this.Heroes1.Length == 0) {
+          result.Heroes1 = default;
         } else {
-          var list = frame.AllocateList(out result.HeroesID1, this.HeroesID1.Length);
-          for (int i = 0; i < this.HeroesID1.Length; ++i) {
+          var list = frame.AllocateList(out result.Heroes1, this.Heroes1.Length);
+          for (int i = 0; i < this.Heroes1.Length; ++i) {
             Quantum.HeroEntity tmp = default;
-            this.HeroesID1[i].Materialize(frame, ref tmp, in context);
+            this.Heroes1[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
         }
-        if (this.HeroesID2.Length == 0) {
-          result.HeroesID2 = default;
+        if (this.Heroes2.Length == 0) {
+          result.Heroes2 = default;
         } else {
-          var list = frame.AllocateList(out result.HeroesID2, this.HeroesID2.Length);
-          for (int i = 0; i < this.HeroesID2.Length; ++i) {
+          var list = frame.AllocateList(out result.Heroes2, this.Heroes2.Length);
+          for (int i = 0; i < this.Heroes2.Length; ++i) {
             Quantum.HeroEntity tmp = default;
-            this.HeroesID2[i].Materialize(frame, ref tmp, in context);
+            this.Heroes2[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
         }
@@ -261,6 +261,18 @@ namespace Quantum.Prototypes {
     }
   }
   [System.SerializableAttribute()]
+  [Quantum.Prototypes.Prototype(typeof(Quantum.HeroIdLevel))]
+  public unsafe partial class HeroIdLevelPrototype : StructPrototype {
+    public Int32 ID;
+    public Int32 Level;
+    partial void MaterializeUser(Frame frame, ref Quantum.HeroIdLevel result, in PrototypeMaterializationContext context);
+    public void Materialize(Frame frame, ref Quantum.HeroIdLevel result, in PrototypeMaterializationContext context = default) {
+        result.ID = this.ID;
+        result.Level = this.Level;
+        MaterializeUser(frame, ref result, in context);
+    }
+  }
+  [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.HeroProjectile))]
   public unsafe class HeroProjectilePrototype : ComponentPrototype<Quantum.HeroProjectile> {
     public MapEntityId Ref;
@@ -346,30 +358,18 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerBoard))]
   public unsafe partial class PlayerBoardPrototype : StructPrototype {
     [DynamicCollectionAttribute()]
-    public Int32[] HeroesID = {};
-    [DynamicCollectionAttribute()]
-    public Int32[] HeroesLevel = {};
+    public Quantum.Prototypes.HeroIdLevelPrototype[] Heroes = {};
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.SelectedHeroAbilityPrototype[] Abilities = {};
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerBoard result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.PlayerBoard result, in PrototypeMaterializationContext context = default) {
-        if (this.HeroesID.Length == 0) {
-          result.HeroesID = default;
+        if (this.Heroes.Length == 0) {
+          result.Heroes = default;
         } else {
-          var list = frame.AllocateList(out result.HeroesID, this.HeroesID.Length);
-          for (int i = 0; i < this.HeroesID.Length; ++i) {
-            Int32 tmp = default;
-            tmp = this.HeroesID[i];
-            list.Add(tmp);
-          }
-        }
-        if (this.HeroesLevel.Length == 0) {
-          result.HeroesLevel = default;
-        } else {
-          var list = frame.AllocateList(out result.HeroesLevel, this.HeroesLevel.Length);
-          for (int i = 0; i < this.HeroesLevel.Length; ++i) {
-            Int32 tmp = default;
-            tmp = this.HeroesLevel[i];
+          var list = frame.AllocateList(out result.Heroes, this.Heroes.Length);
+          for (int i = 0; i < this.Heroes.Length; ++i) {
+            Quantum.HeroIdLevel tmp = default;
+            this.Heroes[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
         }
@@ -417,28 +417,16 @@ namespace Quantum.Prototypes {
   [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerInventory))]
   public unsafe partial class PlayerInventoryPrototype : StructPrototype {
     [DynamicCollectionAttribute()]
-    public Int32[] HeroesID = {};
-    [DynamicCollectionAttribute()]
-    public Int32[] HeroesLevel = {};
+    public Quantum.Prototypes.HeroIdLevelPrototype[] Heroes = {};
     partial void MaterializeUser(Frame frame, ref Quantum.PlayerInventory result, in PrototypeMaterializationContext context);
     public void Materialize(Frame frame, ref Quantum.PlayerInventory result, in PrototypeMaterializationContext context = default) {
-        if (this.HeroesID.Length == 0) {
-          result.HeroesID = default;
+        if (this.Heroes.Length == 0) {
+          result.Heroes = default;
         } else {
-          var list = frame.AllocateList(out result.HeroesID, this.HeroesID.Length);
-          for (int i = 0; i < this.HeroesID.Length; ++i) {
-            Int32 tmp = default;
-            tmp = this.HeroesID[i];
-            list.Add(tmp);
-          }
-        }
-        if (this.HeroesLevel.Length == 0) {
-          result.HeroesLevel = default;
-        } else {
-          var list = frame.AllocateList(out result.HeroesLevel, this.HeroesLevel.Length);
-          for (int i = 0; i < this.HeroesLevel.Length; ++i) {
-            Int32 tmp = default;
-            tmp = this.HeroesLevel[i];
+          var list = frame.AllocateList(out result.Heroes, this.Heroes.Length);
+          for (int i = 0; i < this.Heroes.Length; ++i) {
+            Quantum.HeroIdLevel tmp = default;
+            this.Heroes[i].Materialize(frame, ref tmp, in context);
             list.Add(tmp);
           }
         }

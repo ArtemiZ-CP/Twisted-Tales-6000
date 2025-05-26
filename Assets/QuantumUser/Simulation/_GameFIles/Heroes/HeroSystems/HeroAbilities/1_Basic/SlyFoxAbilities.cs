@@ -28,16 +28,5 @@ namespace Quantum.Game
 
             return false;
         }
-
-        private static bool TryCast(Frame f, FightingHero fightingHero, Board board, FP damage)
-        {
-            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
-            {
-                HeroAttack.DamageHero(f, fightingHero, board, target, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                return true;
-            }
-
-            return false;
-        }
     }
 }

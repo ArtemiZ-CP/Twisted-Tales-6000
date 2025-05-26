@@ -3,7 +3,7 @@ using Quantum.Collections;
 
 namespace Quantum.Game
 {
-    public unsafe class TinManAbilities
+    public unsafe class TinManAbilities : IHeroAbility
     {
         private const int IncreaseDefenseInPassiveAbility = 20;
         private const int AbilityDuration = 2;
@@ -17,7 +17,16 @@ namespace Quantum.Game
         private static readonly FP HealPercentage = FP._0_75;
         private static readonly FP IncreaseAttackSpeed = FP._1_20;
 
-        public static void ProcessPassiveAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public HeroStats GetHeroStats(Frame f, PlayerLink playerLink, HeroInfo heroInfo)
+        {
+            return heroInfo.Stats;
+        }
+
+        public void ProcessAbilityOnDeath(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        {
+        }
+
+        public void ProcessPassiveAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             if (fightingHero.IsPassiveAbilityActivated)
             {
@@ -33,11 +42,11 @@ namespace Quantum.Game
             }
         }
 
-        public static (bool, FP) TryCastAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public (bool, FP) TryCastAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             fightingHero = heroes[fightingHero.Index];
             PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
-            SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, playerLink, fightingHero.Hero.ID, out int _);
+            SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, *playerLink, fightingHero.Hero.ID, out int _);
 
             int abilityRange = AbilityRangeEffect;
             FP reloadTime = AbilityReloadTime;
@@ -67,7 +76,7 @@ namespace Quantum.Game
             return (true, reloadTime);
         }
 
-        private static bool CastMainAbility(Frame f, FightingHero fightingHero, Board board, int abilityRange, int abilityDuration)
+        private bool CastMainAbility(Frame f, FightingHero fightingHero, Board board, int abilityRange, int abilityDuration)
         {
             HeroEffects.Effect effect1 = new()
             {
@@ -82,7 +91,7 @@ namespace Quantum.Game
                 Duration = abilityDuration,
             };
             HeroEffects.Effect[] effects = new[] { effect1, effect2 };
-            HeroAttack.ApplyEffectsToTarget(f, ref fightingHero, board, ref fightingHero, effects);
+            HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref fightingHero, effects);
             HeroEffects.GlobalEffect globalEffect = new()
             {
                 Owner = fightingHero.Hero.Ref,
@@ -94,7 +103,7 @@ namespace Quantum.Game
             return true;
         }
 
-        private static void CastLevel2Variant1(Frame f, FightingHero fightingHero, Board board)
+        private void CastLevel2Variant1(Frame f, FightingHero fightingHero, Board board)
         {
             HeroEffects.GlobalEffect globalEffect = new()
             {
@@ -109,7 +118,7 @@ namespace Quantum.Game
             HeroEffects.AddGlobalEffect(f, board, globalEffect);
         }
 
-        private static void CastLevel2Variant2(Frame f, FightingHero fightingHero, Board board)
+        private void CastLevel2Variant2(Frame f, FightingHero fightingHero, Board board)
         {
             HeroEffects.Effect effect = new()
             {
@@ -124,7 +133,7 @@ namespace Quantum.Game
             for (int i = 0; i < alies.Count; i++)
             {
                 FightingHero ally = alies[i];
-                HeroAttack.ApplyEffectsToTarget(f, ref fightingHero, board, ref ally, effect);
+                HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref ally, effect);
             }
         }
     }

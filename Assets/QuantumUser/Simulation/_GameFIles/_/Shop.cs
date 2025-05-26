@@ -337,14 +337,13 @@ namespace Quantum.Game
         {
             int count = 0;
 
-            QList<int> inventoryHeroesID = f.ResolveList(playerLink.Info.Inventory.HeroesID);
-            QList<int> inventoryHeroesLevel = f.ResolveList(playerLink.Info.Inventory.HeroesLevel);
+            QList<HeroIdLevel> inventoryHeroes = f.ResolveList(playerLink.Info.Inventory.Heroes);
 
-            for (int i = 0; i < inventoryHeroesID.Count; i++)
+            for (int i = 0; i < inventoryHeroes.Count; i++)
             {
-                if (inventoryHeroesID[i] == heroID)
+                if (inventoryHeroes[i].ID == heroID)
                 {
-                    count += GetHeroCount(f, inventoryHeroesLevel[i]);
+                    count += GetHeroCount(f, inventoryHeroes[i].Level);
                 }
             }
 
@@ -358,14 +357,13 @@ namespace Quantum.Game
                 }
             }
 
-            QList<int> boardHeroesID = f.ResolveList(playerLink.Info.Board.HeroesID);
-            QList<int> boardHeroesLevel = f.ResolveList(playerLink.Info.Board.HeroesLevel);
+            QList<HeroIdLevel> boardHeroes = f.ResolveList(playerLink.Info.Board.Heroes);
 
-            for (int i = 0; i < boardHeroesID.Count; i++)
+            for (int i = 0; i < boardHeroes.Count; i++)
             {
-                if (boardHeroesID[i] == heroID)
+                if (boardHeroes[i].ID == heroID)
                 {
-                    count += GetHeroCount(f, boardHeroesLevel[i]);
+                    count += GetHeroCount(f, boardHeroes[i].Level);
                 }
             }
 

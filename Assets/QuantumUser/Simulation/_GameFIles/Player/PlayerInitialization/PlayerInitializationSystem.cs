@@ -94,13 +94,11 @@ namespace Quantum.Game
                     },
                     Inventory = new()
                     {
-                        HeroesID = f.AllocateList<int>(gameConfig.InventorySize),
-                        HeroesLevel = f.AllocateList<int>(gameConfig.InventorySize)
+                        Heroes = f.AllocateList<HeroIdLevel>(gameConfig.InventorySize),
                     },
                     Board = new()
                     {
-                        HeroesID = f.AllocateList<int>(GameConfig.BoardSize * GameConfig.BoardSize / 2),
-                        HeroesLevel = f.AllocateList<int>(GameConfig.BoardSize * GameConfig.BoardSize / 2),
+                        Heroes = f.AllocateList<HeroIdLevel>(GameConfig.BoardSize * GameConfig.BoardSize / 2),
                         Abilities = f.AllocateList<SelectedHeroAbility>()
                     },
                     Coins = gameConfig.CoinsPerRound[0],
@@ -110,10 +108,8 @@ namespace Quantum.Game
             };
 
             FillList(f, playerLink.Info.Shop.HeroesID, gameConfig.ShopSize, -1);
-            FillList(f, playerLink.Info.Inventory.HeroesID, gameConfig.InventorySize, -1);
-            FillList(f, playerLink.Info.Inventory.HeroesLevel, gameConfig.InventorySize, 0);
-            FillList(f, playerLink.Info.Board.HeroesID, GameConfig.BoardSize * GameConfig.BoardSize / 2, -1);
-            FillList(f, playerLink.Info.Board.HeroesLevel, GameConfig.BoardSize * GameConfig.BoardSize / 2, 0);
+            FillList(f, playerLink.Info.Inventory.Heroes, gameConfig.InventorySize, new HeroIdLevel { ID = -1, Level = 0 });
+            FillList(f, playerLink.Info.Board.Heroes, GameConfig.BoardSize * GameConfig.BoardSize / 2, new HeroIdLevel { ID = -1, Level = 0 });
 
             f.Add(entityRef, playerLink);
 
@@ -123,7 +119,7 @@ namespace Quantum.Game
         private void ReinitializeEntity(Frame f, PlayerRef player)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            PlayerLink playerLink = Player.GetPlayer(f, player);
+            PlayerLink playerLink = Player.GetPlayerLink(f, player);
 
             Events.GetCurrentPlayers(f);
             Events.ChangeCoins(f, playerLink);
@@ -153,9 +149,9 @@ namespace Quantum.Game
             }
         }
 
-        private void FillList(Frame frame, QListPtr<int> list, int size, int value)
+        private void FillList<T>(Frame frame, QListPtr<T> list, int size, T value) where T : unmanaged
         {
-            QList<int> resolvedList = frame.ResolveList(list);
+            QList<T> resolvedList = frame.ResolveList(list);
 
             for (int i = 0; i < size; i++)
             {

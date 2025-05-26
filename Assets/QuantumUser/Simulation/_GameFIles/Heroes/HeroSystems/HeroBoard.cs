@@ -19,7 +19,7 @@ namespace Quantum.Game
 
             foreach (FightingHero fightingHero in fightingHeroes)
             {
-                if (fightingHero.Hero.Ref == entityRef)
+                if (fightingHero.Hero.Ref == entityRef && f.Exists(entityRef))
                 {
                     return fightingHero;
                 }
@@ -38,11 +38,6 @@ namespace Quantum.Game
             Vector2Int cords = GetHeroCords(hero);
 
             return GetTilePosition(f, cords);
-        }
-
-        public static bool TryGetHeroCords(int heroIndex, out Vector2Int cords)
-        {
-            return TryConvertIndexToCords(heroIndex, out cords);
         }
 
         public static FPVector3 GetTilePosition(Frame f, Vector2Int cords)
@@ -70,15 +65,28 @@ namespace Quantum.Game
             return position;
         }
 
-        public static bool TryConvertIndexToCords(int index, out Vector2Int cords)
+        public static bool TryGetHeroCordsFromIndex(int index, out Vector2Int cords)
         {
+            if (index < 0 || index >= GameConfig.BoardSize * GameConfig.BoardSize)
+            {
+                cords = default;
+                return false;
+            }
+
             cords = new Vector2Int(index % GameConfig.BoardSize, index / GameConfig.BoardSize);
 
             return cords.x >= 0 && cords.x < GameConfig.BoardSize && cords.y >= 0 && cords.y < GameConfig.BoardSize;
         }
 
-        public static bool TryConvertCordsToIndex(Vector2Int cords, out int index)
+        public static bool TryGetHeroIndexFromCords(Vector2Int cords, out int index)
         {
+            if (cords.x < 0 || cords.x >= GameConfig.BoardSize ||
+                cords.y < 0 || cords.y >= GameConfig.BoardSize)
+            {
+                index = -1;
+                return false;
+            }
+
             index = cords.x + cords.y * GameConfig.BoardSize;
 
             return index >= 0 && index < GameConfig.BoardSize * GameConfig.BoardSize;
@@ -88,7 +96,7 @@ namespace Quantum.Game
         {
             List<Vector2Int> closeTiles = new();
 
-            if (TryGetHeroCords(heroIndex, out Vector2Int cords) == false)
+            if (TryGetHeroCordsFromIndex(heroIndex, out Vector2Int cords) == false)
             {
                 return closeTiles;
             }
@@ -123,7 +131,7 @@ namespace Quantum.Game
 
         public static void GetHorizontalCloseCords(int heroIndex, ref List<Vector2Int> closeTiles, int range = 1, bool includeSelf = false)
         {
-            if (TryGetHeroCords(heroIndex, out Vector2Int cords) == false)
+            if (TryGetHeroCordsFromIndex(heroIndex, out Vector2Int cords) == false)
             {
                 return;
             }
@@ -220,7 +228,7 @@ namespace Quantum.Game
             {
                 for (int y = 0; y < GameConfig.BoardSize; y++)
                 {
-                    if (HeroBoard.TryConvertCordsToIndex(new Vector2Int(x, y), out int index))
+                    if (HeroBoard.TryGetHeroIndexFromCords(new Vector2Int(x, y), out int index))
                     {
                         int heroID = -1;
 
@@ -268,6 +276,12 @@ namespace Quantum.Game
                     continue;
                 }
 
+                // Проверяем существование сущностей перед обращением к ним
+                if (!f.Exists(target.Hero.Ref) || !f.Exists(hero.Hero.Ref))
+                {
+                    continue;
+                }
+
                 Transform3D* targetTransform = f.Unsafe.GetPointer<Transform3D>(target.Hero.Ref);
                 Transform3D* heroTransform = f.Unsafe.GetPointer<Transform3D>(hero.Hero.Ref);
 
@@ -285,12 +299,12 @@ namespace Quantum.Game
 
         public static bool IsHeroInRange(FightingHero fightingHero, int target, int range)
         {
-            if (TryGetHeroCords(target, out Vector2Int targetCords) == false)
+            if (TryGetHeroCordsFromIndex(target, out Vector2Int targetCords) == false)
             {
                 return false;
             }
 
-            if (TryGetHeroCords(fightingHero.Index, out Vector2Int heroCords) == false)
+            if (TryGetHeroCordsFromIndex(fightingHero.Index, out Vector2Int heroCords) == false)
             {
                 return false;
             }
@@ -316,7 +330,7 @@ namespace Quantum.Game
 
             foreach (var tile in closeTiles)
             {
-                if (TryConvertCordsToIndex(tile, out int index) == false)
+                if (TryGetHeroIndexFromCords(tile, out int index) == false)
                 {
                     continue;
                 }
@@ -344,7 +358,7 @@ namespace Quantum.Game
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             List<Vector2Int> closeTiles = GetCloseCords(center, range, includeSelf);
 
-            if (TryConvertIndexToCords(center, out Vector2Int startTile) == false)
+            if (TryGetHeroCordsFromIndex(center, out Vector2Int startTile) == false)
             {
                 emptyTile = default;
                 return false;
@@ -359,7 +373,7 @@ namespace Quantum.Game
 
             foreach (Vector2Int tile in closeTiles)
             {
-                if (TryConvertCordsToIndex(tile, out int index) == false)
+                if (TryGetHeroIndexFromCords(tile, out int index) == false)
                 {
                     continue;
                 }
@@ -387,7 +401,7 @@ namespace Quantum.Game
 
             foreach (var tile in closeTiles)
             {
-                if (TryConvertCordsToIndex(tile, out int index) == false)
+                if (TryGetHeroIndexFromCords(tile, out int index) == false)
                 {
                     continue;
                 }

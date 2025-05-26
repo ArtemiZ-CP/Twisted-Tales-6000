@@ -62,11 +62,11 @@ namespace Quantum.Game
 
         private static void TryPlaceHeroes(Frame f, PlayerLink* playerLink)
         {
-            QList<int> inventory = f.ResolveList(playerLink->Info.Inventory.HeroesID);
+            QList<HeroIdLevel> inventory = f.ResolveList(playerLink->Info.Inventory.Heroes);
 
             for (int i = 0; i < inventory.Count; i++)
             {
-                if (inventory[i] < 0)
+                if (inventory[i].ID < 0)
                 {
                     continue;
                 }
@@ -94,12 +94,12 @@ namespace Quantum.Game
 
         private static (int, int) GetEmptyBoardPositions(Frame f, PlayerLink* playerLink)
         {
-            QList<int> board = f.ResolveList(playerLink->Info.Board.HeroesID);
+            QList<HeroIdLevel> board = f.ResolveList(playerLink->Info.Board.Heroes);
             List<int> emptyPositions = new List<int>();
 
             for (int index = 0; index < board.Count / 2; index++)
             {
-                if (board[index] < 0)
+                if (board[index].ID < 0)
                 {
                     emptyPositions.Add(index);
                 }
@@ -119,13 +119,13 @@ namespace Quantum.Game
 
         private static int GetHeroesCount(Frame f, PlayerLink* playerLink)
         {
-            QList<int> board = f.ResolveList(playerLink->Info.Board.HeroesID);
-            QList<int> inventory = f.ResolveList(playerLink->Info.Inventory.HeroesID);
+            QList<HeroIdLevel> board = f.ResolveList(playerLink->Info.Board.Heroes);
+            QList<HeroIdLevel> inventory = f.ResolveList(playerLink->Info.Inventory.Heroes);
             int count = 0;
 
             for (int i = 0; i < board.Count; i++)
             {
-                if (board[i] >= 0)
+                if (board[i].ID >= 0)
                 {
                     count++;
                 }
@@ -133,7 +133,7 @@ namespace Quantum.Game
 
             for (int i = 0; i < inventory.Count; i++)
             {
-                if (inventory[i] >= 0)
+                if (inventory[i].ID >= 0)
                 {
                     count++;
                 }
@@ -144,12 +144,12 @@ namespace Quantum.Game
 
         private static bool ContainSameHero(Frame f, PlayerLink* playerLink, int heroID)
         {
-            QList<int> board = f.ResolveList(playerLink->Info.Board.HeroesID);
-            QList<int> inventory = f.ResolveList(playerLink->Info.Inventory.HeroesID);
+            QList<HeroIdLevel> board = f.ResolveList(playerLink->Info.Board.Heroes);
+            QList<HeroIdLevel> inventory = f.ResolveList(playerLink->Info.Inventory.Heroes);
 
             for (int i = 0; i < board.Count; i++)
             {
-                if (board[i] == heroID)
+                if (board[i].ID == heroID)
                 {
                     return true;
                 }
@@ -157,7 +157,7 @@ namespace Quantum.Game
 
             for (int i = 0; i < inventory.Count; i++)
             {
-                if (inventory[i] == heroID)
+                if (inventory[i].ID == heroID)
                 {
                     return true;
                 }

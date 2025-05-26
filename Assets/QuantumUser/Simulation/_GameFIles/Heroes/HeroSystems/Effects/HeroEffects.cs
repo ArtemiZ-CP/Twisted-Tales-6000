@@ -120,7 +120,7 @@ namespace Quantum.Game
 
             globalEffects.Add(globalEffect);
 
-            if (HeroBoard.TryGetHeroCords(globalEffect.Center, out Vector2Int cords) == false)
+            if (HeroBoard.TryGetHeroCordsFromIndex(globalEffect.Center, out Vector2Int cords) == false)
             {
                 return;
             }
@@ -298,7 +298,7 @@ namespace Quantum.Game
 
                             heroes[target.Index] = target;
 
-                            HeroAttack.ApplyEffectsToTarget(f, ref target, board, ref target, effect);
+                            HeroAttack.ApplyEffectToTarget(f, ref target, board, ref target, effect);
                         }
                         else
                         {
@@ -333,7 +333,7 @@ namespace Quantum.Game
                 {
                     FightingHero closestTarget = HeroBoard.GetClosestTarget(f, alies, targetHero);
                     FightingHero owner = HeroBoard.GetFightingHero(f, bleedEffect.Owner, board);
-                    HeroAttack.ApplyEffectsToTarget(f, ref owner, board, ref closestTarget, bleedEffect);
+                    HeroAttack.ApplyEffectToTarget(f, ref owner, board, ref closestTarget, bleedEffect);
                 }
             }
         }
@@ -367,6 +367,12 @@ namespace Quantum.Game
                 }
 
                 FPVector3 movePosition = HeroBoard.GetTilePosition(f, newPosition);
+                
+                if (!f.Exists(fightingHero.Hero.Ref))
+                {
+                    return;
+                }
+
                 Transform3D* transform = f.Unsafe.GetPointer<Transform3D>(fightingHero.Hero.Ref);
 
                 if (HeroBoard.TrySetTarget(f, ref fightingHero, board))
@@ -427,6 +433,7 @@ namespace Quantum.Game
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             target = heroes[target.Index];
             target.CurrentMana -= value;
+            target.CurrentMana = FPMath.Max(target.CurrentMana, 0);
             heroes[target.Index] = target;
             f.Events.HeroManaChanged(board.Player1.Ref, board.Player2.Ref, target.Hero.Ref, target.CurrentMana, target.Hero.MaxMana);
         }

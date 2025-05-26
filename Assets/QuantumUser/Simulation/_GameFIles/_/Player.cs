@@ -4,6 +4,11 @@ namespace Quantum.Game
 {
     public unsafe class Player
     {
+        public static PlayerLink GetPlayerLink(FightingHero fightingHero, Board board)
+        {
+            return fightingHero.TeamNumber == GameplayConstants.Team1 ? board.Player1 : board.Player2;
+        }
+
         public static EntityRef GetPlayerEntity(Frame f, PlayerRef playerRef)
         {
             foreach ((EntityRef entity, PlayerLink link) in f.GetComponentIterator<PlayerLink>())
@@ -22,7 +27,7 @@ namespace Quantum.Game
             return f.Unsafe.GetPointer<PlayerLink>(entity);
         }
 
-        public static PlayerLink GetPlayer(Frame f, EntityRef entity)
+        public static PlayerLink GetPlayerLink(Frame f, EntityRef entity)
         {
             return f.Get<PlayerLink>(entity);
         }
@@ -40,7 +45,7 @@ namespace Quantum.Game
             return default;
         }
 
-        public static PlayerLink GetPlayer(Frame f, PlayerRef playerRef)
+        public static PlayerLink GetPlayerLink(Frame f, PlayerRef playerRef)
         {
             foreach ((EntityRef entity, PlayerLink link) in f.GetComponentIterator<PlayerLink>())
             {

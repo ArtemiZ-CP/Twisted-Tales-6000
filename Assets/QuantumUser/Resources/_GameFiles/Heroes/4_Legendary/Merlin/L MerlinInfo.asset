@@ -29,48 +29,49 @@ MonoBehaviour:
   Name: 15
   Rare: 4
   HeroType: 0
-  HeroStats:
-  - Health:
-      RawValue: 5570560000
-    Defense:
-      RawValue: 1310720
-    MagicDefense:
-      RawValue: 2621440
-    AttackDamage:
-      RawValue: 3932160
-    AttackSpeed:
-      RawValue: 45875
-    ProjectileSpeed:
-      RawValue: 327680
-    Range: 4
-  - Health:
-      RawValue: 100270080
-    Defense:
-      RawValue: 1310720
-    MagicDefense:
-      RawValue: 2621440
-    AttackDamage:
-      RawValue: 5898240
-    AttackSpeed:
-      RawValue: 45875
-    ProjectileSpeed:
-      RawValue: 327680
-    Range: 4
-  - Health:
-      RawValue: 180486144
-    Defense:
-      RawValue: 1310720
-    MagicDefense:
-      RawValue: 2621440
-    AttackDamage:
-      RawValue: 8847360
-    AttackSpeed:
-      RawValue: 45875
-    ProjectileSpeed:
-      RawValue: 327680
-    Range: 4
-  AttackDamageType: 0
-  Mana:
-    RawValue: 6553600
-  StartMana:
-    RawValue: 0
+  Stats:
+    LevelStats:
+    - Health:
+        RawValue: 65536000
+      Defense:
+        RawValue: 327680
+      MagicDefense:
+        RawValue: 327680
+      AttackDamage:
+        RawValue: 3276800
+      AttackSpeed:
+        RawValue: 65536
+      ProjectileSpeed:
+        RawValue: 327680
+      Range: 2
+    - Health:
+        RawValue: 65536000
+      Defense:
+        RawValue: 327680
+      MagicDefense:
+        RawValue: 327680
+      AttackDamage:
+        RawValue: 3276800
+      AttackSpeed:
+        RawValue: 65536
+      ProjectileSpeed:
+        RawValue: 327680
+      Range: 2
+    - Health:
+        RawValue: 65536000
+      Defense:
+        RawValue: 327680
+      MagicDefense:
+        RawValue: 327680
+      AttackDamage:
+        RawValue: 3276800
+      AttackSpeed:
+        RawValue: 65536
+      ProjectileSpeed:
+        RawValue: 327680
+      Range: 2
+    AttackDamageType: 0
+    Mana:
+      RawValue: 6553600
+    StartMana:
+      RawValue: 0

@@ -29,14 +29,12 @@ struct PlayerShop
 
 struct PlayerInventory
 {
-    list<Int32> HeroesID;
-    list<Int32> HeroesLevel;
+    list<HeroIdLevel> Heroes;
 }
 
 struct PlayerBoard
 {
-    list<Int32> HeroesID;
-    list<Int32> HeroesLevel;
+    list<HeroIdLevel> Heroes;
     list<SelectedHeroAbility> Abilities;
 }
 
@@ -45,4 +43,10 @@ struct SelectedHeroAbility
     int HeroID;
     int SecondAbilityIndex;
     int ThirdAbilityIndex;
+}
+
+struct HeroIdLevel
+{
+    int ID;
+    int Level;
 }

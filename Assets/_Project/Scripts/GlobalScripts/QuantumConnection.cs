@@ -52,15 +52,20 @@ namespace Quantum.Game
             }
         }
 
-        public static HeroInfo GetHeroInfo(int heroID)
+        public static HeroInfo GetHeroInfo(int heroID, out HeroStats heroStats)
         {
             List<HeroInfo> heroInfos = GetAssetsList(GameConfig.HeroInfos);
 
             if (heroID >= 0 && heroID < heroInfos.Count)
             {
-                return heroInfos[heroID];
+                Frame frame = QuantumRunner.Default.Game.Frames.Verified;
+                PlayerRef playerRef = QuantumRunner.Default.Game.GetLocalPlayers()[0];
+                HeroInfo heroInfo = heroInfos[heroID];
+                heroStats = GameConfig.GetHeroStats(frame, playerRef, heroInfo);
+                return heroInfo;
             }
 
+            heroStats = default;
             return null;
         }
 
@@ -78,8 +83,8 @@ namespace Quantum.Game
 
         public static bool IsAbleToConnectQuantum()
         {
-            return QuantumRunner.Default != null && 
-                QuantumRunner.Default.IsRunning && 
+            return QuantumRunner.Default != null &&
+                QuantumRunner.Default.IsRunning &&
                 QuantumRunner.Default.Session.IsSpectating == false;
         }
 
@@ -89,7 +94,7 @@ namespace Quantum.Game
             {
                 return false;
             }
-            
+
             return playerRef == QuantumRunner.Default.Game.GetLocalPlayers()[0];
         }
     }

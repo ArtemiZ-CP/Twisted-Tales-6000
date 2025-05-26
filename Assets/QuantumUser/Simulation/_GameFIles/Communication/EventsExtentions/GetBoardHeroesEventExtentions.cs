@@ -4,15 +4,14 @@ namespace Quantum
 {
     public partial class EventGetBoardHeroes
     {
-        public QList<int> HeroIDList;
-        public QList<int> HeroLevelList;
+        public QList<HeroIdLevel> HeroIDList;
     }
 
     public partial class Frame
     {
         public partial struct FrameEvents
         {
-            public readonly EventGetBoardHeroes GetBoardHeroes(Frame f, PlayerRef playerRef, QList<int> HeroIDList, QList<int> HeroLevelList)
+            public readonly EventGetBoardHeroes GetBoardHeroes(Frame f, PlayerRef playerRef, QList<HeroIdLevel> HeroList)
             {
                 var ev = f.Events.GetBoardHeroes(playerRef);
 
@@ -21,8 +20,7 @@ namespace Quantum
                     return null;
                 }
 
-                ev.HeroIDList = HeroIDList;
-                ev.HeroLevelList = HeroLevelList;
+                ev.HeroIDList = HeroList;
                 return ev;
             }
         }

@@ -19,17 +19,18 @@ namespace Quantum.Game
             }
         }
 
-        public static void SpawnProjectile(Frame f, FightingHero fighingHero, Board board, FightingHero targetHero, FP damage,
+        public static void SpawnProjectile(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage,
             HeroEffects.Effect[] effects, HeroEffects.GlobalEffect[] globalEffects,
             HeroAttack.DamageType damageType, HeroAttack.AttackType attackType)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+            HeroInfo heroInfo = gameConfig.GetHeroInfo(f, fightingHero.Hero.ID);
 
             var projectilePrototype = attackType switch
             {
-                HeroAttack.AttackType.Base => gameConfig.GetHeroInfo(f, fighingHero.Hero.ID).ProjectilePrototype,
-                HeroAttack.AttackType.Ability => gameConfig.GetHeroInfo(f, fighingHero.Hero.ID).AbilityProjectilePrototype,
-                _ => gameConfig.GetHeroInfo(f, fighingHero.Hero.ID).ProjectilePrototype,
+                HeroAttack.AttackType.Base => heroInfo.ProjectilePrototype,
+                HeroAttack.AttackType.Ability => heroInfo.AbilityProjectilePrototype,
+                _ => heroInfo.ProjectilePrototype,
             };
 
             QList<EffectQnt> effectsList;
@@ -90,12 +91,12 @@ namespace Quantum.Game
                 Ref = f.Create(projectilePrototype),
                 Guid = f.FindAsset(projectilePrototype).Guid.Value,
                 Target = targetHero.Hero.Ref,
-                Owner = fighingHero.Hero.Ref,
+                Owner = fightingHero.Hero.Ref,
                 Damage = damage,
                 TargetPosition = f.Get<Transform3D>(targetHero.Hero.Ref).Position,
                 DamageType = (int)damageType,
-                Speed = fighingHero.Hero.ProjectileSpeed,
-                Level = fighingHero.Hero.Level,
+                Speed = fightingHero.Hero.ProjectileSpeed,
+                Level = fightingHero.Hero.Level,
                 AttackType = (int)attackType,
                 IsActive = true,
                 Effects = effectsList,
@@ -103,7 +104,7 @@ namespace Quantum.Game
             };
 
             Transform3D* projectileTransform = f.Unsafe.GetPointer<Transform3D>(projectile.Ref);
-            FPVector3 projectilePosition = f.Get<Transform3D>(fighingHero.Hero.Ref).Position;
+            FPVector3 projectilePosition = f.Get<Transform3D>(fightingHero.Hero.Ref).Position;
             projectileTransform->Position = projectilePosition;
             projectileTransform->Teleport(f, projectilePosition);
             QList<HeroProjectile> heroProjectiles = f.ResolveList(board.HeroProjectiles);

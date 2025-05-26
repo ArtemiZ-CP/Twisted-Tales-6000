@@ -55,9 +55,9 @@ namespace Quantum.Prototypes.Unity {
     public Quantum.Prototypes.Unity.PlayerLinkPrototype Player1;
     public Quantum.Prototypes.Unity.PlayerLinkPrototype Player2;
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.Unity.HeroEntityPrototype[] HeroesID1 = {};
+    public Quantum.Prototypes.Unity.HeroEntityPrototype[] Heroes1 = {};
     [DynamicCollectionAttribute()]
-    public Quantum.Prototypes.Unity.HeroEntityPrototype[] HeroesID2 = {};
+    public Quantum.Prototypes.Unity.HeroEntityPrototype[] Heroes2 = {};
     [DynamicCollectionAttribute()]
     public Quantum.Prototypes.Unity.FightingHeroPrototype[] FightingHeroesMap = {};
     [DynamicCollectionAttribute()]
@@ -70,8 +70,8 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.Ref, out result.Ref);
       converter.Convert(this.Player1, out result.Player1);
       converter.Convert(this.Player2, out result.Player2);
-      converter.Convert(this.HeroesID1, out result.HeroesID1);
-      converter.Convert(this.HeroesID2, out result.HeroesID2);
+      converter.Convert(this.Heroes1, out result.Heroes1);
+      converter.Convert(this.Heroes2, out result.Heroes2);
       converter.Convert(this.FightingHeroesMap, out result.FightingHeroesMap);
       converter.Convert(this.HeroProjectiles, out result.HeroProjectiles);
       converter.Convert(this.GlobalEffects, out result.GlobalEffects);

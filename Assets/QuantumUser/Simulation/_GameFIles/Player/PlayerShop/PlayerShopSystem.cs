@@ -23,14 +23,16 @@ namespace Quantum.Game
                 return;
             }
 
-            if (TryGetHeroInventoryIndex(f, playerLink, out QList<int> heroesInPlayerInventory, out int inventoryIndex))
+            if (TryGetHeroInventoryIndex(f, playerLink, out QList<HeroIdLevel> heroesInPlayerInventory, out int inventoryIndex))
             {
                 if (Player.TryRemoveCoins(f, playerLink, heroInfo.GetBuyCost(f)) == false)
                 {
                     return;
                 }
 
-                heroesInPlayerInventory[inventoryIndex] = heroID;
+                HeroIdLevel newHero = heroesInPlayerInventory[inventoryIndex];
+                newHero.ID = heroID;
+                heroesInPlayerInventory[inventoryIndex] = newHero;
                 heroesInPlayerShop[shopIndex] = -1;
 
                 f.Events.BuyHero(playerLink->Ref, shopIndex, inventoryIndex, heroID);
@@ -119,18 +121,19 @@ namespace Quantum.Game
             return true;
         }
 
-        private bool TryGetHeroInventoryIndex(Frame f, PlayerLink* playerLink, out QList<int> heroesInPlayerInventory, out int inventoryIndex)
+        private bool TryGetHeroInventoryIndex(Frame f, PlayerLink* playerLink, out QList<HeroIdLevel> heroesInPlayerInventory, out int index)
         {
-            heroesInPlayerInventory = f.ResolveList(playerLink->Info.Inventory.HeroesID);
+            heroesInPlayerInventory = f.ResolveList(playerLink->Info.Inventory.Heroes);
 
-            if (heroesInPlayerInventory.Contains(-1) == false)
+            for (index = 0; index < heroesInPlayerInventory.Count; index++)
             {
-                inventoryIndex = -1;
-                return false;
+                if (heroesInPlayerInventory[index].ID < 0)
+                {
+                    return true;
+                }
             }
 
-            inventoryIndex = heroesInPlayerInventory.IndexOf(-1);
-            return true;
+            return false;
         }
 
         private bool TryUpgradeHero(Frame f, PlayerLink* playerLink, int id, HeroInfo heroInfo)

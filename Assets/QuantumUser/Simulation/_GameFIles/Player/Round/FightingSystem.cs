@@ -84,8 +84,8 @@ namespace Quantum.Game
         private void SetupBoard(Frame f, Board* board, int boardIndex)
         {
             QList<FightingHero> fightingHeroesMap = f.ResolveList(board->FightingHeroesMap);
-            QList<HeroEntity> heroesID1 = f.ResolveList(board->HeroesID1);
-            QList<HeroEntity> heroesID2 = f.ResolveList(board->HeroesID2);
+            QList<HeroEntity> heroesID1 = f.ResolveList(board->Heroes1);
+            QList<HeroEntity> heroesID2 = f.ResolveList(board->Heroes2);
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
             for (int i = 0; i < GameConfig.BoardSize * GameConfig.BoardSize / 2; i++)

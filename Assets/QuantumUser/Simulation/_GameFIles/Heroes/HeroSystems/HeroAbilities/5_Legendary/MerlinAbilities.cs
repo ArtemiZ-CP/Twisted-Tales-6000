@@ -25,7 +25,7 @@ namespace Quantum.Game
             fightingHero = heroes[fightingHero.Index];
             PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
             int heroLevel = fightingHero.Hero.Level;
-            SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, playerLink, fightingHero.Hero.ID, out int _);
+            SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, *playerLink, fightingHero.Hero.ID, out int _);
 
             FP damage = heroLevel switch
             {

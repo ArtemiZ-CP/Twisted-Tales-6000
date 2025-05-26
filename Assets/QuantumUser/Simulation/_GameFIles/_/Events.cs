@@ -57,15 +57,13 @@ namespace Quantum.Game
 
         public static void GetBoardHeroes(Frame f, PlayerRef playerRef)
         {
-            PlayerLink playerLink = Player.GetPlayer(f, playerRef);
+            PlayerLink playerLink = Player.GetPlayerLink(f, playerRef);
             GetBoardHeroes(f, playerLink);
         }
 
         public static void GetBoardHeroes(Frame f, PlayerLink playerLink)
         {
-            f.Events.GetBoardHeroes(f, playerLink.Ref,
-                f.ResolveList(playerLink.Info.Board.HeroesID),
-                f.ResolveList(playerLink.Info.Board.HeroesLevel));
+            f.Events.GetBoardHeroes(f, playerLink.Ref, f.ResolveList(playerLink.Info.Board.Heroes));
         }
 
         public static void GetInventoryHeroes(Frame f)
@@ -78,15 +76,13 @@ namespace Quantum.Game
 
         public static void GetInventoryHeroes(Frame f, PlayerRef playerRef)
         {
-            PlayerLink playerLink = Player.GetPlayer(f, playerRef);
+            PlayerLink playerLink = Player.GetPlayerLink(f, playerRef);
             GetInventoryHeroes(f, playerLink);
         }
 
         public static void GetInventoryHeroes(Frame f, PlayerLink playerLink)
         {
-            f.Events.GetInventoryHeroes(f, playerLink.Ref,
-                f.ResolveList(playerLink.Info.Inventory.HeroesID),
-                f.ResolveList(playerLink.Info.Inventory.HeroesLevel));
+            f.Events.GetInventoryHeroes(f, playerLink.Ref, f.ResolveList(playerLink.Info.Inventory.Heroes));
         }
 
         public static void ChangeCoins(Frame f, PlayerLink playerLink)

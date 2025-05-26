@@ -135,23 +135,23 @@ public class HeroInfoView : MonoBehaviour
         }
 
         _heroInfoPanel.SetActive(true);
-        HeroInfo heroInfo = QuantumConnection.GetHeroInfo(fightingHero.Hero.ID);
+        HeroInfo heroInfo = QuantumConnection.GetHeroInfo(fightingHero.Hero.ID, out HeroStats heroStats);
         FP armor = fightingHero.CurrentArmor;
         FP maxHealth = fightingHero.Hero.Health + armor;
         FP currentHealth = fightingHero.CurrentHealth;
-        DisplayMainStats(heroInfo, fightingHero.Hero.Level, armor, currentHealth, maxHealth);
+        DisplayMainStats(heroInfo, heroStats, fightingHero.Hero.Level, armor, currentHealth, maxHealth);
     }
 
     private void DisplayMainStats(int id, int level)
     {
-        HeroInfo heroInfo = QuantumConnection.GetHeroInfo(id);
-        FP health = heroInfo.HeroStats[level].Health;
-        DisplayMainStats(heroInfo, level, armor: 0, health, health);
+        HeroInfo heroInfo = QuantumConnection.GetHeroInfo(id, out HeroStats heroStats);
+        FP health = heroStats.LevelStats[level].Health;
+        DisplayMainStats(heroInfo, heroStats, level, armor: 0, health, health);
     }
 
-    private void DisplayMainStats(HeroInfo heroInfo, int level, FP armor, FP currentHealth, FP maxHealth, FightingHero fightingHero = default)
+    private void DisplayMainStats(HeroInfo heroInfo, HeroStats heroStats, int level, FP armor, FP currentHealth, FP maxHealth, FightingHero fightingHero = default)
     {
-        HeroLevelStats heroStats = heroInfo.HeroStats[level];
+        HeroLevelStats heroLevelStats = heroStats.LevelStats[level];
 
         _heroName.text = heroInfo.Name.ToString();
 
@@ -165,11 +165,11 @@ public class HeroInfoView : MonoBehaviour
         _heroStars.text = stars;
         UpdateBar(_heroHealthBar, _healthRectTransform, currentHealth, maxHealth);
         UpdateBar(_heroArmorBar, _armorRectTransform, armor, maxHealth, (currentHealth / maxHealth).AsFloat);
-        _heroHealth.text = $"{(currentHealth + armor).ToString("0.##")}/{heroStats.Health.ToString("0.##")}";
-        _heroDamage.text = heroStats.AttackDamage.ToString("0.##");
-        _heroAttackSpeed.text = heroStats.AttackSpeed.ToString("0.##");
-        _heroDPS.text = (heroStats.AttackDamage * heroStats.AttackSpeed).ToString("0.##");
-        DisplayDefense(heroStats, fightingHero);
+        _heroHealth.text = $"{(currentHealth + armor).ToString("0.##")}/{heroLevelStats.Health.ToString("0.##")}";
+        _heroDamage.text = heroLevelStats.AttackDamage.ToString("0.##");
+        _heroAttackSpeed.text = heroLevelStats.AttackSpeed.ToString("0.##");
+        _heroDPS.text = (heroLevelStats.AttackDamage * heroLevelStats.AttackSpeed).ToString("0.##");
+        DisplayDefense(heroLevelStats, fightingHero);
 
         foreach (var tmpText in _heroSellPrice)
         {

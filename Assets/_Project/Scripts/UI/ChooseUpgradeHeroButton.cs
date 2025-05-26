@@ -32,11 +32,15 @@ public class ChooseUpgradeHeroButton : MonoBehaviour
 
     private string GetDescription(int id, int level, int chooseNumber)
     {
-        HeroNameEnum heroName = QuantumConnection.GetHeroInfo(id).Name;
+        HeroNameEnum heroName = QuantumConnection.GetHeroInfo(id, out _).Name;
 
         if (heroName == HeroNameEnum.TinMan)
         {
             return GetTinManDescription(level, chooseNumber);
+        }
+        else if (heroName == HeroNameEnum.Nutcracker)
+        {
+            return GetNutcrackerDescription(level, chooseNumber);
         }
 
         return string.Empty;
@@ -48,22 +52,51 @@ public class ChooseUpgradeHeroButton : MonoBehaviour
         {
             if (chooseNumber == Hero.UpgradeVariant1)
             {
-                return "“Unmoving Rite” heals all allies in a radius for 150% of base damage, for 2 sec";
+                return "“Unmoving Rite”\nHeals all allies in a radius for 150% of base damage, for 2 sec";
             }
             else if (chooseNumber == Hero.UpgradeVariant2)
             {
-                return "“Unmoving Rite” gives allies in the radius +20% to attack speed for 4 sec";
+                return "“Unmoving Rite”\nGives allies in the radius +20% to attack speed for 4 sec";
             }
         }
         else if (level == Hero.Level3)
         {
             if (chooseNumber == Hero.UpgradeVariant1)
             {
-                return "Increases the radius of the ritual by 1 cell";
+                return "“Unmoving Rite”\nIncreases the radius by 1 cell";
             }
             else if (chooseNumber == Hero.UpgradeVariant2)
             {
-                return "Reduces the ability's cooldown by 3 sec and increases its duration by 2 sec (for Taunt effects only)";
+                return "“Unmoving Rite”\nReduces the cooldown by 3 sec and increases its duration by 2 sec (for Taunt effect only)";
+            }
+        }
+
+        return string.Empty;
+    }
+
+
+    private string GetNutcrackerDescription(int level, int chooseNumber)
+    {
+        if (level == Hero.Level2)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "“CLICK!”\nStuns the target for an additional 1 second if it has less than 50% mana after being incinerated";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "“CLICK!”\nAlso deals 50% damage to two adjacent enemies";
+            }
+        }
+        else if (level == Hero.Level3)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "On death, the Nutcracker automatically applies a “CLICK!” to the nearest enemy";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "Gains +100% to maximum health";
             }
         }
 

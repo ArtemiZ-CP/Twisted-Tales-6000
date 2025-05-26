@@ -3,8 +3,8 @@ component Board
     entity_ref Ref;
     PlayerLink Player1;
     PlayerLink Player2;
-    list<HeroEntity> HeroesID1;
-    list<HeroEntity> HeroesID2;
+    list<HeroEntity> Heroes1;
+    list<HeroEntity> Heroes2;
 
     // Fighing phase only
     list<FightingHero> FightingHeroesMap;

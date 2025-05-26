@@ -5,8 +5,21 @@ using static Quantum.Game.HeroAttack;
 
 namespace Quantum.Game
 {
+    public interface IHeroAbility
+    {
+        void ProcessPassiveAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes);
+        void ProcessAbilityOnDeath(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes);
+        (bool, FP) TryCastAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes);
+        HeroStats GetHeroStats(Frame f, PlayerLink playerLink, HeroInfo heroInfo);
+    }
+
     public static unsafe class HeroAbility
     {
+        public static void ProjectileAttack(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, HeroEffects.Effect[] effects, HeroEffects.GlobalEffect[] globalEffects, DamageType damageType, AttackType attackType)
+        {
+            HeroProjectilesSystem.SpawnProjectile(f, fightingHero, board, targetHero, damage, effects, globalEffects, damageType, attackType);
+        }
+
         public static void ProjectileAttack(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, DamageType damageType, AttackType attackType)
         {
             HeroProjectilesSystem.SpawnProjectile(f, fightingHero, board, targetHero, damage, null, null, damageType, attackType);
@@ -27,9 +40,9 @@ namespace Quantum.Game
             HeroProjectilesSystem.SpawnProjectile(f, fightingHero, board, targetHero, damage, null, globalEffects, damageType, attackType);
         }
 
-        public static SelectedHeroAbility GetSelectedHeroAbility(Frame f, PlayerLink* playerLink, int heroID, out int index)
+        public static SelectedHeroAbility GetSelectedHeroAbility(Frame f, PlayerLink playerLink, int heroID, out int index)
         {
-            QList<SelectedHeroAbility> abilities = f.ResolveList(playerLink->Info.Board.Abilities);
+            QList<SelectedHeroAbility> abilities = f.ResolveList(playerLink.Info.Board.Abilities);
 
             for (int i = 0; i < abilities.Count; i++)
             {
@@ -59,98 +72,56 @@ namespace Quantum.Game
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             HeroNameEnum heroName = gameConfig.GetHeroInfo(f, fightingHero.Hero.ID).Name;
 
-            switch (heroName)
+            IHeroAbility abilityClass = GetAbilityClass(heroName);
+
+            if (abilityClass == null)
             {
-                // case HeroNameEnum.RedHat:
-                //     TryCastAbility = RedHatAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-                // case HeroNameEnum.WhiteRabbit:
-                //     TryCastAbility = WhiteRabbitAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-                // case HeroNameEnum.SlyFox:
-                //     TryCastAbility = SlyFoxAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-                // case HeroNameEnum.SnowWhite:
-                //     TryCastAbility = SnowWhiteAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-
-                // case HeroNameEnum.RobinHood:
-                //     TryCastAbility = RobinHoodAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-                // case HeroNameEnum.Beast:
-                //     TryCastAbility = BeastAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-                // case HeroNameEnum.Cinderella:
-                //     TryCastAbility = CinderellaAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-                // case HeroNameEnum.Hatter:
-                //     TryCastAbility = HatterAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-
-                // case HeroNameEnum.Alice:
-                //     TryCastAbility = AliceAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-                // case HeroNameEnum.Scarecrow:
-                //     TryCastAbility = ScarecrowAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-                // case HeroNameEnum.Aladdin:
-                //     TryCastAbility = AladdinAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-                // case HeroNameEnum.PussInBoots:
-                //     TryCastAbility = PussInBootsAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-                // case HeroNameEnum.Nutcracker:
-                //     TryCastAbility = NutcrackerAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-
-                // case HeroNameEnum.BabaYaga:
-                //     TryCastAbility = BabaYagaAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-                // case HeroNameEnum.CheshireCat:
-                //     TryCastAbility = CheshireCatAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-                case HeroNameEnum.TinMan:
-                    TryCastAbility = TinManAbilities.TryCastAbility;
-                    ProcessPassiveAbility = TinManAbilities.ProcessPassiveAbility;
-                    return true;
-                // case HeroNameEnum.KingArthur:
-                //     TryCastAbility = KingArthurAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-
-                // case HeroNameEnum.Firebird:
-                //     TryCastAbility = FirebirdAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-                // case HeroNameEnum.Cerberus:
-                //     TryCastAbility = CerberusAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-                // case HeroNameEnum.Merlin:
-                //     TryCastAbility = MerlinAbilities.TryCastAbility;
-                //     ProcessPassiveAbility = default;
-                //     return true;
-
-                default:
-                    TryCastAbility = default;
-                    ProcessPassiveAbility = default;
-                    return false;
+                TryCastAbility = null;
+                ProcessPassiveAbility = null;
+                return false;
             }
+
+            TryCastAbility = abilityClass.TryCastAbility;
+            ProcessPassiveAbility = abilityClass.ProcessPassiveAbility;
+            return true;
+        }
+
+        public static void ProcessAbilityOnDeath(Frame f, ref FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        {
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+            HeroNameEnum heroName = gameConfig.GetHeroInfo(f, fightingHero.Hero.ID).Name;
+            IHeroAbility abilityClass = GetAbilityClass(heroName);
+
+            if (abilityClass == null)
+            {
+                return;
+            }
+
+            abilityClass.ProcessAbilityOnDeath(f, fightingHero, board, heroes);
+        }
+
+        public static HeroStats GetHeroStats(Frame f, PlayerLink playerLink, HeroInfo heroInfo)
+        {
+            IHeroAbility abilityClass = GetAbilityClass(heroInfo.Name);
+
+            if (abilityClass == null)
+            {
+                return heroInfo.Stats;
+            }
+
+            return abilityClass.GetHeroStats(f, playerLink, heroInfo);
+        }
+
+        private static IHeroAbility GetAbilityClass(HeroNameEnum heroName)
+        {
+            return heroName switch
+            {
+                // Base
+                HeroNameEnum.Nutcracker => new NutcrackerAbilities(),
+                // Rare
+                HeroNameEnum.TinMan => new TinManAbilities(),
+                _ => null
+            };
         }
     }
 }

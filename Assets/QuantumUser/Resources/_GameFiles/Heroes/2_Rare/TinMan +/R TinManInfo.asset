@@ -10,66 +10,66 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
-  m_Name: B SlyFoxInfo
+  m_Name: R TinManInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/SlyFox/B SlyFoxInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/2_Rare/TinMan +/R TinManInfo
     Guid:
-      Value: 359663575108472497
-  HeroPrefab: {fileID: -5379929345563415316, guid: df396b8258daa4bc49077010302d06db, type: 3}
+      Value: 441504537230468131
+  HeroPrefab: {fileID: 611860465380146796, guid: 23617f6e67a7e4f758eeddcbf776f05a, type: 3}
   HeroPrototype:
     Id:
-      Value: 1276217754154539486
+      Value: 1271657597270191120
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: 1
-  Rare: 0
+  Name: 16
+  Rare: 2
   HeroType: 1
   Stats:
     LevelStats:
     - Health:
-        RawValue: 65536000
+        RawValue: 75366400
       Defense:
-        RawValue: 327680
+        RawValue: 655360
       MagicDefense:
-        RawValue: 327680
+        RawValue: 655360
       AttackDamage:
-        RawValue: 3276800
+        RawValue: 4915200
       AttackSpeed:
-        RawValue: 65536
+        RawValue: 91750
       ProjectileSpeed:
         RawValue: 327680
-      Range: 2
+      Range: 1
     - Health:
-        RawValue: 65536000
+        RawValue: 104857600
       Defense:
-        RawValue: 327680
+        RawValue: 655360
       MagicDefense:
-        RawValue: 327680
+        RawValue: 655360
       AttackDamage:
-        RawValue: 3276800
+        RawValue: 6225920
       AttackSpeed:
-        RawValue: 65536
+        RawValue: 91750
       ProjectileSpeed:
         RawValue: 327680
-      Range: 2
+      Range: 1
     - Health:
-        RawValue: 65536000
+        RawValue: 144179200
       Defense:
-        RawValue: 327680
+        RawValue: 655360
       MagicDefense:
-        RawValue: 327680
+        RawValue: 655360
       AttackDamage:
-        RawValue: 3276800
+        RawValue: 7536640
       AttackSpeed:
-        RawValue: 65536
+        RawValue: 91750
       ProjectileSpeed:
         RawValue: 327680
-      Range: 2
+      Range: 1
     AttackDamageType: 0
     Mana:
       RawValue: 6553600

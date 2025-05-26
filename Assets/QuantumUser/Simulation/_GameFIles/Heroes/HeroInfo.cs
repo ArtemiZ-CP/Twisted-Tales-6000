@@ -42,10 +42,7 @@ namespace Quantum.Game
         public HeroRare Rare;
         public HeroType HeroType;
         [Header("Stats")]
-        public HeroLevelStats[] HeroStats;
-        public HeroAttack.DamageType AttackDamageType;
-        public FP Mana;
-        public FP StartMana;
+        public HeroStats Stats;
 
         public int GetBuyCost(Frame frame)
         {
@@ -56,5 +53,14 @@ namespace Quantum.Game
         {
             return frame.FindAsset(frame.RuntimeConfig.GameConfig).GetHeroSellCost(Rare, level);
         }
+    }
+
+    [Serializable]
+    public struct HeroStats
+    {
+        public HeroLevelStats[] LevelStats;
+        public HeroAttack.DamageType AttackDamageType;
+        public FP Mana;
+        public FP StartMana;
     }
 }

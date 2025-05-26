@@ -10,66 +10,66 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
-  m_Name: B SlyFoxInfo
+  m_Name: B NutcrackerInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/SlyFox/B SlyFoxInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/Nutcracker +/B NutcrackerInfo
     Guid:
-      Value: 359663575108472497
-  HeroPrefab: {fileID: -5379929345563415316, guid: df396b8258daa4bc49077010302d06db, type: 3}
+      Value: 359553731400658343
+  HeroPrefab: {fileID: 2736862171815421011, guid: 4a8ad46dfe7f841f9813cebe5c72115e, type: 3}
   HeroPrototype:
     Id:
-      Value: 1276217754154539486
+      Value: 1502711793932209246
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: 1
+  Name: 10
   Rare: 0
   HeroType: 1
   Stats:
     LevelStats:
     - Health:
-        RawValue: 65536000
+        RawValue: 55705600
       Defense:
         RawValue: 327680
       MagicDefense:
         RawValue: 327680
       AttackDamage:
-        RawValue: 3276800
+        RawValue: 4259840
       AttackSpeed:
-        RawValue: 65536
+        RawValue: 91750
       ProjectileSpeed:
         RawValue: 327680
-      Range: 2
+      Range: 1
     - Health:
-        RawValue: 65536000
+        RawValue: 78643200
       Defense:
         RawValue: 327680
       MagicDefense:
         RawValue: 327680
       AttackDamage:
-        RawValue: 3276800
+        RawValue: 5242880
       AttackSpeed:
-        RawValue: 65536
+        RawValue: 91750
       ProjectileSpeed:
         RawValue: 327680
-      Range: 2
+      Range: 1
     - Health:
-        RawValue: 65536000
+        RawValue: 108134400
       Defense:
         RawValue: 327680
       MagicDefense:
         RawValue: 327680
       AttackDamage:
-        RawValue: 3276800
+        RawValue: 6553600
       AttackSpeed:
-        RawValue: 65536
+        RawValue: 91750
       ProjectileSpeed:
         RawValue: 327680
-      Range: 2
+      Range: 1
     AttackDamageType: 0
     Mana:
       RawValue: 6553600

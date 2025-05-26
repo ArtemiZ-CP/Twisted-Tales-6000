@@ -93,15 +93,14 @@ namespace Quantum.Game
             {
                 InitializeBoard();
 
-                QList<int> heroesID = eventGetBoardHeroes.HeroIDList;
-                QList<int> heroesLevel = eventGetBoardHeroes.HeroLevelList;
+                QList<HeroIdLevel> heroesID = eventGetBoardHeroes.HeroIDList;
 
                 for (int x = 0; x < _boardSize; x++)
                 {
                     for (int y = 0; y < _boardSize / 2; y++)
                     {
                         GameSettings.ArrayCordsToIndex(_boardSize, x, y, out int index);
-                        _tiles[x, y].SetNewHero(heroesID[index], heroesLevel[index]);
+                        _tiles[x, y].SetNewHero(heroesID[index].ID, heroesID[index].Level);
                     }
                 }
             }

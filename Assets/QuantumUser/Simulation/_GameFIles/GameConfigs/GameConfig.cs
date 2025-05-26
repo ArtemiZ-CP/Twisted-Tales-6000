@@ -106,6 +106,29 @@ namespace Quantum.Game
             return f.FindAsset(HeroInfos[heroID]);
         }
 
+        public int GetHeroID(Frame f, HeroNameEnum heroName)
+        {
+            for (int i = 0; i < HeroInfos.Length; i++)
+            {
+                if (f.FindAsset(HeroInfos[i]).Name == heroName)
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        public HeroStats GetHeroStats(Frame f, PlayerRef playerRef, HeroInfo heroInfo)
+        {
+            return HeroAbility.GetHeroStats(f, Player.GetPlayerLink(f, playerRef), heroInfo);
+        }
+
+        public HeroStats GetHeroStats(Frame f, FightingHero fightingHero, Board board)
+        {
+            return HeroAbility.GetHeroStats(f, Player.GetPlayerLink(fightingHero, board), GetHeroInfo(f, fightingHero.Hero.ID));
+        }
+
         public int GetHeroBuyCost(HeroRare rare)
         {
             return HeroShopSettings[(int)rare].BuyCost;

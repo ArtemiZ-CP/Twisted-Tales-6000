@@ -168,11 +168,11 @@ namespace Quantum.Game
                 return;
             }
 
-            HeroInfo heroInfo = QuantumConnection.GetAssetsList(QuantumConnection.GameConfig.HeroInfos)[_id];
+            HeroInfo heroInfo = QuantumConnection.GetHeroInfo(_id, out HeroStats heroStats);
 
             _heroMesh = Instantiate(heroInfo.HeroPrefab);
             _heroMesh.SetMesh(_level, _id);
-            _range = heroInfo.HeroStats[_level].Range;
+            _range = heroStats.LevelStats[_level].Range;
             _heroMesh.transform.localScale = GameSettings.GetHeroSize(isUIPosition) * Vector3.one;
             _heroMesh.transform.rotation = GameSettings.GetHeroRotation(isUIPosition);
             _heroMesh.transform.SetParent(transform);

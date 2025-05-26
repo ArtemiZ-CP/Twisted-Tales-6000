@@ -108,11 +108,18 @@ namespace Quantum.Game
 
         public static bool TryFindClosestTargetInAttackRange(Frame f, FightingHero fightingHero, Board board, out FightingHero targetHero)
         {
+            // Проверяем, что герой, который ищет цель, существует
+            if (!f.Exists(fightingHero.Hero.Ref))
+            {
+                targetHero = default;
+                return false;
+            }
+
             List<FightingHero> heroesList = HeroBoard.GetAllTargetsInRange(f, fightingHero, board);
 
             targetHero = HeroBoard.GetClosestTarget(f, heroesList, fightingHero);
 
-            if (targetHero.Hero.Ref != default)
+            if (targetHero.Hero.Ref != default && f.Exists(targetHero.Hero.Ref))
             {
                 return true;
             }
@@ -282,7 +289,7 @@ namespace Quantum.Game
                 {
                     return;
                 }
-                
+
                 fightingHero = HeroBoard.GetFightingHero(f, fightingHero.Hero.Ref, board);
                 ResetMana(f, fightingHero, board);
 
@@ -338,14 +345,14 @@ namespace Quantum.Game
             UpdateHeroesAndStats(f, board, heroes, fightingHero, targetHero);
         }
 
-        public static bool DamageHero(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, DamageType damageType, AttackType attackType)
+        public static bool DamageHero(Frame f, ref FightingHero fightingHero, Board board, ref FightingHero targetHero, FP damage, DamageType damageType, AttackType attackType)
         {
             HeroEffects.Effect[] effects = new HeroEffects.Effect[0];
 
             return DamageHero(f, ref fightingHero, board, ref targetHero, damage, effects, damageType, attackType);
         }
 
-        public static bool DamageHero(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP damage, HeroEffects.Effect effect, DamageType damageType, AttackType attackType)
+        public static bool DamageHero(Frame f, ref FightingHero fightingHero, Board board, ref FightingHero targetHero, FP damage, HeroEffects.Effect effect, DamageType damageType, AttackType attackType)
         {
             HeroEffects.Effect[] effects = new HeroEffects.Effect[1];
             effects[0] = effect;
@@ -357,7 +364,7 @@ namespace Quantum.Game
         {
             if (effectsQnt.Count == 0)
             {
-                return DamageHero(f, fightingHero, board, targetHero, damage, damageType, attackType);
+                return DamageHero(f, ref fightingHero, board, ref targetHero, damage, damageType, attackType);
             }
 
             HeroEffects.Effect[] effects = new HeroEffects.Effect[effectsQnt.Count];
@@ -417,7 +424,7 @@ namespace Quantum.Game
 
             if (effects != null && effects.Length > 0)
             {
-                ApplyEffectsToTarget(f, ref fightingHero, board, ref targetHero, effects);
+                ApplyEffectToTarget(f, ref fightingHero, board, ref targetHero, effects);
             }
 
             bool enemyKilled = ApplyDamageToHero(f, ref targetHero, board, ref damage, damageType);
@@ -453,7 +460,7 @@ namespace Quantum.Game
                     continue;
                 }
 
-                DamageHero(f, fightingHero, board, targetHero, damage, damageType, attackType);
+                DamageHero(f, ref fightingHero, board, ref targetHero, damage, damageType, attackType);
             }
         }
 
@@ -475,7 +482,7 @@ namespace Quantum.Game
                     continue;
                 }
 
-                DamageHero(f, fightingHero, board, targetHero, damage, damageType, attackType);
+                DamageHero(f, ref fightingHero, board, ref targetHero, damage, damageType, attackType);
             }
         }
 
@@ -501,9 +508,9 @@ namespace Quantum.Game
             }
         }
 
-        public static void ApplyEffectsToTarget(Frame f, ref FightingHero fightingHero, Board board, ref FightingHero targetHero, HeroEffects.Effect effect)
+        public static void ApplyEffectToTarget(Frame f, ref FightingHero fightingHero, Board board, ref FightingHero targetHero, HeroEffects.Effect effect)
         {
-            ApplyEffectsToTarget(f, ref fightingHero, board, ref targetHero, new HeroEffects.Effect[] { effect });
+            ApplyEffectToTarget(f, ref fightingHero, board, ref targetHero, new HeroEffects.Effect[] { effect });
         }
 
         public static void GetUpdatedHeroes(Frame f, Board board, ref FightingHero fightingHero, ref FightingHero targetHero, out QList<FightingHero> heroes)
@@ -606,9 +613,10 @@ namespace Quantum.Game
 
             targetHero.CurrentHealth -= temporaryDamage;
 
-            if (targetHero.CurrentHealth <= 0)
+            if (targetHero.CurrentHealth <= 0 && targetHero.Hero.ID >= 0)
             {
                 targetHero.CurrentHealth = 0;
+                HeroAbility.ProcessAbilityOnDeath(f, ref targetHero, board, heroes);
                 FirebirdAbilities.ProcessDeathInFirebirdRebirthRange(f, ref targetHero, board, heroes);
                 HeroEffects.ProcessTransferingBleedingEffect(f, ref targetHero, board, effectQnts, transferingBleedingEffectIndex);
 
@@ -617,7 +625,7 @@ namespace Quantum.Game
                     return false;
                 }
 
-                if (targetHero.ExtraLives > 0 && targetHero.Hero.ID >= 0)
+                if (targetHero.ExtraLives > 0)
                 {
                     HeroNameEnum heroName = gameConfig.GetHeroInfo(f, targetHero.Hero.ID).Name;
 
@@ -648,7 +656,7 @@ namespace Quantum.Game
             heroes[fightingHero.Index] = fightingHero;
         }
 
-        public static void ApplyEffectsToTarget(Frame f, ref FightingHero fightingHero, Board board, ref FightingHero targetHero, HeroEffects.Effect[] effects)
+        public static void ApplyEffectToTarget(Frame f, ref FightingHero fightingHero, Board board, ref FightingHero targetHero, HeroEffects.Effect[] effects)
         {
             GetUpdatedHeroes(f, board, ref fightingHero, ref targetHero, out QList<FightingHero> heroes);
 

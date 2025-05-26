@@ -73,13 +73,12 @@ namespace Quantum.Game
         private void InitializeInventory(EventGetInventoryHeroes eventGetInventoryHeroes)
         {
             _inventorySlots = new PlayerInventorySlot[QuantumConnection.GameConfig.InventorySize];
-            QList<int> inventory = eventGetInventoryHeroes.HeroIDList;
-            QList<int> levels = eventGetInventoryHeroes.HeroLevelList;
+            QList<HeroIdLevel> inventory = eventGetInventoryHeroes.HeroIDList;
 
             for (int i = 0; i < _inventorySlots.Length; i++)
             {
                 PlayerInventorySlot slot = Instantiate(_playerInventorySlotPrefab, _inventoryParent);
-                slot.SetInventoryItem(heroId: inventory[i], levels[i]);
+                slot.SetInventoryItem(heroId: inventory[i].ID, inventory[i].Level);
                 _inventorySlots[i] = slot;
             }
         }

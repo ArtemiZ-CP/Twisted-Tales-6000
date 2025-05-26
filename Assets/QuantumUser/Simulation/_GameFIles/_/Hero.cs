@@ -23,7 +23,7 @@ namespace Quantum.Game
 
         public static bool TrySetNewBoardPosition(QList<FightingHero> heroes, ref FightingHero fightingHero,  Vector2Int targetPosition)
         {
-            if (HeroBoard.TryConvertCordsToIndex(targetPosition, out int heroNewIndex))
+            if (HeroBoard.TryGetHeroIndexFromCords(targetPosition, out int heroNewIndex))
             {
                 if (fightingHero.Index < 0 || heroes[heroNewIndex].Hero.Ref != default)
                 {
@@ -70,24 +70,23 @@ namespace Quantum.Game
             BoardSystem.DisactiveEntity(f, heroEntity);
         }
 
-        public static QListPtr<HeroEntity> SetupHeroes(Frame f, PlayerLink* player, QListPtr<HeroEntity> heroes)
+        public static QListPtr<HeroEntity> SetupHeroes(Frame f, PlayerLink* player)
         {
             if (player->Ref == default)
             {
-                return heroes;
+                return default;
             }
 
-            heroes = f.AllocateList<HeroEntity>();
-            QList<int> playerHeroesID = f.ResolveList(player->Info.Board.HeroesID);
-            QList<int> playerHeroesLevel = f.ResolveList(player->Info.Board.HeroesLevel);
+            QListPtr<HeroEntity> heroes = f.AllocateList<HeroEntity>();
+            QList<HeroIdLevel> playerHeroesIDLevel = f.ResolveList(player->Info.Board.Heroes);
             QList<HeroEntity> playerHeroes = f.ResolveList(heroes);
 
-            for (int i = 0; i < playerHeroesID.Count; i++)
+            for (int i = 0; i < playerHeroesIDLevel.Count; i++)
             {
                 HeroEntity hero = new()
                 {
-                    ID = playerHeroesID[i],
-                    Level = playerHeroesLevel[i],
+                    ID = playerHeroesIDLevel[i].ID,
+                    Level = playerHeroesIDLevel[i].Level,
                     DefaultPosition = HeroBoard.GetTilePosition(f, i % GameConfig.BoardSize, i / GameConfig.BoardSize)
                 };
 
@@ -97,14 +96,14 @@ namespace Quantum.Game
             return heroes;
         }
 
-        public static QListPtr<HeroEntity> SetupHeroes(Frame f, RoundInfo roundInfo, QListPtr<HeroEntity> heroes)
+        public static QListPtr<HeroEntity> SetupHeroes(Frame f, RoundInfo roundInfo)
         {
             if (roundInfo == null)
             {
-                return heroes;
+                return default;
             }
 
-            heroes = f.AllocateList<HeroEntity>();
+            QListPtr<HeroEntity> heroes = f.AllocateList<HeroEntity>();
             QList<HeroEntity> playerHeroes = f.ResolveList(heroes);
 
             for (int i = 0; i < roundInfo.PVEBoard.Count; i++)
@@ -114,7 +113,7 @@ namespace Quantum.Game
                     HeroEntity hero = new()
                     {
                         ID = roundInfo.PVEBoard[i].Cells[^(j + 1)],
-                        Level = Hero.Level1,
+                        Level = Level1,
                         DefaultPosition = HeroBoard.GetTilePosition(f, j, i),
                     };
 
@@ -135,7 +134,7 @@ namespace Quantum.Game
 
             GameConfig config = f.FindAsset(f.RuntimeConfig.GameConfig);
 
-            if (HeroBoard.TryGetHeroCords(heroIndex, out Vector2Int position))
+            if (HeroBoard.TryGetHeroCordsFromIndex(heroIndex, out Vector2Int position))
             {
                 hero.TargetPositionX = position.x;
                 hero.TargetPositionY = position.y;
@@ -150,12 +149,12 @@ namespace Quantum.Game
             hero.IsAlive = true;
             hero.AttackTimer = 0;
 
-            HeroInfo heroInfo = config.GetHeroInfo(f, hero.Hero.ID);
-            hero.Hero.MaxMana = heroInfo.Mana;
-            hero.CurrentMana = heroInfo.StartMana;
-            hero.Hero.AttackDamageType = (int)heroInfo.AttackDamageType;
+            HeroStats heroStats = config.GetHeroStats(f, hero, BoardSystem.GetBoards(f)[hero.BoardIndex]);
+            hero.Hero.MaxMana = heroStats.Mana;
+            hero.CurrentMana = heroStats.StartMana;
+            hero.Hero.AttackDamageType = (int)heroStats.AttackDamageType;
 
-            HeroLevelStats heroLevelStats = heroInfo.HeroStats[hero.Hero.Level];
+            HeroLevelStats heroLevelStats = heroStats.LevelStats[hero.Hero.Level];
             hero.Hero.Health = heroLevelStats.Health;
             hero.CurrentHealth = heroLevelStats.Health;
             hero.CurrentArmor = 0;
