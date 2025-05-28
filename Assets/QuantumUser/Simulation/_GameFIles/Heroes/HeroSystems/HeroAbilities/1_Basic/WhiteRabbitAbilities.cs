@@ -36,7 +36,7 @@ namespace Quantum.Game
                 HeroEffects.Effect effect = new()
                 {
                     Owner = fightingHero.Hero.Ref,
-                    Type = HeroEffects.EffectType.ReduceCurrentMana,
+                    Type = HeroEffects.EffectType.IncreaseCurrentMana,
                     Value = reduceManaAmount,
                 };
 

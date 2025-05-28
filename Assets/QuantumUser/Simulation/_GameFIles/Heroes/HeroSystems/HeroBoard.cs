@@ -59,7 +59,7 @@ namespace Quantum.Game
             FP tileSize = FP.FromFloat_UNSAFE(gameConfig.TileSize);
 
             FPVector3 position = new FPVector3(x, 0, y) * tileSize;
-            position -= tileSize * new FPVector3(GameConfig.BoardSize, 0, GameConfig.BoardSize) / 2;
+            position -= tileSize * new FPVector3(GameplayConstants.BoardSize, 0, GameplayConstants.BoardSize) / 2;
             position += new FPVector3(tileSize, 0, tileSize) / 2;
 
             return position;
@@ -67,29 +67,29 @@ namespace Quantum.Game
 
         public static bool TryGetHeroCordsFromIndex(int index, out Vector2Int cords)
         {
-            if (index < 0 || index >= GameConfig.BoardSize * GameConfig.BoardSize)
+            if (index < 0 || index >= GameplayConstants.BoardSize * GameplayConstants.BoardSize)
             {
                 cords = default;
                 return false;
             }
 
-            cords = new Vector2Int(index % GameConfig.BoardSize, index / GameConfig.BoardSize);
+            cords = new Vector2Int(index % GameplayConstants.BoardSize, index / GameplayConstants.BoardSize);
 
-            return cords.x >= 0 && cords.x < GameConfig.BoardSize && cords.y >= 0 && cords.y < GameConfig.BoardSize;
+            return cords.x >= 0 && cords.x < GameplayConstants.BoardSize && cords.y >= 0 && cords.y < GameplayConstants.BoardSize;
         }
 
         public static bool TryGetHeroIndexFromCords(Vector2Int cords, out int index)
         {
-            if (cords.x < 0 || cords.x >= GameConfig.BoardSize ||
-                cords.y < 0 || cords.y >= GameConfig.BoardSize)
+            if (cords.x < 0 || cords.x >= GameplayConstants.BoardSize ||
+                cords.y < 0 || cords.y >= GameplayConstants.BoardSize)
             {
                 index = -1;
                 return false;
             }
 
-            index = cords.x + cords.y * GameConfig.BoardSize;
+            index = cords.x + cords.y * GameplayConstants.BoardSize;
 
-            return index >= 0 && index < GameConfig.BoardSize * GameConfig.BoardSize;
+            return index >= 0 && index < GameplayConstants.BoardSize * GameplayConstants.BoardSize;
         }
 
         public static List<Vector2Int> GetCloseCords(int heroIndex, int range = 1, bool includeSelf = false)
@@ -112,12 +112,12 @@ namespace Quantum.Game
                         continue;
                     }
 
-                    if (newCords.x < 0 || newCords.x >= GameConfig.BoardSize)
+                    if (newCords.x < 0 || newCords.x >= GameplayConstants.BoardSize)
                     {
                         continue;
                     }
 
-                    if (newCords.y < 0 || newCords.y >= GameConfig.BoardSize)
+                    if (newCords.y < 0 || newCords.y >= GameplayConstants.BoardSize)
                     {
                         continue;
                     }
@@ -145,12 +145,12 @@ namespace Quantum.Game
                     continue;
                 }
 
-                if (newCords.x < 0 || newCords.x >= GameConfig.BoardSize)
+                if (newCords.x < 0 || newCords.x >= GameplayConstants.BoardSize)
                 {
                     continue;
                 }
 
-                if (newCords.y < 0 || newCords.y >= GameConfig.BoardSize)
+                if (newCords.y < 0 || newCords.y >= GameplayConstants.BoardSize)
                 {
                     continue;
                 }
@@ -222,13 +222,13 @@ namespace Quantum.Game
 
         public static int[,] GetBoardMap(QList<FightingHero> heroes)
         {
-            int[,] board = new int[GameConfig.BoardSize, GameConfig.BoardSize];
+            int[,] board = new int[GameplayConstants.BoardSize, GameplayConstants.BoardSize];
 
-            for (int x = 0; x < GameConfig.BoardSize; x++)
+            for (int x = 0; x < GameplayConstants.BoardSize; x++)
             {
-                for (int y = 0; y < GameConfig.BoardSize; y++)
+                for (int y = 0; y < GameplayConstants.BoardSize; y++)
                 {
-                    if (HeroBoard.TryGetHeroIndexFromCords(new Vector2Int(x, y), out int index))
+                    if (TryGetHeroIndexFromCords(new Vector2Int(x, y), out int index))
                     {
                         int heroID = -1;
 

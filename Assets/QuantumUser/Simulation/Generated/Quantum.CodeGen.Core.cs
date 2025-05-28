@@ -467,27 +467,33 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct EffectQnt {
-    public const Int32 SIZE = 48;
+    public const Int32 SIZE = 64;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(8)]
-    public EntityRef Owner;
-    [FieldOffset(0)]
-    public Int32 Index;
-    [FieldOffset(32)]
-    public FP MaxValue;
-    [FieldOffset(40)]
-    public FP Value;
-    [FieldOffset(24)]
-    public FP MaxDuration;
     [FieldOffset(16)]
-    public FP Duration;
+    public EntityRef Owner;
     [FieldOffset(4)]
+    public Int32 Index;
+    [FieldOffset(0)]
+    public Int32 DelayedIndex;
+    [FieldOffset(32)]
+    public FP DurationAfterDelay;
+    [FieldOffset(48)]
+    public FP MaxValue;
+    [FieldOffset(56)]
+    public FP Value;
+    [FieldOffset(40)]
+    public FP MaxDuration;
+    [FieldOffset(24)]
+    public FP Duration;
+    [FieldOffset(8)]
     public Int32 Size;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 15331;
         hash = hash * 31 + Owner.GetHashCode();
         hash = hash * 31 + Index.GetHashCode();
+        hash = hash * 31 + DelayedIndex.GetHashCode();
+        hash = hash * 31 + DurationAfterDelay.GetHashCode();
         hash = hash * 31 + MaxValue.GetHashCode();
         hash = hash * 31 + Value.GetHashCode();
         hash = hash * 31 + MaxDuration.GetHashCode();
@@ -498,10 +504,12 @@ namespace Quantum {
     }
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (EffectQnt*)ptr;
+        serializer.Stream.Serialize(&p->DelayedIndex);
         serializer.Stream.Serialize(&p->Index);
         serializer.Stream.Serialize(&p->Size);
         EntityRef.Serialize(&p->Owner, serializer);
         FP.Serialize(&p->Duration, serializer);
+        FP.Serialize(&p->DurationAfterDelay, serializer);
         FP.Serialize(&p->MaxDuration, serializer);
         FP.Serialize(&p->MaxValue, serializer);
         FP.Serialize(&p->Value, serializer);

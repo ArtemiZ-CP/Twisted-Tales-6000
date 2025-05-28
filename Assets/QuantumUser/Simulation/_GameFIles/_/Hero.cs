@@ -87,7 +87,7 @@ namespace Quantum.Game
                 {
                     ID = playerHeroesIDLevel[i].ID,
                     Level = playerHeroesIDLevel[i].Level,
-                    DefaultPosition = HeroBoard.GetTilePosition(f, i % GameConfig.BoardSize, i / GameConfig.BoardSize)
+                    DefaultPosition = HeroBoard.GetTilePosition(f, i % GameplayConstants.BoardSize, i / GameplayConstants.BoardSize)
                 };
 
                 playerHeroes.Add(hero);

@@ -91,7 +91,7 @@ namespace Quantum.Game
                     int heal = (int)(fightingHero.Hero.AttackDamage * healPercent);
                     List<FightingHero> alies = HeroBoard.GetAllAliesInRange(f, fightingHero, board, includeSelf: true);
                     FightingHero alyWithMinHealth = HeroBoard.GetAliyWithMinHealth(alies);
-                    HeroAttack.HealHero(f, fightingHero, board, alyWithMinHealth, heal);
+                    HeroAttack.HealHero(f, ref fightingHero, board, alyWithMinHealth, heal);
                     HeroAttack.ProjectileAttack(f, fightingHero, board, targetHero, heroDamage, damageType, attackType);
                     break;
                 case 2:

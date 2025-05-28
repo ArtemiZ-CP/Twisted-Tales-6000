@@ -120,6 +120,8 @@ namespace Quantum.Game
                 HeroNameEnum.Nutcracker => new NutcrackerAbilities(),
                 // Rare
                 HeroNameEnum.TinMan => new TinManAbilities(),
+                // Legendary
+                HeroNameEnum.KingArthur => new KingArthurAbilities(),
                 _ => null
             };
         }

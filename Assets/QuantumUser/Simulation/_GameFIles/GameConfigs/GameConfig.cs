@@ -7,8 +7,6 @@ namespace Quantum.Game
 {
     public unsafe class GameConfig : AssetObject
     {
-        public const int BoardSize = 8;
-
         [Header("Player")]
         public int PlayerHealth = 100;
         public int MaxPlayers = 8;
@@ -152,13 +150,13 @@ namespace Quantum.Game
 
         public static void ArrayIndexToCords(int index, out int x, out int y)
         {
-            x = index % BoardSize;
-            y = index / BoardSize;
+            x = index % GameplayConstants.BoardSize;
+            y = index / GameplayConstants.BoardSize;
         }
 
         public static void ArrayCordsToIndex(int x, int y, out int index)
         {
-            index = y * BoardSize + x;
+            index = y * GameplayConstants.BoardSize + x;
         }
     }
 
@@ -195,7 +193,7 @@ namespace Quantum.Game
 
         public RoundInfo()
         {
-            for (int i = 0; i < GameConfig.BoardSize; i++)
+            for (int i = 0; i < GameplayConstants.BoardSize; i++)
             {
                 PVEBoard.Add(new BoardRow());
             }
@@ -209,7 +207,7 @@ namespace Quantum.Game
 
         public BoardRow()
         {
-            for (int i = 0; i < GameConfig.BoardSize; i++)
+            for (int i = 0; i < GameplayConstants.BoardSize; i++)
             {
                 Cells.Add(-1);
             }

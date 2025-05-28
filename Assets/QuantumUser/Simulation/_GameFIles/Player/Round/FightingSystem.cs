@@ -88,17 +88,17 @@ namespace Quantum.Game
             QList<HeroEntity> heroesID2 = f.ResolveList(board->Heroes2);
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
-            for (int i = 0; i < GameConfig.BoardSize * GameConfig.BoardSize / 2; i++)
+            for (int i = 0; i < GameplayConstants.BoardSize * GameplayConstants.BoardSize / 2; i++)
             {
                 HeroEntity hero = heroesID1[i];
                 int index = i;
                 fightingHeroesMap.Add(SetupFightingHero(f, hero, boardIndex, index, GameplayConstants.Team1));
             }
 
-            for (int i = 0; i < GameConfig.BoardSize * GameConfig.BoardSize / 2; i++)
+            for (int i = 0; i < GameplayConstants.BoardSize * GameplayConstants.BoardSize / 2; i++)
             {
                 HeroEntity hero = heroesID2[^(i + 1)];
-                int index = GameConfig.BoardSize * GameConfig.BoardSize / 2 + i;
+                int index = GameplayConstants.BoardSize * GameplayConstants.BoardSize / 2 + i;
                 fightingHeroesMap.Add(SetupFightingHero(f, hero, boardIndex, index, GameplayConstants.Team2));
             }
 

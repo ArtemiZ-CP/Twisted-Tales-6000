@@ -131,6 +131,8 @@ namespace Quantum.Prototypes {
   public unsafe class EffectQntPrototype : StructPrototype {
     public MapEntityId Owner;
     public Int32 Index;
+    public Int32 DelayedIndex;
+    public FP DurationAfterDelay;
     public FP MaxValue;
     public FP Value;
     public FP MaxDuration;
@@ -139,6 +141,8 @@ namespace Quantum.Prototypes {
     public void Materialize(Frame frame, ref Quantum.EffectQnt result, in PrototypeMaterializationContext context = default) {
         PrototypeValidator.FindMapEntity(this.Owner, in context, out result.Owner);
         result.Index = this.Index;
+        result.DelayedIndex = this.DelayedIndex;
+        result.DurationAfterDelay = this.DurationAfterDelay;
         result.MaxValue = this.MaxValue;
         result.Value = this.Value;
         result.MaxDuration = this.MaxDuration;

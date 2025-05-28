@@ -42,6 +42,11 @@ public class ChooseUpgradeHeroButton : MonoBehaviour
         {
             return GetNutcrackerDescription(level, chooseNumber);
         }
+        else if (heroName == HeroNameEnum.KingArthur)
+        {
+            return GetKingArthurDescription(level, chooseNumber);
+        }
+
 
         return string.Empty;
     }
@@ -97,6 +102,34 @@ public class ChooseUpgradeHeroButton : MonoBehaviour
             else if (chooseNumber == Hero.UpgradeVariant2)
             {
                 return "Gains +100% to maximum health";
+            }
+        }
+
+        return string.Empty;
+    }
+    
+    private string GetKingArthurDescription(int level, int chooseNumber)
+    {
+        if (level == Hero.Level2)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "“Battle Cry”\nnow also restores 25% of maximum mana to all allies";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "“Battle Cry”\nnow also restores 15% of maximum HP to all allies";
+            }
+        }
+        else if (level == Hero.Level3)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "“Battle Cry”\nIf Arthur's HP > 50% when activated, the buff lasts 10 sec";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "“Battle Cry”\nAfter the buff, Arthur is invulnerable for 3 sec.";
             }
         }
 

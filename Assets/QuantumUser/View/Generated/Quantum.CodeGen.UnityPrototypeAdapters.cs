@@ -83,6 +83,8 @@ namespace Quantum.Prototypes.Unity {
   public unsafe partial class EffectQntPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.EffectQntPrototype> {
     public Quantum.QuantumEntityPrototype Owner;
     public Int32 Index;
+    public Int32 DelayedIndex;
+    public FP DurationAfterDelay;
     public FP MaxValue;
     public FP Value;
     public FP MaxDuration;
@@ -93,6 +95,8 @@ namespace Quantum.Prototypes.Unity {
       var result = new Quantum.Prototypes.EffectQntPrototype();
       converter.Convert(this.Owner, out result.Owner);
       converter.Convert(this.Index, out result.Index);
+      converter.Convert(this.DelayedIndex, out result.DelayedIndex);
+      converter.Convert(this.DurationAfterDelay, out result.DurationAfterDelay);
       converter.Convert(this.MaxValue, out result.MaxValue);
       converter.Convert(this.Value, out result.Value);
       converter.Convert(this.MaxDuration, out result.MaxDuration);

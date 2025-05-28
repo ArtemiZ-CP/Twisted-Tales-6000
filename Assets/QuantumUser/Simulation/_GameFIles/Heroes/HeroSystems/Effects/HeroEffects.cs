@@ -13,9 +13,10 @@ namespace Quantum.Game
             Bleeding, // Owner, Type, Value, Duration
             TransferingBleeding, // Owner, Type, Value, MaxDuration, Duration, Size
             IncreaseTakingDamage, // Owner, Type, Value, Duration
-            ReduceCurrentMana, // Owner, Type, Value
+            IncreaseCurrentMana, // Owner, Type, Value
             IncreaseHealAndArmor, // Owner, Type, Value, Duration
             IncreaseAttackSpeed, // Owner, Type, Value, Duration
+            IncreaseDamage, // Owner, Type, Value, Duration
             ReduceDefense, // Owner, Type, Value, Duration
             ReduceMagicDefense, // Owner, Type, Value, Duration
             HorizontalBlast, // Owner, Type, Value, Size
@@ -29,6 +30,7 @@ namespace Quantum.Game
             Silence, // Owner, Type, Duration
             BlastSilence, // Owner, Type, Duration, Size
             Immortal, // Owner, Type, Duration
+            Delayed, // Type, Duration, ... (Other parameters are the same as in required EffectType)
         }
 
         public enum GlobalEffectType
@@ -43,6 +45,8 @@ namespace Quantum.Game
         {
             public EntityRef Owner;
             public EffectType Type = EffectType.None;
+            public EffectType DelayedType = EffectType.None;
+            public FP DurationAfterDelay = 0;
             public FP MaxValue = 0;
             public FP Value = 0;
             public FP MaxDuration = 0;
@@ -246,8 +250,8 @@ namespace Quantum.Game
                     case EffectType.TransferingBleeding:
                         HeroAttack.DamageHeroWithoutAddMana(f, ref ownerHero, board, ref target, ref damage, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         break;
-                    case EffectType.ReduceCurrentMana:
-                        ReduceCurrentMana(f, target, board, effectQnt.Value);
+                    case EffectType.IncreaseCurrentMana:
+                        IncreaseCurrentMana(f, target, board, effectQnt.Value);
                         break;
                     case EffectType.Blast:
                         HeroAttack.DamageHeroByBlastWithoutAddMana(f, ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, includeSelf: false, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
@@ -304,6 +308,23 @@ namespace Quantum.Game
                         {
                             HeroAttack.DestroyHero(f, target, board);
                         }
+                    }
+                    else if (effectQnt.Index == (int)EffectType.Delayed)
+                    {
+                        Effect delayedEffect = new()
+                        {
+                            Owner = effectQnt.Owner,
+                            Type = (EffectType)effectQnt.DelayedIndex,
+                            MaxValue = effectQnt.MaxValue,
+                            Value = effectQnt.MaxValue,
+                            MaxDuration = effectQnt.MaxDuration,
+                            Duration = effectQnt.DurationAfterDelay,
+                            Size = effectQnt.Size,
+                        };
+
+                        FightingHero fightingHero = HeroBoard.GetFightingHero(f, effectQnt.Owner, board);
+
+                        HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref target, delayedEffect);
                     }
 
                     effects.RemoveAt(i);
@@ -423,7 +444,7 @@ namespace Quantum.Game
             }
         }
 
-        private static void ReduceCurrentMana(Frame f, FightingHero target, Board board, FP value)
+        private static void IncreaseCurrentMana(Frame f, FightingHero target, Board board, FP value)
         {
             if (target.AbilityStage > 0)
             {
@@ -432,8 +453,8 @@ namespace Quantum.Game
 
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             target = heroes[target.Index];
-            target.CurrentMana -= value;
-            target.CurrentMana = FPMath.Max(target.CurrentMana, 0);
+            target.CurrentMana += value;
+            target.CurrentMana = FPMath.Clamp(target.CurrentMana, 0, target.Hero.MaxMana);
             heroes[target.Index] = target;
             f.Events.HeroManaChanged(board.Player1.Ref, board.Player2.Ref, target.Hero.Ref, target.CurrentMana, target.Hero.MaxMana);
         }

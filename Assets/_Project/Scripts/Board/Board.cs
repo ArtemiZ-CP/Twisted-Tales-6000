@@ -110,7 +110,7 @@ namespace Quantum.Game
         {
             ClearBoard();
 
-            _boardSize = GameConfig.BoardSize;
+            _boardSize = GameplayConstants.BoardSize;
             _tileSize = QuantumConnection.GameConfig.TileSize;
 
             _tiles = new Tile[_boardSize, _boardSize];

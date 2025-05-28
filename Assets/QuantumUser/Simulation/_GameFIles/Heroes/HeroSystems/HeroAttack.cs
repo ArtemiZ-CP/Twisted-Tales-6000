@@ -108,8 +108,7 @@ namespace Quantum.Game
 
         public static bool TryFindClosestTargetInAttackRange(Frame f, FightingHero fightingHero, Board board, out FightingHero targetHero)
         {
-            // Проверяем, что герой, который ищет цель, существует
-            if (!f.Exists(fightingHero.Hero.Ref))
+            if (f.Exists(fightingHero.Hero.Ref) == false)
             {
                 targetHero = default;
                 return false;
@@ -329,7 +328,7 @@ namespace Quantum.Game
             heroes[fightingHero.Index] = fightingHero;
         }
 
-        public static void HealHero(Frame f, FightingHero fightingHero, Board board, FightingHero targetHero, FP amount)
+        public static void HealHero(Frame f, ref FightingHero fightingHero, Board board, FightingHero targetHero, FP amount)
         {
             GetUpdatedHeroes(f, board, ref fightingHero, ref targetHero, out QList<FightingHero> heroes);
             amount = ApplyHealToHero(f, ref targetHero, amount);
@@ -409,6 +408,10 @@ namespace Quantum.Game
                     {
                         heroEffects[i] = effectQnt;
                     }
+                }
+                else if (effectQnt.Index == (int)HeroEffects.EffectType.IncreaseDamage)
+                {
+                    damage *= effectQnt.Value;
                 }
             }
 
@@ -561,6 +564,8 @@ namespace Quantum.Game
                 }
             }
 
+            damage *= KingArthurAbilities.GetDamageMultiplierPercentage(f, heroes);
+
             damage = damageType switch
             {
                 DamageType.Physical => GetReducedDamage(damage, defense),
@@ -680,6 +685,8 @@ namespace Quantum.Game
                 {
                     Owner = effect.Owner,
                     Index = (int)effect.Type,
+                    DelayedIndex = (int)effect.DelayedType,
+                    DurationAfterDelay = effect.DurationAfterDelay,
                     MaxValue = effect.MaxValue,
                     Value = effect.Value,
                     MaxDuration = effect.MaxDuration,

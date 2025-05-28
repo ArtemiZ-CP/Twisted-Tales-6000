@@ -98,7 +98,7 @@ namespace Quantum.Game
                     },
                     Board = new()
                     {
-                        Heroes = f.AllocateList<HeroIdLevel>(GameConfig.BoardSize * GameConfig.BoardSize / 2),
+                        Heroes = f.AllocateList<HeroIdLevel>(GameplayConstants.BoardSize * GameplayConstants.BoardSize / 2),
                         Abilities = f.AllocateList<SelectedHeroAbility>()
                     },
                     Coins = gameConfig.CoinsPerRound[0],
@@ -109,7 +109,7 @@ namespace Quantum.Game
 
             FillList(f, playerLink.Info.Shop.HeroesID, gameConfig.ShopSize, -1);
             FillList(f, playerLink.Info.Inventory.Heroes, gameConfig.InventorySize, new HeroIdLevel { ID = -1, Level = 0 });
-            FillList(f, playerLink.Info.Board.Heroes, GameConfig.BoardSize * GameConfig.BoardSize / 2, new HeroIdLevel { ID = -1, Level = 0 });
+            FillList(f, playerLink.Info.Board.Heroes, GameplayConstants.BoardSize * GameplayConstants.BoardSize / 2, new HeroIdLevel { ID = -1, Level = 0 });
 
             f.Add(entityRef, playerLink);
 

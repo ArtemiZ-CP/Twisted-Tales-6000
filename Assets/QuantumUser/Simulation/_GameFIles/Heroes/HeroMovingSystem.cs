@@ -44,7 +44,7 @@ namespace Quantum.Game
             }
             else if (heroState == HeroState.Board)
             {
-                int heroIndex = positionY * GameConfig.BoardSize + positionX;
+                int heroIndex = positionY * GameplayConstants.BoardSize + positionX;
 
                 if (heroIndex >= 0 && heroIndex < _board.Count)
                 {
@@ -71,8 +71,8 @@ namespace Quantum.Game
             _playerLink = playerLink;
             _f = f;
 
-            int boardFromIndex = positionFromY * GameConfig.BoardSize + positionFromX;
-            int boardToIndex = positionToY * GameConfig.BoardSize + positionToX;
+            int boardFromIndex = positionFromY * GameplayConstants.BoardSize + positionFromX;
+            int boardToIndex = positionToY * GameplayConstants.BoardSize + positionToX;
 
             if (HeroFromState == HeroState.Inventory)
             {

@@ -228,7 +228,7 @@ namespace Quantum.Game
 
             board->Ref = boardEntity;
 
-            board->FightingHeroesMap = f.AllocateList<FightingHero>(GameConfig.BoardSize * GameConfig.BoardSize);
+            board->FightingHeroesMap = f.AllocateList<FightingHero>(GameplayConstants.BoardSize * GameplayConstants.BoardSize);
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
             board->GlobalEffects = f.AllocateList<GlobalEffectQnt>();
 
@@ -245,7 +245,7 @@ namespace Quantum.Game
 
             board->Ref = boardEntity;
 
-            board->FightingHeroesMap = f.AllocateList<FightingHero>(GameConfig.BoardSize * GameConfig.BoardSize);
+            board->FightingHeroesMap = f.AllocateList<FightingHero>(GameplayConstants.BoardSize * GameplayConstants.BoardSize);
             board->HeroProjectiles = f.AllocateList<HeroProjectile>();
             board->GlobalEffects = f.AllocateList<GlobalEffectQnt>();
 

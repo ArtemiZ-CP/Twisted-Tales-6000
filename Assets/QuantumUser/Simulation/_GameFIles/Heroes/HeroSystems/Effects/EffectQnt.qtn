@@ -2,6 +2,8 @@ struct EffectQnt
 {
     entity_ref Owner;
     int Index;
+    int DelayedIndex;
+    FP DurationAfterDelay;
     FP MaxValue;
     FP Value;
     FP MaxDuration;
