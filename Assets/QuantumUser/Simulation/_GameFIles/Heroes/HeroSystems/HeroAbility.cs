@@ -7,6 +7,7 @@ namespace Quantum.Game
 {
     public interface IHeroAbility
     {
+        FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes);
         void ProcessPassiveAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes);
         void ProcessAbilityOnDeath(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes);
         (bool, FP) TryCastAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes);
@@ -70,7 +71,7 @@ namespace Quantum.Game
             out Action<Frame, FightingHero, Board, QList<FightingHero>> ProcessPassiveAbility)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            HeroNameEnum heroName = gameConfig.GetHeroInfo(f, fightingHero.Hero.ID).Name;
+            HeroNameEnum heroName = (HeroNameEnum)fightingHero.Hero.NameIndex;;
 
             IHeroAbility abilityClass = GetAbilityClass(heroName);
 
@@ -88,8 +89,7 @@ namespace Quantum.Game
 
         public static void ProcessAbilityOnDeath(Frame f, ref FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
-            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            HeroNameEnum heroName = gameConfig.GetHeroInfo(f, fightingHero.Hero.ID).Name;
+            HeroNameEnum heroName = (HeroNameEnum)fightingHero.Hero.NameIndex;
             IHeroAbility abilityClass = GetAbilityClass(heroName);
 
             if (abilityClass == null)
@@ -98,6 +98,19 @@ namespace Quantum.Game
             }
 
             abilityClass.ProcessAbilityOnDeath(f, fightingHero, board, heroes);
+        }
+
+        public static FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        {
+            FP damageMultiplier = 1;
+
+            foreach (HeroNameEnum name in Enum.GetValues(typeof(HeroNameEnum)))
+            {
+                IHeroAbility abilityClass = GetAbilityClass(name);
+                damageMultiplier *= abilityClass.GetDamageMultiplier(f, fightingHero, board, heroes);
+            }
+
+            return damageMultiplier;
         }
 
         public static HeroStats GetHeroStats(Frame f, PlayerLink playerLink, HeroInfo heroInfo)
@@ -118,8 +131,12 @@ namespace Quantum.Game
             {
                 // Base
                 HeroNameEnum.Nutcracker => new NutcrackerAbilities(),
+                // Common
+                HeroNameEnum.Beast => new BeastAbilities(),
+                HeroNameEnum.StoneGolem => new StoneGolemAbilities(),
                 // Rare
                 HeroNameEnum.TinMan => new TinManAbilities(),
+                // Epic
                 // Legendary
                 HeroNameEnum.KingArthur => new KingArthurAbilities(),
                 _ => null

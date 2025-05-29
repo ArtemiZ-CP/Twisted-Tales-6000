@@ -113,18 +113,7 @@ namespace Quantum.Game
 
         private FightingHero SetupFightingHero(Frame f, HeroEntity hero, int boardIndex, int index, int teamNumber)
         {
-            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             int extraLives = 0;
-
-            if (hero.ID >= 0)
-            {
-                HeroNameEnum heroName = gameConfig.GetHeroInfo(f, hero.ID).Name;
-
-                if (heroName == HeroNameEnum.Firebird)
-                {
-                    extraLives = 1;
-                }
-            }
 
             FightingHero fightingHero = new()
             {

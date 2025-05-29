@@ -409,7 +409,7 @@ namespace Quantum.Game
                         heroEffects[i] = effectQnt;
                     }
                 }
-                else if (effectQnt.Index == (int)HeroEffects.EffectType.IncreaseDamage)
+                else if (effectQnt.Index == (int)HeroEffects.EffectType.IncreaseOutgoingDamage)
                 {
                     damage *= effectQnt.Value;
                 }
@@ -430,7 +430,7 @@ namespace Quantum.Game
                 ApplyEffectToTarget(f, ref fightingHero, board, ref targetHero, effects);
             }
 
-            bool enemyKilled = ApplyDamageToHero(f, ref targetHero, board, ref damage, damageType);
+            bool enemyKilled = ApplyDamageToHero(f, ref fightingHero, board, ref targetHero, ref damage, damageType);
             UpdateDamageStats(ref fightingHero, ref targetHero, damage, attackType);
             UpdateHeroesAndStats(f, board, heroes, fightingHero, targetHero);
 
@@ -489,7 +489,7 @@ namespace Quantum.Game
             }
         }
 
-        public static void DamageHeroByBlastWithoutAddMana(Frame f, FightingHero fightingHero, int centerIndex, Board board, FP damage, int size, bool includeSelf, HeroEffects.Effect effect, DamageType damageType, AttackType attackType)
+        public static void DamageHeroByBlastWithoutAddMana(Frame f, ref FightingHero fightingHero, int centerIndex, Board board, FP damage, int size, bool includeSelf, HeroEffects.Effect effect, DamageType damageType, AttackType attackType)
         {
             if (fightingHero.Hero.Ref == default)
             {
@@ -524,7 +524,7 @@ namespace Quantum.Game
             targetHero = heroes[targetHero.Index];
         }
 
-        private static bool ApplyDamageToHero(Frame f, ref FightingHero targetHero, Board board, ref FP damage, DamageType damageType)
+        private static bool ApplyDamageToHero(Frame f, ref FightingHero owner, Board board, ref FightingHero targetHero, ref FP damage, DamageType damageType)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             QList<EffectQnt> effectQnts = f.ResolveList(targetHero.Effects);
@@ -533,7 +533,7 @@ namespace Quantum.Game
             FP defense = targetHero.Hero.Defense;
             FP magicDefense = targetHero.Hero.MagicDefense;
             int transferingBleedingEffectIndex = -1;
-            bool isRebirthing = false;
+            FP thornsDamagePercentage = 0;
 
             for (int i = 0; i < effectQnts.Count; i++)
             {
@@ -562,9 +562,13 @@ namespace Quantum.Game
                         magicDefense = 0;
                     }
                 }
+                else if (effectQnt.Index == (int)HeroEffects.EffectType.Thorns)
+                {
+                    thornsDamagePercentage += effectQnt.Value;
+                }
             }
 
-            damage *= KingArthurAbilities.GetDamageMultiplierPercentage(f, heroes);
+            damage *= HeroAbility.GetDamageMultiplier(f, targetHero, board, heroes);
 
             damage = damageType switch
             {
@@ -575,6 +579,12 @@ namespace Quantum.Game
             };
 
             FP temporaryDamage = damage;
+
+            if (thornsDamagePercentage > 0)
+            {
+                FP thornsDamage = damage * thornsDamagePercentage;
+                DamageHeroWithoutAddMana(f, ref targetHero, board, ref owner, ref thornsDamage, new HeroEffects.Effect[] { }, DamageType.Physical, AttackType.Ability);
+            }
 
             for (int i = 0; i < effectQnts.Count; i++)
             {
@@ -596,10 +606,6 @@ namespace Quantum.Game
                 else if (effectQnt.Index == (int)HeroEffects.EffectType.TransferingBleeding)
                 {
                     transferingBleedingEffectIndex = i;
-                }
-                else if (effectQnt.Index == (int)HeroEffects.EffectType.FirebirdRebirth)
-                {
-                    isRebirthing = true;
                 }
 
                 effectQnts[i] = effectQnt;
@@ -625,14 +631,9 @@ namespace Quantum.Game
                 FirebirdAbilities.ProcessDeathInFirebirdRebirthRange(f, ref targetHero, board, heroes);
                 HeroEffects.ProcessTransferingBleedingEffect(f, ref targetHero, board, effectQnts, transferingBleedingEffectIndex);
 
-                if (isRebirthing)
-                {
-                    return false;
-                }
-
                 if (targetHero.ExtraLives > 0)
                 {
-                    HeroNameEnum heroName = gameConfig.GetHeroInfo(f, targetHero.Hero.ID).Name;
+                    HeroNameEnum heroName = (HeroNameEnum)targetHero.Hero.NameIndex;
 
                     if (heroName == HeroNameEnum.Firebird)
                     {
@@ -753,29 +754,56 @@ namespace Quantum.Game
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+            QList<EffectQnt> effectQnts = f.ResolveList(fightingHero.Effects);
+            QList<EffectQnt> targetEffectQnts = f.ResolveList(targetHero.Effects);
+            FP manaIncome;
 
             if (targetHero.CurrentHealth > 0)
             {
                 if (gameConfig.AddManaByPercentage)
                 {
-                    targetHero.CurrentMana += damage * gameConfig.ManaTakeDamageRegen;
+                    manaIncome = damage * gameConfig.ManaTakeDamageRegen;
                 }
                 else
                 {
-                    targetHero.CurrentMana += gameConfig.ManaTakeDamageRegen;
+                    manaIncome = gameConfig.ManaTakeDamageRegen;
                 }
+
+                for (int i = 0; i < effectQnts.Count; i++)
+                {
+                    EffectQnt effectQnt = effectQnts[i];
+
+                    if (effectQnt.Index == (int)HeroEffects.EffectType.IncreaseManaIncome)
+                    {
+                        manaIncome *= effectQnt.Value;
+                    }
+                }
+
+                targetHero.CurrentMana += manaIncome;
             }
 
-            if (attackType != AttackType.Ability)
+            if (attackType != AttackType.Ability && fightingHero.CurrentHealth > 0)
             {
                 if (gameConfig.AddManaByPercentage)
                 {
-                    fightingHero.CurrentMana += damage * gameConfig.ManaDealDamageRegen;
+                    manaIncome = damage * gameConfig.ManaDealDamageRegen;
                 }
                 else
                 {
-                    fightingHero.CurrentMana += gameConfig.ManaDealDamageRegen;
+                    manaIncome = gameConfig.ManaDealDamageRegen;
                 }
+
+                for (int i = 0; i < targetEffectQnts.Count; i++)
+                {
+                    EffectQnt effectQnt = targetEffectQnts[i];
+
+                    if (effectQnt.Index == (int)HeroEffects.EffectType.IncreaseManaIncome)
+                    {
+                        manaIncome *= effectQnt.Value;
+                    }
+                }
+
+                fightingHero.CurrentMana += manaIncome;
             }
 
             UpdateHeroesAndStats(f, board, heroes, fightingHero, targetHero);

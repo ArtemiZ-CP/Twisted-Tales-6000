@@ -186,6 +186,8 @@ namespace Quantum.Prototypes.Unity {
     public Int32 ID;
     public Int32 Level;
     public FPVector3 DefaultPosition;
+    public Int32 NameIndex;
+    public Int32 TypeIndex;
     public FP Health;
     public FP MaxMana;
     public FP ManaRegen;
@@ -205,6 +207,8 @@ namespace Quantum.Prototypes.Unity {
       converter.Convert(this.ID, out result.ID);
       converter.Convert(this.Level, out result.Level);
       converter.Convert(this.DefaultPosition, out result.DefaultPosition);
+      converter.Convert(this.NameIndex, out result.NameIndex);
+      converter.Convert(this.TypeIndex, out result.TypeIndex);
       converter.Convert(this.Health, out result.Health);
       converter.Convert(this.MaxMana, out result.MaxMana);
       converter.Convert(this.ManaRegen, out result.ManaRegen);

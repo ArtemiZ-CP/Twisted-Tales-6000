@@ -3,37 +3,121 @@ using Quantum.Collections;
 
 namespace Quantum.Game
 {
-    public static unsafe class BeastAbilities
+    public unsafe class BeastAbilities : IHeroAbility
     {
-        public static bool TryCastAbility(Frame f, FightingHero fightingHero, Board board)
+        private readonly static FP ThornsPercentage = FP._0_10;
+        private readonly static FP AbilityDuration = 2;
+        private readonly static FP ReduceDamage = FP._0_20 + FP._0_10;
+        private readonly static FP ReduceManaIncome = FP._0_50;
+        private readonly static FP Cooldown = 6;
+        private readonly static FP AbilityDurationIncrease = 1;
+
+        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
-            // QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
-            // fightingHero = heroes[fightingHero.Index];
-            // PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
-            // int heroLevel = fightingHero.Hero.Level;
-            // SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, playerLink, fightingHero.Hero.ID, out int _);
-
-            // if (heroLevel == Hero.Level1)
-            // {
-            //     return TryCast(f, fightingHero, board, 100, 50);
-            // }
-            // else if (heroLevel == Hero.Level2)
-            // {
-            //     return TryCast(f, fightingHero, board, 150, 75);
-            // }
-            // else if (heroLevel == Hero.Level3)
-            // {
-            //     return TryCast(f, fightingHero, board, 225, 110);
-            // }
-
-            return false;
+            return 1;
         }
 
-        private static bool TryCast(Frame f, FightingHero fightingHero, Board board, FP damage, FP heal)
+        public HeroStats GetHeroStats(Frame f, PlayerLink playerLink, HeroInfo heroInfo)
         {
-            HeroAttack.AddArmorToHero(f, fightingHero, board, fightingHero, heal);
-            HeroAttack.DamageHeroByBlast(f, fightingHero, fightingHero.Index, board, damage, fightingHero.Hero.Range, includeSelf: true, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-            return true;
+            return heroInfo.Stats;
+        }
+
+        public void ProcessAbilityOnDeath(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        {
+        }
+
+        public void ProcessPassiveAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        {
+            if (fightingHero.IsPassiveAbilityActivated)
+            {
+                return;
+            }
+
+            fightingHero = heroes[fightingHero.Index];
+            fightingHero.IsPassiveAbilityActivated = true;
+            heroes[fightingHero.Index] = fightingHero;
+            HeroEffects.Effect effect = new()
+            {
+                Owner = fightingHero.Hero.Ref,
+                Type = HeroEffects.EffectType.Thorns,
+                Value = ThornsPercentage,
+                Duration = FP.MaxValue,
+            };
+            HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref fightingHero, effect);
+        }
+
+        public (bool, FP) TryCastAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        {
+            fightingHero = heroes[fightingHero.Index];
+            PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
+            SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, *playerLink, fightingHero.Hero.ID, out int _);
+
+            if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))
+            {
+                FP duration = AbilityDuration;
+
+                if (selectedHeroAbility.SecondAbilityIndex == Hero.UpgradeVariant2)
+                {
+                    duration += AbilityDurationIncrease;
+                }
+
+                if (selectedHeroAbility.ThirdAbilityIndex == Hero.UpgradeVariant2)
+                {
+                    duration += AbilityDurationIncrease;
+                }
+
+
+                HeroEffects.Effect effect = new()
+                {
+                    Owner = fightingHero.Hero.Ref,
+                    Type = HeroEffects.EffectType.IncreaseOutgoingDamage,
+                    Value = 1 - ReduceDamage,
+                    Duration = duration,
+                };
+
+                HeroEffects.Effect[] effects = new HeroEffects.Effect[]
+                {
+                    effect
+                };
+
+                if (selectedHeroAbility.SecondAbilityIndex == Hero.UpgradeVariant1)
+                {
+                    HeroEffects.Effect effect2 = new()
+                    {
+                        Owner = fightingHero.Hero.Ref,
+                        Type = HeroEffects.EffectType.IncreaseManaIncome,
+                        Value = 1 - ReduceManaIncome,
+                        Duration = duration,
+                    };
+
+                    effects = new HeroEffects.Effect[]
+                    {
+                        effect,
+                        effect2
+                    };
+                }
+
+                if (selectedHeroAbility.ThirdAbilityIndex == Hero.UpgradeVariant1)
+                {
+                    HeroEffects.Effect effect3 = new()
+                    {
+                        Owner = fightingHero.Hero.Ref,
+                        Type = HeroEffects.EffectType.Stun,
+                        Duration = duration,
+                    };
+
+                    HeroEffects.Effect[] newEffects = new HeroEffects.Effect[effects.Length + 1];
+                    effects.CopyTo(newEffects, 0);
+                    newEffects[effects.Length] = effect3;
+                    effects = newEffects;
+                }
+
+                HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref target, effects);
+
+                return (true, Cooldown);
+            }
+
+            return (false, 0);
         }
     }
 }

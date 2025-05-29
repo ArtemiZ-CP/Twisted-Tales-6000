@@ -12,24 +12,25 @@ namespace Quantum.Game
             None,
             Bleeding, // Owner, Type, Value, Duration
             TransferingBleeding, // Owner, Type, Value, MaxDuration, Duration, Size
-            IncreaseTakingDamage, // Owner, Type, Value, Duration
-            IncreaseCurrentMana, // Owner, Type, Value
-            IncreaseHealAndArmor, // Owner, Type, Value, Duration
-            IncreaseAttackSpeed, // Owner, Type, Value, Duration
-            IncreaseDamage, // Owner, Type, Value, Duration
-            ReduceDefense, // Owner, Type, Value, Duration
-            ReduceMagicDefense, // Owner, Type, Value, Duration
+            IncreaseTakingDamage, // Owner, Type, Value, Duration (multiply)
+            IncreaseCurrentMana, // Owner, Type, Value (additive)
+            IncreaseManaIncome, // Owner, Type, Value (multiply)
+            IncreaseHealAndArmor, // Owner, Type, Value, Duration (multiply)
+            IncreaseAttackSpeed, // Owner, Type, Value, Duration (multiply)
+            IncreaseOutgoingDamage, // Owner, Type, Value, Duration (multiply)
+            ReduceDefense, // Owner, Type, Value, Duration (additive)
+            ReduceMagicDefense, // Owner, Type, Value, Duration (additive)
             HorizontalBlast, // Owner, Type, Value, Size
             Blast, // Owner, Type, Value, Size
             Stun, // Owner, Type, Duration
             BlastStun, // Owner, Type, Duration, Size
             TemporaryArmor, // Owner, Type, Value, Duration
             Teleport, // Owner, Type, Size (position to teleport), Duration (teleport delay)
-            ExtraBaseDamage, // Owner, Type, Value, Duration, Size
-            FirebirdRebirth,
+            ExtraBaseDamage, // Owner, Type, Value, Duration, Size (additive)
             Silence, // Owner, Type, Duration
             BlastSilence, // Owner, Type, Duration, Size
             Immortal, // Owner, Type, Duration
+            Thorns, // Owner, Type, Value, Duration (percentage of damage taken)
             Delayed, // Type, Duration, ... (Other parameters are the same as in required EffectType)
         }
 
@@ -254,7 +255,7 @@ namespace Quantum.Game
                         IncreaseCurrentMana(f, target, board, effectQnt.Value);
                         break;
                     case EffectType.Blast:
-                        HeroAttack.DamageHeroByBlastWithoutAddMana(f, ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, includeSelf: false, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                        HeroAttack.DamageHeroByBlastWithoutAddMana(f, ref ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, includeSelf: false, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         break;
                     case EffectType.Stun:
                         isStunned = true;
@@ -269,7 +270,7 @@ namespace Quantum.Game
                             Type = EffectType.Silence,
                             Duration = effectQnt.Duration
                         };
-                        HeroAttack.DamageHeroByBlastWithoutAddMana(f, ownerHero, target.Index, board, 0, effectQnt.Size, includeSelf: true, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                        HeroAttack.DamageHeroByBlastWithoutAddMana(f, ref ownerHero, target.Index, board, 0, effectQnt.Size, includeSelf: true, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         break;
                     case EffectType.BlastStun:
                         BlastStun(f, ref ownerHero, board, ref target, effectQnt);
@@ -277,39 +278,11 @@ namespace Quantum.Game
                     case EffectType.Teleport:
                         TeleportHero(f, ref target, effectQnt, board);
                         break;
-                    case EffectType.FirebirdRebirth:
-                        effectQnt.Size = ProcessFirebirdRebirth(f, ref target, board, damage);
-                        isStunned = true;
-                        break;
                 }
 
                 if (effectQnt.Duration <= 0)
                 {
-                    if (effectQnt.Index == (int)EffectType.FirebirdRebirth)
-                    {
-                        if (effectQnt.Size > 0)
-                        {
-                            target.CurrentHealth = target.Hero.Health / 2;
-
-                            Effect effect = new()
-                            {
-                                Owner = target.Hero.Ref,
-                                Type = EffectType.IncreaseAttackSpeed,
-                                Value = effectQnt.MaxValue,
-                                Duration = 4,
-                                Size = 0
-                            };
-
-                            heroes[target.Index] = target;
-
-                            HeroAttack.ApplyEffectToTarget(f, ref target, board, ref target, effect);
-                        }
-                        else
-                        {
-                            HeroAttack.DestroyHero(f, target, board);
-                        }
-                    }
-                    else if (effectQnt.Index == (int)EffectType.Delayed)
+                    if (effectQnt.Index == (int)EffectType.Delayed)
                     {
                         Effect delayedEffect = new()
                         {
@@ -368,7 +341,7 @@ namespace Quantum.Game
                 Duration = effectQnt.Duration,
             };
 
-            HeroAttack.DamageHeroByBlastWithoutAddMana(f, ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, includeSelf: true, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+            HeroAttack.DamageHeroByBlastWithoutAddMana(f, ref ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, includeSelf: true, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
         }
 
         private static void TeleportHero(Frame f, ref FightingHero fightingHero, EffectQnt effectQnt, Board board)
@@ -388,7 +361,7 @@ namespace Quantum.Game
                 }
 
                 FPVector3 movePosition = HeroBoard.GetTilePosition(f, newPosition);
-                
+
                 if (!f.Exists(fightingHero.Hero.Ref))
                 {
                     return;
@@ -457,29 +430,6 @@ namespace Quantum.Game
             target.CurrentMana = FPMath.Clamp(target.CurrentMana, 0, target.Hero.MaxMana);
             heroes[target.Index] = target;
             f.Events.HeroManaChanged(board.Player1.Ref, board.Player2.Ref, target.Hero.Ref, target.CurrentMana, target.Hero.MaxMana);
-        }
-
-        private static int ProcessFirebirdRebirth(Frame f, ref FightingHero owner, Board board, FP damage)
-        {
-            var heroesInRange = HeroBoard.GetAllTargetsInRange(f, owner, board);
-
-            for (int i = 0; i < heroesInRange.Count; i++)
-            {
-                FightingHero target = heroesInRange[i];
-                HeroAttack.DamageHeroWithoutAddMana(f, ref owner, board, ref target, ref damage, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-            }
-
-            QList<EffectQnt> effects = f.ResolveList(owner.Effects);
-
-            foreach (EffectQnt effect in effects)
-            {
-                if (effect.Index == (int)EffectType.FirebirdRebirth)
-                {
-                    return effect.Size;
-                }
-            }
-
-            return 0;
         }
     }
 }

@@ -517,7 +517,7 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct FightingHero {
-    public const Int32 SIZE = 248;
+    public const Int32 SIZE = 256;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(120)]
     public HeroEntity Hero;
@@ -656,37 +656,41 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct HeroEntity {
-    public const Int32 SIZE = 128;
+    public const Int32 SIZE = 136;
     public const Int32 ALIGNMENT = 8;
-    [FieldOffset(16)]
-    public PlayerRef Player;
     [FieldOffset(24)]
+    public PlayerRef Player;
+    [FieldOffset(32)]
     public EntityRef Ref;
     [FieldOffset(4)]
     public Int32 ID;
     [FieldOffset(8)]
     public Int32 Level;
-    [FieldOffset(104)]
+    [FieldOffset(112)]
     public FPVector3 DefaultPosition;
-    [FieldOffset(56)]
-    public FP Health;
-    [FieldOffset(80)]
-    public FP MaxMana;
-    [FieldOffset(72)]
-    public FP ManaRegen;
-    [FieldOffset(48)]
-    public FP Defense;
-    [FieldOffset(64)]
-    public FP MagicDefense;
-    [FieldOffset(32)]
-    public FP AttackDamage;
-    [FieldOffset(40)]
-    public FP AttackSpeed;
-    [FieldOffset(88)]
-    public FP ProjectileSpeed;
     [FieldOffset(12)]
-    public Int32 Range;
+    public Int32 NameIndex;
+    [FieldOffset(20)]
+    public Int32 TypeIndex;
+    [FieldOffset(64)]
+    public FP Health;
+    [FieldOffset(88)]
+    public FP MaxMana;
+    [FieldOffset(80)]
+    public FP ManaRegen;
+    [FieldOffset(56)]
+    public FP Defense;
+    [FieldOffset(72)]
+    public FP MagicDefense;
+    [FieldOffset(40)]
+    public FP AttackDamage;
+    [FieldOffset(48)]
+    public FP AttackSpeed;
     [FieldOffset(96)]
+    public FP ProjectileSpeed;
+    [FieldOffset(16)]
+    public Int32 Range;
+    [FieldOffset(104)]
     public FP RangePercentage;
     [FieldOffset(0)]
     public Int32 AttackDamageType;
@@ -698,6 +702,8 @@ namespace Quantum {
         hash = hash * 31 + ID.GetHashCode();
         hash = hash * 31 + Level.GetHashCode();
         hash = hash * 31 + DefaultPosition.GetHashCode();
+        hash = hash * 31 + NameIndex.GetHashCode();
+        hash = hash * 31 + TypeIndex.GetHashCode();
         hash = hash * 31 + Health.GetHashCode();
         hash = hash * 31 + MaxMana.GetHashCode();
         hash = hash * 31 + ManaRegen.GetHashCode();
@@ -717,7 +723,9 @@ namespace Quantum {
         serializer.Stream.Serialize(&p->AttackDamageType);
         serializer.Stream.Serialize(&p->ID);
         serializer.Stream.Serialize(&p->Level);
+        serializer.Stream.Serialize(&p->NameIndex);
         serializer.Stream.Serialize(&p->Range);
+        serializer.Stream.Serialize(&p->TypeIndex);
         PlayerRef.Serialize(&p->Player, serializer);
         EntityRef.Serialize(&p->Ref, serializer);
         FP.Serialize(&p->AttackDamage, serializer);

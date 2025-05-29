@@ -234,6 +234,8 @@ namespace Quantum.Prototypes {
     public Int32 ID;
     public Int32 Level;
     public FPVector3 DefaultPosition;
+    public Int32 NameIndex;
+    public Int32 TypeIndex;
     public FP Health;
     public FP MaxMana;
     public FP ManaRegen;
@@ -251,6 +253,8 @@ namespace Quantum.Prototypes {
         result.ID = this.ID;
         result.Level = this.Level;
         result.DefaultPosition = this.DefaultPosition;
+        result.NameIndex = this.NameIndex;
+        result.TypeIndex = this.TypeIndex;
         result.Health = this.Health;
         result.MaxMana = this.MaxMana;
         result.ManaRegen = this.ManaRegen;

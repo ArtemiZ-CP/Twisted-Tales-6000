@@ -13,7 +13,7 @@ namespace Quantum.Game
         public const int UpgradeOpened = 0;
         public const int UpgradeVariant1 = 1;
         public const int UpgradeVariant2 = 2;
-        
+
         public static int GetHeroCost(Frame f, int heroID)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
@@ -21,7 +21,7 @@ namespace Quantum.Game
             return heroInfo.GetBuyCost(f);
         }
 
-        public static bool TrySetNewBoardPosition(QList<FightingHero> heroes, ref FightingHero fightingHero,  Vector2Int targetPosition)
+        public static bool TrySetNewBoardPosition(QList<FightingHero> heroes, ref FightingHero fightingHero, Vector2Int targetPosition)
         {
             if (HeroBoard.TryGetHeroIndexFromCords(targetPosition, out int heroNewIndex))
             {
@@ -58,10 +58,10 @@ namespace Quantum.Game
 
             switch (heroInfo.HeroType)
             {
-                case HeroType.Melee:
+                case HeroAttackType.Melee:
                     f.Add<MeleeHero>(heroEntity);
                     break;
-                case HeroType.Ranged:
+                case HeroAttackType.Ranged:
                     f.Add<RangedHero>(heroEntity);
                     break;
             }
@@ -77,16 +77,21 @@ namespace Quantum.Game
                 return default;
             }
 
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             QListPtr<HeroEntity> heroes = f.AllocateList<HeroEntity>();
             QList<HeroIdLevel> playerHeroesIDLevel = f.ResolveList(player->Info.Board.Heroes);
             QList<HeroEntity> playerHeroes = f.ResolveList(heroes);
 
             for (int i = 0; i < playerHeroesIDLevel.Count; i++)
             {
+                HeroInfo heroInfo = gameConfig.GetHeroInfo(f, playerHeroesIDLevel[i].ID);
+                
                 HeroEntity hero = new()
                 {
                     ID = playerHeroesIDLevel[i].ID,
                     Level = playerHeroesIDLevel[i].Level,
+                    NameIndex = (int)heroInfo.Name,
+                    TypeIndex = (int)heroInfo.Type,
                     DefaultPosition = HeroBoard.GetTilePosition(f, i % GameplayConstants.BoardSize, i / GameplayConstants.BoardSize)
                 };
 

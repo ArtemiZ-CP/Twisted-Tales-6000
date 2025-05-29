@@ -21,6 +21,7 @@ namespace Quantum.Game
         TinMan,
         BabaYaga,
         Cerberus,
-        Firebird
+        Firebird,
+        StoneGolem,
     }
 }

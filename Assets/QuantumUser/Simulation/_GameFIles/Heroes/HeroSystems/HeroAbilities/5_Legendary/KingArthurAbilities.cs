@@ -16,20 +16,18 @@ namespace Quantum.Game
         private readonly static FP HealthPercentage = FP._0_50;
         private readonly static FP IncreasedAbilityDuration = 10;
 
-        public static FP GetDamageMultiplierPercentage(Frame f, QList<FightingHero> heroes)
+        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
-            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-
-            foreach (FightingHero fightingHero in heroes)
+            foreach (FightingHero hero in heroes)
             {
-                if (fightingHero.Hero.Ref == default || fightingHero.Hero.ID == 0)
+                if (hero.Hero.Ref == default || hero.Hero.ID == 0)
                 {
                     continue;
                 }
 
-                HeroNameEnum heroName = gameConfig.GetHeroInfo(f, fightingHero.Hero.ID).Name;
+                HeroNameEnum heroName = (HeroNameEnum)hero.Hero.NameIndex;;
 
-                if (heroName == HeroNameEnum.KingArthur)
+                if (heroName == HeroNameEnum.KingArthur && hero.TeamNumber == fightingHero.TeamNumber)
                 {
                     return 1 - ReduceDamagePercentage;
                 }
@@ -70,7 +68,7 @@ namespace Quantum.Game
             HeroEffects.Effect effect1 = new()
             {
                 Owner = fightingHero.Hero.Ref,
-                Type = HeroEffects.EffectType.IncreaseDamage,
+                Type = HeroEffects.EffectType.IncreaseOutgoingDamage,
                 Value = IncreaseDamage,
                 Duration = duration,
             };

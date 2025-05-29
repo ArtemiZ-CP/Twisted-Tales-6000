@@ -29,6 +29,7 @@ MonoBehaviour:
   Name: 10
   Rare: 0
   HeroType: 1
+  Type: 1
   Stats:
     LevelStats:
     - Health:

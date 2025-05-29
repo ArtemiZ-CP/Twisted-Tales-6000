@@ -34,21 +34,15 @@ public class ChooseUpgradeHeroButton : MonoBehaviour
     {
         HeroNameEnum heroName = QuantumConnection.GetHeroInfo(id, out _).Name;
 
-        if (heroName == HeroNameEnum.TinMan)
+        return heroName switch
         {
-            return GetTinManDescription(level, chooseNumber);
-        }
-        else if (heroName == HeroNameEnum.Nutcracker)
-        {
-            return GetNutcrackerDescription(level, chooseNumber);
-        }
-        else if (heroName == HeroNameEnum.KingArthur)
-        {
-            return GetKingArthurDescription(level, chooseNumber);
-        }
-
-
-        return string.Empty;
+            HeroNameEnum.TinMan => GetTinManDescription(level, chooseNumber),
+            HeroNameEnum.Nutcracker => GetNutcrackerDescription(level, chooseNumber),
+            HeroNameEnum.KingArthur => GetKingArthurDescription(level, chooseNumber),
+            HeroNameEnum.Beast => GetBeastDescription(level, chooseNumber),
+            HeroNameEnum.StoneGolem => GetStoneGolemDescription(level, chooseNumber),
+            _ => string.Empty,
+        };
     }
 
     private string GetTinManDescription(int level, int chooseNumber)
@@ -107,7 +101,7 @@ public class ChooseUpgradeHeroButton : MonoBehaviour
 
         return string.Empty;
     }
-    
+
     private string GetKingArthurDescription(int level, int chooseNumber)
     {
         if (level == Hero.Level2)
@@ -130,6 +124,62 @@ public class ChooseUpgradeHeroButton : MonoBehaviour
             else if (chooseNumber == Hero.UpgradeVariant2)
             {
                 return "“Battle Cry”\nAfter the buff, Arthur is invulnerable for 3 sec.";
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private string GetBeastDescription(int level, int chooseNumber)
+    {
+        if (level == Hero.Level2)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "“Tag”\nnow also reduces the mana accumulation of the character under the tag by 50%";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "“Tag”\nlasts 1 second longer";
+            }
+        }
+        else if (level == Hero.Level3)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "“Tag”\nnow also imposes a stun effect on the target";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "“Tag”\nlasts 1 second longer";
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private string GetStoneGolemDescription(int level, int chooseNumber)
+    {
+        if (level == Hero.Level2)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "“TITAN'S Punch”\nEnemies that are hit get -15% to armor for 4 seconds";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "“TITAN'S Punch”\nslows down affected enemies by 30% for 2 seconds";
+            }
+        }
+        else if (level == Hero.Level3)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "15% to armor and HP";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "“TITAN'S Punch”\n+100% damage.";
             }
         }
 

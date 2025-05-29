@@ -17,6 +17,11 @@ namespace Quantum.Game
         private static readonly FP HealPercentage = FP._0_75;
         private static readonly FP IncreaseAttackSpeed = FP._1_20;
 
+        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        {
+            return 1;
+        }
+
         public HeroStats GetHeroStats(Frame f, PlayerLink playerLink, HeroInfo heroInfo)
         {
             return heroInfo.Stats;

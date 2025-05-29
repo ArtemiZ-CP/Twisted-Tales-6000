@@ -15,6 +15,11 @@ namespace Quantum.Game
         private const int HealthMultiplier = 2;
         private const int StunDuration = 1;
 
+        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        {
+            return 1;
+        }
+
         public HeroStats GetHeroStats(Frame f, PlayerLink playerLink, HeroInfo heroInfo)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
@@ -32,7 +37,6 @@ namespace Quantum.Game
                 }
 
                 heroStats.LevelStats = heroLevelStats;
-                return heroStats;
             }
 
             return heroStats;

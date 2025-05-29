@@ -13,10 +13,18 @@ namespace Quantum.Game
         Legendary
     }
 
-    public enum HeroType
+    public enum HeroAttackType
     {
         Ranged,
         Melee
+    }
+
+    public enum HeroType
+    {
+        None,
+        Tank,
+        Duelist,
+        Shooter,
     }
 
     [Serializable]
@@ -40,7 +48,8 @@ namespace Quantum.Game
         [Header("Hero Info")]
         public HeroNameEnum Name;
         public HeroRare Rare;
-        public HeroType HeroType;
+        public HeroAttackType HeroType;
+        public HeroType Type;
         [Header("Stats")]
         public HeroStats Stats;
 

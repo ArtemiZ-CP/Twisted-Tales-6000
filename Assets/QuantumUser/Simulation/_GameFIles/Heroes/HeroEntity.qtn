@@ -5,6 +5,8 @@ struct HeroEntity
     Int32 ID;
     Int32 Level;
     FPVector3 DefaultPosition;
+    Int32 NameIndex;
+    Int32 TypeIndex;
 
     // Stats
     FP Health;
