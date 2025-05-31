@@ -17,8 +17,13 @@ namespace Quantum.Game
 
         private const int IncreaseDamageMultiply = 2;
 
-        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, FightingHero target, QList<FightingHero> heroes)
         {
+            if (target.Hero.NameIndex != (int)HeroNameEnum.StoneGolem)
+            {
+                return 1;
+            }
+
             int defendersCount = 0;
 
             foreach (FightingHero hero in heroes)
@@ -65,14 +70,17 @@ namespace Quantum.Game
         {
         }
 
-        public void ProcessPassiveAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public void ProcessAbilityOnKill(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        {
+        }
+        
+        public void ProcessPassiveAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
         }
 
-        public (bool, FP) TryCastAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public (bool, FP) TryCastAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             fightingHero = heroes[fightingHero.Index];
-            PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
             SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, *playerLink, fightingHero.Hero.ID, out int _);
             FP damage = AbilityDamageMultiplier * fightingHero.Hero.AttackDamage;
             HeroEffects.Effect effect = null;

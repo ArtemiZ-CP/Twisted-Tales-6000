@@ -5,12 +5,13 @@ using static Quantum.Game.HeroAttack;
 
 namespace Quantum.Game
 {
-    public interface IHeroAbility
+    public unsafe interface IHeroAbility
     {
-        FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes);
-        void ProcessPassiveAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes);
+        FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, FightingHero target, QList<FightingHero> heroes);
+        void ProcessPassiveAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes);
         void ProcessAbilityOnDeath(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes);
-        (bool, FP) TryCastAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes);
+        void ProcessAbilityOnKill(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes);
+        (bool, FP) TryCastAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes);
         HeroStats GetHeroStats(Frame f, PlayerLink playerLink, HeroInfo heroInfo);
     }
 
@@ -66,28 +67,33 @@ namespace Quantum.Game
             return newSelectedHeroAbility;
         }
 
-        public static bool TryGetAbility(Frame f, FightingHero fightingHero,
-            out Func<Frame, FightingHero, Board, QList<FightingHero>, (bool, FP)> TryCastAbility,
-            out Action<Frame, FightingHero, Board, QList<FightingHero>> ProcessPassiveAbility)
+        public static (bool, FP) TryCastAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
-            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
-            HeroNameEnum heroName = (HeroNameEnum)fightingHero.Hero.NameIndex;;
-
+            HeroNameEnum heroName = (HeroNameEnum)fightingHero.Hero.NameIndex;
             IHeroAbility abilityClass = GetAbilityClass(heroName);
 
             if (abilityClass == null)
             {
-                TryCastAbility = null;
-                ProcessPassiveAbility = null;
-                return false;
+                return (false, 0);
             }
 
-            TryCastAbility = abilityClass.TryCastAbility;
-            ProcessPassiveAbility = abilityClass.ProcessPassiveAbility;
-            return true;
+            return abilityClass.TryCastAbility(f, playerLink, fightingHero, board, heroes);
         }
 
-        public static void ProcessAbilityOnDeath(Frame f, ref FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public static void ProcessPassiveAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        {
+            HeroNameEnum heroName = (HeroNameEnum)fightingHero.Hero.NameIndex;
+            IHeroAbility abilityClass = GetAbilityClass(heroName);
+
+            if (abilityClass == null)
+            {
+                return;
+            }
+
+            abilityClass.ProcessPassiveAbility(f, playerLink, fightingHero, board, heroes);
+        }
+
+        public static void ProcessAbilityOnDeath(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             HeroNameEnum heroName = (HeroNameEnum)fightingHero.Hero.NameIndex;
             IHeroAbility abilityClass = GetAbilityClass(heroName);
@@ -100,14 +106,33 @@ namespace Quantum.Game
             abilityClass.ProcessAbilityOnDeath(f, fightingHero, board, heroes);
         }
 
-        public static FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public static void ProcessAbilityOnKill(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        {
+            HeroNameEnum heroName = (HeroNameEnum)fightingHero.Hero.NameIndex;
+            IHeroAbility abilityClass = GetAbilityClass(heroName);
+
+            if (abilityClass == null)
+            {
+                return;
+            }
+
+            abilityClass.ProcessAbilityOnKill(f, fightingHero, board, heroes);
+        }
+
+        public static FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, FightingHero target, QList<FightingHero> heroes)
         {
             FP damageMultiplier = 1;
 
             foreach (HeroNameEnum name in Enum.GetValues(typeof(HeroNameEnum)))
             {
                 IHeroAbility abilityClass = GetAbilityClass(name);
-                damageMultiplier *= abilityClass.GetDamageMultiplier(f, fightingHero, board, heroes);
+
+                if (abilityClass == null)
+                {
+                    continue;
+                }
+
+                damageMultiplier *= abilityClass.GetDamageMultiplier(f, fightingHero, board, target, heroes);
             }
 
             return damageMultiplier;

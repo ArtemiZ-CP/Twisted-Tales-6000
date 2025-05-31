@@ -23,5 +23,6 @@ namespace Quantum.Game
         Cerberus,
         Firebird,
         StoneGolem,
+        SnowQueen,
     }
 }

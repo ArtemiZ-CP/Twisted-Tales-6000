@@ -12,7 +12,7 @@ namespace Quantum.Game
         private readonly static FP Cooldown = 6;
         private readonly static FP AbilityDurationIncrease = 1;
 
-        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, FightingHero target, QList<FightingHero> heroes)
         {
             return 1;
         }
@@ -26,7 +26,11 @@ namespace Quantum.Game
         {
         }
 
-        public void ProcessPassiveAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public void ProcessAbilityOnKill(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        {
+        }
+        
+        public void ProcessPassiveAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             if (fightingHero.IsPassiveAbilityActivated)
             {
@@ -46,10 +50,9 @@ namespace Quantum.Game
             HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref fightingHero, effect);
         }
 
-        public (bool, FP) TryCastAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public (bool, FP) TryCastAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             fightingHero = heroes[fightingHero.Index];
-            PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
             SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, *playerLink, fightingHero.Hero.ID, out int _);
 
             if (HeroAttack.TryFindClosestTargetInAttackRange(f, fightingHero, board, out FightingHero target))

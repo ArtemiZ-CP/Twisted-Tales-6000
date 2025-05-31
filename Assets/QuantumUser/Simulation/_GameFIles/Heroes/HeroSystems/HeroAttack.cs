@@ -108,13 +108,18 @@ namespace Quantum.Game
 
         public static bool TryFindClosestTargetInAttackRange(Frame f, FightingHero fightingHero, Board board, out FightingHero targetHero)
         {
+            return TryFindClosestTargetInAttackRange(f, fightingHero, board, out targetHero, fightingHero.Hero.Range);
+        }
+
+        public static bool TryFindClosestTargetInAttackRange(Frame f, FightingHero fightingHero, Board board, out FightingHero targetHero, int range)
+        {
             if (f.Exists(fightingHero.Hero.Ref) == false)
             {
                 targetHero = default;
                 return false;
             }
 
-            List<FightingHero> heroesList = HeroBoard.GetAllTargetsInRange(f, fightingHero, board);
+            List<FightingHero> heroesList = HeroBoard.GetAllTeamHeroesInRange(f, fightingHero.Index, HeroBoard.GetEnemyTeamNumber(fightingHero.TeamNumber), board, range);
 
             targetHero = HeroBoard.GetClosestTarget(f, heroesList, fightingHero);
 
@@ -270,19 +275,13 @@ namespace Quantum.Game
             }
 
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
+            PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
 
-            if (HeroAbility.TryGetAbility(f, fightingHero,
-                out Func<Frame, FightingHero, Board, QList<FightingHero>, (bool, FP)> TryCastAbility,
-                out Action<Frame, FightingHero, Board, QList<FightingHero>> ProcessPassiveAbility) == false)
-            {
-                return;
-            }
-
-            ProcessPassiveAbility(f, fightingHero, board, heroes);
+            HeroAbility.ProcessPassiveAbility(f, playerLink, fightingHero, board, heroes);
 
             if (fightingHero.CurrentMana >= fightingHero.Hero.MaxMana)
             {
-                (bool casted, FP reloadTime) = TryCastAbility(f, fightingHero, board, heroes);
+                (bool casted, FP reloadTime) = HeroAbility.TryCastAbility(f, playerLink, fightingHero, board, heroes);
 
                 if (casted == false)
                 {
@@ -431,6 +430,12 @@ namespace Quantum.Game
             }
 
             bool enemyKilled = ApplyDamageToHero(f, ref fightingHero, board, ref targetHero, ref damage, damageType);
+
+            if (enemyKilled)
+            {
+                HeroAbility.ProcessAbilityOnKill(f, fightingHero, board, heroes);
+            }
+
             UpdateDamageStats(ref fightingHero, ref targetHero, damage, attackType);
             UpdateHeroesAndStats(f, board, heroes, fightingHero, targetHero);
 
@@ -526,7 +531,6 @@ namespace Quantum.Game
 
         private static bool ApplyDamageToHero(Frame f, ref FightingHero owner, Board board, ref FightingHero targetHero, ref FP damage, DamageType damageType)
         {
-            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             QList<EffectQnt> effectQnts = f.ResolveList(targetHero.Effects);
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
 
@@ -568,7 +572,7 @@ namespace Quantum.Game
                 }
             }
 
-            damage *= HeroAbility.GetDamageMultiplier(f, targetHero, board, heroes);
+            damage *= HeroAbility.GetDamageMultiplier(f, targetHero, board, targetHero, heroes);
 
             damage = damageType switch
             {
@@ -627,7 +631,7 @@ namespace Quantum.Game
             if (targetHero.CurrentHealth <= 0 && targetHero.Hero.ID >= 0)
             {
                 targetHero.CurrentHealth = 0;
-                HeroAbility.ProcessAbilityOnDeath(f, ref targetHero, board, heroes);
+                HeroAbility.ProcessAbilityOnDeath(f, targetHero, board, heroes);
                 FirebirdAbilities.ProcessDeathInFirebirdRebirthRange(f, ref targetHero, board, heroes);
                 HeroEffects.ProcessTransferingBleedingEffect(f, ref targetHero, board, effectQnts, transferingBleedingEffectIndex);
 

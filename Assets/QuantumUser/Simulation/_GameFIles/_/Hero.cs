@@ -85,16 +85,31 @@ namespace Quantum.Game
             for (int i = 0; i < playerHeroesIDLevel.Count; i++)
             {
                 HeroInfo heroInfo = gameConfig.GetHeroInfo(f, playerHeroesIDLevel[i].ID);
-                
-                HeroEntity hero = new()
-                {
-                    ID = playerHeroesIDLevel[i].ID,
-                    Level = playerHeroesIDLevel[i].Level,
-                    NameIndex = (int)heroInfo.Name,
-                    TypeIndex = (int)heroInfo.Type,
-                    DefaultPosition = HeroBoard.GetTilePosition(f, i % GameplayConstants.BoardSize, i / GameplayConstants.BoardSize)
-                };
+                HeroEntity hero;
 
+                if (heroInfo == null)
+                {
+                    hero = new()
+                    {
+                        ID = -1,
+                        Level = -1,
+                        NameIndex = -1,
+                        TypeIndex = -1,
+                        DefaultPosition = HeroBoard.GetTilePosition(f, i % GameplayConstants.BoardSize, i / GameplayConstants.BoardSize)
+                    };
+                }
+                else
+                {
+                    hero = new()
+                    {
+                        ID = playerHeroesIDLevel[i].ID,
+                        Level = playerHeroesIDLevel[i].Level,
+                        NameIndex = (int)heroInfo.Name,
+                        TypeIndex = (int)heroInfo.Type,
+                        DefaultPosition = HeroBoard.GetTilePosition(f, i % GameplayConstants.BoardSize, i / GameplayConstants.BoardSize)
+                    };
+                }
+                
                 playerHeroes.Add(hero);
             }
 

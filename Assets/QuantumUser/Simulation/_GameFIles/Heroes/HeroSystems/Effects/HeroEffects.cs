@@ -7,93 +7,18 @@ namespace Quantum.Game
 {
     public static unsafe class HeroEffects
     {
-        public enum EffectType
+        public static bool IsWeakening(EffectQnt effect)
         {
-            None,
-            Bleeding, // Owner, Type, Value, Duration
-            TransferingBleeding, // Owner, Type, Value, MaxDuration, Duration, Size
-            IncreaseTakingDamage, // Owner, Type, Value, Duration (multiply)
-            IncreaseCurrentMana, // Owner, Type, Value (additive)
-            IncreaseManaIncome, // Owner, Type, Value (multiply)
-            IncreaseHealAndArmor, // Owner, Type, Value, Duration (multiply)
-            IncreaseAttackSpeed, // Owner, Type, Value, Duration (multiply)
-            IncreaseOutgoingDamage, // Owner, Type, Value, Duration (multiply)
-            ReduceDefense, // Owner, Type, Value, Duration (additive)
-            ReduceMagicDefense, // Owner, Type, Value, Duration (additive)
-            HorizontalBlast, // Owner, Type, Value, Size
-            Blast, // Owner, Type, Value, Size
-            Stun, // Owner, Type, Duration
-            BlastStun, // Owner, Type, Duration, Size
-            TemporaryArmor, // Owner, Type, Value, Duration
-            Teleport, // Owner, Type, Size (position to teleport), Duration (teleport delay)
-            ExtraBaseDamage, // Owner, Type, Value, Duration, Size (additive)
-            Silence, // Owner, Type, Duration
-            BlastSilence, // Owner, Type, Duration, Size
-            Immortal, // Owner, Type, Duration
-            Thorns, // Owner, Type, Value, Duration (percentage of damage taken)
-            Delayed, // Type, Duration, ... (Other parameters are the same as in required EffectType)
-        }
-
-        public enum GlobalEffectType
-        {
-            None,
-            PoisonArea, // Owner, Type, Value, Center, Duration, Size
-            HealArea, // Owner, Type, Value, Center, Duration, Size
-            TauntedArea, // Owner, Type, Duration, Size
-        }
-
-        public class Effect
-        {
-            public EntityRef Owner;
-            public EffectType Type = EffectType.None;
-            public EffectType DelayedType = EffectType.None;
-            public FP DurationAfterDelay = 0;
-            public FP MaxValue = 0;
-            public FP Value = 0;
-            public FP MaxDuration = 0;
-            public FP Duration = 0;
-            public int Size = 0;
-
-            public Effect()
+            if (effect.Index == (int)EffectType.ReduceDefense && effect.Value > 0 ||
+                effect.Index == (int)EffectType.Bleeding && effect.Value > 0 ||
+                effect.Index == (int)EffectType.ReduceMagicDefense && effect.Value > 0 ||
+                effect.Index == (int)EffectType.IncreaseTakingDamage && effect.Value > 0 ||
+                effect.Index == (int)EffectType.IncreaseAttackSpeed && effect.Value < 0)
             {
-                Type = EffectType.None;
+                return true;
             }
 
-            public Effect(EffectQnt effectQnt)
-            {
-                Owner = effectQnt.Owner;
-                Type = (EffectType)effectQnt.Index;
-                MaxValue = effectQnt.MaxValue;
-                Value = effectQnt.Value;
-                MaxDuration = effectQnt.MaxDuration;
-                Duration = effectQnt.Duration;
-                Size = effectQnt.Size;
-            }
-        }
-
-        public class GlobalEffect
-        {
-            public int Center;
-            public EntityRef Owner;
-            public GlobalEffectType Type;
-            public FP Value;
-            public FP Duration;
-            public int Size;
-
-            public GlobalEffect()
-            {
-                Type = GlobalEffectType.None;
-            }
-
-            public GlobalEffect(GlobalEffectQnt effectQnt)
-            {
-                Center = effectQnt.Center;
-                Owner = effectQnt.Owner;
-                Type = (GlobalEffectType)effectQnt.Index;
-                Value = effectQnt.Value;
-                Duration = effectQnt.Duration;
-                Size = effectQnt.Size;
-            }
+            return false;
         }
 
         public static void AddGlobalEffects(Frame f, Board board, QList<GlobalEffectQnt> globalEffectQnts)
@@ -253,6 +178,9 @@ namespace Quantum.Game
                         break;
                     case EffectType.IncreaseCurrentMana:
                         IncreaseCurrentMana(f, target, board, effectQnt.Value);
+                        break;
+                    case EffectType.ManaRegeneration:
+                        IncreaseCurrentMana(f, target, board, effectQnt.Value * f.DeltaTime);
                         break;
                     case EffectType.Blast:
                         HeroAttack.DamageHeroByBlastWithoutAddMana(f, ref ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, includeSelf: false, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
@@ -430,6 +358,96 @@ namespace Quantum.Game
             target.CurrentMana = FPMath.Clamp(target.CurrentMana, 0, target.Hero.MaxMana);
             heroes[target.Index] = target;
             f.Events.HeroManaChanged(board.Player1.Ref, board.Player2.Ref, target.Hero.Ref, target.CurrentMana, target.Hero.MaxMana);
+        }
+
+        public enum EffectType
+        {
+            None,
+            Bleeding, // Owner, Type, Value, Duration
+            TransferingBleeding, // Owner, Type, Value, MaxDuration, Duration, Size
+            IncreaseTakingDamage, // Owner, Type, Value, Duration (multiply)
+            IncreaseCurrentMana, // Owner, Type, Value (additive)
+            IncreaseManaIncome, // Owner, Type, Value (multiply)
+            IncreaseHealAndArmor, // Owner, Type, Value, Duration (multiply)
+            IncreaseAttackSpeed, // Owner, Type, Value, Duration (multiply)
+            IncreaseOutgoingDamage, // Owner, Type, Value, Duration (multiply)
+            ReduceDefense, // Owner, Type, Value, Duration (additive)
+            ReduceMagicDefense, // Owner, Type, Value, Duration (additive)
+            HorizontalBlast, // Owner, Type, Value, Size
+            Blast, // Owner, Type, Value, Size
+            Stun, // Owner, Type, Duration
+            BlastStun, // Owner, Type, Duration, Size
+            TemporaryArmor, // Owner, Type, Value, Duration
+            Teleport, // Owner, Type, Size (position to teleport), Duration (teleport delay)
+            ExtraBaseDamage, // Owner, Type, Value, Duration, Size (additive)
+            Silence, // Owner, Type, Duration
+            BlastSilence, // Owner, Type, Duration, Size
+            Immortal, // Owner, Type, Duration
+            Thorns, // Owner, Type, Value, Duration (percentage of damage taken)
+            ManaRegeneration, // Owner, Type, Value, Duration (additive)
+            Delayed, // Type, Duration, ... (Other parameters are the same as in required EffectType)
+        }
+
+        public enum GlobalEffectType
+        {
+            None,
+            PoisonArea, // Owner, Type, Value, Center, Duration, Size
+            HealArea, // Owner, Type, Value, Center, Duration, Size
+            TauntedArea, // Owner, Type, Duration, Size
+        }
+
+        public class Effect
+        {
+            public EntityRef Owner;
+            public EffectType Type = EffectType.None;
+            public EffectType DelayedType = EffectType.None;
+            public FP DurationAfterDelay = 0;
+            public FP MaxValue = 0;
+            public FP Value = 0;
+            public FP MaxDuration = 0;
+            public FP Duration = 0;
+            public int Size = 0;
+
+            public Effect()
+            {
+                Type = EffectType.None;
+            }
+
+            public Effect(EffectQnt effectQnt)
+            {
+                Owner = effectQnt.Owner;
+                Type = (EffectType)effectQnt.Index;
+                MaxValue = effectQnt.MaxValue;
+                Value = effectQnt.Value;
+                MaxDuration = effectQnt.MaxDuration;
+                Duration = effectQnt.Duration;
+                Size = effectQnt.Size;
+            }
+        }
+
+        public class GlobalEffect
+        {
+            public int Center;
+            public EntityRef Owner;
+            public GlobalEffectType Type;
+            public FP Value;
+            public FP Duration;
+            public int Size;
+
+            public GlobalEffect()
+            {
+                Type = GlobalEffectType.None;
+            }
+
+            public GlobalEffect(GlobalEffectQnt effectQnt)
+            {
+                Center = effectQnt.Center;
+                Owner = effectQnt.Owner;
+                Type = (GlobalEffectType)effectQnt.Index;
+                Value = effectQnt.Value;
+                Duration = effectQnt.Duration;
+                Size = effectQnt.Size;
+            }
         }
     }
 }

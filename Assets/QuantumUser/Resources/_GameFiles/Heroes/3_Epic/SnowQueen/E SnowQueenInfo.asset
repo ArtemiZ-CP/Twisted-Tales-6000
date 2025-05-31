@@ -10,66 +10,67 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
-  m_Name: E BabaYagaInfo
+  m_Name: E SnowQueenInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/3_Epic/BabaYaga/E BabaYagaInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/3_Epic/SnowQueen/E SnowQueenInfo
     Guid:
-      Value: 451262027935121510
-  HeroPrefab: {fileID: 5216602490358044327, guid: ef12ea852e75a4ea48fb41f0ccd2bdd2, type: 3}
+      Value: 336548575759062822
+  HeroPrefab: {fileID: 611860465380146796, guid: cd3d2c3c1f1fb4080924195e581d1f46, type: 3}
   HeroPrototype:
     Id:
-      Value: 1360261742996428055
+      Value: 1494035313518397803
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: 17
+  Name: 21
   Rare: 3
-  HeroType: 0
+  HeroType: 1
+  Type: 2
   Stats:
     LevelStats:
     - Health:
         RawValue: 65536000
       Defense:
-        RawValue: 327680
+        RawValue: 0
       MagicDefense:
-        RawValue: 327680
+        RawValue: 0
       AttackDamage:
-        RawValue: 3276800
+        RawValue: 4587520
       AttackSpeed:
-        RawValue: 65536
+        RawValue: 78643
       ProjectileSpeed:
         RawValue: 327680
-      Range: 2
+      Range: 1
     - Health:
-        RawValue: 65536000
+        RawValue: 91750400
       Defense:
-        RawValue: 327680
+        RawValue: 0
       MagicDefense:
-        RawValue: 327680
+        RawValue: 0
       AttackDamage:
-        RawValue: 3276800
+        RawValue: 5242880
       AttackSpeed:
-        RawValue: 65536
+        RawValue: 78643
       ProjectileSpeed:
         RawValue: 327680
-      Range: 2
+      Range: 1
     - Health:
-        RawValue: 65536000
+        RawValue: 121241600
       Defense:
-        RawValue: 327680
+        RawValue: 0
       MagicDefense:
-        RawValue: 327680
+        RawValue: 0
       AttackDamage:
-        RawValue: 3276800
+        RawValue: 6881280
       AttackSpeed:
-        RawValue: 65536
+        RawValue: 78643
       ProjectileSpeed:
         RawValue: 327680
-      Range: 2
+      Range: 1
     AttackDamageType: 0
     Mana:
       RawValue: 6553600

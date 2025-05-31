@@ -15,7 +15,7 @@ namespace Quantum.Game
         private const int HealthMultiplier = 2;
         private const int StunDuration = 1;
 
-        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, FightingHero target, QList<FightingHero> heroes)
         {
             return 1;
         }
@@ -49,11 +49,15 @@ namespace Quantum.Game
 
             if (selectedHeroAbility.ThirdAbilityIndex == Hero.UpgradeVariant1)
             {
-                TryCastAbility(f, fightingHero, board, heroes);
+                TryCastAbility(f, playerLink, fightingHero, board, heroes);
             }
         }
 
-        public void ProcessPassiveAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public void ProcessAbilityOnKill(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        {
+        }
+
+        public void ProcessPassiveAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             if (fightingHero.IsPassiveAbilityActivated)
             {
@@ -73,10 +77,9 @@ namespace Quantum.Game
             HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref fightingHero, effect);
         }
 
-        public (bool, FP) TryCastAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public (bool, FP) TryCastAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             fightingHero = heroes[fightingHero.Index];
-            PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
             SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, *playerLink, fightingHero.Hero.ID, out int _);
             bool isAbilityWithStun = false;
             bool isAttackSplit = false;
@@ -142,28 +145,26 @@ namespace Quantum.Game
                 {
                     damage *= SplitDamagePercentage;
 
-                    if (HeroBoard.TryGetHeroCordsFromIndex(target.Index, out Vector2Int cords))
+                    Vector2Int cords = HeroBoard.GetHeroCords(target);
+
+                    if (HeroBoard.TryGetHeroIndexFromCords(cords + Vector2Int.left, out int leftIndex))
                     {
-                        if (HeroBoard.TryGetHeroIndexFromCords(cords + Vector2Int.left, out int leftIndex))
+                        FightingHero leftHero = heroes[leftIndex];
+
+                        if (leftHero.Hero.Ref != default)
                         {
-                            FightingHero leftHero = heroes[leftIndex];
-
-                            if (leftHero.Hero.Ref != default)
-                            {
-                                HeroAttack.DamageHero(f, ref fightingHero, board, ref leftHero, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                            }
+                            HeroAttack.DamageHero(f, ref fightingHero, board, ref leftHero, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         }
+                    }
 
-                        if (HeroBoard.TryGetHeroIndexFromCords(cords + Vector2Int.right, out int rightIndex))
+                    if (HeroBoard.TryGetHeroIndexFromCords(cords + Vector2Int.right, out int rightIndex))
+                    {
+                        FightingHero rightHero = heroes[rightIndex];
+
+                        if (rightHero.Hero.Ref != default)
                         {
-                            FightingHero rightHero = heroes[rightIndex];
-
-                            if (rightHero.Hero.Ref != default)
-                            {
-                                HeroAttack.DamageHero(f, ref fightingHero, board, ref rightHero, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
-                            }
+                            HeroAttack.DamageHero(f, ref fightingHero, board, ref rightHero, damage, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         }
-
                     }
                 }
 

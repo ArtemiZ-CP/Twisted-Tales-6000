@@ -41,6 +41,7 @@ public class ChooseUpgradeHeroButton : MonoBehaviour
             HeroNameEnum.KingArthur => GetKingArthurDescription(level, chooseNumber),
             HeroNameEnum.Beast => GetBeastDescription(level, chooseNumber),
             HeroNameEnum.StoneGolem => GetStoneGolemDescription(level, chooseNumber),
+            HeroNameEnum.BabaYaga => GetBabaYagaDescription(level, chooseNumber),
             _ => string.Empty,
         };
     }
@@ -180,6 +181,34 @@ public class ChooseUpgradeHeroButton : MonoBehaviour
             else if (chooseNumber == Hero.UpgradeVariant2)
             {
                 return "“TITAN'S Punch”\n+100% damage.";
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private string GetBabaYagaDescription(int level, int chooseNumber)
+    {
+        if (level == Hero.Level2)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "“Poison Spit”\nDoT damage lasts for 6 seconds and does 120% damage";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "“Poison Spit”\nalso heals Baba Yaga for 100% of the ability's damage";
+            }
+        }
+        else if (level == Hero.Level3)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "Baba Yaga gets 3 coins for each kill";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "Baba Yaga gains +5 mana/sec regeneration and reduces the cooldown on “Poison Spit” by 1 second";
             }
         }
 

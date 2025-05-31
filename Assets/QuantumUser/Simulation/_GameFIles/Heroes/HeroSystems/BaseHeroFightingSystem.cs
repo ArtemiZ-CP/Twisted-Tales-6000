@@ -3,7 +3,6 @@ using Quantum.Collections;
 using UnityEngine.Scripting;
 using System.Collections.Generic;
 using System;
-using Quantum.Game.Heroes;
 
 namespace Quantum.Game
 {
@@ -12,15 +11,14 @@ namespace Quantum.Game
     {
         public override void Update(Frame f)
         {
-            if (f.Global->IsBuyPhase)
+            if (f.Global->IsBuyPhase || f.Global->IsDelayPassed == false || f.Global->IsFighting == false)
             {
                 return;
             }
 
             QList<Board> boards = BoardSystem.GetBoards(f);
 
-            MeleeHeroSystem.Update(f, boards);
-            RangedHeroSystem.Update(f, boards);
+            UpdateHeroes(f, boards);
 
             foreach (Board board in boards)
             {
@@ -56,18 +54,27 @@ namespace Quantum.Game
             }
         }
 
-        public static void UpdateHeroes<T>(Frame f, QList<Board> boards,
-            Func<Frame, FightingHero, HeroAttack.DamageType, HeroAttack.AttackType, bool> Attack, bool isHeroAttackWhileMooving) where T : unmanaged, IComponent
+        private static void UpdateHeroes(Frame f, QList<Board> boards)
         {
-            if (f.Global->IsBuyPhase || f.Global->IsDelayPassed == false || f.Global->IsFighting == false) return;
-
-            List<(FightingHero, Board)> heroesPtr = new();
-
-            if (TryGetHeroes<T>(f, boards, ref heroesPtr))
+            foreach (Board board in boards)
             {
-                foreach ((FightingHero fightingHero, Board board) in heroesPtr)
+                QList<FightingHero> fightingHeroes = f.ResolveList(board.FightingHeroesMap);
+
+                foreach (FightingHero fightingHero in fightingHeroes)
                 {
-                    UpdateHero(f, fightingHero, board, Attack, isHeroAttackWhileMooving);
+                    if (fightingHero.Hero.Ref == default || fightingHero.IsAlive == false)
+                    {
+                        continue;
+                    }
+
+                    if (f.Unsafe.TryGetPointer(fightingHero.Hero.Ref, out MeleeHero* _))
+                    {
+                        UpdateHero(f, fightingHero, board, HeroAttack.InstantAttack, false);
+                    }
+                    else if (f.Unsafe.TryGetPointer(fightingHero.Hero.Ref, out RangedHero* _))
+                    {
+                        UpdateHero(f, fightingHero, board, HeroAttack.ProjectileAttack, false);
+                    }
                 }
             }
         }

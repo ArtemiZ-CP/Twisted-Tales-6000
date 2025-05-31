@@ -101,6 +101,11 @@ namespace Quantum.Game
 
         public HeroInfo GetHeroInfo(Frame f, int heroID)
         {
+            if (heroID < 0 || heroID >= HeroInfos.Length)
+            {
+                return null;
+            }
+            
             return f.FindAsset(HeroInfos[heroID]);
         }
 

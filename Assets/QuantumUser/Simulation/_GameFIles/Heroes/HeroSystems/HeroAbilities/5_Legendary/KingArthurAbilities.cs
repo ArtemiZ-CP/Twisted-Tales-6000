@@ -16,7 +16,7 @@ namespace Quantum.Game
         private readonly static FP HealthPercentage = FP._0_50;
         private readonly static FP IncreasedAbilityDuration = 10;
 
-        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, FightingHero target, QList<FightingHero> heroes)
         {
             foreach (FightingHero hero in heroes)
             {
@@ -45,14 +45,17 @@ namespace Quantum.Game
         {
         }
 
-        public void ProcessPassiveAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public void ProcessAbilityOnKill(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        {
+        }
+        
+        public void ProcessPassiveAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
         }
 
-        public (bool, FP) TryCastAbility(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public (bool, FP) TryCastAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             fightingHero = heroes[fightingHero.Index];
-            PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
             SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, *playerLink, fightingHero.Hero.ID, out int _);
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 

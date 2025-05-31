@@ -15,11 +15,16 @@ namespace Quantum.Game
 
         public static FightingHero GetFightingHero(Frame f, EntityRef entityRef, Board board)
         {
+            if (f.Exists(entityRef) == false)
+            {
+                return default;
+            }
+
             QList<FightingHero> fightingHeroes = f.ResolveList(board.FightingHeroesMap);
 
             foreach (FightingHero fightingHero in fightingHeroes)
             {
-                if (fightingHero.Hero.Ref == entityRef && f.Exists(entityRef))
+                if (fightingHero.Hero.Ref == entityRef)
                 {
                     return fightingHero;
                 }
