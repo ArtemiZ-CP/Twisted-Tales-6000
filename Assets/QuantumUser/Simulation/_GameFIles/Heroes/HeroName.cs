@@ -24,5 +24,6 @@ namespace Quantum.Game
         Firebird,
         StoneGolem,
         SnowQueen,
+        Frankenstein,
     }
 }

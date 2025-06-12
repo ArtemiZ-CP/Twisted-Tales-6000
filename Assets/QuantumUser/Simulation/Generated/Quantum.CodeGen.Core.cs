@@ -1075,13 +1075,13 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct Board : Quantum.IComponent {
-    public const Int32 SIZE = 304;
+    public const Int32 SIZE = 320;
     public const Int32 ALIGNMENT = 8;
     [FieldOffset(24)]
     public EntityRef Ref;
     [FieldOffset(32)]
     public PlayerLink Player1;
-    [FieldOffset(168)]
+    [FieldOffset(176)]
     public PlayerLink Player2;
     [FieldOffset(8)]
     public QListPtr<HeroEntity> Heroes1;
@@ -1224,15 +1224,18 @@ namespace Quantum {
   }
   [StructLayout(LayoutKind.Explicit)]
   public unsafe partial struct PlayerLink : Quantum.IComponent {
-    public const Int32 SIZE = 136;
+    public const Int32 SIZE = 144;
     public const Int32 ALIGNMENT = 8;
+    [FieldOffset(8)]
+    public EntityRef ERef;
     [FieldOffset(0)]
     public PlayerRef Ref;
-    [FieldOffset(8)]
+    [FieldOffset(16)]
     public PlayerInfo Info;
     public override Int32 GetHashCode() {
       unchecked { 
         var hash = 21391;
+        hash = hash * 31 + ERef.GetHashCode();
         hash = hash * 31 + Ref.GetHashCode();
         hash = hash * 31 + Info.GetHashCode();
         return hash;
@@ -1248,6 +1251,7 @@ namespace Quantum {
     public static void Serialize(void* ptr, FrameSerializer serializer) {
         var p = (PlayerLink*)ptr;
         PlayerRef.Serialize(&p->Ref, serializer);
+        EntityRef.Serialize(&p->ERef, serializer);
         Quantum.PlayerInfo.Serialize(&p->Info, serializer);
     }
   }

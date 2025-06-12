@@ -3,6 +3,7 @@ using Quantum.Collections;
 using UnityEngine.Scripting;
 using System.Collections.Generic;
 using System;
+using UnityEngine.UI;
 
 namespace Quantum.Game
 {
@@ -84,7 +85,7 @@ namespace Quantum.Game
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
             fightingHero = heroes[fightingHero.Index];
-
+            
             if (fightingHero.Hero.Ref == default || fightingHero.IsAlive == false || f.Exists(fightingHero.Hero.Ref) == false)
             {
                 return;

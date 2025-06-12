@@ -42,6 +42,9 @@ public class ChooseUpgradeHeroButton : MonoBehaviour
             HeroNameEnum.Beast => GetBeastDescription(level, chooseNumber),
             HeroNameEnum.StoneGolem => GetStoneGolemDescription(level, chooseNumber),
             HeroNameEnum.BabaYaga => GetBabaYagaDescription(level, chooseNumber),
+            HeroNameEnum.SnowQueen => GetSnowQueenDescription(level, chooseNumber),
+            HeroNameEnum.Cinderella => GetCinderellaDescription(level, chooseNumber),
+            HeroNameEnum.Frankenstein => GetFrankensteinDescription(level, chooseNumber),
             _ => string.Empty,
         };
     }
@@ -209,6 +212,90 @@ public class ChooseUpgradeHeroButton : MonoBehaviour
             else if (chooseNumber == Hero.UpgradeVariant2)
             {
                 return "Baba Yaga gains +5 mana/sec regeneration and reduces the cooldown on “Poison Spit” by 1 second";
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private string GetSnowQueenDescription(int level, int chooseNumber)
+    {
+        if (level == Hero.Level2)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "“Frosty impulse”\nAffected enemies are additionally slowed down by 25% (attack speed) for 2 seconds";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "“Frosty impulse”\nAffected enemies additionally receive a DoT effect for 50% of the damage taken for 2 seconds";
+            }
+        }
+        else if (level == Hero.Level3)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "“Frosty impulse”\napplied to all enemies around you";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "“Frosty impulse”\nIncreases damage by up to 250%";
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private string GetCinderellaDescription(int level, int chooseNumber)
+    {
+        if (level == Hero.Level2)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "Critical Hit Chance +25%";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "Reduces ability cooldown by 2 seconds";
+            }
+        }
+        else if (level == Hero.Level3)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "Critical Hit Chance +25%";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "Active ability gives +60% to attack speed";
+            }
+        }
+
+        return string.Empty;
+    }
+
+    private string GetFrankensteinDescription(int level, int chooseNumber)
+    {
+        if (level == Hero.Level2)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "";
+            }
+        }
+        else if (level == Hero.Level3)
+        {
+            if (chooseNumber == Hero.UpgradeVariant1)
+            {
+                return "";
+            }
+            else if (chooseNumber == Hero.UpgradeVariant2)
+            {
+                return "";
             }
         }
 

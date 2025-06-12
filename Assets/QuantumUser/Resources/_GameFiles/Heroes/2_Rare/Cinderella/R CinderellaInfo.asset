@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
+  m_Name: R CinderellaInfo
+  m_EditorClassIdentifier: 
+  Identifier:
+    Path: QuantumUser/Resources/_GameFiles/Heroes/2_Rare/Cinderella/R CinderellaInfo
+    Guid:
+      Value: 306578907051825668
+  HeroPrefab: {fileID: -1459247843489039561, guid: 8fb6fd8cff5dc48f89a4e224527f1541, type: 3}
+  HeroPrototype:
+    Id:
+      Value: 1427829614913663807
+  ProjectilePrototype:
+    Id:
+      Value: 1476018119604516482
+  AbilityProjectilePrototype:
+    Id:
+      Value: 1376884538976340079
+  Name: 5
+  Rare: 2
+  HeroType: 1
+  Type: 2
+  Stats:
+    LevelStats:
+    - Health:
+        RawValue: 65536000
+      Defense:
+        RawValue: 327680
+      MagicDefense:
+        RawValue: 327680
+      AttackDamage:
+        RawValue: 4915200
+      AttackSpeed:
+        RawValue: 78643
+      ProjectileSpeed:
+        RawValue: 327680
+      Range: 1
+    - Health:
+        RawValue: 91750400
+      Defense:
+        RawValue: 327680
+      MagicDefense:
+        RawValue: 327680
+      AttackDamage:
+        RawValue: 5570560
+      AttackSpeed:
+        RawValue: 78643
+      ProjectileSpeed:
+        RawValue: 327680
+      Range: 1
+    - Health:
+        RawValue: 124518400
+      Defense:
+        RawValue: 327680
+      MagicDefense:
+        RawValue: 327680
+      AttackDamage:
+        RawValue: 6553600
+      AttackSpeed:
+        RawValue: 78643
+      ProjectileSpeed:
+        RawValue: 327680
+      Range: 1
+    AttackDamageType: 0
+    Mana:
+      RawValue: 6553600
+    StartMana:
+      RawValue: 0

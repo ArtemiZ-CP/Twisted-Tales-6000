@@ -17,7 +17,7 @@ namespace Quantum.Game
 
         private const int IncreaseDamageMultiply = 2;
 
-        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, FightingHero target, QList<FightingHero> heroes)
+        public override FP GetDamageMultiplier(Frame f, ref FightingHero fightingHero, Board board, ref FightingHero target, QList<FightingHero> heroes)
         {
             if (target.Hero.NameIndex != (int)HeroNameEnum.StoneGolem)
             {
@@ -43,7 +43,7 @@ namespace Quantum.Game
             return 1 - (ReduceDamageMultiplier * defendersCount);
         }
 
-        public HeroStats GetHeroStats(Frame f, PlayerLink playerLink, HeroInfo heroInfo)
+        public override HeroStats GetHeroStats(Frame f, PlayerLink playerLink, HeroInfo heroInfo)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, playerLink, gameConfig.GetHeroID(f, heroInfo.Name), out int _);
@@ -66,19 +66,7 @@ namespace Quantum.Game
             return heroStats;
         }
 
-        public void ProcessAbilityOnDeath(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
-        {
-        }
-
-        public void ProcessAbilityOnKill(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
-        {
-        }
-        
-        public void ProcessPassiveAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
-        {
-        }
-
-        public (bool, FP) TryCastAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public override (bool, FP) TryCastAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             fightingHero = heroes[fightingHero.Index];
             SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, *playerLink, fightingHero.Hero.ID, out int _);
@@ -111,7 +99,7 @@ namespace Quantum.Game
                 damage *= IncreaseDamageMultiply;
             }
 
-            HeroAttack.DamageHeroByBlastWithoutAddMana(f, ref fightingHero, fightingHero.Index, board, damage, fightingHero.Hero.Range, includeSelf: false, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+            HeroAttack.DamageHeroByBlastWithoutAddMana(f, ref fightingHero, fightingHero.Index, board, damage, fightingHero.Hero.Range, includeCenter: false, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
 
             return (true, AbilityCooldown);
         }

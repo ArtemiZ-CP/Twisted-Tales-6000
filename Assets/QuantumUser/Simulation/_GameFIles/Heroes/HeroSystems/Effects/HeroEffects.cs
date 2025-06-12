@@ -183,7 +183,7 @@ namespace Quantum.Game
                         IncreaseCurrentMana(f, target, board, effectQnt.Value * f.DeltaTime);
                         break;
                     case EffectType.Blast:
-                        HeroAttack.DamageHeroByBlastWithoutAddMana(f, ref ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, includeSelf: false, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                        HeroAttack.DamageHeroByBlastWithoutAddMana(f, ref ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, includeCenter: false, null, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         break;
                     case EffectType.Stun:
                         isStunned = true;
@@ -198,7 +198,7 @@ namespace Quantum.Game
                             Type = EffectType.Silence,
                             Duration = effectQnt.Duration
                         };
-                        HeroAttack.DamageHeroByBlastWithoutAddMana(f, ref ownerHero, target.Index, board, 0, effectQnt.Size, includeSelf: true, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                        HeroAttack.DamageHeroByBlastWithoutAddMana(f, ref ownerHero, target.Index, board, 0, effectQnt.Size, includeCenter: true, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                         break;
                     case EffectType.BlastStun:
                         BlastStun(f, ref ownerHero, board, ref target, effectQnt);
@@ -269,7 +269,7 @@ namespace Quantum.Game
                 Duration = effectQnt.Duration,
             };
 
-            HeroAttack.DamageHeroByBlastWithoutAddMana(f, ref ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, includeSelf: true, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+            HeroAttack.DamageHeroByBlastWithoutAddMana(f, ref ownerHero, target.Index, board, effectQnt.Value, effectQnt.Size, includeCenter: true, effect, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
         }
 
         private static void TeleportHero(Frame f, ref FightingHero fightingHero, EffectQnt effectQnt, Board board)
@@ -312,7 +312,7 @@ namespace Quantum.Game
         private static void ProcessPoisonArea(Frame f, GlobalEffectQnt globalEffectQnt, Board board)
         {
             FightingHero ownerHero = HeroBoard.GetFightingHero(f, globalEffectQnt.Owner, board);
-            var targets = HeroBoard.GetAllTeamHeroesInRange(f, globalEffectQnt.Center, HeroBoard.GetEnemyTeamNumber(ownerHero.TeamNumber), board, globalEffectQnt.Size, includeSelf: true);
+            var targets = HeroBoard.GetAllTeamHeroesInRange(f, globalEffectQnt.Center, HeroBoard.GetEnemyTeamNumber(ownerHero.TeamNumber), board, globalEffectQnt.Size, includeCenter: true);
 
             for (int i = 0; i < targets.Count; i++)
             {
@@ -331,7 +331,7 @@ namespace Quantum.Game
         private static void ProcessHealArea(Frame f, GlobalEffectQnt globalEffectQnt, Board board)
         {
             FightingHero ownerHero = HeroBoard.GetFightingHero(f, globalEffectQnt.Owner, board);
-            var targets = HeroBoard.GetAllTeamHeroesInRange(f, globalEffectQnt.Center, ownerHero.TeamNumber, board, globalEffectQnt.Size, includeSelf: true);
+            var targets = HeroBoard.GetAllTeamHeroesInRange(f, globalEffectQnt.Center, ownerHero.TeamNumber, board, globalEffectQnt.Size, includeCenter: true);
 
             for (int i = 0; i < targets.Count; i++)
             {
@@ -385,6 +385,7 @@ namespace Quantum.Game
             Immortal, // Owner, Type, Duration
             Thorns, // Owner, Type, Value, Duration (percentage of damage taken)
             ManaRegeneration, // Owner, Type, Value, Duration (additive)
+            TrueDamage, // Owner, Type, Duration
             Delayed, // Type, Duration, ... (Other parameters are the same as in required EffectType)
         }
 

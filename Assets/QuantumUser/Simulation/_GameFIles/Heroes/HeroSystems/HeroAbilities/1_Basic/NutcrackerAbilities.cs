@@ -15,12 +15,7 @@ namespace Quantum.Game
         private const int HealthMultiplier = 2;
         private const int StunDuration = 1;
 
-        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, FightingHero target, QList<FightingHero> heroes)
-        {
-            return 1;
-        }
-
-        public HeroStats GetHeroStats(Frame f, PlayerLink playerLink, HeroInfo heroInfo)
+        public override HeroStats GetHeroStats(Frame f, PlayerLink playerLink, HeroInfo heroInfo)
         {
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, playerLink, gameConfig.GetHeroID(f, heroInfo.Name), out int _);
@@ -42,7 +37,7 @@ namespace Quantum.Game
             return heroStats;
         }
 
-        public void ProcessAbilityOnDeath(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public override void ProcessAbilityOnDeath(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             PlayerLink* playerLink = Player.GetPlayerPointer(f, fightingHero.Hero.Player);
             SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, *playerLink, fightingHero.Hero.ID, out int _);
@@ -53,11 +48,7 @@ namespace Quantum.Game
             }
         }
 
-        public void ProcessAbilityOnKill(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
-        {
-        }
-
-        public void ProcessPassiveAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public override void ProcessPassiveAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             if (fightingHero.IsPassiveAbilityActivated)
             {
@@ -77,7 +68,7 @@ namespace Quantum.Game
             HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref fightingHero, effect);
         }
 
-        public (bool, FP) TryCastAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public override (bool, FP) TryCastAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             fightingHero = heroes[fightingHero.Index];
             SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, *playerLink, fightingHero.Hero.ID, out int _);

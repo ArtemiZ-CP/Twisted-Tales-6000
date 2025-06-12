@@ -444,6 +444,7 @@ namespace Quantum.Prototypes {
   [System.SerializableAttribute()]
   [Quantum.Prototypes.Prototype(typeof(Quantum.PlayerLink))]
   public unsafe class PlayerLinkPrototype : ComponentPrototype<Quantum.PlayerLink> {
+    public MapEntityId ERef;
     public PlayerRef Ref;
     public Quantum.Prototypes.PlayerInfoPrototype Info;
     public override Boolean AddToEntity(FrameBase f, EntityRef entity, in PrototypeMaterializationContext context) {
@@ -452,6 +453,7 @@ namespace Quantum.Prototypes {
         return f.Set(entity, component) == SetResult.ComponentAdded;
     }
     public void Materialize(Frame frame, ref Quantum.PlayerLink result, in PrototypeMaterializationContext context = default) {
+        PrototypeValidator.FindMapEntity(this.ERef, in context, out result.ERef);
         result.Ref = this.Ref;
         this.Info.Materialize(frame, ref result.Info, in context);
     }

@@ -70,7 +70,7 @@ namespace Quantum.Game
             EntityRef botEntity = f.Create(gameConfig.BotPrototype);
             PlayerRef playerRef = new()
             {
-                _index = index + 1000
+                _index = index + 11
             };
 
             InitializeEntity(f, playerRef, botEntity, $"Bot{index}", bot: true);

@@ -293,11 +293,13 @@ namespace Quantum.Prototypes.Unity {
   }
   [System.SerializableAttribute()]
   public unsafe partial class PlayerLinkPrototype : Quantum.QuantumUnityPrototypeAdapter<Quantum.Prototypes.PlayerLinkPrototype> {
+    public Quantum.QuantumEntityPrototype ERef;
     public PlayerRef Ref;
     public Quantum.Prototypes.Unity.PlayerInfoPrototype Info;
     partial void ConvertUser(Quantum.QuantumEntityPrototypeConverter converter, ref Quantum.Prototypes.PlayerLinkPrototype prototype);
     public override Quantum.Prototypes.PlayerLinkPrototype Convert(Quantum.QuantumEntityPrototypeConverter converter) {
       var result = new Quantum.Prototypes.PlayerLinkPrototype();
+      converter.Convert(this.ERef, out result.ERef);
       converter.Convert(this.Ref, out result.Ref);
       converter.Convert(this.Info, out result.Info);
       ConvertUser(converter, ref result);

@@ -59,7 +59,15 @@ namespace Quantum.Game
             }
             else
             {
-                effectsList = f.AllocateList<EffectQnt>();
+                effectsList = f.AllocateList<EffectQnt>(1);
+
+                EffectQnt effectQnt = new()
+                {
+                    Owner = default,
+                    Index = (int)HeroEffects.EffectType.None,
+                };
+
+                effectsList.Add(effectQnt);
             }
 
             QList<GlobalEffectQnt> globalEffectsList;

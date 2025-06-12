@@ -25,7 +25,7 @@ namespace Quantum.Game
             return boards;
         }
 
-        public static Board GetBoard(Frame f, PlayerRef playerRef,  QList<Board> boards)
+        public static Board GetBoard(Frame f, PlayerRef playerRef, QList<Board> boards)
         {
             for (int i = 0; i < boards.Count; i++)
             {
@@ -133,6 +133,16 @@ namespace Quantum.Game
             board->GlobalEffects = default;
 
             f.Destroy(board->Ref);
+
+            List<PlayerLink> playerLinks = Player.GetAllPlayerLinks(f);
+
+            for (int i = 0; i < playerLinks.Count; i++)
+            {
+                if (playerLinks[i].Ref._index > 100)
+                {
+                    f.Destroy(playerLinks[i].ERef);
+                }
+            }
         }
 
         private void ActiveBoard(Frame f, EntityRef boardEntity)
@@ -218,7 +228,7 @@ namespace Quantum.Game
 
             for (int i = 0; i < heroes2.Count; i++)
             {
-                Hero.Spawn(f, heroes2, board->Player1.Ref, i, first: false);
+                Hero.Spawn(f, heroes2, board->Player2.Ref, i, first: false);
             }
         }
 
@@ -253,7 +263,21 @@ namespace Quantum.Game
             board->Heroes2 = Hero.SetupHeroes(f, roundInfo);
 
             board->Player1 = *player1;
-            board->Player2 = default;
+
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
+            EntityRef botEntity = f.Create(gameConfig.BotPrototype);
+
+            PlayerLink playerLink = new()
+            {
+                ERef = botEntity,
+                Ref = new PlayerRef()
+                {
+                    _index = player1->Ref._index + 101,
+                },
+            };
+            board->Player2 = playerLink;
+
+            f.Add(botEntity, playerLink);
         }
     }
 }

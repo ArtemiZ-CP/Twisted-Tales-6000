@@ -1,5 +1,6 @@
 component PlayerLink
 {
+    entity_ref ERef;
     player_ref Ref;
     PlayerInfo Info;
 }

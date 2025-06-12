@@ -327,10 +327,10 @@ namespace Quantum.Game
             return GetAllTeamHeroesInRange(f, fightingHero.Index, fightingHero.TeamNumber, board, fightingHero.Hero.Range, includeSelf);
         }
 
-        public static List<FightingHero> GetAllTeamHeroesInRange(Frame f, int center, int hisTeam, Board board, int range, bool includeSelf = false)
+        public static List<FightingHero> GetAllTeamHeroesInRange(Frame f, int center, int hisTeam, Board board, int range, bool includeCenter = false)
         {
             QList<FightingHero> heroes = f.ResolveList(board.FightingHeroesMap);
-            List<Vector2Int> closeTiles = GetCloseCords(center, range, includeSelf);
+            List<Vector2Int> closeTiles = GetCloseCords(center, range, includeCenter);
             List<FightingHero> heroesList = new();
 
             foreach (var tile in closeTiles)

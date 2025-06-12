@@ -17,25 +17,7 @@ namespace Quantum.Game
         private static readonly FP HealPercentage = FP._0_75;
         private static readonly FP IncreaseAttackSpeed = FP._1_20;
 
-        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, FightingHero target, QList<FightingHero> heroes)
-        {
-            return 1;
-        }
-
-        public HeroStats GetHeroStats(Frame f, PlayerLink playerLink, HeroInfo heroInfo)
-        {
-            return heroInfo.Stats;
-        }
-
-        public void ProcessAbilityOnDeath(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
-        {
-        }
-
-        public void ProcessAbilityOnKill(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
-        {
-        }
-        
-        public void ProcessPassiveAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public override void ProcessPassiveAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             if (fightingHero.IsPassiveAbilityActivated)
             {
@@ -51,7 +33,7 @@ namespace Quantum.Game
             }
         }
 
-        public (bool, FP) TryCastAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public override (bool, FP) TryCastAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             fightingHero = heroes[fightingHero.Index];
             SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, *playerLink, fightingHero.Hero.ID, out int _);

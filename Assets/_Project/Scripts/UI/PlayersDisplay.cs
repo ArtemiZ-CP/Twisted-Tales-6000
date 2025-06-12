@@ -22,18 +22,23 @@ public class PlayersDisplay : MonoBehaviour
 
         foreach (PlayerLink player in eventPlayers.Players)
         {
+            if (player.Ref._index > 100)
+            {
+                continue;
+            }
+
             if (QuantumConnection.IsPlayerMe(player.Ref))
-            {
-                _playersText.text += GetPlayerText(Color.green, player);
-            }
-            else if (boards.Count > 0 && IsPlayerMyEnemy(boards, player))
-            {
-                _playersText.text += GetPlayerText(Color.red, player);
-            }
-            else
-            {
-                _playersText.text += GetPlayerText(Color.white, player);
-            }
+                {
+                    _playersText.text += GetPlayerText(Color.green, player);
+                }
+                else if (boards.Count > 0 && IsPlayerMyEnemy(boards, player))
+                {
+                    _playersText.text += GetPlayerText(Color.red, player);
+                }
+                else
+                {
+                    _playersText.text += GetPlayerText(Color.white, player);
+                }
         }
     }
 

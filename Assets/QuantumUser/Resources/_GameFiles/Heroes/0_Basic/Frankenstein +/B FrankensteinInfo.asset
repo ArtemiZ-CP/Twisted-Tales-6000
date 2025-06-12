@@ -10,66 +10,67 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ade56e0d0897e4141a67b1acfce9bacf, type: 3}
-  m_Name: C CinderellaInfo
+  m_Name: B FrankensteinInfo
   m_EditorClassIdentifier: 
   Identifier:
-    Path: QuantumUser/Resources/_GameFiles/Heroes/1_Common/Cinderella/C CinderellaInfo
+    Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/Frankenstein +/B FrankensteinInfo
     Guid:
-      Value: 306578907051825668
-  HeroPrefab: {fileID: -1459247843489039561, guid: 8fb6fd8cff5dc48f89a4e224527f1541, type: 3}
+      Value: 293746723735115275
+  HeroPrefab: {fileID: 2736862171815421011, guid: 4a8ad46dfe7f841f9813cebe5c72115e, type: 3}
   HeroPrototype:
     Id:
-      Value: 1427829614913663807
+      Value: 1502711793932209246
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
   AbilityProjectilePrototype:
     Id:
       Value: 1376884538976340079
-  Name: 5
-  Rare: 1
+  Name: 22
+  Rare: 0
   HeroType: 1
+  Type: 2
   Stats:
     LevelStats:
     - Health:
-        RawValue: 65536000
+        RawValue: 58982400
       Defense:
-        RawValue: 327680
+        RawValue: 0
       MagicDefense:
-        RawValue: 327680
+        RawValue: 0
       AttackDamage:
-        RawValue: 3276800
+        RawValue: 4259840
       AttackSpeed:
         RawValue: 65536
       ProjectileSpeed:
         RawValue: 327680
-      Range: 2
+      Range: 1
     - Health:
-        RawValue: 65536000
+        RawValue: 81920000
       Defense:
-        RawValue: 327680
+        RawValue: 0
       MagicDefense:
-        RawValue: 327680
+        RawValue: 0
       AttackDamage:
-        RawValue: 3276800
+        RawValue: 5242880
       AttackSpeed:
         RawValue: 65536
       ProjectileSpeed:
         RawValue: 327680
-      Range: 2
+      Range: 1
     - Health:
-        RawValue: 65536000
+        RawValue: 111411200
       Defense:
-        RawValue: 327680
+        RawValue: 0
       MagicDefense:
-        RawValue: 327680
+        RawValue: 0
       AttackDamage:
-        RawValue: 3276800
+        RawValue: 6553600
       AttackSpeed:
         RawValue: 65536
       ProjectileSpeed:
         RawValue: 327680
-      Range: 2
+      Range: 1
     AttackDamageType: 0
     Mana:
       RawValue: 6553600

@@ -16,7 +16,7 @@ namespace Quantum.Game
         private readonly static FP HealthPercentage = FP._0_50;
         private readonly static FP IncreasedAbilityDuration = 10;
 
-        public FP GetDamageMultiplier(Frame f, FightingHero fightingHero, Board board, FightingHero target, QList<FightingHero> heroes)
+        public override FP GetDamageMultiplier(Frame f, ref FightingHero fightingHero, Board board, ref FightingHero target, QList<FightingHero> heroes)
         {
             foreach (FightingHero hero in heroes)
             {
@@ -25,7 +25,7 @@ namespace Quantum.Game
                     continue;
                 }
 
-                HeroNameEnum heroName = (HeroNameEnum)hero.Hero.NameIndex;;
+                HeroNameEnum heroName = (HeroNameEnum)hero.Hero.NameIndex; ;
 
                 if (heroName == HeroNameEnum.KingArthur && hero.TeamNumber == fightingHero.TeamNumber)
                 {
@@ -36,30 +36,13 @@ namespace Quantum.Game
             return 1;
         }
 
-        public HeroStats GetHeroStats(Frame f, PlayerLink playerLink, HeroInfo heroInfo)
-        {
-            return heroInfo.Stats;
-        }
-
-        public void ProcessAbilityOnDeath(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
-        {
-        }
-
-        public void ProcessAbilityOnKill(Frame f, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
-        {
-        }
-        
-        public void ProcessPassiveAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
-        {
-        }
-
-        public (bool, FP) TryCastAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
+        public override (bool, FP) TryCastAbility(Frame f, PlayerLink* playerLink, FightingHero fightingHero, Board board, QList<FightingHero> heroes)
         {
             fightingHero = heroes[fightingHero.Index];
             SelectedHeroAbility selectedHeroAbility = HeroAbility.GetSelectedHeroAbility(f, *playerLink, fightingHero.Hero.ID, out int _);
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
-            var alies = HeroBoard.GetAllTeamHeroesInRange(f, fightingHero.Index, fightingHero.TeamNumber, board, range: GameplayConstants.BoardSize, includeSelf: true);
+            var alies = HeroBoard.GetAllTeamHeroesInRange(f, fightingHero.Index, fightingHero.TeamNumber, board, range: GameplayConstants.BoardSize, includeCenter: true);
 
             FP duration = AbilityDuration;
 

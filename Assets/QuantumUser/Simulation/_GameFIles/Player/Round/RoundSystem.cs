@@ -67,7 +67,7 @@ namespace Quantum.Game
             Events.GetBoardHeroes(f);
             Events.GetInventoryHeroes(f);
             Events.DisplayRoundNumber(f);
-            
+
             QList<Board> boards = f.ResolveList(f.Global->Boards);
             boards.Clear();
         }
@@ -251,6 +251,12 @@ namespace Quantum.Game
             if (targetRef != default)
             {
                 PlayerLink* playerLink = Player.GetPlayerPointer(f, targetRef);
+
+                if (playerLink->Ref == default)
+                {
+                    return;
+                }
+
                 int roundResult = 0;
 
                 if (isPlayerWin)
@@ -291,6 +297,11 @@ namespace Quantum.Game
 
         private void ProcessPlayerCoins(Frame f, PlayerLink* player)
         {
+            if (player->Ref == default)
+            {
+                return;
+            }
+
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
             int baseCoins;
@@ -345,6 +356,11 @@ namespace Quantum.Game
 
         private void ProcessStreak(Frame f, PlayerLink* player, int roundResult)
         {
+            if (player->Ref == default)
+            {
+                return;
+            }
+
             GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
 
             if (roundResult == player->Info.StreakType)

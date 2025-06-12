@@ -84,7 +84,8 @@ namespace Quantum.Game
 
             for (int i = 0; i < playerHeroesIDLevel.Count; i++)
             {
-                HeroInfo heroInfo = gameConfig.GetHeroInfo(f, playerHeroesIDLevel[i].ID);
+                int id = playerHeroesIDLevel[i].ID;
+                HeroInfo heroInfo = gameConfig.GetHeroInfo(f, id);
                 HeroEntity hero;
 
                 if (heroInfo == null)
@@ -102,14 +103,14 @@ namespace Quantum.Game
                 {
                     hero = new()
                     {
-                        ID = playerHeroesIDLevel[i].ID,
+                        ID = id,
                         Level = playerHeroesIDLevel[i].Level,
                         NameIndex = (int)heroInfo.Name,
                         TypeIndex = (int)heroInfo.Type,
                         DefaultPosition = HeroBoard.GetTilePosition(f, i % GameplayConstants.BoardSize, i / GameplayConstants.BoardSize)
                     };
                 }
-                
+
                 playerHeroes.Add(hero);
             }
 
@@ -123,6 +124,7 @@ namespace Quantum.Game
                 return default;
             }
 
+            GameConfig gameConfig = f.FindAsset(f.RuntimeConfig.GameConfig);
             QListPtr<HeroEntity> heroes = f.AllocateList<HeroEntity>();
             QList<HeroEntity> playerHeroes = f.ResolveList(heroes);
 
@@ -130,12 +132,32 @@ namespace Quantum.Game
             {
                 for (int j = 0; j < roundInfo.PVEBoard[i].Cells.Count; j++)
                 {
-                    HeroEntity hero = new()
+                    int id = roundInfo.PVEBoard[i].Cells[^(j + 1)];
+                    HeroInfo heroInfo = gameConfig.GetHeroInfo(f, id);
+                    HeroEntity hero;
+
+                    if (heroInfo == null)
                     {
-                        ID = roundInfo.PVEBoard[i].Cells[^(j + 1)],
-                        Level = Level1,
-                        DefaultPosition = HeroBoard.GetTilePosition(f, j, i),
-                    };
+                        hero = new()
+                        {
+                            ID = -1,
+                            Level = -1,
+                            NameIndex = -1,
+                            TypeIndex = -1,
+                            DefaultPosition = HeroBoard.GetTilePosition(f, i % GameplayConstants.BoardSize, i / GameplayConstants.BoardSize)
+                        };
+                    }
+                    else
+                    {
+                        hero = new()
+                        {
+                            ID = id,
+                            Level = Level1,
+                            NameIndex = (int)heroInfo.Name,
+                            TypeIndex = (int)heroInfo.Type,
+                            DefaultPosition = HeroBoard.GetTilePosition(f, j, i),
+                        };
+                    }
 
                     playerHeroes.Add(hero);
                 }

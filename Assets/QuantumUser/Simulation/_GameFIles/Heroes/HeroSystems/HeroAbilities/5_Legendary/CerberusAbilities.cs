@@ -102,7 +102,7 @@ namespace Quantum.Game
                 };
 
                 HeroAttack.ApplyEffectToTarget(f, ref fightingHero, board, ref fightingHero, effect);
-                HeroAttack.DamageHeroByBlast(f, fightingHero, target.Index, board, damage, fightingHero.Hero.Range, includeSelf: true, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
+                HeroAttack.DamageHeroByBlast(f, fightingHero, target.Index, board, damage, fightingHero.Hero.Range, includeCenter: true, HeroAttack.DamageType.Magical, HeroAttack.AttackType.Ability);
                 return true;
             }
 
