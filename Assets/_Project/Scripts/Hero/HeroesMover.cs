@@ -12,7 +12,6 @@ namespace Quantum.Game
         [SerializeField] private PlayerShop _playerShop;
         [SerializeField] private Board _playerBoard;
         [SerializeField] private HeroRangeDisplay _heroRangeDisplay;
-        [SerializeField] private RectTransform _sellArea;
         [SerializeField] private HeroInfoView _heroInfoView;
 
         private Camera _camera;

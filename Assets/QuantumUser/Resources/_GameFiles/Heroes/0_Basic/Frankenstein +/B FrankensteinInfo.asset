@@ -16,10 +16,10 @@ MonoBehaviour:
     Path: QuantumUser/Resources/_GameFiles/Heroes/0_Basic/Frankenstein +/B FrankensteinInfo
     Guid:
       Value: 293746723735115275
-  HeroPrefab: {fileID: 2736862171815421011, guid: 4a8ad46dfe7f841f9813cebe5c72115e, type: 3}
+  HeroPrefab: {fileID: 2736862171815421011, guid: 634966244f2594aa9816bcd09704c19a, type: 3}
   HeroPrototype:
     Id:
-      Value: 1502711793932209246
+      Value: 1471241707345106196
   ProjectilePrototype:
     Id:
       Value: 1476018119604516482
